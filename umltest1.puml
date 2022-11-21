@@ -1,0 +1,7 @@
+@startgantt
+[thing1] lasts 15 days
+[thing2] lasts 10 days
+Project starts 2022-11-15
+[thing1] starts 2022-11-21
+[thing2] starts 2022-12-5
+@endgantt
