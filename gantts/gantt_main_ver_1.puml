@@ -1,0 +1,14 @@
+@startgantt
+'https://plantuml.com/gantt-diagram
+project starts 2022-11-14
+[Planning] starts 2022-11-21 and lasts 14 days and is colored in red
+[User Req] starts 2022-11-16 and lasts 6 days and is colored in orange
+[Meeting 1] starts at [User Req]'s end
+[User Req 2] starts at [Meeting 1]'s end and displays on same row as [User Req] and is colored in orange
+[User Req 2] lasts 2 weeks
+
+[Risk Assess. 1] starts 2022-11-23 and lasts 1 week and is colored in yellow
+[Implementation] starts 2022-12-7 and ends 2023-2-1 and is colored in lightgreen
+[Web dev] starts 2022-12-7 and ends 2023-2-1 and is colored in lightblue
+[Assessment 1] starts 2023-2-1
+@endgantt
