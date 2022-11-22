@@ -1,11 +1,11 @@
-package com.team3.piazzagame;
+package com.team3gdx.game;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.ScreenUtils;
 
-public class MainClass extends ApplicationAdapter {
+public class MainGameClass extends ApplicationAdapter {
 	SpriteBatch batch;
 	Texture img;
 	
