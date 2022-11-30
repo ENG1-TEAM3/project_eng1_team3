@@ -29,7 +29,7 @@ PlaySound(sound)
 
 Class Settings{
 Integer volume
-Map <String -> Char> keybinds
+Map <String -> Character> keybinds
 Integer[] resolution
 Boolean windowedMode
 Start()
@@ -64,7 +64,7 @@ Class ItemStation{}
 Class IngredientStation{}
 
 GeneralStation <|-- ItemStation
-GeneralStation <|-- IngredientSTation
+GeneralStation <|-- IngredientStation
 
 
 @enduml
