@@ -1,0 +1,70 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+Class Cook{
+Integer x
+Integer y
+Boolean lockout
+Integer interactionRadius
+Ingredient[] itemStack
+Interact()
+Move(Integer xdif, Integer ydif)
+}
+
+Class InputHandler{
+Cook[] cookList
+Integer selectedIndex
+RotateSelection()
+UserInput()
+}
+
+Class WorldController{
+Map <String -> String[][]> allRecipes
+}
+
+Class AudioController{
+Map <String -> String> sounds
+PlaySound(sound)
+}
+
+Class Settings{
+Integer volume
+Map <String -> Char> keybinds
+Integer[] resolution
+Boolean windowedMode
+Start()
+readSetting(String setting)
+writeSetting(String setting)
+}
+
+Class LeaderboardController{
+Integer[] scores
+Start()
+}
+
+Class CustomerController{}
+
+Class Customer{
+String wantsItem
+Integer patience
+Integer repPointsReward
+
+SetWanteditem()
+ShowOrder()
+Arrive()
+Leave()
+Check(Ingredient item)
+}
+
+Class GeneralStation{
+}
+
+Class ItemStation{}
+
+Class IngredientStation{}
+
+GeneralStation <|-- ItemStation
+GeneralStation <|-- IngredientSTation
+
+
+@enduml
