@@ -1,7 +1,10 @@
 package com.team3gdx.game;
 
+import java.util.logging.FileHandler;
+
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -30,6 +33,10 @@ public class MainGameClass extends ApplicationAdapter {
 
 	// For drawing entities.
 	public SpriteBatch batch;
+	
+	// Audio Controller
+	public AudioController sounds;
+	
 
 	// Map
 	public TiledMap map;
@@ -53,6 +60,8 @@ public class MainGameClass extends ApplicationAdapter {
 
 		camera = new OrthographicCamera(512, 512);
 		camera.zoom = 1.1f;
+		
+		sounds = new AudioController();
 
 		control = new Control();
 		Gdx.input.setInputProcessor(control);
