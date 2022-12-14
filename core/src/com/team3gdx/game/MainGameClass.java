@@ -33,10 +33,10 @@ public class MainGameClass extends ApplicationAdapter {
 
 	// For drawing entities.
 	public SpriteBatch batch;
-	
+
 	// Audio Controller
 	public AudioController sounds;
-	
+
 
 	// Map
 	public TiledMap map;
