@@ -132,6 +132,7 @@ public class MainGameClass extends ApplicationAdapter {
 
 	@Override
 	public void dispose() {
+		sounds.disposeAll();
 		batch.dispose();
 		map.dispose();
 	}
