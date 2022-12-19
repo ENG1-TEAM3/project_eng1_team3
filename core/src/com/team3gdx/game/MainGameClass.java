@@ -37,13 +37,12 @@ public class MainGameClass extends ApplicationAdapter {
 	// Audio Controller
 	public AudioController sounds;
 
-
 	// Map
 	public TiledMap map;
 	public TiledMapRenderer tiledMapRenderer;
 
 	// Solid tiles
-	MapObjects solidObjects;
+	public static MapObjects solidObjects;
 
 	// Cook
 	public Cook cook;
@@ -60,7 +59,7 @@ public class MainGameClass extends ApplicationAdapter {
 
 		camera = new OrthographicCamera(512, 512);
 		camera.zoom = 1.1f;
-		
+
 		sounds = new AudioController();
 
 		control = new Control();
@@ -91,7 +90,6 @@ public class MainGameClass extends ApplicationAdapter {
 		batch.setProjectionMatrix(camera.combined);
 		batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 
-//		checkCollision();
 		cook.update(control);
 
 		// TODO: Upper and lower body rendering of cook.
@@ -106,28 +104,6 @@ public class MainGameClass extends ApplicationAdapter {
 		// Render foreground.
 		tiledMapRenderer.render(new int[] { 3 });
 
-	}
-
-	// Basic collision detection (Doesn't work)!
-	private void checkCollision() {
-		// Loop over every solid object.
-		for (RectangleMapObject rectangleObject : solidObjects.getByType(RectangleMapObject.class)) {
-			Rectangle rectangle = rectangleObject.getRectangle();
-			if (Intersector.overlaps(rectangle, cook.getBounds())) {
-				// Get the rectangle's position.
-				float cellX = rectangleObject.getRectangle().getX(), cellY = rectangleObject.getRectangle().getY();
-				// Check where the cell is relative to the player and update position in
-				// opposite direction.
-				if (cellX < cook.pos.x)
-					cook.pos.x += cook.speed;
-				else if (cellX > cook.pos.x)
-					cook.pos.x -= cook.speed;
-				else if (cellY < cook.pos.y)
-					cook.pos.y += cook.speed;
-				else if (cellY > cook.pos.y)
-					cook.pos.y -= cook.speed;
-			}
-		}
 	}
 
 	@Override
