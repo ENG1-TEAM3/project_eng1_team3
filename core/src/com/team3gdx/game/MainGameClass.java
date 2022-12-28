@@ -5,6 +5,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -15,15 +17,19 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Intersector;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
+
 import java.util.ArrayList;
 
 public class MainGameClass extends ApplicationAdapter {
-
+	BitmapFont font;
 	public OrthographicCamera camera; // Camera
 	public Control control;
 
@@ -41,11 +47,15 @@ public class MainGameClass extends ApplicationAdapter {
 	public static CollisionTile[][] CLTiles; // 2D array used to store all the collider tiles objects
 	private ShapeRenderer shapeRenderer; // A shaperenderer jam-sut used to draw some debug shapes
 	public FitViewport vp; // Viewport for viewing the game
+	long startTime;
 	public void resize(int width, int height) {
 		vp.update(width, height);
 	}
 	@Override
 	public void create() {
+		font = new BitmapFont();
+		font.getData().setScale(4);
+		startTime = System.currentTimeMillis();
 		camera = new OrthographicCamera();
 		vp = new FitViewport(1920, 1080, camera);
 		sounds = new AudioController();
@@ -72,8 +82,6 @@ public class MainGameClass extends ApplicationAdapter {
 		batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 
 
-
-
 		tiledMapRenderer.setView(camera);
 		tiledMapRenderer.render(new int[] { 0 });
 
@@ -97,6 +105,14 @@ public class MainGameClass extends ApplicationAdapter {
 		batch.begin();
 		cook.draw_top(batch);
 		batch.end();
+		Matrix4 uiMatrix = camera.combined.cpy();
+		uiMatrix.setToOrtho2D(0, 0, 1920, 1080);
+		batch.setProjectionMatrix(uiMatrix);
+		batch.begin();
+		font.draw(batch, String.valueOf(cook.getDirection()) ,0,300);
+		batch.draw(new Texture("entities/cook.png"), 0,0);
+		batch.end();
+		batch.setProjectionMatrix(camera.combined);
 
 
 		//Uncomment if you want to draw some green squares over solid squares
@@ -115,12 +131,14 @@ public class MainGameClass extends ApplicationAdapter {
 		//}
 		//shapeRenderer.end();
 		//Gdx.gl.glDisable(GL20.GL_BLEND);
+		checkInteraction(cook,shapeRenderer);
 
 		camera.position.lerp(new Vector3(cook.pos.x, cook.pos.y, 0), .1f);
 		//camera.position.set(new Vector2(cook.pos.x, cook.pos.y), .1f);
 		camera.update();
 		//newCheckCollision(shapeRenderer);
-		cook.update(control);
+		cook.update(control,(System.currentTimeMillis() - startTime));
+		startTime = System.currentTimeMillis();
 
 	}
 
@@ -158,6 +176,41 @@ public class MainGameClass extends ApplicationAdapter {
 				}
 			}
 		}
+	}
+
+	public void checkInteraction(Cook ck, ShapeRenderer sr){
+		float centralcookx = ck.getX() + ck.getWidth()/2;
+		float centralcooky = ck.getY();
+		int cellx = (int)Math.floor(centralcookx/64);
+		int celly = (int)Math.floor(centralcooky/64);
+		sr.begin(ShapeType.Line);
+		sr.setColor(new Color(0,1,1,1));
+		sr.rect(cellx*64, celly*64, 64,64);
+		sr.rect(centralcookx-1, centralcooky-1, 2,2);
+		sr.end();
+		int checkCellX = cellx;
+		int checkCellY = celly;
+		switch (ck.getDirection()){
+			case 'u':
+				checkCellY += 2;
+				break;
+			case 'd':
+				break;
+			case 'l':
+				checkCellX -= 1;
+				checkCellY += 1;
+				break;
+			case 'r':
+				checkCellX += 1;
+				checkCellY += 1;
+				break;
+		}
+		sr.begin(ShapeType.Line);
+		sr.setColor(new Color(1,0,1,1));
+		sr.rect(checkCellX*64, checkCellY*64, 64,64);
+		sr.end();
+
+
 	}
 
 	@Override

@@ -3,7 +3,7 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "64pxshittytiles.tsx",
+    "activeFile": "prototype_map.tmx",
     "expandedProjectPaths": [
         "."
     ],
@@ -23,18 +23,18 @@
         },
         "prototype_map.tmx": {
             "scale": 0.75,
-            "selectedLayer": 1,
+            "selectedLayer": 0,
             "viewCenter": {
-                "x": -206,
-                "y": 235.33333333333331
+                "x": 954.6666666666665,
+                "y": 548.6666666666665
             }
         },
         "testmap.tmx": {
             "scale": 2,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": -99.25,
-                "y": 106.75
+                "x": 237,
+                "y": 262.75
             }
         },
         "testmap.tmx#64pxshittytiles": {
@@ -55,8 +55,8 @@
     "recentFiles": [
         "art_tileset.tsx",
         "testmap.tmx",
-        "prototype_map.tmx",
-        "64pxshittytiles.tsx"
+        "64pxshittytiles.tsx",
+        "prototype_map.tmx"
     ],
     "tileset.lastUsedFormat": "tsx",
     "tileset.tileSize": {

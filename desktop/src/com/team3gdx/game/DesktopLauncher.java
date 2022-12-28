@@ -1,5 +1,6 @@
 package com.team3gdx.game;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 import com.team3gdx.game.MainGameClass;
@@ -11,6 +12,7 @@ public class DesktopLauncher {
 		config.setWindowedMode(1920,1080);
 		config.setForegroundFPS(60);
 		config.setTitle("eng1team3game");
+		config.setFullscreenMode(Lwjgl3ApplicationConfiguration.getDisplayMode());
 		new Lwjgl3Application(new MainGameClass(), config);
 	}
 }
