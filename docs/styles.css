@@ -1,0 +1,25 @@
+head {
+    background-color: rgb(240, 80, 21);
+}
+
+body {
+    background-color: beige;
+}
+
+h1{
+    text-align: center;
+    
+}
+
+h3{
+    padding-right: 0px;
+}
+
+button{
+    text-align: center;
+    margin-left: 45%;
+    color: white;
+    background-color: red;
+    border: transparent;
+    
+}
