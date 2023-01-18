@@ -3,7 +3,7 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "prototype_map.tmx",
+    "activeFile": "customertest.tmx",
     "expandedProjectPaths": [
         "."
     ],
@@ -21,20 +21,28 @@
             "scaleInDock": 0.75,
             "scaleInEditor": 2
         },
+        "customertest.tmx": {
+            "scale": 1,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 492,
+                "y": 554.5
+            }
+        },
         "prototype_map.tmx": {
             "scale": 0.75,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 954.6666666666665,
-                "y": 548.6666666666665
+                "x": 949.3333333333334,
+                "y": 795.3333333333334
             }
         },
         "testmap.tmx": {
             "scale": 2,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 237,
-                "y": 262.75
+                "x": 233.5,
+                "y": 261.25
             }
         },
         "testmap.tmx#64pxshittytiles": {
@@ -42,21 +50,26 @@
         }
     },
     "last.imagePath": "C:/Users/james/Documents/GitHub/project_eng1_team3/assets/map/art_map/art_images",
+    "map.height": 15,
     "map.lastUsedFormat": "tmx",
     "map.tileHeight": 64,
     "map.tileWidth": 64,
+    "map.width": 20,
     "openFiles": [
         "art_tileset.tsx",
         "testmap.tmx",
         "prototype_map.tmx",
-        "64pxshittytiles.tsx"
+        "64pxshittytiles.tsx",
+        "customertest.tmx"
     ],
     "project": "art_version.tiled-project",
+    "property.type": "string",
     "recentFiles": [
         "art_tileset.tsx",
         "testmap.tmx",
+        "prototype_map.tmx",
         "64pxshittytiles.tsx",
-        "prototype_map.tmx"
+        "customertest.tmx"
     ],
     "tileset.lastUsedFormat": "tsx",
     "tileset.tileSize": {

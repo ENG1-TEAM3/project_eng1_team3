@@ -11,6 +11,7 @@ public class Control extends InputAdapter implements InputProcessor {
 	public boolean down;
 	public boolean left;
 	public boolean right;
+	public boolean del;
 
 	@Override
 	public boolean keyDown(int keyCode) {
@@ -38,6 +39,9 @@ public class Control extends InputAdapter implements InputProcessor {
 			break;
 		case Keys.D:
 			right = true;
+			break;
+		case Keys.DEL:
+			del = true;
 			break;
 		}
 		return false;
@@ -69,6 +73,9 @@ public class Control extends InputAdapter implements InputProcessor {
 			break;
 		case Keys.D:
 			right = false;
+			break;
+		case Keys.DEL:
+			del = false;
 			break;
 		case Keys.ESCAPE:
 			Gdx.app.exit();

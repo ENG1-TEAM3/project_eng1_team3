@@ -51,6 +51,7 @@ public class MainGameClass extends ApplicationAdapter {
 	public void resize(int width, int height) {
 		vp.update(width, height);
 	}
+	CustomerController cc;
 	@Override
 	public void create() {
 		font = new BitmapFont();
@@ -62,11 +63,14 @@ public class MainGameClass extends ApplicationAdapter {
 		control = new Control();
 		Gdx.input.setInputProcessor(control);
 		batch = new SpriteBatch();
-		map = new TmxMapLoader().load("map/art_map/prototype_map.tmx");
+		//map = new TmxMapLoader().load("map/art_map/prototype_map.tmx");
+		map = new TmxMapLoader().load("map/art_map/customertest.tmx");
 		tiledMapRenderer = new OrthogonalTiledMapRenderer(map);
-		cook = new Cook(new Vector2(64, 64));
+		cook = new Cook(new Vector2(64*5, 64*3));
 		shapeRenderer = new ShapeRenderer();
 		constructCollisionData(map);
+		cc = new CustomerController(map);
+		cc.spawnCustomer();
 	}
 
 	@Override
@@ -87,6 +91,7 @@ public class MainGameClass extends ApplicationAdapter {
 
 		batch.begin();
 		cook.draw_bot(batch);
+		cc.drawCustBot(batch);
 		batch.end();
 
 		shapeRenderer.begin(ShapeType.Line);
@@ -94,17 +99,17 @@ public class MainGameClass extends ApplicationAdapter {
 		shapeRenderer.rect(cook.getCollideBoxAsArray()[0],cook.getCollideBoxAsArray()[1],
 				cook.getCollideBoxAsArray()[2],cook.getCollideBoxAsArray()[3]);
 		shapeRenderer.end();
-
 		shapeRenderer.begin(ShapeType.Line);
 		shapeRenderer.setColor(Color.BLUE);
 		shapeRenderer.rect(cook.pos.x, cook.pos.y, 1,1);
 		shapeRenderer.end();
-
-
 		tiledMapRenderer.render(new int[] { 1 });
+
 		batch.begin();
 		cook.draw_top(batch);
+		cc.drawCustTop(batch);
 		batch.end();
+
 		Matrix4 uiMatrix = camera.combined.cpy();
 		uiMatrix.setToOrtho2D(0, 0, 1920, 1080);
 		batch.setProjectionMatrix(uiMatrix);
@@ -132,7 +137,7 @@ public class MainGameClass extends ApplicationAdapter {
 		//shapeRenderer.end();
 		//Gdx.gl.glDisable(GL20.GL_BLEND);
 		checkInteraction(cook,shapeRenderer);
-
+		cc.updateCustomers(control);
 		camera.position.lerp(new Vector3(cook.pos.x, cook.pos.y, 0), .1f);
 		//camera.position.set(new Vector2(cook.pos.x, cook.pos.y), .1f);
 		camera.update();
@@ -168,9 +173,10 @@ public class MainGameClass extends ApplicationAdapter {
 						CLTiles[x][y] = new CollisionTile(x * 64, y * 64, 64, 64);
 					}
 					else{
-						if (CLTiles[x][y-1] != null)
-						{
-								CLTiles[x][y-1] = null;
+						if (y != 0) {
+							if (CLTiles[x][y - 1] != null) {
+								CLTiles[x][y - 1] = null;
+							}
 						}
 					}
 				}

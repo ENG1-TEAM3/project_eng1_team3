@@ -46,30 +46,29 @@ public class Cook extends Entity {
 	public void update(Control control, float dt) {
 		dirX = 0;
 		dirY = 0;
-		// Remove else's to allow diagonal movement.
 		if (control.up) {
-			if (this.ck(pos.x, pos.y + (speed*dt))) {
+			if (this.checkCollision(pos.x, pos.y + (speed*dt))) {
 				dirY = 1;
 			}
 			currentTextureRegion = cookpartsb;
 			direction = 'u';
 		}
 		if (control.down) {
-			if (this.ck(pos.x, pos.y - (speed*dt))){
+			if (this.checkCollision(pos.x, pos.y - (speed*dt))){
 				dirY = -1;
 			}
 			currentTextureRegion = cookpartsf;
 			direction = 'd';
 		}
 		if (control.left) {
-			if (this.ck(pos.x - (speed * dt), pos.y)){
+			if (this.checkCollision(pos.x - (speed * dt), pos.y)){
 				dirX = -1;
 			}
 			currentTextureRegion = cookpartsl;
 			direction = 'l';
 		}
 		if (control.right) {
-			if (this.ck(pos.x + (speed * dt), pos.y)) {
+			if (this.checkCollision(pos.x + (speed * dt), pos.y)) {
 				dirX = +1;
 			}
 			currentTextureRegion = cookpartsr;
@@ -115,7 +114,7 @@ public class Cook extends Entity {
 		return direction;
 	}
 
-	public Boolean ck(float cookx, float cooky){
+	public Boolean checkCollision(float cookx, float cooky){
 		if (cooky -10 < 0){
 			return false;
 		}

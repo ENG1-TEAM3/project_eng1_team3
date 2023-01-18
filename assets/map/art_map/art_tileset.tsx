@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<tileset version="1.9" tiledversion="1.9.2" name="art_tileset" tilewidth="128" tileheight="64" tilecount="15" columns="0">
+<tileset version="1.9" tiledversion="1.9.2" name="art_tileset" tilewidth="128" tileheight="64" tilecount="20" columns="0">
  <grid orientation="orthogonal" width="1" height="1"/>
  <tile id="0">
   <image width="64" height="64" source="art_images/cnr.png"/>
@@ -45,5 +45,23 @@
  </tile>
  <tile id="21">
   <image width="128" height="64" source="art_images/Salad_top.png"/>
+ </tile>
+ <tile id="22">
+  <properties>
+   <property name="name" value="floortile"/>
+  </properties>
+  <image width="64" height="64" source="art_images/Floor tile.png"/>
+ </tile>
+ <tile id="23">
+  <image width="128" height="64" source="art_images/burgercrafter.png"/>
+ </tile>
+ <tile id="24">
+  <image width="64" height="64" source="art_images/bunsbox.png"/>
+ </tile>
+ <tile id="25">
+  <image width="64" height="64" source="art_images/pattypile.png"/>
+ </tile>
+ <tile id="26">
+  <image width="64" height="64" source="art_images/register.png"/>
  </tile>
 </tileset>
