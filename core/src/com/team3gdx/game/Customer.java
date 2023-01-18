@@ -24,7 +24,7 @@ public class Customer {
         startposx = posx;
         locked = false;
     }
-    public void renderCustomersTop(Batch b){b.draw(custparts1[0][0],posx,posy + 64,64,64);}
+    public void renderCustomersTop(Batch b){b.draw(text1,posx,posy,64,128);}
     public void renderCustomersBot(Batch b){b.draw(custparts1[1][0],posx,posy,64,64);}
     public void setTargetsquare(int tg) {targetsquare = tg;}
     public void stepTarget(){

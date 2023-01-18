@@ -25,16 +25,16 @@
             "scale": 1,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 492,
-                "y": 554.5
+                "x": 1076,
+                "y": 700.5
             }
         },
         "prototype_map.tmx": {
             "scale": 0.75,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 949.3333333333334,
-                "y": 795.3333333333334
+                "x": 205.33333333333337,
+                "y": 627.3333333333333
             }
         },
         "testmap.tmx": {

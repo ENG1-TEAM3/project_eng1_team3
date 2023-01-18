@@ -26,7 +26,6 @@ public class CustomerController {
         lockout = 0;
     }
     private void computeCustomerZone(TiledMap gameMap){
-
         //==============================================================================================================
         TiledMapTileLayer botlayer = (TiledMapTileLayer)gameMap.getLayers().get(0);
         customerCells = new ArrayList<>();
@@ -102,27 +101,25 @@ public class CustomerController {
     }
 
     public void delCustomer(int num){
-        System.out.println("del");
         if (this.customers[num].locked){
             amountActiveCustomers -= 1;
-            System.out.println("del2");
             this.leavingcustomers[num] = this.customers[num];
             this.leavingcustomers[num].setTargetsquare(-1);
             this.customers[num] = null;
         }
     }
-    public void drawCustBot(Batch b1){
-        for (Customer c: this.customers){
-            if (c != null) {
-                c.renderCustomersBot(b1);
-            }
-        }
-        for (Customer c: this.leavingcustomers){
-            if (c != null) {
-                c.renderCustomersBot(b1);
-            }
-        }
-    }
+    //public void drawCustBot(Batch b1){
+    //    for (Customer c: this.customers){
+    //        if (c != null) {
+    //            c.renderCustomersBot(b1);
+    //        }
+    //    }
+    //    for (Customer c: this.leavingcustomers){
+    //        if (c != null) {
+    //            c.renderCustomersBot(b1);
+    //        }
+    //    }
+    //}
     public void drawCustTop(Batch b1){
         for (Customer c: this.customers){
             if (c != null) {

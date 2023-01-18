@@ -56,6 +56,8 @@ public class MainGameClass extends ApplicationAdapter {
 	public void create() {
 		font = new BitmapFont();
 		font.getData().setScale(4);
+		// Setup font for debug text
+
 		startTime = System.currentTimeMillis();
 		camera = new OrthographicCamera();
 		vp = new FitViewport(1920, 1080, camera);
@@ -80,29 +82,16 @@ public class MainGameClass extends ApplicationAdapter {
 		Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-
-
 		batch.setProjectionMatrix(camera.combined);
 		batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
-
 
 		tiledMapRenderer.setView(camera);
 		tiledMapRenderer.render(new int[] { 0 });
 
 		batch.begin();
 		cook.draw_bot(batch);
-		cc.drawCustBot(batch);
+		//cc.drawCustBot(batch);
 		batch.end();
-
-		shapeRenderer.begin(ShapeType.Line);
-		shapeRenderer.setColor(Color.RED);
-		shapeRenderer.rect(cook.getCollideBoxAsArray()[0],cook.getCollideBoxAsArray()[1],
-				cook.getCollideBoxAsArray()[2],cook.getCollideBoxAsArray()[3]);
-		shapeRenderer.end();
-		shapeRenderer.begin(ShapeType.Line);
-		shapeRenderer.setColor(Color.BLUE);
-		shapeRenderer.rect(cook.pos.x, cook.pos.y, 1,1);
-		shapeRenderer.end();
 		tiledMapRenderer.render(new int[] { 1 });
 
 		batch.begin();
@@ -119,23 +108,6 @@ public class MainGameClass extends ApplicationAdapter {
 		batch.end();
 		batch.setProjectionMatrix(camera.combined);
 
-
-		//Uncomment if you want to draw some green squares over solid squares
-		//Gdx.gl.glEnable(GL20.GL_BLEND);
-		//shapeRenderer.begin(ShapeType.Filled);
-		//int wid = CLTiles.length;
-		//int hi = CLTiles[0].length;
-		//for (int y = 0; y < hi; y++) {
-		//	for (int x = 0; x < wid; x++) {
-		//		CollisionTile tl = CLTiles[x][y];
-		//		if (tl != null) {
-		//			shapeRenderer.setColor(new Color(0,1.0f,0, 0.1f));
-		//			shapeRenderer.rect(tl.tilex,tl.tiley,tl.tilewidth,tl.tileheight);
-		//	}
-		//	}
-		//}
-		//shapeRenderer.end();
-		//Gdx.gl.glDisable(GL20.GL_BLEND);
 		checkInteraction(cook,shapeRenderer);
 		cc.updateCustomers(control);
 		camera.position.lerp(new Vector3(cook.pos.x, cook.pos.y, 0), .1f);
@@ -189,11 +161,6 @@ public class MainGameClass extends ApplicationAdapter {
 		float centralcooky = ck.getY();
 		int cellx = (int)Math.floor(centralcookx/64);
 		int celly = (int)Math.floor(centralcooky/64);
-		sr.begin(ShapeType.Line);
-		sr.setColor(new Color(0,1,1,1));
-		sr.rect(cellx*64, celly*64, 64,64);
-		sr.rect(centralcookx-1, centralcooky-1, 2,2);
-		sr.end();
 		int checkCellX = cellx;
 		int checkCellY = celly;
 		switch (ck.getDirection()){
@@ -215,8 +182,6 @@ public class MainGameClass extends ApplicationAdapter {
 		sr.setColor(new Color(1,0,1,1));
 		sr.rect(checkCellX*64, checkCellY*64, 64,64);
 		sr.end();
-
-
 	}
 
 	@Override
