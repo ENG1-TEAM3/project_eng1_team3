@@ -1,0 +1,76 @@
+<plantuml>
+@startgantt
+
+Project starts 2022-11-14
+
+[Planning] starts 2022-11-21 and ends 2022-12-04
+
+[User Req] starts 2022-11-16 and ends 2022-11-21
+[User Req 2] starts 2022-11-23 and ends 2022-12-06
+
+[Meeting 1] starts at [User Req]'s end
+[User Req 2] starts at [Meeting 1]'s end
+
+[Risk Assess. 1 - Everyone] starts 2022-11-23 and ends 2022-11-29
+
+[Archetecture - Everyone] starts 2022-12-01 and ends 2022-12-11 and is colored in Pink
+
+[Christmas Break] starts 2022-12-20 and ends 2023-01-16 and is colored in White
+
+[UML planning - Yuzao] starts 2022-12-07 and ends 2022-12-19
+[Implementation] starts 2022-12-12 and ends 2022-12-19
+[Web dev - James] starts 2022-12-07 and ends 2022-12-19
+
+[Menus - Yuzao] starts 2022-12-12 and ends 2022-12-19 and is colored in Yellow
+[Leaderboard - Ivan] starts 2022-12-12 and ends 2022-12-19 and is colored in Orange
+[Ingredients and audio manager - Ben] starts 2022-12-12 and ends 2022-12-19 and is colored in Red
+[Layering, collision and World Controller - James] starts 2022-12-12 and ends 2022-12-19 and is colored in LightGreen
+
+
+[Leaderboard - Yuzao] starts 2023-01-16 and ends 2023-01-25 and is colored in yellow
+
+[Stations - Harry] starts 2023-01-16 and ends 2023-01-25 and is colored in Lilac
+[Customers - James] starts 2023-01-16 and ends 2023-01-25 and is colored in LightGreen
+
+[Website Completion - Cai] lasts 3 days
+[Documentation Completion - Ben] lasts 10 days
+[Last minute adjustments] lasts 4 days
+
+[Website Completion - Cai] starts 2023-01-24
+[Documentation Completion - Ben] starts 2023-01-16
+[Last minute adjustments] starts 2023-01-29
+
+[Web dev - Cai] starts at [Christmas Break]'s end and ends 2023-01-25 and displays on same row as [Web dev - James]
+[UML planning - Cai] starts at [Christmas Break]'s end and ends 2023-01-25 and displays on same row as [UML planning - Yuzao]
+[Implementation 2] starts at [Christmas Break]'s end and ends 2023-01-25 and displays on same row as [Implementation]
+
+[Website Completion - Cai] starts at [Documentation Completion - Ben]'s end
+[Last minute adjustments] starts at [Website Completion - Cai]'s end
+
+[Risk Assessment Weekly] starts 2022-11-30 and ends 2022-12-20
+[Plan Reassessment Weekly - Ben] starts 2022-12-05 and ends 2022-12-20
+
+[Risk Assessment Weekly - Ben] starts at [Christmas Break]'s end and ends 2023-02-01 and displays on same row as [Risk Assessment Weekly]
+[Plan Reassessment Weekly 2 - Ben] starts at [Christmas Break]'s end and ends 2023-02-01 and displays on same row as [Plan Reassessment Weekly - Ben]
+
+[Risk Assessment Weekly - Everyone] starts at [Risk Assess. 1 - Everyone]'s end
+[Plan Reassessment Weekly - Ben] starts at [Planning]'s end
+
+[Website Completion - Cai] is colored in Orange
+[Documentation Completion - Ben] is colored in Blue
+[Last minute adjustments] is colored in Fuchsia/FireBrick
+[Planning] is colored in Red
+[Risk Assess. 1 - Everyone] is colored in Yellow
+
+[Web dev - Cai] is colored in LightBlue
+[UML planning - Cai] is colored in LightGreen
+[Web dev - James] is colored in LightBlue
+[UML planning - Yuzao] is colored in LightGreen
+[Implementation] is colored in DarkGreen
+[Implementation 2] is colored in DarkGreen
+
+[User Req] is colored in DarkOrange
+[User Req 2] is colored in DarkOrange
+
+@endgantt
+</plantuml>
