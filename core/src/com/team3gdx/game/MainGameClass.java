@@ -66,7 +66,6 @@ public class MainGameClass extends Game {
 
 	@Override
 	public void dispose() {
-		sounds.disposeAll();
 		batch.dispose();
 	}
 }

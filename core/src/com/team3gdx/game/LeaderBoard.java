@@ -37,7 +37,6 @@ public class LeaderBoard implements Screen, TextInputListener{
 
 	
 	public LeaderBoard(MainGameClass game, MainScreen ms) {
-		System.out.println("leaderboard created");
 		this.game = game;
 		this.ms = ms;
 
@@ -51,11 +50,9 @@ public class LeaderBoard implements Screen, TextInputListener{
 			FileHandle handle = Gdx.files.local("leaderboarddata/playerData.txt");
 			String text = handle.readString();
 			if (!text.equals("empty")){
-				System.out.println(text);
 				String[] entries = text.split("\\n");
 				for (String s : entries) {
 					String[] parts = s.split(";");
-					System.out.println(s);
 					String name = parts[0];
 					String stringScore = parts[1].trim();
 					ArrayList<String> sublist = new ArrayList<>();
@@ -82,9 +79,6 @@ public class LeaderBoard implements Screen, TextInputListener{
 			}
 		}
 		);
-		for (List<String> ls: playerData){
-			System.out.println(ls.get(0));
-		}
 	}
 
 
