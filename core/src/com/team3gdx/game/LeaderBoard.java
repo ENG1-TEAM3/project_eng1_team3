@@ -1,10 +1,6 @@
 package com.team3gdx.game;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.*;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Input.TextInputListener;
@@ -12,16 +8,10 @@ import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.files.FileHandle;
-import jdk.internal.foreign.ArenaAllocator;
 
-import java.io.File;
-import java.io.IOException;
 
 
 public class LeaderBoard implements Screen, TextInputListener{
@@ -104,7 +94,6 @@ public class LeaderBoard implements Screen, TextInputListener{
 		float boxhi = 8*dbox;
 		float entryhi = 7*dbox;
 		float topentry = dbox + entryhi;
-		float botentry = dbox;
 		float eachentryhi = entryhi / 7;
 
 		game.batch.begin();
@@ -113,12 +102,12 @@ public class LeaderBoard implements Screen, TextInputListener{
 		game.font.draw(game.batch,"Press ESC to return to menu",ms.gameResolutionX/20.0f, 19*ms.gameResolutionY/20.0f);
 		game.font.draw(game.batch,"Name",3*ms.gameResolutionX/20.0f,17*ms.gameResolutionY/20.0f);
 		game.font.draw(game.batch,"Score",11*ms.gameResolutionX/20.0f,17*ms.gameResolutionY/20.0f);
-		game.batch.draw(line,lbox,botentry + eachentryhi,boxwid,ms.gameResolutionY/100.0f);
-		game.batch.draw(line,lbox,botentry + 2*eachentryhi,boxwid,ms.gameResolutionY/100.0f);
-		game.batch.draw(line,lbox,botentry + 3*eachentryhi,boxwid,ms.gameResolutionY/100.0f);
-		game.batch.draw(line,lbox,botentry + 4*eachentryhi,boxwid,ms.gameResolutionY/100.0f);
-		game.batch.draw(line,lbox,botentry + 5*eachentryhi,boxwid,ms.gameResolutionY/100.0f);
-		game.batch.draw(line,lbox,botentry + 6*eachentryhi,boxwid,ms.gameResolutionY/100.0f);
+		game.batch.draw(line,lbox, dbox + eachentryhi,boxwid,ms.gameResolutionY/100.0f);
+		game.batch.draw(line,lbox, dbox + 2*eachentryhi,boxwid,ms.gameResolutionY/100.0f);
+		game.batch.draw(line,lbox, dbox + 3*eachentryhi,boxwid,ms.gameResolutionY/100.0f);
+		game.batch.draw(line,lbox, dbox + 4*eachentryhi,boxwid,ms.gameResolutionY/100.0f);
+		game.batch.draw(line,lbox, dbox + 5*eachentryhi,boxwid,ms.gameResolutionY/100.0f);
+		game.batch.draw(line,lbox, dbox + 6*eachentryhi,boxwid,ms.gameResolutionY/100.0f);
 
 
 		for(int scoreno = 0; scoreno < 7; scoreno ++){
@@ -189,7 +178,7 @@ public class LeaderBoard implements Screen, TextInputListener{
 
 	public void create() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 
