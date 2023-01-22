@@ -1,42 +1,42 @@
 package com.team3gdx.game;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.maps.MapProperties;
+import com.badlogic.gdx.maps.tiled.*;
+import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
 
 
 public class GameScreen implements Screen{
-	final Eng1 game;
+	final MainGameClass game;
 	final MainScreen ms;
-	
-	int reputation;
-	int timeCounter;
-	int numberOfcustomer;
-	
-	Label Reputation;
-	Label TimeCounter;
-	Label NumberOfcustomer;
-	
-	Rectangle t1;
-	Rectangle t2;
-	Rectangle t3;
-	Rectangle t4;
-	
-	Texture background;
+
+	Rectangle volSlideBackgr;
+	Rectangle volSlide;
+	Rectangle musSlideBackgr;
+	Rectangle musSlide;
+	Rectangle audioBackground;
+	Rectangle optionsBackground;
+
 	Texture ESC;
 	Texture MENU;
 	Texture BACKTOMAINSCREEN;
@@ -46,226 +46,404 @@ public class GameScreen implements Screen{
 	Texture vControl;
 	Texture vButton;
 	
-	ImageButton mn;
-	ImageButton rs;
-	ImageButton ad;
-	ImageButton btms;
-	
-	Viewport viewport;
-	
+	Button mn;
+	Button rs;
+	Button ad;
+	Button btms;
+	public static CollisionTile[][] CLTiles;
+	Viewport uiViewport;
+
+	Viewport worldViewport;
 	Stage stage;
 	Stage stage2;
 	
-	OrthographicCamera camera;
+	OrthographicCamera uiCamera;
+	OrthographicCamera worldCamera;
 	
 	enum STATE{
-		Pause,Continue, main, audio, leaderboard, new_game;
+		Pause,Continue, main, audio;
 	}
 	
 	STATE state1;
-	
-	public GameScreen(Eng1 game, MainScreen ms) {
+
+	float v;
+	float s;
+	int gameResolutionX;
+	int gameResolutionY;
+	float buttonwidth;
+	float buttonheight;
+	float xSliderMax;
+	float xSliderMin;
+	float sliderWidth;
+
+	float audioBackgroundWidth;
+	float audioBackgroundHeight;
+	float audioBackgroundx;
+	float audioBackgroundy;
+
+	long startTime;
+	Control control;
+	TiledMapRenderer tiledMapRenderer;
+	public TiledMap map1;
+
+	Cook cook;
+	CustomerController cc;
+	InputMultiplexer multi;
+	public GameScreen(MainGameClass game, MainScreen ms) {
 		this.game = game;
 		this.ms = ms;
-		 
+		this.calculateBoxMaths();
+		control = new Control();
+		//map = new TmxMapLoader().load("map/art_map/prototype_map.tmx");
+		map1 = new TmxMapLoader().load("map/art_map/customertest.tmx");
+		tiledMapRenderer = new OrthogonalTiledMapRenderer(map1);
+		cook = new Cook(new Vector2(64*5, 64*3));
+		constructCollisionData(map1);
+		cc = new CustomerController(map1);
+		cc.spawnCustomer();
+	}
 
-		t1 = ms.t1;
-		t2 = ms.t2;
-		t3 = ms.t3;
-		t4 = ms.t4;
-		
-		
+	public void show() {
+		//=======================================START=FRAME=TIMER======================================================
+		startTime = System.currentTimeMillis();
+		//=======================================SET=POSITIONS=OF=SLIDERS===============================================
+		float currentMusicVolumeSliderX = (game.musicVolumeScale * sliderWidth) + xSliderMin;
+		float currentGameVolumeSliderX = (game.gameVolumeScale * sliderWidth) + xSliderMin;
+		musSlide.setPosition(currentMusicVolumeSliderX,
+				audioBackgroundy + 4*audioBackgroundHeight/6 + musSlideBackgr.getHeight()/2 - musSlide.getHeight()/2);
+		volSlide.setPosition(currentGameVolumeSliderX,
+				audioBackgroundy + audioBackgroundHeight/6 + volSlideBackgr.getHeight()/2 - volSlide.getHeight()/2);
+		//======================================INHERIT=TEXTURES=FROM=MAIN=SCREEN=======================================
 		vButton = ms.vButton;
 		vControl = ms.vControl;
-		
-		camera = new OrthographicCamera();
-		camera.setToOrtho(false,1920,1080);
-		
+		//======================================START=CAMERAS===========================================================
+		uiCamera = new OrthographicCamera();
+		worldCamera = new OrthographicCamera();
+		uiCamera.setToOrtho(false,gameResolutionX,gameResolutionY);
+		worldCamera.setToOrtho(false,gameResolutionX,gameResolutionY);
+		//======================================SET=INITAL=STATE========================================================
 		state1 = STATE.Continue;
-		
-		viewport = new FitViewport(1920,1080,camera);
-		
-		stage = new Stage(viewport);
-		stage2 = new Stage(viewport);
-		Gdx.input.setInputProcessor(stage);
-		
-		background = new Texture(Gdx.files.internal("dragonflight.jpg"));
-		MENU = new Texture(Gdx.files.internal("MENU.jpg"));
-		ESC = new Texture(Gdx.files.internal("ESC.jpg"));
-		BACKTOMAINSCREEN = new Texture(Gdx.files.internal("backtomainscreen.jpg"));
-		RESUME = new Texture(Gdx.files.internal("resume.jpg"));
-		AUDIO =new Texture(Gdx.files.internal("audio.jpg"));
-		audioEdit = new Texture(Gdx.files.internal("background.jpg"));
-		
-		
-		mn = new ImageButton(new TextureRegionDrawable(MENU),
-				new TextureRegionDrawable(MENU));
-		ad = new ImageButton(new TextureRegionDrawable(AUDIO),
-				new TextureRegionDrawable(AUDIO));
-		rs = new ImageButton(new TextureRegionDrawable(RESUME),
-				new TextureRegionDrawable(RESUME));
-		btms = new ImageButton(new TextureRegionDrawable(BACKTOMAINSCREEN),
-				new TextureRegionDrawable(BACKTOMAINSCREEN));
-		
-		mn.setPosition(100, 980);
-		ad.setPosition(825, 390);
-		rs.setPosition(825, 470);
-		btms.setPosition(825, 550);
-		
+		//======================================START=VIEWPORTS=========================================================
+		worldViewport = new FitViewport(gameResolutionX,gameResolutionY,worldCamera);
+		uiViewport = new FitViewport(gameResolutionX,gameResolutionY,uiCamera);
+		//======================================START=STAGES============================================================
+		stage = new Stage(uiViewport);
+		stage2 = new Stage(uiViewport);
+		//======================================CREATE=INPUTMULTIPLEXER=================================================
+		multi = new InputMultiplexer(stage, control);
+		//======================================LOAD=TEXTURES===========================================================
+		MENU = new Texture(Gdx.files.internal("uielements/MENU.jpg"));
+		ESC = new Texture(Gdx.files.internal("uielements/ESC.jpg"));
+		BACKTOMAINSCREEN = new Texture(Gdx.files.internal("uielements/backtomainscreen.jpg"));
+		RESUME = new Texture(Gdx.files.internal("uielements/resume.jpg"));
+		AUDIO =new Texture(Gdx.files.internal("uielements/audio.jpg"));
+		audioEdit = new Texture(Gdx.files.internal("uielements/background.jpg"));
+		//======================================CREATE=BUTTONS==========================================================
+		mn = new Button(new TextureRegionDrawable(MENU));
+		ad = new Button(new TextureRegionDrawable(AUDIO));
+		rs = new Button(new TextureRegionDrawable(RESUME));
+		btms = new Button(new TextureRegionDrawable(BACKTOMAINSCREEN));
+		//======================================POSITION=AND=SCALE=BUTTONS==============================================
+		mn.setPosition(gameResolutionX/40.0f, 18*gameResolutionY/20.0f);
+		mn.setSize(buttonwidth,buttonheight);
+		rs.setPosition(gameResolutionX/40.0f, 18*gameResolutionY/20.0f);
+		rs.setSize(buttonwidth,buttonheight);
+		ad.setPosition(rs.getX() + rs.getWidth() + 2*(gameResolutionX/40.0f - gameResolutionX/50.0f), rs.getY());
+		ad.setSize(buttonwidth,buttonheight);
+		btms.setPosition(ad.getX() + ad.getWidth() + 2*(gameResolutionX/40.0f - gameResolutionX/50.0f), ad.getY());
+		btms.setSize(buttonwidth,buttonheight);
+		//======================================ADD=LISTENERS=TO=BUTTONS================================================
 		mn.addListener(new ClickListener(){
 			public void touchUp(InputEvent event, float x, float y
 					,int pointer, int button) {
-					state1 = STATE.Pause;		
-				super.touchUp(event, x, y, pointer, button);				
-				}
+				state1 = STATE.Pause;
+				super.touchUp(event, x, y, pointer, button);
+			}
 		});
 		rs.addListener(new ClickListener(){
 			public void touchUp(InputEvent event, float x, float y
 					,int pointer, int button) {
-					state1 = STATE.Continue;
-				super.touchUp(event, x, y, pointer, button);				
-				}
+				state1 = STATE.Continue;
+				super.touchUp(event, x, y, pointer, button);
+			}
 		});
 		ad.addListener(new ClickListener(){
 			public void touchUp(InputEvent event, float x, float y
 					,int pointer, int button) {
-					state1 = STATE.audio;
-				super.touchUp(event, x, y, pointer, button);				
-				}
+				state1 = STATE.audio;
+				super.touchUp(event, x, y, pointer, button);
+			}
 		});
 		btms.addListener(new ClickListener(){
 			public void touchUp(InputEvent event, float x, float y
 					,int pointer, int button) {
-					state1 = STATE.main;
-				super.touchUp(event, x, y, pointer, button);				
-				}
+				state1 = STATE.main;
+				super.touchUp(event, x, y, pointer, button);
+			}
 		});
-		
-		
+		//======================================ADD=BUTTONS=TO=STAGES===================================================
 		stage.addActor(mn);
 		stage2.addActor(rs);
 		stage2.addActor(btms);
 		stage2.addActor(ad);
-
-	}
-
-	public void show() {
-		// TODO Auto-generated method stub
-		
 	}
 
 	public void render(float delta) {
-		// TODO Auto-generated method stub
+		//=====================================CLEAR=SCREEN=============================================================
 		ScreenUtils.clear(0,0,0,0);
-		game.batch.setProjectionMatrix(camera.combined);
-		game.GameMusic.play();
-		
+		//=====================================SET=INPUT=PROCESSOR======================================================
+		Gdx.input.setInputProcessor(multi);
+		//=====================================SET=PROJECTION=MATRICES=FOR=GAME=RENDERING===============================
+		game.shapeRenderer.setProjectionMatrix(worldCamera.combined);
+		game.batch.setProjectionMatrix(worldCamera.combined);
+		//=====================================RENDER=BOTTOM=MAP=LAYER==================================================
+		tiledMapRenderer.setView(worldCamera);
+		tiledMapRenderer.render(new int[] { 0 });
+		//=====================================DRAW=COOK=LEGS===========================================================
 		game.batch.begin();
-		game.batch.draw(background,0,0);
-		game.font.draw(game.batch,state1.toString(),100,100);
+		cook.draw_bot(game.batch);
 		game.batch.end();
+		//=====================================RENDER=TOP=MAP=LAYER=====================================================
+		tiledMapRenderer.render(new int[] { 1 });
+		//=====================================DRAW=COOK=TOP=HALF=======================================================
+		game.batch.begin();
+		cook.draw_top(game.batch);
+		cc.drawCustTop(game.batch); //todo fix customer z ordering
+		game.batch.end();
+		//=====================================SET=MATRIX=FOR=UI=ELEMENTS===============================================
+		Matrix4 uiMatrix = worldCamera.combined.cpy();
+		uiMatrix.setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		game.batch.setProjectionMatrix(uiMatrix);
+		//=====================================DRAW=UI=ELEMENTS=========================================================
+		game.batch.begin();
+		game.font.draw(game.batch, String.valueOf(cook.getDirection()) ,0,300);
+		game.batch.draw(new Texture("entities/cook.png"), 0,0);
+		game.font.draw(game.batch,state1.toString(),gameResolutionX/20.0f,gameResolutionY/20.0f);
+		game.batch.end();
+		//=====================================SET=MATRIX=BACK=TO=GAME=MATRIX===========================================
+		game.batch.setProjectionMatrix(worldCamera.combined);
+		//==================================MOVE=CAMERA=================================================================
+		worldCamera.position.x = cook.getX(); //todo change to lerp
+		worldCamera.position.y = cook.getY();
+		worldCamera.update();
+		uiCamera.update();
+		//==================================MOVE=COOK===================================================================
+		cook.update(control,(System.currentTimeMillis() - startTime),CLTiles);
+		checkInteraction(cook,game.shapeRenderer);
+		startTime = System.currentTimeMillis();
+		//==================================PLAY=MUSIC==================================================================
+		game.gameMusic.play();
+		//==================================DRAW=INTERACTIVE=UI=ELEMENTS================================================
 		stage.act();
 		stage.draw();
-
-		changeScreen(state1);		
-		
-
-
+		//==================================JUMP=TO=STATE=SPECIFIC=LOGIC================================================
+		game.batch.setProjectionMatrix(uiMatrix);
+		changeScreen(state1);
+		game.batch.setProjectionMatrix(worldCamera.combined);
 	}
 
 	
 	public void changeScreen(STATE state1) {
 		if(state1 == STATE.main) {
-			game.GameMusic.dispose();
-			game.setScreen(new MainScreen(game,t1.getX(),t1.getY(),t3.getX(),t3.getY()));
+			game.gameMusic.dispose();
+			game.setScreen(game.getMainScreen());
+
 		}
 		if(state1 == STATE.Pause) {
 			Gdx.input.setInputProcessor(stage2);
 			game.batch.begin();
-			game.batch.draw(ESC,810,380,300,320);
+			game.batch.draw(ESC,optionsBackground.getX(),optionsBackground.getY(),
+					optionsBackground.getWidth(),optionsBackground.getHeight());
 			game.batch.end();
 			stage2.act();
 			stage2.draw();
 		}
 		if(state1 == STATE.audio) {
-			mcUpdate();
-			sdUpdate();
+			musicVolumeUpdate();
+			gameVolumeUpdate();
 			checkState();
-			
+
 			Gdx.input.setInputProcessor(stage2);
 			game.batch.begin();
-			game.batch.draw(ESC,810,380,300,320);
+			game.batch.draw(ESC,optionsBackground.getX(),optionsBackground.getY(),
+					optionsBackground.getWidth(),optionsBackground.getHeight());
 			game.batch.end();
 			stage2.act();
 			stage2.draw();
-			
 			game.batch.begin();
-			game.batch.draw(audioEdit,860,120,200,200);
-				
-				
-			game.batch.draw(vControl,t2.getX(),t2.getY(),t2.width,t2.height);
-			game.batch.draw(vButton,t1.getX()-16,t1.getY(),t1.width,t1.height);
-				
-			game.batch.draw(vControl,ms.t4.getX(),t4.getY(),t4.width,ms.t4.height);
-			game.batch.draw(vButton,ms.t3.getX()-16,t3.getY(),t3.width,ms.t3.height);
-				
+			game.batch.draw(audioEdit,audioBackground.getX(),audioBackground.getY(),
+					audioBackground.getWidth(),audioBackground.getHeight());
+			game.batch.draw(vControl,volSlideBackgr.getX(),volSlideBackgr.getY(),
+					volSlideBackgr.getWidth(),volSlideBackgr.getHeight());
+			game.batch.draw(vButton,volSlide.getX() - volSlide.getWidth()/2,volSlide.getY(),
+					volSlide.width,volSlide.height);
+			game.batch.draw(vControl,musSlideBackgr.getX(),musSlideBackgr.getY(),
+					musSlideBackgr.getWidth(),musSlideBackgr.getHeight());
+			game.batch.draw(vButton,musSlide.getX() - musSlide.getWidth()/2,musSlide.getY(),
+					musSlide.width,musSlide.height);
 			game.batch.end();
-			}
+		}
 		if(state1 == STATE.Continue) {
-			Gdx.input.setInputProcessor(stage);
+			cc.updateCustomers(control);
 		}
-		}
+	}
 	public void checkState() {
 		if(Gdx.input.isKeyPressed(Keys.ESCAPE)) {
 			state1 = STATE.Pause;
 		}
 	}
 
-	public void mcUpdate() {
-		float y = Gdx.input.getY();
-		y = 1080 - y;
+	public void musicVolumeUpdate() {
+		float fromTopy = Gdx.input.getY();
+		float fromBottomy = gameResolutionY - fromTopy;
 		float x = Gdx.input.getX();
-		boolean change = 345<y & y<360;
-		
-		if(Gdx.input.isTouched() & change == true) {
-			if(x>= 910 & x<=1030) {
-				ms.t1.setPosition(Gdx.input.getX(),ms.t1.getY());
-				if(x < 925) {
-					ms.v = 0;
-				}else {
-					ms.v = (Gdx.input.getX() - 910) / ms.t2.getWidth();
+		boolean change = musSlide.getY() <= fromBottomy & fromBottomy<=musSlide.getY() + musSlide.getHeight();
+		if(Gdx.input.isTouched() & change) {
+			if(x>= musSlideBackgr.getX() & x<=musSlideBackgr.getX() + musSlideBackgr.getWidth()) {
+				musSlide.setPosition(Gdx.input.getX(), musSlide.getY());
+				v = (musSlide.getX() - musSlideBackgr.getX()) / musSlideBackgr.getWidth();
+				if (v < 0.01){
+					v = 0;
 				}
-					
+				game.mainScreenMusic.setVolume(v);
+				game.gameMusic.setVolume(v);
+				game.musicVolumeScale = v;
 			}
-
-			game.MianScreenMusic.setVolume(ms.v);
-			game.GameMusic.setVolume(ms.v);
 		}
 	}
 	
-	public void sdUpdate() {
-		float y = Gdx.input.getY();
-		y = 1080 - y;
+	public void gameVolumeUpdate() {
+		float fromTopy = Gdx.input.getY();
+		float fromBottomy = gameResolutionY - fromTopy;
 		float x = Gdx.input.getX();
-		boolean change = 250<y & y<275;
-		
-		if(Gdx.input.isTouched() & change == true) {
-			if(x>= 910 & x<=1030) {
-				ms.t3.setPosition(Gdx.input.getX(),ms.t3.getY());
-				if(x < 925) {
-					ms.s = 0;
-				}else{
-					ms.s = (Gdx.input.getX() - 910) / ms.t4.getWidth();
-			}
-			//game.sound.setVolume(game.soundid, s);
+		boolean change = volSlide.getY()<=fromBottomy & fromBottomy<=volSlide.getY() + volSlide.getHeight();
+		if(Gdx.input.isTouched() & change) {
+			if(x>= volSlideBackgr.getX() & x<=volSlideBackgr.getX() + volSlideBackgr.getWidth()) {
+				volSlide.setPosition(Gdx.input.getX(),volSlide.getY());
+				s = (volSlide.getX() - volSlideBackgr.getX()) / volSlideBackgr.getWidth();
+				if (s < 0.01){
+					s = 0;
+				}
+				//game.sound.setVolume(game.soundid, s);
+				game.gameVolumeScale = s;
 			}
 		}
 	}
-	
+	private void calculateBoxMaths(){
+		this.gameResolutionX = ms.gameResolutionX;
+		this.gameResolutionY = ms.gameResolutionY;
+		this.buttonwidth =  gameResolutionX / 10.0f;
+		this.buttonheight =  gameResolutionY / 20.0f;
+
+		this.audioBackgroundWidth = gameResolutionX / 6.0f;
+		this.audioBackgroundHeight = gameResolutionY / 6.0f;
+
+		this.audioBackgroundx = gameResolutionX/40.0f + buttonwidth + 2*(gameResolutionX/40.0f - gameResolutionX/50.0f);
+		this.audioBackgroundy = 7 * gameResolutionY / 10.0f;
+
+		this.optionsBackground = new Rectangle();
+		optionsBackground.setPosition(gameResolutionX/50.0f, 35*gameResolutionY/40.0f);
+		optionsBackground.width = 3*(buttonwidth + 2*(gameResolutionX / 40.0f - gameResolutionX/50.0f));
+		optionsBackground.height = 4*gameResolutionY/40.0f;
+
+		this.audioBackground = new Rectangle();
+		audioBackground.setPosition(audioBackgroundx,audioBackgroundy);
+		audioBackground.width = audioBackgroundWidth;
+		audioBackground.height = audioBackgroundHeight;
+
+		this.volSlide = new Rectangle();
+		volSlide.width = audioBackgroundHeight / 4.0f;
+		volSlide.height = audioBackgroundHeight / 4.0f;
+
+		this.volSlideBackgr = new Rectangle();
+		volSlideBackgr.width = 2 * audioBackgroundWidth / 3.0f;
+		volSlideBackgr.height = audioBackgroundHeight / 6.0f;
+		volSlideBackgr.setPosition(audioBackgroundx + audioBackgroundWidth/6,
+				audioBackgroundy + audioBackgroundHeight/6);
+
+		this.musSlide = new Rectangle();
+		musSlide.width = audioBackgroundHeight / 4.0f;
+		musSlide.height = audioBackgroundHeight / 4.0f;
+
+		this.musSlideBackgr = new Rectangle();
+		musSlideBackgr.width = 2 * audioBackgroundWidth / 3.0f;
+		musSlideBackgr.height = audioBackgroundHeight / 6.0f;
+		musSlideBackgr.setPosition(audioBackgroundx + audioBackgroundWidth/6,
+				audioBackgroundy + 4*audioBackgroundHeight/6);
+
+		this.xSliderMin = audioBackgroundx + audioBackgroundWidth / 6;
+		this.xSliderMax = xSliderMin + volSlideBackgr.width;
+		this.sliderWidth = volSlideBackgr.width;
+	}
+
+	private void constructCollisionData(TiledMap mp){
+		TiledMapTileLayer botlayer = (TiledMapTileLayer)mp.getLayers().get(0);
+		int mapwidth = botlayer.getWidth();
+		int mapheight = botlayer.getHeight();
+		CLTiles = new CollisionTile[mapwidth][mapheight];
+		TiledMapTileLayer toplayer = (TiledMapTileLayer)mp.getLayers().get(1);
+		int topwidth = toplayer.getWidth();
+		int topheight = toplayer.getHeight();
+		for(int y = 0; y < topheight; y++){
+			for (int x = 0; x < topwidth; x++){
+				TiledMapTileLayer.Cell tl2 = toplayer.getCell(x,y);
+				if (tl2 != null){
+					CLTiles[x][y] = new CollisionTile(x * 64, y * 64, 64, 64);
+				}
+			}
+		}
+		for(int y = 0; y < mapheight; y++){
+			for (int x = 0; x < mapwidth; x++){
+				TiledMapTileLayer.Cell tl = botlayer.getCell(x,y);
+				if (tl != null) {
+					TiledMapTile tlt = tl.getTile();
+					MapProperties mpr = tlt.getProperties();
+					if(mpr.get("name") == null){
+						CLTiles[x][y] = new CollisionTile(x * 64, y * 64, 64, 64);
+					}
+					else{
+						if (y != 0) {
+							if (CLTiles[x][y - 1] != null) {
+								CLTiles[x][y - 1] = null;
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	public void checkInteraction(Cook ck, ShapeRenderer sr){
+		float centralcookx = ck.getX() + ck.getWidth()/2;
+		float centralcooky = ck.getY();
+		int cellx = (int)Math.floor(centralcookx/64);
+		int celly = (int)Math.floor(centralcooky/64);
+		int checkCellX = cellx;
+		int checkCellY = celly;
+		switch (ck.getDirection()){
+			case 'u':
+				checkCellY += 2;
+				break;
+			case 'd':
+				break;
+			case 'l':
+				checkCellX -= 1;
+				checkCellY += 1;
+				break;
+			case 'r':
+				checkCellX += 1;
+				checkCellY += 1;
+				break;
+		}
+		sr.begin(ShapeRenderer.ShapeType.Line);
+		sr.setColor(new Color(1,0,1,1));
+		sr.rect(checkCellX*64, checkCellY*64, 64,64);
+		sr.end();
+	}
 	@Override
 	public void resize(int width, int height) {
 		// TODO Auto-generated method stub
-		viewport.update(width, height);
+		worldViewport.update(width, height);
+		uiViewport.update(width,height);
 	}
 
 	@Override
@@ -288,11 +466,5 @@ public class GameScreen implements Screen{
 	@Override
 	public void dispose() {
 		// TODO Auto-generated method stub
-		
-	}
-
-	public void create() {
-		// TODO Auto-generated method stub
-		
 	}
 }

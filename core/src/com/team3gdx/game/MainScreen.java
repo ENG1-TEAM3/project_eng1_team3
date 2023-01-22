@@ -1,16 +1,13 @@
 package com.team3gdx.game;
-
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.ScreenUtils;
@@ -18,23 +15,31 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 public class MainScreen implements Screen{
-	final Eng1 game;
+	final MainGameClass game;
 	float v = 0;
 	float s = 0;
-	float audiox;
-	float audioy;
-	float soundx;
-	float soundy;
+
+	int gameResolutionX;
+	int gameResolutionY;
+
+	float buttonwidth;
+	float buttonheight;
+
+	float xSliderMin;
+	float xSliderMax;
+
+	float sliderWidth;
+
 	
-	ImageButton sb;
-	ImageButton lb;
-	ImageButton ad;
-	ImageButton eg;
+	Button sb;
+	Button lb;
+	Button ad;
+	Button eg;
 	
-	Rectangle t1;
-	Rectangle t2;
-	Rectangle t3;
-	Rectangle t4;
+	Rectangle volSlide;
+	Rectangle volSlideBackgr;
+	Rectangle musSlide;
+	Rectangle musSlideBackgr;
 	
 	OrthographicCamera camera;
 	Viewport viewport;
@@ -54,101 +59,110 @@ public class MainScreen implements Screen{
 	}
 	STATE state;
 	
-	public MainScreen(final Eng1 game, float mx, float my,float sx,float sy) {
+	public MainScreen(final MainGameClass game) {
 		this.game = game;
-		audiox = mx;
-		audioy = my;
-		soundx = sx;
-		soundy = sy;
-		
-		t1 = new Rectangle();
-		t1.width = 32;
-		t1.height = 32;
-		
-		t2 = new Rectangle();
-		t2.width = 120;
-		t2.height = 20;
-		
-		t3 = new Rectangle();
-		t3.width = 32;
-		t3.height = 32;
-		
-		t4 = new Rectangle();
-		t4.width = 120;
-		t4.height = 20;
-		
-		t1.setPosition(audiox,audioy);
-		t2.setPosition(910,265);
-		t3.setPosition(soundx,soundy);
-		t4.setPosition(910,165);
-		
-		
+		this.gameResolutionX = Gdx.graphics.getWidth();
+		this.gameResolutionY = Gdx.graphics.getHeight();
+		this.buttonwidth = (float) gameResolutionX / 3;
+		this.buttonheight = (float) gameResolutionY / 6;
+
+		this.volSlide = new Rectangle();
+		volSlide.width = 3 * buttonheight / 12;
+		volSlide.height = 3 * buttonheight / 12;
+
+		this.volSlideBackgr = new Rectangle();
+		volSlideBackgr.width = 2 * buttonwidth / 6;
+		volSlideBackgr.height = buttonheight / 6;
+
+		this.musSlide = new Rectangle();
+		musSlide.width = 3 * buttonheight / 12;
+		musSlide.height = 3 * buttonheight / 12;
+
+		this.musSlideBackgr = new Rectangle();
+		musSlideBackgr.width = 2 * buttonwidth / 6;
+		musSlideBackgr.height = buttonheight / 6;
+
+		this.xSliderMin = gameResolutionX / 2.0f + buttonwidth / 12;
+		this.xSliderMax = xSliderMin + volSlideBackgr.width;
+		this.sliderWidth = volSlideBackgr.width;
+	}
+
+	@Override
+	public void show() {
+		float currentMusicVolumeSliderX = (game.musicVolumeScale * sliderWidth) + xSliderMin;
+		float currentGameVolumeSliderX = (game.gameVolumeScale * sliderWidth) + xSliderMin;
+		volSlide.setPosition(currentGameVolumeSliderX,
+				2*gameResolutionY/5.0f - buttonheight/ 2 + buttonheight / 6 + volSlideBackgr.height / 2 - volSlide.height/2);
+		volSlideBackgr.setPosition((gameResolutionX / 2.0f) + buttonwidth / 12,
+				2*gameResolutionY/5.0f - buttonheight/ 2 + buttonheight / 6);
+		musSlide.setPosition(currentMusicVolumeSliderX,
+				2*gameResolutionY/5.0f - buttonheight/ 2 + 4 * buttonheight / 6 + musSlideBackgr.height / 2 - musSlide.height/2);
+		musSlideBackgr.setPosition((gameResolutionX / 2.0f) + buttonwidth / 12,
+				2*gameResolutionY/5.0f - buttonheight/ 2 + 4 * buttonheight / 6);
+
 		state = STATE.main;
 		camera = new OrthographicCamera();
-		camera.setToOrtho(false,1920,1080);
-		viewport = new FitViewport(1920,1080,camera);
-		
-		vButton = new Texture(Gdx.files.internal("vButton.jpg"));
-		vControl = new Texture(Gdx.files.internal("vControl.jpg"));
-		startButton = new Texture(Gdx.files.internal("startButton.jpg"));
-		background = new Texture(Gdx.files.internal("dragonflight.jpg"));
-		leaderBoard = new Texture(Gdx.files.internal("leaderBoard.jpg"));
-		audio = new Texture(Gdx.files.internal("Audio.jpg"));
-		audioEdit = new Texture(Gdx.files.internal("background.jpg"));
-		exitGame = new Texture(Gdx.files.internal("Exit.jpg"));
-		
-		sb = new ImageButton(new TextureRegionDrawable(startButton),
-					new TextureRegionDrawable(startButton));
-		
-		lb = new ImageButton(new TextureRegionDrawable(leaderBoard),
-				new TextureRegionDrawable(leaderBoard));
-		
-		ad = new ImageButton(new TextureRegionDrawable(audio),
-				new TextureRegionDrawable(audio));
-		
-		eg = new ImageButton(new TextureRegionDrawable(exitGame),
-				new TextureRegionDrawable(exitGame));
-		
-		
-		sb.setPosition(823, 600);
-		lb.setPosition(823, 480);
-		ad.setPosition(823, 360);
-		eg.setPosition(823, 240);
-		
+		camera.setToOrtho(false,gameResolutionX,gameResolutionY);
+		viewport = new FitViewport(gameResolutionX,gameResolutionY,camera);
+
+		vButton = new Texture(Gdx.files.internal("uielements/vButton.jpg"));
+		vControl = new Texture(Gdx.files.internal("uielements/vControl.jpg"));
+		startButton = new Texture(Gdx.files.internal("uielements/startButton.jpg"));
+		background = new Texture(Gdx.files.internal("uielements/dragonflight.jpg"));
+		leaderBoard = new Texture(Gdx.files.internal("uielements/leaderBoard.jpg"));
+		audio = new Texture(Gdx.files.internal("uielements/Audio.jpg"));
+		audioEdit = new Texture(Gdx.files.internal("uielements/background.jpg"));
+		exitGame = new Texture(Gdx.files.internal("uielements/Exit.jpg"));
+
+		sb = new Button(new TextureRegionDrawable(startButton));
+		lb = new Button(new TextureRegionDrawable(leaderBoard));
+		ad = new Button(new TextureRegionDrawable(audio));
+		eg = new Button(new TextureRegionDrawable(exitGame));
+
+		sb.setPosition(gameResolutionX/10.0f, 4*gameResolutionY/5.0f - buttonheight/2);
+		lb.setPosition(gameResolutionX/10.0f, 3*gameResolutionY/5.0f - buttonheight/2);
+		ad.setPosition(gameResolutionX/10.0f,2*gameResolutionY/5.0f - buttonheight/2);
+		eg.setPosition(gameResolutionX/10.0f, gameResolutionY/5.0f - buttonheight/2);
+
+		lb.setSize(buttonwidth, buttonheight);
+		ad.setSize(buttonwidth, buttonheight);
+		eg.setSize(buttonwidth, buttonheight);
+		sb.setSize(buttonwidth, buttonheight);
+
 		ad.addListener(new ClickListener(){
 			public void touchUp(InputEvent event, float x, float y
 					,int pointer, int button) {
 				state = STATE.audio;
-				super.touchUp(event, x, y, pointer, button);				
-				}
-			});
+				super.touchUp(event, x, y, pointer, button);
+			}
+		});
 		sb.addListener(new ClickListener(){
 			public void touchUp(InputEvent event, float x, float y
 					,int pointer, int button) {
 				state = STATE.new_game;
-				super.touchUp(event, x, y, pointer, button);				
-				}
-			});
+				super.touchUp(event, x, y, pointer, button);
+			}
+		});
 		lb.addListener(new ClickListener(){
 			public void touchUp(InputEvent event, float x, float y
 					,int pointer, int button) {
 				state = STATE.leaderboard;
-				super.touchUp(event, x, y, pointer, button);				
-				}
-			});
+				super.touchUp(event, x, y, pointer, button);
+			}
+		});
 		eg.addListener(new ClickListener(){
 			public void touchUp(InputEvent event, float x, float y
 					,int pointer, int button) {
 				if(state == STATE.main) {
 					Gdx.app.exit();
 				}
-				super.touchUp(event, x, y, pointer, button);				
-				}
-			});
+				super.touchUp(event, x, y, pointer, button);
+			}
+		});
 
 		stage = new Stage(viewport,game.batch);
 		Gdx.input.setInputProcessor(stage);
-		
+
 		stage.addActor(sb);
 		stage.addActor(lb);
 		stage.addActor(ad);
@@ -156,20 +170,14 @@ public class MainScreen implements Screen{
 	}
 
 	@Override
-	public void show() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
 	public void render(float delta) {
 		// TODO Auto-generated method stub
 		ScreenUtils.clear(0,0,0,0);
 		game.batch.setProjectionMatrix(camera.combined);
-		game.MianScreenMusic.play();
+		game.mainScreenMusic.play();
 
 		game.batch.begin();
-		game.batch.draw(background,0,0);
+		game.batch.draw(background,0,0,gameResolutionX,gameResolutionY);
 		game.batch.end();
 		stage.act();
 		stage.draw();
@@ -182,67 +190,65 @@ public class MainScreen implements Screen{
 	
 	public void changeScreen(STATE state) {
 		if(state == STATE.new_game) {
-			game.MianScreenMusic.dispose();
-			game.setScreen(new GameScreen(game,this));
+			game.mainScreenMusic.dispose();
+			game.setScreen(game.getGameScreen());
 		}
 		if(state == STATE.leaderboard) {
-			game.MianScreenMusic.dispose();
-			game.setScreen(new leaderBoard(game,this));
+			game.mainScreenMusic.dispose();
+			game.setScreen(game.getLeaderBoardScreen());
 		}
 		if(state == STATE.audio) {
-			mcUpdate();
-			sdUpdate();
+			musicVolumeUpdate();
+			gameVolumeUpdate();
 			
 			game.batch.begin();
-			game.batch.draw(audioEdit,760,140,400,200);
+			game.batch.draw(audioEdit,(float) gameResolutionX / 2,
+					(float)2*gameResolutionY/5 - buttonheight / 2,
+					buttonwidth/2,buttonheight);
 				
-			game.batch.draw(vControl,t2.getX(),t2.getY(),t2.width,t2.height);
-			game.batch.draw(vButton,t1.getX()-16,t1.getY(),t1.width,t1.height);
+			game.batch.draw(vControl,volSlideBackgr.getX(),volSlideBackgr.getY(),volSlideBackgr.width,volSlideBackgr.height);
+			game.batch.draw(vButton,volSlide.getX()-volSlide.width/2,volSlide.getY(),volSlide.width,volSlide.height);
 				
-			game.batch.draw(vControl,t4.getX(),t4.getY(),t4.width,t4.height);
-			game.batch.draw(vButton,t3.getX()-16,t3.getY(),t3.width,t3.height);
+			game.batch.draw(vControl,musSlideBackgr.getX(),musSlideBackgr.getY(),musSlideBackgr.width,musSlideBackgr.height);
+			game.batch.draw(vButton,musSlide.getX()-musSlide.width/2,musSlide.getY(),musSlide.width,musSlide.height);
 				
 			game.batch.end();
 		}
 	}
 	
-	public void mcUpdate() {
-		float y = Gdx.input.getY();
-		y = 1080 - y;
+	public void musicVolumeUpdate() {
+		float fromTopy = Gdx.input.getY();
+		float fromBottomy = gameResolutionY - fromTopy;
 		float x = Gdx.input.getX();
-		boolean change = 345<y & y<360;
-		
-		if(Gdx.input.isTouched() & change == true) {
-			if(x>= 910 & x<=1030) {
-				t1.setPosition(Gdx.input.getX(),t1.getY());
-				if(x < 925) {
+		boolean change = musSlide.getY() <= fromBottomy & fromBottomy<=musSlide.getY() + musSlide.getHeight();
+		if(Gdx.input.isTouched() & change) {
+			if(x>= musSlideBackgr.getX() & x<=musSlideBackgr.getX() + musSlideBackgr.getWidth()) {
+				musSlide.setPosition(Gdx.input.getX(), musSlide.getY());
+				v = (musSlide.getX() - musSlideBackgr.getX()) / musSlideBackgr.getWidth();
+				if (v < 0.01){
 					v = 0;
-				}else {
-					v = (Gdx.input.getX() - 910) / t2.getWidth();
 				}
-					
+				game.mainScreenMusic.setVolume(v);
+				game.gameMusic.setVolume(v);
+				game.musicVolumeScale = v;
 			}
-
-			game.MianScreenMusic.setVolume(v);
-			game.GameMusic.setVolume(v);
 		}
 	}
 	
-	public void sdUpdate() {
-		float y = Gdx.input.getY();
-		y = 1080 - y;
+	public void gameVolumeUpdate() {
+		float fromTopy = Gdx.input.getY();
+		float fromBottomy = gameResolutionY - fromTopy;
 		float x = Gdx.input.getX();
-		boolean change = 250<y & y<275;
-		
-		if(Gdx.input.isTouched() & change == true) {
-			if(x>= 910 & x<=1030) {
-				t3.setPosition(Gdx.input.getX(),t3.getY());
-				if(x < 925) {
+		boolean change = volSlide.getY()<=fromBottomy & fromBottomy<=volSlide.getY() + volSlide.getHeight();
+		if(Gdx.input.isTouched() & change) {
+			if(x>= volSlideBackgr.getX() & x<=volSlideBackgr.getX() + volSlideBackgr.getWidth()) {
+				volSlide.setPosition(Gdx.input.getX(),volSlide.getY());
+				s = (volSlide.getX() - volSlideBackgr.getX()) / volSlideBackgr.getWidth();
+				if (s < 0.01){
 					s = 0;
-				}else{
-					s = (Gdx.input.getX() - 910) / t4.getWidth();
-			}
-			//game.sound.setVolume(game.soundid, s);
+				}
+				//game.sound.setVolume(game.soundid, s);
+				game.gameVolumeScale = s;
 			}
 		}
 	}

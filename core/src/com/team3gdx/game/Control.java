@@ -77,9 +77,6 @@ public class Control extends InputAdapter implements InputProcessor {
 		case Keys.DEL:
 			del = false;
 			break;
-		case Keys.ESCAPE:
-			Gdx.app.exit();
-			break;
 		}
 		return false;
 	}
