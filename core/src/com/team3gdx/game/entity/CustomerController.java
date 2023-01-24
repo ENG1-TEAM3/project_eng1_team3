@@ -1,13 +1,18 @@
-package com.team3gdx.game;
+package com.team3gdx.game.entity;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
-
-import java.util.*;
+import com.team3gdx.game.util.Control;
 
 public class CustomerController {
     int lockout;
@@ -121,6 +126,16 @@ public class CustomerController {
     //    }
     //}
     public void drawCustTop(Batch b1){
+    	for (Customer c: this.customers){
+			if (c != null) {
+				c.renderCustomersBot(b1);
+			}
+		}
+		for (Customer c : this.leavingcustomers) {
+			if (c != null) {
+				c.renderCustomersBot(b1);
+			}
+		}
         for (Customer c: this.customers){
             if (c != null) {
                 c.renderCustomersTop(b1);

@@ -1,4 +1,4 @@
-package com.team3gdx.game;
+package com.team3gdx.game.util;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
@@ -12,6 +12,10 @@ public class Control extends InputAdapter implements InputProcessor {
 	public boolean left;
 	public boolean right;
 	public boolean del;
+
+	public boolean interact;
+	public boolean drop;
+	public boolean flip;
 
 	@Override
 	public boolean keyDown(int keyCode) {
@@ -76,6 +80,17 @@ public class Control extends InputAdapter implements InputProcessor {
 			break;
 		case Keys.DEL:
 			del = false;
+		case Keys.Q:
+			interact = true;
+			break;
+		case Keys.E:
+			drop = true;
+			break;
+		case Keys.F:
+			flip = true;
+			break;
+		case Keys.ESCAPE:
+			Gdx.app.exit();
 			break;
 		}
 		return false;
