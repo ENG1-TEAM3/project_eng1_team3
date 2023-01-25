@@ -12,9 +12,12 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
+import com.team3gdx.game.MainGameClass;
 import com.team3gdx.game.util.Control;
+import jdk.tools.jmod.Main;
 
 public class CustomerController {
+    final MainGameClass game;
     int lockout;
     int amountActiveCustomers;
     ArrayList<ArrayList<Integer>> customerCells;
@@ -24,8 +27,9 @@ public class CustomerController {
     int top;
     int bottom;
     int xCoordinate;
-    public CustomerController(TiledMap map){
+    public CustomerController(TiledMap map, MainGameClass gm){
         this.gameMap = map;
+        this.game= gm;
         computeCustomerZone(gameMap);
         amountActiveCustomers = 0;
         lockout = 0;
