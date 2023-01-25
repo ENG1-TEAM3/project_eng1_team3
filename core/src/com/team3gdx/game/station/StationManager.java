@@ -33,8 +33,8 @@ public class StationManager {
 					}
 
 					if (currentIngredient.cooking && station instanceof CookingStation) {
-						currentIngredient.cook(.001f, MainGameClass.batch);
 						((CookingStation) station).drawParticles(MainGameClass.batch, i);
+						currentIngredient.cook(.0005f, MainGameClass.batch);
 					} else {
 						currentIngredient.draw(MainGameClass.batch);
 					}
@@ -108,8 +108,8 @@ public class StationManager {
 			checkCookingStation(pos);
 
 			break;
-		case 34:
-			break;
+//		case 34:
+//			break;
 		default:
 			placeIngredientStation(pos);
 			break;

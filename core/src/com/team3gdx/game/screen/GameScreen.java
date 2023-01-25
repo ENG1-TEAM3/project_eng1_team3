@@ -137,7 +137,7 @@ public class GameScreen implements Screen {
 		// ======================================SET=INITAL=STATE========================================================
 		state1 = STATE.Continue;
 		// ======================================START=VIEWPORTS=========================================================
-		worldViewport = new FitViewport(gameResolutionX, gameResolutionY, worldCamera);
+		worldViewport = new FitViewport(gameResolutionX / 2, gameResolutionY / 2, worldCamera);
 		uiViewport = new FitViewport(gameResolutionX, gameResolutionY, uiCamera);
 		// ======================================START=STAGES============================================================
 		stage = new Stage(uiViewport);
@@ -217,6 +217,8 @@ public class GameScreen implements Screen {
 		// =====================================RENDER=TOP=MAP=LAYER=====================================================
 		tiledMapRenderer.render(new int[] { 1 });
 		// =====================================DRAW=COOK=TOP=HALF=======================================================
+		stationManager.handleStations();
+		drawHeldItems();
 		game.batch.begin();
 		cook.draw_top(game.batch);
 		cc.drawCustTop(game.batch); // todo fix customer z ordering
@@ -256,14 +258,12 @@ public class GameScreen implements Screen {
 		control.drop = false;
 		control.flip = false;
 
-		drawHeldItems();
-		stationManager.handleStations();
 	}
 
 	private void drawHeldItems() {
 		int itemIndex = 0;
 		for (Entity ingredient : cook.heldItems) {
-			ingredient.pos = new Vector2(cook.pos.x + 16, cook.pos.y + 112 + itemIndex * 16);
+			ingredient.pos = new Vector2(cook.pos.x + 16, cook.pos.y + 112 + itemIndex * 8);
 			((Ingredient) ingredient).draw(MainGameClass.batch);
 			itemIndex++;
 		}

@@ -17,14 +17,17 @@ public class Recipe extends Ingredient {
 	private boolean shouldBeOrdered;
 	private String initialSteps, finalSteps;
 
+	public float cost;
+	
 	public Recipe(String initialSteps, Map<Ingredient, String> ingredientInstructions, String finalSteps, String name,
-			boolean shouldBeOrdered, Vector2 pos, float width, float height) {
+			boolean shouldBeOrdered, Vector2 pos, float width, float height, float cost) {
 		super(pos, width, height, name, 0, 0);
 		this.initialSteps = initialSteps;
 		this.ingredientInstructions = ingredientInstructions;
 		this.finalSteps = finalSteps;
 		this.name = name;
 		this.shouldBeOrdered = shouldBeOrdered;
+		this.cost = cost;
 	}
 
 	public void displayRecipe(SpriteBatch batch) {

@@ -25,7 +25,6 @@ public class Station {
 	}
 
 	public boolean place(Ingredient ingredient) {
-		System.out.println(isAllowed(ingredient));
 		if ((slots.size() < numberOfSlots && isAllowed(ingredient)) || infinite) {
 			ingredient.pos = pos;
 			slots.push(ingredient);

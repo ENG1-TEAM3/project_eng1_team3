@@ -10,6 +10,11 @@ public class Menu {
 		BURGER_STEPS.put(Ingredients.bun, "Toast");
 		BURGER_STEPS.put(Ingredients.cookedPatty, "Fry");
 	}
+	private static final Map<Ingredient, String> BURGER_BURNED_STEPS = new HashMap<Ingredient, String>();
+	static {
+		BURGER_BURNED_STEPS.put(Ingredients.bun, "Toast");
+		BURGER_BURNED_STEPS.put(Ingredients.burnedPatty, "Fry");
+	}
 	private static final Map<Ingredient, String> SALAD_STEPS = new HashMap<Ingredient, String>();
 	static {
 //		saladSteps.put(Ingredients.onion, "Cut");
@@ -21,8 +26,10 @@ public class Menu {
 
 	public static final Map<String, Recipe> RECIPES = new HashMap<String, Recipe>();
 	static {
-		RECIPES.put("Burger", new Recipe("Form patty", BURGER_STEPS, "serve together", "burger", true, null, 32, 32));
-		RECIPES.put("Salad", new Recipe("", SALAD_STEPS, "serve together", "nil", false, null, 32, 32));
+		RECIPES.put("Burger", new Recipe("Form patty", BURGER_STEPS, "serve together", "burger", true, null, 32, 32, 0));
+		RECIPES.put("Burned burger",
+				new Recipe("Form patty", BURGER_BURNED_STEPS, "serve together", "burger_burned", true, null, 32, 32, 0));
+		RECIPES.put("Salad", new Recipe("", SALAD_STEPS, "serve together", "nil", false, null, 32, 32, 0));
 	}
 
 	public static final Map<Ingredient, Ingredient> INGREDIENT_PREP = new HashMap<Ingredient, Ingredient>();
