@@ -8,6 +8,8 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 import com.team3gdx.game.entity.Entity;
+import com.team3gdx.game.screen.GameScreen;
+import com.team3gdx.game.screen.GameScreen.STATE;
 
 public class Ingredient extends Entity {
 
@@ -74,7 +76,8 @@ public class Ingredient extends Entity {
 			batch.end();
 		}
 		if (cookedTime / idealCookedTime * width <= width) {
-			cookedTime += dT;
+			if (GameScreen.state1 == STATE.Continue)
+				cookedTime += dT;
 			drawStatusBar(cookedTime / idealCookedTime, idealCookedTime);
 		} else {
 			status = Status.BURNED;

@@ -70,11 +70,11 @@ public class GameScreen implements Screen {
 	OrthographicCamera uiCamera;
 	OrthographicCamera worldCamera;
 
-	enum STATE {
+	public enum STATE {
 		Pause, Continue, main, audio;
 	}
 
-	STATE state1;
+	public static STATE state1;
 
 	float v;
 	float s;

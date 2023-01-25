@@ -5,6 +5,8 @@ import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.team3gdx.game.food.Ingredient;
+import com.team3gdx.game.screen.GameScreen;
+import com.team3gdx.game.screen.GameScreen.STATE;
 
 public class CookingStation extends Station {
 
@@ -31,7 +33,8 @@ public class CookingStation extends Station {
 
 	public void drawParticles(SpriteBatch batch, int slotIndex) {
 		batch.begin();
-		pES[slotIndex].update(Gdx.graphics.getDeltaTime());
+		if (GameScreen.state1 == STATE.Continue)
+			pES[slotIndex].update(Gdx.graphics.getDeltaTime());
 		pES[slotIndex].draw(batch);
 		if (pES[slotIndex].isComplete())
 			pES[slotIndex].reset();
