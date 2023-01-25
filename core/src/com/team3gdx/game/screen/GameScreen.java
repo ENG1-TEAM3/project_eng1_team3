@@ -110,7 +110,7 @@ public class GameScreen implements Screen {
 		tiledMapRenderer = new OrthogonalTiledMapRenderer(map1);
 		cook = new Cook(new Vector2(64 * 5, 64 * 3));
 		constructCollisionData(map1);
-		cc = new CustomerController(map1);
+		cc = new CustomerController(map1, game);
 		cc.spawnCustomer();
 	}
 
@@ -137,7 +137,7 @@ public class GameScreen implements Screen {
 		// ======================================SET=INITAL=STATE========================================================
 		state1 = STATE.Continue;
 		// ======================================START=VIEWPORTS=========================================================
-		worldViewport = new FitViewport(gameResolutionX / 2, gameResolutionY / 2, worldCamera);
+		worldViewport = new FitViewport(gameResolutionX, gameResolutionY, worldCamera);
 		uiViewport = new FitViewport(gameResolutionX, gameResolutionY, uiCamera);
 		// ======================================START=STAGES============================================================
 		stage = new Stage(uiViewport);

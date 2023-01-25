@@ -14,16 +14,16 @@ import com.team3gdx.game.util.AudioController;
 
 public class MainGameClass extends Game {
 	public static SpriteBatch batch;
-	public static BitmapFont font;
+	public BitmapFont font;
 	public Music mainScreenMusic;
-	public static Music gameMusic;
-	public static float musicVolumeScale;
-	public static float gameVolumeScale;
+	public Music gameMusic;
+	public float musicVolumeScale;
+	public float gameVolumeScale;
 	private MainScreen mainScreen1;
 	private GameScreen gameScreen1;
 	private LeaderBoard leaderBoardScreen1;
 	public AudioController sounds;
-	public static ShapeRenderer shapeRenderer;
+	public ShapeRenderer shapeRenderer;
 
 	@Override
 	public void create() {
