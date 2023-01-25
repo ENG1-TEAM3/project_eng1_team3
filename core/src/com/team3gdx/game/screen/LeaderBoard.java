@@ -75,10 +75,10 @@ public class LeaderBoard implements Screen, TextInputListener {
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, ms.gameResolutionX, ms.gameResolutionY);
 		viewport = new FitViewport(ms.gameResolutionX, ms.gameResolutionY, camera);
-		background = new Texture(Gdx.files.internal("uielements/dragonflight.jpg"));
-		leaderboard = new Texture(Gdx.files.internal("uielements/leaderboard .jpg"));
+		background = new Texture(Gdx.files.internal("uielements/MainScreenBackground.jpg"));
+		leaderboard = new Texture(Gdx.files.internal("uielements/LeaderBoard.png"));
 		line = new Texture(Gdx.files.internal("uielements/line.jpg"));
-
+		game.font.getData().setScale((float) 2.5);
 	}
 
 	public void render(float delta) {
@@ -97,9 +97,9 @@ public class LeaderBoard implements Screen, TextInputListener {
 		game.batch.draw(background, 0, 0, ms.gameResolutionX, ms.gameResolutionY);
 		game.batch.draw(leaderboard, lbox, dbox, boxwid, boxhi);
 		game.font.draw(game.batch, "Press ESC to return to menu", ms.gameResolutionX / 20.0f,
-				19 * ms.gameResolutionY / 20.0f);
-		game.font.draw(game.batch, "Name", 3 * ms.gameResolutionX / 20.0f, 17 * ms.gameResolutionY / 20.0f);
-		game.font.draw(game.batch, "Score", 11 * ms.gameResolutionX / 20.0f, 17 * ms.gameResolutionY / 20.0f);
+				19 * ms.gameResolutionY / 19.0f);
+		game.font.draw(game.batch, "Name", 4 * ms.gameResolutionX / 20.0f, 17 * ms.gameResolutionY / 20.0f);
+		game.font.draw(game.batch, "Score", 12 * ms.gameResolutionX / 20.0f, 17 * ms.gameResolutionY / 20.0f);
 		game.batch.draw(line, lbox, dbox + eachentryhi, boxwid, ms.gameResolutionY / 100.0f);
 		game.batch.draw(line, lbox, dbox + 2 * eachentryhi, boxwid, ms.gameResolutionY / 100.0f);
 		game.batch.draw(line, lbox, dbox + 3 * eachentryhi, boxwid, ms.gameResolutionY / 100.0f);
