@@ -110,7 +110,7 @@ public class MainScreen implements Screen{
 		vButton = new Texture(Gdx.files.internal("uielements/vButton.jpg"));
 		vControl = new Texture(Gdx.files.internal("uielements/vControl.jpg"));
 		startButton = new Texture(Gdx.files.internal("uielements/startButton.jpg"));
-		background = new Texture(Gdx.files.internal("uielements/dragonflight.jpg"));
+		background = new Texture(Gdx.files.internal("uielements/MainScreenBackground.jpg"));
 		leaderBoard = new Texture(Gdx.files.internal("uielements/leaderBoard.jpg"));
 		audio = new Texture(Gdx.files.internal("uielements/Audio.jpg"));
 		audioEdit = new Texture(Gdx.files.internal("uielements/background.jpg"));
