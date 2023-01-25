@@ -30,8 +30,8 @@ public class MainGameClass extends Game {
 		// ====================================MUSIC=INITIALISATION======================================================
 		this.musicVolumeScale = 0.0f;
 		this.gameVolumeScale = 0.0f;
-		mainScreenMusic = Gdx.audio.newMusic(Gdx.files.internal("uielements/music.mp3"));
-		gameMusic = Gdx.audio.newMusic(Gdx.files.internal("uielements/GameMusic.mp3"));
+		mainScreenMusic = Gdx.audio.newMusic(Gdx.files.internal("uielements/MainScreenMusic.ogg"));
+		gameMusic = Gdx.audio.newMusic(Gdx.files.internal("uielements/GameMusic.ogg"));
 		mainScreenMusic.setLooping(false);
 		mainScreenMusic.setVolume(musicVolumeScale);
 		gameMusic.setLooping(false);
