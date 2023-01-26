@@ -63,6 +63,9 @@ public class MainGameClass extends Game {
 		return leaderBoardScreen1;
 	}
 
+	public void resetGameScreen(){
+		this.gameScreen1 = new GameScreen(this, mainScreen1);
+	}
 	@Override
 	public void render() {
 		super.render();

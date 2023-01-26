@@ -71,7 +71,7 @@ public class GameScreen implements Screen {
 	OrthographicCamera worldCamera;
 
 	public enum STATE {
-		Pause, Continue, main, audio;
+		Pause, Continue, main, audio
 	}
 
 	public static STATE state1;
@@ -92,6 +92,8 @@ public class GameScreen implements Screen {
 	float audioBackgroundy;
 
 	long startTime;
+	long timeOnStartup;
+	long tempTime;
 	public static Control control;
 	TiledMapRenderer tiledMapRenderer;
 	public TiledMap map1;
@@ -119,6 +121,7 @@ public class GameScreen implements Screen {
 	public void show() {
 		// =======================================START=FRAME=TIMER======================================================
 		startTime = System.currentTimeMillis();
+		timeOnStartup = startTime;
 		// =======================================SET=POSITIONS=OF=SLIDERS===============================================
 		float currentMusicVolumeSliderX = (game.musicVolumeScale * sliderWidth) + xSliderMin;
 		float currentGameVolumeSliderX = (game.gameVolumeScale * sliderWidth) + xSliderMin;
@@ -206,53 +209,56 @@ public class GameScreen implements Screen {
 		Gdx.input.setInputProcessor(multi);
 		// =====================================SET=PROJECTION=MATRICES=FOR=GAME=RENDERING===============================
 		game.shapeRenderer.setProjectionMatrix(worldCamera.combined);
-		game.batch.setProjectionMatrix(worldCamera.combined);
+		MainGameClass.batch.setProjectionMatrix(worldCamera.combined);
 		// =====================================RENDER=BOTTOM=MAP=LAYER==================================================
 		tiledMapRenderer.setView(worldCamera);
 		tiledMapRenderer.render(new int[] { 0 });
 		// =====================================DRAW=COOK=LEGS===========================================================
-		game.batch.begin();
-		cook.draw_bot(game.batch);
-		game.batch.end();
+		MainGameClass.batch.begin();
+		cook.draw_bot(MainGameClass.batch);
+		MainGameClass.batch.end();
 		// =====================================RENDER=TOP=MAP=LAYER=====================================================
 		tiledMapRenderer.render(new int[] { 1 });
 		// =====================================DRAW=COOK=TOP=HALF=======================================================
 		stationManager.handleStations();
 		drawHeldItems();
-		game.batch.begin();
-		cook.draw_top(game.batch);
-		cc.drawCustTop(game.batch); // todo fix customer z ordering
-		game.batch.end();
+		MainGameClass.batch.begin();
+		cook.draw_top(MainGameClass.batch);
+		cc.drawCustTop(MainGameClass.batch); // todo fix customer z ordering
+		MainGameClass.batch.end();
+		// ==================================MOVE=COOK===================================================================
+		tempTime = System.currentTimeMillis();
+		cook.update(control, (tempTime - startTime), CLTiles);
+		startTime = tempTime;
+		checkInteraction(cook, game.shapeRenderer);
 		// =====================================SET=MATRIX=FOR=UI=ELEMENTS===============================================
 		Matrix4 uiMatrix = worldCamera.combined.cpy();
 		uiMatrix.setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		game.batch.setProjectionMatrix(uiMatrix);
+		MainGameClass.batch.setProjectionMatrix(uiMatrix);
 		// =====================================DRAW=UI=ELEMENTS=========================================================
-		game.batch.begin();
-		game.font.draw(game.batch, String.valueOf(cook.getDirection()), 0, 300);
-		game.batch.draw(new Texture("entities/cook.png"), 0, 0);
-		game.font.draw(game.batch, state1.toString(), gameResolutionX / 20.0f, gameResolutionY / 20.0f);
-		game.batch.end();
+		MainGameClass.batch.begin();
+		game.font.draw(MainGameClass.batch, String.valueOf(cook.getDirection()), 0, 300);
+		game.font.draw(MainGameClass.batch, Long.toString(startTime - timeOnStartup),0,500);
+		game.font.draw(MainGameClass.batch, "Time in ms:",  0, 550);
+		MainGameClass.batch.draw(new Texture("entities/cook.png"), 0, 0);
+		game.font.draw(MainGameClass.batch, state1.toString(), gameResolutionX / 20.0f, gameResolutionY / 20.0f);
+		MainGameClass.batch.end();
 		// =====================================SET=MATRIX=BACK=TO=GAME=MATRIX===========================================
-		game.batch.setProjectionMatrix(worldCamera.combined);
+		MainGameClass.batch.setProjectionMatrix(worldCamera.combined);
 		// ==================================MOVE=CAMERA=================================================================
 		worldCamera.position.x = cook.getX(); // todo change to lerp
 		worldCamera.position.y = cook.getY();
 		worldCamera.update();
 		uiCamera.update();
-		// ==================================MOVE=COOK===================================================================
-		cook.update(control, (System.currentTimeMillis() - startTime), CLTiles);
-		checkInteraction(cook, game.shapeRenderer);
-		startTime = System.currentTimeMillis();
 		// ==================================PLAY=MUSIC==================================================================
 		game.gameMusic.play();
 		// ==================================DRAW=INTERACTIVE=UI=ELEMENTS================================================
 		stage.act();
 		stage.draw();
 		// ==================================JUMP=TO=STATE=SPECIFIC=LOGIC================================================
-		game.batch.setProjectionMatrix(uiMatrix);
+		MainGameClass.batch.setProjectionMatrix(uiMatrix);
 		changeScreen(state1);
-		game.batch.setProjectionMatrix(worldCamera.combined);
+		MainGameClass.batch.setProjectionMatrix(worldCamera.combined);
 
 		control.interact = false;
 		control.drop = false;
@@ -272,15 +278,16 @@ public class GameScreen implements Screen {
 	public void changeScreen(STATE state1) {
 		if (state1 == STATE.main) {
 			game.gameMusic.dispose();
+			game.resetGameScreen();
 			game.setScreen(game.getMainScreen());
 
 		}
 		if (state1 == STATE.Pause) {
 			Gdx.input.setInputProcessor(stage2);
-			game.batch.begin();
-			game.batch.draw(ESC, optionsBackground.getX(), optionsBackground.getY(), optionsBackground.getWidth(),
+			MainGameClass.batch.begin();
+			MainGameClass.batch.draw(ESC, optionsBackground.getX(), optionsBackground.getY(), optionsBackground.getWidth(),
 					optionsBackground.getHeight());
-			game.batch.end();
+			MainGameClass.batch.end();
 			stage2.act();
 			stage2.draw();
 		}
@@ -290,24 +297,24 @@ public class GameScreen implements Screen {
 			checkState();
 
 			Gdx.input.setInputProcessor(stage2);
-			game.batch.begin();
-			game.batch.draw(ESC, optionsBackground.getX(), optionsBackground.getY(), optionsBackground.getWidth(),
+			MainGameClass.batch.begin();
+			MainGameClass.batch.draw(ESC, optionsBackground.getX(), optionsBackground.getY(), optionsBackground.getWidth(),
 					optionsBackground.getHeight());
-			game.batch.end();
+			MainGameClass.batch.end();
 			stage2.act();
 			stage2.draw();
-			game.batch.begin();
-			game.batch.draw(audioEdit, audioBackground.getX(), audioBackground.getY(), audioBackground.getWidth(),
+			MainGameClass.batch.begin();
+			MainGameClass.batch.draw(audioEdit, audioBackground.getX(), audioBackground.getY(), audioBackground.getWidth(),
 					audioBackground.getHeight());
-			game.batch.draw(vControl, volSlideBackgr.getX(), volSlideBackgr.getY(), volSlideBackgr.getWidth(),
+			MainGameClass.batch.draw(vControl, volSlideBackgr.getX(), volSlideBackgr.getY(), volSlideBackgr.getWidth(),
 					volSlideBackgr.getHeight());
-			game.batch.draw(vButton, volSlide.getX() - volSlide.getWidth() / 2, volSlide.getY(), volSlide.width,
+			MainGameClass.batch.draw(vButton, volSlide.getX() - volSlide.getWidth() / 2, volSlide.getY(), volSlide.width,
 					volSlide.height);
-			game.batch.draw(vControl, musSlideBackgr.getX(), musSlideBackgr.getY(), musSlideBackgr.getWidth(),
+			MainGameClass.batch.draw(vControl, musSlideBackgr.getX(), musSlideBackgr.getY(), musSlideBackgr.getWidth(),
 					musSlideBackgr.getHeight());
-			game.batch.draw(vButton, musSlide.getX() - musSlide.getWidth() / 2, musSlide.getY(), musSlide.width,
+			MainGameClass.batch.draw(vButton, musSlide.getX() - musSlide.getWidth() / 2, musSlide.getY(), musSlide.width,
 					musSlide.height);
-			game.batch.end();
+			MainGameClass.batch.end();
 		}
 		if (state1 == STATE.Continue) {
 			cc.updateCustomers(control);
