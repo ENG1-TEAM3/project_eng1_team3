@@ -51,29 +51,27 @@ public class Cook extends Entity {
 	public void update(Control control, float dt, CollisionTile[][] cl) {
 		dirX = 0;
 		dirY = 0;
-		if (control.up) {
-			if (this.checkCollision(pos.x, pos.y + (speed*dt), cl)) {
+		if (control.up && !control.down) {
+			if (this.checkCollision(pos.x, pos.y + (speed * dt), cl)) {
 				dirY = 1;
 			}
 			currentTextureRegion = cookpartsb;
 			direction = 'u';
-		}
-		if (control.down) {
-			if (this.checkCollision(pos.x, pos.y - (speed*dt), cl)){
+		} else if (control.down && !control.up) {
+			if (this.checkCollision(pos.x, pos.y - (speed * dt), cl)) {
 				dirY = -1;
 			}
 			currentTextureRegion = cookpartsf;
 			direction = 'd';
 		}
-		if (control.left) {
-			if (this.checkCollision(pos.x - (speed * dt), pos.y,cl)){
+		if (control.left && !control.right) {
+			if (this.checkCollision(pos.x - (speed * dt), pos.y, cl)) {
 				dirX = -1;
 			}
 			currentTextureRegion = cookpartsl;
 			direction = 'l';
-		}
-		if (control.right) {
-			if (this.checkCollision(pos.x + (speed * dt), pos.y,cl)) {
+		} else if (control.right && !control.left) {
+			if (this.checkCollision(pos.x + (speed * dt), pos.y, cl)) {
 				dirX = +1;
 			}
 			currentTextureRegion = cookpartsr;
@@ -159,16 +157,16 @@ public class Cook extends Entity {
 		return direction;
 	}
 
-	public Boolean checkCollision(float cookx, float cooky, CollisionTile[][] cltiles){
-		if (cooky -10 < 0){
+	public Boolean checkCollision(float cookx, float cooky, CollisionTile[][] cltiles) {
+		if (cooky - 10 < 0) {
 			return false;
 		}
 		int wid = cltiles.length;
 		int hi = cltiles[0].length;
-		for (int x = 0; x < wid; x++){
-			for (int y = 0; y < hi; y++){
+		for (int x = 0; x < wid; x++) {
+			for (int y = 0; y < hi; y++) {
 				if (cltiles[x][y] != null) {
-					if (Intersector.overlaps(cltiles[x][y].returnRect(), this.getCollideBoxAtPosition(cookx,cooky))) {
+					if (Intersector.overlaps(cltiles[x][y].returnRect(), this.getCollideBoxAtPosition(cookx, cooky))) {
 						return false;
 					}
 				}

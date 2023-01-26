@@ -5,6 +5,7 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -19,6 +20,7 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
@@ -112,7 +114,7 @@ public class GameScreen implements Screen {
 		tiledMapRenderer = new OrthogonalTiledMapRenderer(map1);
 		cook = new Cook(new Vector2(64 * 5, 64 * 3));
 		constructCollisionData(map1);
-		cc = new CustomerController(map1, game);
+		cc = new CustomerController(map1);
 		cc.spawnCustomer();
 	}
 
@@ -140,7 +142,7 @@ public class GameScreen implements Screen {
 		// ======================================SET=INITAL=STATE========================================================
 		state1 = STATE.Continue;
 		// ======================================START=VIEWPORTS=========================================================
-		worldViewport = new FitViewport(gameResolutionX, gameResolutionY, worldCamera);
+		worldViewport = new FitViewport(gameResolutionX / 2, gameResolutionY / 2, worldCamera);
 		uiViewport = new FitViewport(gameResolutionX, gameResolutionY, uiCamera);
 		// ======================================START=STAGES============================================================
 		stage = new Stage(uiViewport);
@@ -205,6 +207,8 @@ public class GameScreen implements Screen {
 	public void render(float delta) {
 		// =====================================CLEAR=SCREEN=============================================================
 		ScreenUtils.clear(0, 0, 0, 0);
+		Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		// =====================================SET=INPUT=PROCESSOR======================================================
 		Gdx.input.setInputProcessor(multi);
 		// =====================================SET=PROJECTION=MATRICES=FOR=GAME=RENDERING===============================
@@ -246,8 +250,7 @@ public class GameScreen implements Screen {
 		// =====================================SET=MATRIX=BACK=TO=GAME=MATRIX===========================================
 		MainGameClass.batch.setProjectionMatrix(worldCamera.combined);
 		// ==================================MOVE=CAMERA=================================================================
-		worldCamera.position.x = cook.getX(); // todo change to lerp
-		worldCamera.position.y = cook.getY();
+		worldCamera.position.lerp(new Vector3(cook.pos.x, cook.pos.y, 0), .1f);
 		worldCamera.update();
 		uiCamera.update();
 		// ==================================PLAY=MUSIC==================================================================

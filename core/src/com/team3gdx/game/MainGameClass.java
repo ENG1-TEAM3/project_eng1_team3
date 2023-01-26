@@ -14,24 +14,24 @@ import com.team3gdx.game.util.AudioController;
 
 public class MainGameClass extends Game {
 	public static SpriteBatch batch;
-	public BitmapFont font;
+	public static BitmapFont font;
 	public Music mainScreenMusic;
-	public Music gameMusic;
-	public float musicVolumeScale;
-	public float gameVolumeScale;
+	public static Music gameMusic;
+	public static float musicVolumeScale;
+	public static float gameVolumeScale;
 	private MainScreen mainScreen1;
 	private GameScreen gameScreen1;
 	private LeaderBoard leaderBoardScreen1;
 	public AudioController sounds;
-	public ShapeRenderer shapeRenderer;
+	public static ShapeRenderer shapeRenderer;
 
 	@Override
 	public void create() {
 		// ====================================MUSIC=INITIALISATION======================================================
 		this.musicVolumeScale = 0.0f;
 		this.gameVolumeScale = 0.0f;
-		mainScreenMusic = Gdx.audio.newMusic(Gdx.files.internal("uielements/music.mp3"));
-		gameMusic = Gdx.audio.newMusic(Gdx.files.internal("uielements/GameMusic.mp3"));
+		mainScreenMusic = Gdx.audio.newMusic(Gdx.files.internal("uielements/MainScreenMusic.ogg"));
+		gameMusic = Gdx.audio.newMusic(Gdx.files.internal("uielements/GameMusic.ogg"));
 		mainScreenMusic.setLooping(false);
 		mainScreenMusic.setVolume(musicVolumeScale);
 		gameMusic.setLooping(false);
