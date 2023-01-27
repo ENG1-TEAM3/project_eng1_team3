@@ -7,16 +7,11 @@ import com.badlogic.gdx.InputProcessor;
 
 public class Control extends InputAdapter implements InputProcessor {
 
-	public boolean up;
-	public boolean down;
-	public boolean left;
-	public boolean right;
+	public boolean up, down, left, right;
 	public boolean del;
 
-	public boolean interact;
-	public boolean drop;
-	public boolean flip;
-	public boolean tab;
+	public boolean interact, drop, flip;
+	public boolean tab, shift;
 
 	@Override
 	public boolean keyDown(int keyCode) {
@@ -92,6 +87,9 @@ public class Control extends InputAdapter implements InputProcessor {
 			break;
 		case Keys.TAB:
 			tab = true;
+			break;
+		case Keys.SHIFT_LEFT:
+			shift = true;
 			break;
 		case Keys.ESCAPE:
 			Gdx.app.exit();

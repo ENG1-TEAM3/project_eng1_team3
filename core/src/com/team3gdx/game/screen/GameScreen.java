@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
@@ -100,7 +101,7 @@ public class GameScreen implements Screen {
 	TiledMapRenderer tiledMapRenderer;
 	public TiledMap map1;
 
-	public static Cook[] cooks = { new Cook(new Vector2(64 * 5, 64 * 3),1), new Cook(new Vector2(64 * 5, 64 * 5),2) };
+	public static Cook[] cooks = { new Cook(new Vector2(64 * 5, 64 * 3), 1), new Cook(new Vector2(64 * 5, 64 * 5),2) };
 	public static int currentCookIndex = 0;
 	public static Cook cook = cooks[currentCookIndex];
 	CustomerController cc;
@@ -143,7 +144,7 @@ public class GameScreen implements Screen {
 		// ======================================SET=INITAL=STATE========================================================
 		state1 = STATE.Continue;
 		// ======================================START=VIEWPORTS=========================================================
-		worldViewport = new FitViewport(gameResolutionX, gameResolutionY, worldCamera);
+		worldViewport = new FitViewport(1920, 1080, worldCamera);
 		uiViewport = new FitViewport(gameResolutionX, gameResolutionY, uiCamera);
 		// ======================================START=STAGES============================================================
 		stage = new Stage(uiViewport);
@@ -205,6 +206,8 @@ public class GameScreen implements Screen {
 
 	}
 
+	ShapeRenderer selectedPlayerBox = new ShapeRenderer();
+
 	public void render(float delta) {
 		// =====================================CLEAR=SCREEN=============================================================
 		ScreenUtils.clear(0, 0, 0, 0);
@@ -227,7 +230,9 @@ public class GameScreen implements Screen {
 		tiledMapRenderer.render(new int[] { 1 });
 		// =====================================DRAW=COOK=TOP=HALF=======================================================
 		stationManager.handleStations();
+
 		drawHeldItems();
+
 		MainGameClass.batch.begin();
 		for (Cook curCook : cooks)
 			curCook.draw_top(MainGameClass.batch);
@@ -243,6 +248,23 @@ public class GameScreen implements Screen {
 		uiMatrix.setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		MainGameClass.batch.setProjectionMatrix(uiMatrix);
 		// =====================================DRAW=UI=ELEMENTS=========================================================
+
+		for (int i = 0; i < cooks.length; i++) {
+			if (i == currentCookIndex) {
+				selectedPlayerBox.setAutoShapeType(true);
+				selectedPlayerBox.begin(ShapeType.Line);
+
+				selectedPlayerBox.setColor(Color.GREEN);
+				selectedPlayerBox.rect(Gdx.graphics.getWidth() - 128 * cooks.length + i * 128,
+						Gdx.graphics.getHeight() - 128 - 8, 128, 128);
+				selectedPlayerBox.end();
+			}
+			MainGameClass.batch.begin();
+			cooks[i].draw_top(MainGameClass.batch, new Vector2(Gdx.graphics.getWidth() - 128 * cooks.length + i * 128,
+					Gdx.graphics.getHeight() - 256));
+			MainGameClass.batch.end();
+		}
+
 		MainGameClass.batch.begin();
 		game.font.draw(MainGameClass.batch, String.valueOf(cook.getDirection()), 0, 300);
 		game.font.draw(MainGameClass.batch, Long.toString(startTime - timeOnStartup), 0, 500);
@@ -253,6 +275,13 @@ public class GameScreen implements Screen {
 		// =====================================SET=MATRIX=BACK=TO=GAME=MATRIX===========================================
 		MainGameClass.batch.setProjectionMatrix(worldCamera.combined);
 		// ==================================MOVE=CAMERA=================================================================
+		if (Math.abs(worldCamera.position.x - cook.pos.x) < 1 && Math.abs(worldCamera.position.y - cook.pos.y) < 1) {
+			worldCamera.position.x = cook.pos.x;
+			worldCamera.position.y = cook.pos.y;
+		} else {
+			worldCamera.position.lerp(new Vector3(cook.pos.x, cook.pos.y, 0), .075f);
+		}
+
 		if (Math.abs(worldCamera.position.x - cook.pos.x) < 2 && Math.abs(worldCamera.position.y - cook.pos.y) < 2){
 			worldCamera.position.x = cook.pos.x;
 			worldCamera.position.y = cook.pos.y;
@@ -271,9 +300,13 @@ public class GameScreen implements Screen {
 		MainGameClass.batch.setProjectionMatrix(uiMatrix);
 		changeScreen(state1);
 		MainGameClass.batch.setProjectionMatrix(worldCamera.combined);
-		
+
 		if (control.tab) {
-			currentCookIndex += currentCookIndex < cooks.length - 1 ? 1 : - currentCookIndex;
+			currentCookIndex += currentCookIndex < cooks.length - 1 ? 1 : -currentCookIndex;
+			cook = cooks[currentCookIndex];
+		}
+		if (control.shift) {
+			currentCookIndex -= currentCookIndex > 0 ? 1 : -cooks.length + 1;
 			cook = cooks[currentCookIndex];
 		}
 
@@ -281,7 +314,8 @@ public class GameScreen implements Screen {
 		control.drop = false;
 		control.flip = false;
 		control.tab = false;
-		
+		control.shift = false;
+
 	}
 
 	private void drawHeldItems() {
