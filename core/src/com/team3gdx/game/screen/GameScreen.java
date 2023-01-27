@@ -99,7 +99,6 @@ public class GameScreen implements Screen {
 	public static Control control;
 	TiledMapRenderer tiledMapRenderer;
 	public TiledMap map1;
-
 	public static Cook[] cooks = { new Cook(new Vector2(64 * 5, 64 * 3),1), new Cook(new Vector2(64 * 5, 64 * 5),2) };
 	public static int currentCookIndex = 0;
 	public static Cook cook = cooks[currentCookIndex];
@@ -143,7 +142,7 @@ public class GameScreen implements Screen {
 		// ======================================SET=INITAL=STATE========================================================
 		state1 = STATE.Continue;
 		// ======================================START=VIEWPORTS=========================================================
-		worldViewport = new FitViewport(gameResolutionX, gameResolutionY, worldCamera);
+		worldViewport = new FitViewport(1920, 1080, worldCamera);
 		uiViewport = new FitViewport(gameResolutionX, gameResolutionY, uiCamera);
 		// ======================================START=STAGES============================================================
 		stage = new Stage(uiViewport);

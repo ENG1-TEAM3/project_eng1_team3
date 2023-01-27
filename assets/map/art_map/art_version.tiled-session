@@ -25,24 +25,24 @@
             "scale": 0.75,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 460.6666666666665,
-                "y": 681.3333333333334
+                "x": 639.3333333333333,
+                "y": 480
             }
         },
         "prototype_map.tmx": {
             "scale": 0.75,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 206,
-                "y": 628
+                "x": 206.66666666666663,
+                "y": 627.3333333333333
             }
         },
         "testmap.tmx": {
             "scale": 2,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 233.75,
-                "y": 261.5
+                "x": 234,
+                "y": 261.25
             }
         },
         "testmap.tmx#64pxshittytiles": {
