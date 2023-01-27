@@ -39,14 +39,12 @@ import com.team3gdx.game.util.Control;
 public class GameScreen implements Screen {
 	final MainGameClass game;
 	final MainScreen ms;
-
 	Rectangle volSlideBackgr;
 	Rectangle volSlide;
 	Rectangle musSlideBackgr;
 	Rectangle musSlide;
 	Rectangle audioBackground;
 	Rectangle optionsBackground;
-
 	Texture ESC;
 	Texture MENU;
 	Texture BACKTOMAINSCREEN;
@@ -55,27 +53,21 @@ public class GameScreen implements Screen {
 	Texture audioEdit;
 	Texture vControl;
 	Texture vButton;
-
 	Button mn;
 	Button rs;
 	Button ad;
 	Button btms;
 	public static CollisionTile[][] CLTiles;
 	Viewport uiViewport;
-
 	Viewport worldViewport;
 	Stage stage;
 	Stage stage2;
-
 	OrthographicCamera uiCamera;
 	OrthographicCamera worldCamera;
-
 	public enum STATE {
 		Pause, Continue, main, audio
 	}
-
 	public static STATE state1;
-
 	float v;
 	float s;
 	int gameResolutionX;
@@ -90,20 +82,18 @@ public class GameScreen implements Screen {
 	float audioBackgroundHeight;
 	float audioBackgroundx;
 	float audioBackgroundy;
-
 	long startTime;
 	long timeOnStartup;
 	long tempTime;
 	public static Control control;
 	TiledMapRenderer tiledMapRenderer;
 	public TiledMap map1;
-
 	public static Cook[] cooks = { new Cook(new Vector2(64 * 5, 64 * 3),1), new Cook(new Vector2(64 * 5, 64 * 5),2) };
 	public static int currentCookIndex = 0;
 	public static Cook cook = cooks[currentCookIndex];
 	CustomerController cc;
 	InputMultiplexer multi;
-
+	StationManager stationManager = new StationManager();
 	public GameScreen(MainGameClass game, MainScreen ms) {
 		this.game = game;
 		this.ms = ms;
@@ -116,9 +106,6 @@ public class GameScreen implements Screen {
 		cc = new CustomerController(map1);
 		cc.spawnCustomer();
 	}
-
-	StationManager stationManager = new StationManager();
-
 	public void show() {
 		// =======================================START=FRAME=TIMER======================================================
 		startTime = System.currentTimeMillis();
