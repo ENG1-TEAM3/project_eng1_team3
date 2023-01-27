@@ -100,7 +100,9 @@ public class GameScreen implements Screen {
 	TiledMapRenderer tiledMapRenderer;
 	public TiledMap map1;
 
-	public static Cook cook;
+	public static Cook[] cooks = { new Cook(new Vector2(64 * 5, 64 * 3)), new Cook(new Vector2(64 * 5, 64 * 5)) };
+	public static int currentCookIndex = 0;
+	public static Cook cook = cooks[currentCookIndex];
 	CustomerController cc;
 	InputMultiplexer multi;
 
@@ -112,7 +114,6 @@ public class GameScreen implements Screen {
 		// map = new TmxMapLoader().load("map/art_map/prototype_map.tmx");
 		map1 = new TmxMapLoader().load("map/art_map/customertest.tmx");
 		tiledMapRenderer = new OrthogonalTiledMapRenderer(map1);
-		cook = new Cook(new Vector2(64 * 5, 64 * 3));
 		constructCollisionData(map1);
 		cc = new CustomerController(map1);
 		cc.spawnCustomer();
@@ -219,7 +220,8 @@ public class GameScreen implements Screen {
 		tiledMapRenderer.render(new int[] { 0 });
 		// =====================================DRAW=COOK=LEGS===========================================================
 		MainGameClass.batch.begin();
-		cook.draw_bot(MainGameClass.batch);
+		for (Cook curCook : cooks)
+			curCook.draw_bot(MainGameClass.batch);
 		MainGameClass.batch.end();
 		// =====================================RENDER=TOP=MAP=LAYER=====================================================
 		tiledMapRenderer.render(new int[] { 1 });
@@ -227,7 +229,8 @@ public class GameScreen implements Screen {
 		stationManager.handleStations();
 		drawHeldItems();
 		MainGameClass.batch.begin();
-		cook.draw_top(MainGameClass.batch);
+		for (Cook curCook : cooks)
+			curCook.draw_top(MainGameClass.batch);
 		cc.drawCustTop(MainGameClass.batch); // todo fix customer z ordering
 		MainGameClass.batch.end();
 		// ==================================MOVE=COOK===================================================================
@@ -242,15 +245,15 @@ public class GameScreen implements Screen {
 		// =====================================DRAW=UI=ELEMENTS=========================================================
 		MainGameClass.batch.begin();
 		game.font.draw(MainGameClass.batch, String.valueOf(cook.getDirection()), 0, 300);
-		game.font.draw(MainGameClass.batch, Long.toString(startTime - timeOnStartup),0,500);
-		game.font.draw(MainGameClass.batch, "Time in ms:",  0, 550);
+		game.font.draw(MainGameClass.batch, Long.toString(startTime - timeOnStartup), 0, 500);
+		game.font.draw(MainGameClass.batch, "Time in ms:", 0, 550);
 		MainGameClass.batch.draw(new Texture("entities/cook.png"), 0, 0);
 		game.font.draw(MainGameClass.batch, state1.toString(), gameResolutionX / 20.0f, gameResolutionY / 20.0f);
 		MainGameClass.batch.end();
 		// =====================================SET=MATRIX=BACK=TO=GAME=MATRIX===========================================
 		MainGameClass.batch.setProjectionMatrix(worldCamera.combined);
 		// ==================================MOVE=CAMERA=================================================================
-		worldCamera.position.lerp(new Vector3(cook.pos.x, cook.pos.y, 0), .1f);
+		worldCamera.position.lerp(new Vector3(cook.pos.x, cook.pos.y, 0), .065f);
 		worldCamera.update();
 		uiCamera.update();
 		// ==================================PLAY=MUSIC==================================================================
@@ -262,11 +265,17 @@ public class GameScreen implements Screen {
 		MainGameClass.batch.setProjectionMatrix(uiMatrix);
 		changeScreen(state1);
 		MainGameClass.batch.setProjectionMatrix(worldCamera.combined);
+		
+		if (control.tab) {
+			currentCookIndex += currentCookIndex < cooks.length - 1 ? 1 : - currentCookIndex;
+			cook = cooks[currentCookIndex];
+		}
 
 		control.interact = false;
 		control.drop = false;
 		control.flip = false;
-
+		control.tab = false;
+		
 	}
 
 	private void drawHeldItems() {
@@ -288,8 +297,8 @@ public class GameScreen implements Screen {
 		if (state1 == STATE.Pause) {
 			Gdx.input.setInputProcessor(stage2);
 			MainGameClass.batch.begin();
-			MainGameClass.batch.draw(ESC, optionsBackground.getX(), optionsBackground.getY(), optionsBackground.getWidth(),
-					optionsBackground.getHeight());
+			MainGameClass.batch.draw(ESC, optionsBackground.getX(), optionsBackground.getY(),
+					optionsBackground.getWidth(), optionsBackground.getHeight());
 			MainGameClass.batch.end();
 			stage2.act();
 			stage2.draw();
@@ -301,22 +310,22 @@ public class GameScreen implements Screen {
 
 			Gdx.input.setInputProcessor(stage2);
 			MainGameClass.batch.begin();
-			MainGameClass.batch.draw(ESC, optionsBackground.getX(), optionsBackground.getY(), optionsBackground.getWidth(),
-					optionsBackground.getHeight());
+			MainGameClass.batch.draw(ESC, optionsBackground.getX(), optionsBackground.getY(),
+					optionsBackground.getWidth(), optionsBackground.getHeight());
 			MainGameClass.batch.end();
 			stage2.act();
 			stage2.draw();
 			MainGameClass.batch.begin();
-			MainGameClass.batch.draw(audioEdit, audioBackground.getX(), audioBackground.getY(), audioBackground.getWidth(),
-					audioBackground.getHeight());
+			MainGameClass.batch.draw(audioEdit, audioBackground.getX(), audioBackground.getY(),
+					audioBackground.getWidth(), audioBackground.getHeight());
 			MainGameClass.batch.draw(vControl, volSlideBackgr.getX(), volSlideBackgr.getY(), volSlideBackgr.getWidth(),
 					volSlideBackgr.getHeight());
-			MainGameClass.batch.draw(vButton, volSlide.getX() - volSlide.getWidth() / 2, volSlide.getY(), volSlide.width,
-					volSlide.height);
+			MainGameClass.batch.draw(vButton, volSlide.getX() - volSlide.getWidth() / 2, volSlide.getY(),
+					volSlide.width, volSlide.height);
 			MainGameClass.batch.draw(vControl, musSlideBackgr.getX(), musSlideBackgr.getY(), musSlideBackgr.getWidth(),
 					musSlideBackgr.getHeight());
-			MainGameClass.batch.draw(vButton, musSlide.getX() - musSlide.getWidth() / 2, musSlide.getY(), musSlide.width,
-					musSlide.height);
+			MainGameClass.batch.draw(vButton, musSlide.getX() - musSlide.getWidth() / 2, musSlide.getY(),
+					musSlide.width, musSlide.height);
 			MainGameClass.batch.end();
 		}
 		if (state1 == STATE.Continue) {

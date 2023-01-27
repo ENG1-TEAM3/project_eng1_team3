@@ -16,6 +16,7 @@ public class Control extends InputAdapter implements InputProcessor {
 	public boolean interact;
 	public boolean drop;
 	public boolean flip;
+	public boolean tab;
 
 	@Override
 	public boolean keyDown(int keyCode) {
@@ -88,6 +89,9 @@ public class Control extends InputAdapter implements InputProcessor {
 			break;
 		case Keys.F:
 			flip = true;
+			break;
+		case Keys.TAB:
+			tab = true;
 			break;
 		case Keys.ESCAPE:
 			Gdx.app.exit();
