@@ -154,6 +154,10 @@ public class Cook extends Entity {
 	public void draw_top(SpriteBatch batch) {
 		batch.draw(currentTextureRegion[0][0], pos.x, pos.y + 64, 64, 64);
 	}
+	
+	public void draw_top(SpriteBatch batch, Vector2 position) {
+		batch.draw(currentTextureRegion[0][0], position.x, position.y + 128, 128, 128);
+	}
 
 	Rectangle getCollideBox() {
 		return new Rectangle(pos.x + 12, pos.y - 10, 40, 25);
