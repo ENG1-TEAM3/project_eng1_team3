@@ -109,8 +109,10 @@ public class StationManager {
 			checkCookingStation(pos);
 
 			break;
-//		case 34:
-//			break;
+		case 6:
+			if (GameScreen.control.drop && !GameScreen.cook.heldItems.empty())
+				GameScreen.cook.dropItem();
+			break;
 		default:
 			placeIngredientStation(pos);
 			break;

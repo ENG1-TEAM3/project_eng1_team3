@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
@@ -36,6 +37,7 @@ import com.team3gdx.game.entity.Entity;
 import com.team3gdx.game.station.StationManager;
 import com.team3gdx.game.util.CollisionTile;
 import com.team3gdx.game.util.Control;
+
 public class GameScreen implements Screen {
 	final MainGameClass game;
 	final MainScreen ms;
@@ -64,9 +66,11 @@ public class GameScreen implements Screen {
 	Stage stage2;
 	OrthographicCamera uiCamera;
 	OrthographicCamera worldCamera;
+
 	public enum STATE {
 		Pause, Continue, main, audio
 	}
+
 	public static STATE state1;
 	float v;
 	float s;
@@ -88,12 +92,13 @@ public class GameScreen implements Screen {
 	public static Control control;
 	TiledMapRenderer tiledMapRenderer;
 	public TiledMap map1;
-	public static Cook[] cooks = { new Cook(new Vector2(64 * 5, 64 * 3),1), new Cook(new Vector2(64 * 5, 64 * 5),2) };
+	public static Cook[] cooks = { new Cook(new Vector2(64 * 5, 64 * 3), 1), new Cook(new Vector2(64 * 5, 64 * 5), 2) };
 	public static int currentCookIndex = 0;
 	public static Cook cook = cooks[currentCookIndex];
 	CustomerController cc;
 	InputMultiplexer multi;
 	StationManager stationManager = new StationManager();
+
 	public GameScreen(MainGameClass game, MainScreen ms) {
 		this.game = game;
 		this.ms = ms;
@@ -106,6 +111,7 @@ public class GameScreen implements Screen {
 		cc = new CustomerController(map1);
 		cc.spawnCustomer();
 	}
+
 	public void show() {
 		// =======================================START=FRAME=TIMER======================================================
 		startTime = System.currentTimeMillis();
@@ -189,6 +195,8 @@ public class GameScreen implements Screen {
 		stage2.addActor(ad);
 
 	}
+	
+	ShapeRenderer selectedPlayerBox = new ShapeRenderer();
 
 	public void render(float delta) {
 		// =====================================CLEAR=SCREEN=============================================================
@@ -228,21 +236,39 @@ public class GameScreen implements Screen {
 		uiMatrix.setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		MainGameClass.batch.setProjectionMatrix(uiMatrix);
 		// =====================================DRAW=UI=ELEMENTS=========================================================
+		
+		
+		for (int i = 0; i < cooks.length; i++) {
+			if (i == currentCookIndex) {
+				selectedPlayerBox.setAutoShapeType(true);
+				selectedPlayerBox.begin(ShapeType.Line);
+
+				selectedPlayerBox.setColor(Color.GREEN);
+				selectedPlayerBox.rect(Gdx.graphics.getWidth() - 128 * cooks.length + i * 128,
+						Gdx.graphics.getHeight() - 128 - 8, 128, 128);
+				selectedPlayerBox.end();
+			}
+			MainGameClass.batch.begin();
+			cooks[i].draw_top(MainGameClass.batch, new Vector2(Gdx.graphics.getWidth() - 128 * cooks.length + i * 128,
+					Gdx.graphics.getHeight() - 256));
+			MainGameClass.batch.end();
+		}
+		
 		MainGameClass.batch.begin();
 		MainGameClass.font.draw(MainGameClass.batch, String.valueOf(cook.getDirection()), 0, 300);
 		MainGameClass.font.draw(MainGameClass.batch, Long.toString(startTime - timeOnStartup), 0, 500);
 		MainGameClass.font.draw(MainGameClass.batch, "Time in ms:", 0, 550);
 		MainGameClass.batch.draw(new Texture("entities/cook.png"), 0, 0);
-		MainGameClass.font.draw(MainGameClass.batch, state1.toString(), gameResolutionX / 20.0f, gameResolutionY / 20.0f);
+		MainGameClass.font.draw(MainGameClass.batch, state1.toString(), gameResolutionX / 20.0f,
+				gameResolutionY / 20.0f);
 		MainGameClass.batch.end();
 		// =====================================SET=MATRIX=BACK=TO=GAME=MATRIX===========================================
 		MainGameClass.batch.setProjectionMatrix(worldCamera.combined);
 		// ==================================MOVE=CAMERA=================================================================
-		if (Math.abs(worldCamera.position.x - cook.pos.x) < 2 && Math.abs(worldCamera.position.y - cook.pos.y) < 2){
+		if (Math.abs(worldCamera.position.x - cook.pos.x) < 2 && Math.abs(worldCamera.position.y - cook.pos.y) < 2) {
 			worldCamera.position.x = cook.pos.x;
 			worldCamera.position.y = cook.pos.y;
-		}
-		else {
+		} else {
 			worldCamera.position.lerp(new Vector3(cook.pos.x, cook.pos.y, 0), .065f);
 		}
 		worldCamera.update();
@@ -256,9 +282,13 @@ public class GameScreen implements Screen {
 		MainGameClass.batch.setProjectionMatrix(uiMatrix);
 		changeScreen(state1);
 		MainGameClass.batch.setProjectionMatrix(worldCamera.combined);
-		
+
 		if (control.tab) {
-			currentCookIndex += currentCookIndex < cooks.length - 1 ? 1 : - currentCookIndex;
+			currentCookIndex += currentCookIndex < cooks.length - 1 ? 1 : -currentCookIndex;
+			cook = cooks[currentCookIndex];
+		}
+		if (control.shift) {
+			currentCookIndex -= currentCookIndex > 0 ? 1 : -cooks.length + 1;
 			cook = cooks[currentCookIndex];
 		}
 
@@ -266,7 +296,8 @@ public class GameScreen implements Screen {
 		control.drop = false;
 		control.flip = false;
 		control.tab = false;
-		
+		control.shift = false;
+
 	}
 
 	private void drawHeldItems() {
