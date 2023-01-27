@@ -143,7 +143,7 @@ public class GameScreen implements Screen {
 		// ======================================SET=INITAL=STATE========================================================
 		state1 = STATE.Continue;
 		// ======================================START=VIEWPORTS=========================================================
-		worldViewport = new FitViewport(gameResolutionX / 2, gameResolutionY / 2, worldCamera);
+		worldViewport = new FitViewport(gameResolutionX, gameResolutionY, worldCamera);
 		uiViewport = new FitViewport(gameResolutionX, gameResolutionY, uiCamera);
 		// ======================================START=STAGES============================================================
 		stage = new Stage(uiViewport);
@@ -253,7 +253,13 @@ public class GameScreen implements Screen {
 		// =====================================SET=MATRIX=BACK=TO=GAME=MATRIX===========================================
 		MainGameClass.batch.setProjectionMatrix(worldCamera.combined);
 		// ==================================MOVE=CAMERA=================================================================
-		worldCamera.position.lerp(new Vector3(cook.pos.x, cook.pos.y, 0), .065f);
+		if (Math.abs(worldCamera.position.x - cook.pos.x) < 2 && Math.abs(worldCamera.position.y - cook.pos.y) < 2){
+			worldCamera.position.x = cook.pos.x;
+			worldCamera.position.y = cook.pos.y;
+		}
+		else {
+			worldCamera.position.lerp(new Vector3(cook.pos.x, cook.pos.y, 0), .065f);
+		}
 		worldCamera.update();
 		uiCamera.update();
 		// ==================================PLAY=MUSIC==================================================================
