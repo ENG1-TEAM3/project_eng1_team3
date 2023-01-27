@@ -3,7 +3,7 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "art_tileset.tsx",
+    "activeFile": "customertest.tmx",
     "expandedProjectPaths": [
         "."
     ],
@@ -23,10 +23,10 @@
         },
         "customertest.tmx": {
             "scale": 0.75,
-            "selectedLayer": 1,
+            "selectedLayer": 0,
             "viewCenter": {
-                "x": 639.3333333333333,
-                "y": 480
+                "x": 569.3333333333334,
+                "y": 526
             }
         },
         "prototype_map.tmx": {
@@ -34,7 +34,7 @@
             "selectedLayer": 0,
             "viewCenter": {
                 "x": 206.66666666666663,
-                "y": 627.3333333333333
+                "y": 626
             }
         },
         "testmap.tmx": {
@@ -65,11 +65,11 @@
     "project": "art_version.tiled-project",
     "property.type": "string",
     "recentFiles": [
-        "customertest.tmx",
-        "64pxshittytiles.tsx",
-        "prototype_map.tmx",
+        "art_tileset.tsx",
         "testmap.tmx",
-        "art_tileset.tsx"
+        "prototype_map.tmx",
+        "64pxshittytiles.tsx",
+        "customertest.tmx"
     ],
     "tileset.lastUsedFormat": "tsx",
     "tileset.tileSize": {
