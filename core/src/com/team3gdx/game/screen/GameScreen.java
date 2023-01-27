@@ -33,11 +33,9 @@ import com.team3gdx.game.MainGameClass;
 import com.team3gdx.game.entity.Cook;
 import com.team3gdx.game.entity.CustomerController;
 import com.team3gdx.game.entity.Entity;
-import com.team3gdx.game.food.Ingredient;
 import com.team3gdx.game.station.StationManager;
 import com.team3gdx.game.util.CollisionTile;
 import com.team3gdx.game.util.Control;
-
 public class GameScreen implements Screen {
 	final MainGameClass game;
 	final MainScreen ms;
@@ -126,8 +124,8 @@ public class GameScreen implements Screen {
 		startTime = System.currentTimeMillis();
 		timeOnStartup = startTime;
 		// =======================================SET=POSITIONS=OF=SLIDERS===============================================
-		float currentMusicVolumeSliderX = (game.musicVolumeScale * sliderWidth) + xSliderMin;
-		float currentGameVolumeSliderX = (game.gameVolumeScale * sliderWidth) + xSliderMin;
+		float currentMusicVolumeSliderX = (MainGameClass.musicVolumeScale * sliderWidth) + xSliderMin;
+		float currentGameVolumeSliderX = (MainGameClass.gameVolumeScale * sliderWidth) + xSliderMin;
 		musSlide.setPosition(currentMusicVolumeSliderX, audioBackgroundy + 4 * audioBackgroundHeight / 6
 				+ musSlideBackgr.getHeight() / 2 - musSlide.getHeight() / 2);
 		volSlide.setPosition(currentGameVolumeSliderX, audioBackgroundy + audioBackgroundHeight / 6
@@ -213,7 +211,7 @@ public class GameScreen implements Screen {
 		// =====================================SET=INPUT=PROCESSOR======================================================
 		Gdx.input.setInputProcessor(multi);
 		// =====================================SET=PROJECTION=MATRICES=FOR=GAME=RENDERING===============================
-		game.shapeRenderer.setProjectionMatrix(worldCamera.combined);
+		MainGameClass.shapeRenderer.setProjectionMatrix(worldCamera.combined);
 		MainGameClass.batch.setProjectionMatrix(worldCamera.combined);
 		// =====================================RENDER=BOTTOM=MAP=LAYER==================================================
 		tiledMapRenderer.setView(worldCamera);
@@ -237,18 +235,18 @@ public class GameScreen implements Screen {
 		tempTime = System.currentTimeMillis();
 		cook.update(control, (tempTime - startTime), CLTiles);
 		startTime = tempTime;
-		checkInteraction(cook, game.shapeRenderer);
+		checkInteraction(cook, MainGameClass.shapeRenderer);
 		// =====================================SET=MATRIX=FOR=UI=ELEMENTS===============================================
 		Matrix4 uiMatrix = worldCamera.combined.cpy();
 		uiMatrix.setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		MainGameClass.batch.setProjectionMatrix(uiMatrix);
 		// =====================================DRAW=UI=ELEMENTS=========================================================
 		MainGameClass.batch.begin();
-		game.font.draw(MainGameClass.batch, String.valueOf(cook.getDirection()), 0, 300);
-		game.font.draw(MainGameClass.batch, Long.toString(startTime - timeOnStartup), 0, 500);
-		game.font.draw(MainGameClass.batch, "Time in ms:", 0, 550);
+		MainGameClass.font.draw(MainGameClass.batch, String.valueOf(cook.getDirection()), 0, 300);
+		MainGameClass.font.draw(MainGameClass.batch, Long.toString(startTime - timeOnStartup), 0, 500);
+		MainGameClass.font.draw(MainGameClass.batch, "Time in ms:", 0, 550);
 		MainGameClass.batch.draw(new Texture("entities/cook.png"), 0, 0);
-		game.font.draw(MainGameClass.batch, state1.toString(), gameResolutionX / 20.0f, gameResolutionY / 20.0f);
+		MainGameClass.font.draw(MainGameClass.batch, state1.toString(), gameResolutionX / 20.0f, gameResolutionY / 20.0f);
 		MainGameClass.batch.end();
 		// =====================================SET=MATRIX=BACK=TO=GAME=MATRIX===========================================
 		MainGameClass.batch.setProjectionMatrix(worldCamera.combined);
@@ -263,7 +261,7 @@ public class GameScreen implements Screen {
 		worldCamera.update();
 		uiCamera.update();
 		// ==================================PLAY=MUSIC==================================================================
-		game.gameMusic.play();
+		MainGameClass.gameMusic.play();
 		// ==================================DRAW=INTERACTIVE=UI=ELEMENTS================================================
 		stage.act();
 		stage.draw();
@@ -297,7 +295,7 @@ public class GameScreen implements Screen {
 
 	public void changeScreen(STATE state1) {
 		if (state1 == STATE.main) {
-			game.gameMusic.dispose();
+			MainGameClass.gameMusic.dispose();
 			game.resetGameScreen();
 			game.setScreen(game.getMainScreen());
 
@@ -360,8 +358,8 @@ public class GameScreen implements Screen {
 					v = 0;
 				}
 				game.mainScreenMusic.setVolume(v);
-				game.gameMusic.setVolume(v);
-				game.musicVolumeScale = v;
+				MainGameClass.gameMusic.setVolume(v);
+				MainGameClass.musicVolumeScale = v;
 			}
 		}
 	}
@@ -379,7 +377,7 @@ public class GameScreen implements Screen {
 					s = 0;
 				}
 				// game.sound.setVolume(game.soundid, s);
-				game.gameVolumeScale = s;
+				MainGameClass.gameVolumeScale = s;
 			}
 		}
 	}
