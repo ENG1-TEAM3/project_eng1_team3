@@ -100,7 +100,7 @@ public class GameScreen implements Screen {
 	TiledMapRenderer tiledMapRenderer;
 	public TiledMap map1;
 
-	public static Cook[] cooks = { new Cook(new Vector2(64 * 5, 64 * 3)), new Cook(new Vector2(64 * 5, 64 * 5)) };
+	public static Cook[] cooks = { new Cook(new Vector2(64 * 5, 64 * 3),1), new Cook(new Vector2(64 * 5, 64 * 5),2) };
 	public static int currentCookIndex = 0;
 	public static Cook cook = cooks[currentCookIndex];
 	CustomerController cc;
@@ -285,11 +285,13 @@ public class GameScreen implements Screen {
 	}
 
 	private void drawHeldItems() {
-		int itemIndex = 0;
-		for (Entity ingredient : cook.heldItems) {
-			ingredient.pos = new Vector2(cook.pos.x + 16, cook.pos.y + 112 + itemIndex * 8);
-			((Ingredient) ingredient).draw(MainGameClass.batch);
-			itemIndex++;
+		for (Cook ck : cooks) {
+			int itemIndex = 0;
+			for (Entity ingredient : ck.heldItems) {
+				ingredient.pos = new Vector2(ck.pos.x + 16, ck.pos.y + 112 + itemIndex * 8);
+				ingredient.draw(MainGameClass.batch);
+				itemIndex++;
+			}
 		}
 	}
 

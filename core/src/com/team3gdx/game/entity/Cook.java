@@ -25,25 +25,43 @@ public class Cook extends Entity {
 	TextureRegion[][] cookpartsl;
 	TextureRegion[][] cookpartsr;
 	TextureRegion[][] cookpartsb;
+
+	TextureRegion[][] ucookpartsf;
+	TextureRegion[][] ucookpartsl;
+	TextureRegion[][] ucookpartsr;
+	TextureRegion[][] ucookpartsb;
+
 	TextureRegion[][] currentTextureRegion;
 	private char direction;
+	int cookno;
 
-	public Cook(Vector2 pos) {
+	public Cook(Vector2 pos, int cooknum) {
+		this.cookno = cooknum;
 		this.pos = pos;
 		width = 64;
 		height = 128;
 
 		speed = 0.25f;
+		Texture texturef = new Texture("entities/chef"+cookno+"_f_f.png");
+		Texture texturel = new Texture("entities/chef"+cookno+"_f_l.png");
+		Texture texturer = new Texture("entities/chef"+cookno+"_f_r.png");
+		Texture textureb = new Texture("entities/chef"+cookno+"_f_b.png");
 
-		Texture texturef = new Texture("entities/chef3_f_f.png");
-		Texture texturel = new Texture("entities/chef3_f_l.png");
-		Texture texturer = new Texture("entities/chef3_f_r.png");
-		Texture textureb = new Texture("entities/chef3_f_b.png");
+		Texture utexturef = new Texture("entities/chef"+cookno+"_u_f.png");
+		Texture utexturel = new Texture("entities/chef"+cookno+"_u_l.png");
+		Texture utexturer = new Texture("entities/chef"+cookno+"_u_r.png");
+		Texture utextureb = new Texture("entities/chef"+cookno+"_u_b.png");
 
 		cookpartsf = TextureRegion.split(texturef, 32, 32);
 		cookpartsl = TextureRegion.split(texturel, 32, 32);
 		cookpartsr = TextureRegion.split(texturer, 32, 32);
 		cookpartsb = TextureRegion.split(textureb, 32, 32);
+
+		ucookpartsf = TextureRegion.split(utexturef, 32, 32);
+		ucookpartsl = TextureRegion.split(utexturel, 32, 32);
+		ucookpartsr = TextureRegion.split(utexturer, 32, 32);
+		ucookpartsb = TextureRegion.split(utextureb, 32, 32);
+
 		currentTextureRegion = cookpartsf;
 		direction = 'd';
 	}
@@ -55,26 +73,46 @@ public class Cook extends Entity {
 			if (this.checkCollision(pos.x, pos.y + (speed * dt), cl)) {
 				dirY = 1;
 			}
-			currentTextureRegion = cookpartsb;
+			if (this.heldItems.size() > 0){
+				currentTextureRegion = ucookpartsb;
+			}
+			else {
+				currentTextureRegion = cookpartsb;
+			}
 			direction = 'u';
 		} else if (control.down && !control.up) {
 			if (this.checkCollision(pos.x, pos.y - (speed * dt), cl)) {
 				dirY = -1;
 			}
-			currentTextureRegion = cookpartsf;
+			if (this.heldItems.size() > 0){
+				currentTextureRegion = ucookpartsf;
+			}
+			else {
+				currentTextureRegion = cookpartsf;
+			}
 			direction = 'd';
 		}
 		if (control.left && !control.right) {
 			if (this.checkCollision(pos.x - (speed * dt), pos.y, cl)) {
 				dirX = -1;
 			}
-			currentTextureRegion = cookpartsl;
+			if (this.heldItems.size() > 0){
+				currentTextureRegion = ucookpartsl;
+			}
+			else {
+				currentTextureRegion = cookpartsl;
+			}
 			direction = 'l';
 		} else if (control.right && !control.left) {
 			if (this.checkCollision(pos.x + (speed * dt), pos.y, cl)) {
 				dirX = +1;
 			}
-			currentTextureRegion = cookpartsr;
+			if (this.heldItems.size() > 0){
+				currentTextureRegion = ucookpartsr;
+			}
+			else {
+				currentTextureRegion = cookpartsr;
+			}
 			direction = 'r';
 		}
 		pos.x += dirX * speed * dt;
@@ -86,7 +124,7 @@ public class Cook extends Entity {
 		item.cooking = false;
 		item.slicing = false;
 		if (heldItems.size() < 1) {
-			changeTexture("entities/chef3 - front - hold up.png");
+			changeTexture("entities/chef"+cookno+"_u_f.png");
 		}
 		if (!full())
 			heldItems.push(item);
