@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.assets.loaders.AssetLoader;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -25,6 +26,10 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.ScreenUtils;
@@ -66,7 +71,7 @@ public class GameScreen implements Screen {
 	Stage stage;
 	Stage stage2;
 	OrthographicCamera uiCamera;
-	OrthographicCamera worldCamera;
+	public static OrthographicCamera worldCamera;
 
 	public enum STATE {
 		Pause, Continue, main, audio
@@ -264,14 +269,26 @@ public class GameScreen implements Screen {
 				gameResolutionY / 20.0f);
 		MainGameClass.batch.end();
 		// =====================================SET=MATRIX=BACK=TO=GAME=MATRIX===========================================
+
+		if (!Tutorial.complete) {
+			worldCamera.position.lerp(new Vector3(Tutorial.getStagePos(), 0), .065f);
+			if (control.tab) {
+				Tutorial.nextStage();
+			}
+			Tutorial.drawBox(delta * 20);
+		} else {
+			if (Math.abs(worldCamera.position.x - cook.pos.x) < 2
+					&& Math.abs(worldCamera.position.y - cook.pos.y) < 2) {
+				worldCamera.position.x = cook.pos.x;
+				worldCamera.position.y = cook.pos.y;
+			} else {
+				worldCamera.position.lerp(new Vector3(cook.pos.x, cook.pos.y, 0), .065f);
+			}
+		}
+
 		MainGameClass.batch.setProjectionMatrix(worldCamera.combined);
 		// ==================================MOVE=CAMERA=================================================================
-		if (Math.abs(worldCamera.position.x - cook.pos.x) < 2 && Math.abs(worldCamera.position.y - cook.pos.y) < 2) {
-			worldCamera.position.x = cook.pos.x;
-			worldCamera.position.y = cook.pos.y;
-		} else {
-			worldCamera.position.lerp(new Vector3(cook.pos.x, cook.pos.y, 0), .065f);
-		}
+
 		worldCamera.update();
 		uiCamera.update();
 		// ==================================PLAY=MUSIC==================================================================
