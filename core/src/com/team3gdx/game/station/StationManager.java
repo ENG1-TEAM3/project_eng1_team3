@@ -16,10 +16,6 @@ public class StationManager {
 
 	public static Map<Vector2, Station> stations = new HashMap<Vector2, Station>();
 
-	public StationManager() {
-
-	}
-
 	public void handleStations() {
 		for (Station station : stations.values()) {
 			if (!station.slots.empty() && !station.infinite) {
@@ -64,52 +60,39 @@ public class StationManager {
 		case 46:
 			// Frying station
 
-			if (!stations.containsKey(pos)) {
-				stations.put(pos, new FryingStation(pos));
-			}
-			checkCookingStation(pos);
+			checkCookingStation(pos, new FryingStation(pos));
 
 			break;
 		case 47:
-			// Prep station
+			// Preparation station
+
+			int initialItemStackSize = GameScreen.cook.heldItems.size();
+
 			if (!stations.containsKey(pos)) {
 				stations.put(pos, new PrepStation(pos));
 			}
-			if (!stations.get(pos).slots.empty() && !GameScreen.cook.full()) {
-				MainGameClass.batch.begin();
-				(new BitmapFont()).draw(MainGameClass.batch, "Take [q]", pos.x * 64, pos.y * 64 - 16);
-				MainGameClass.batch.end();
-			}
-			if (GameScreen.cook.heldItems.size() > 0) {
-				MainGameClass.batch.begin();
-				(new BitmapFont()).draw(MainGameClass.batch, "Drop [e]", pos.x * 64, pos.y * 64);
-				MainGameClass.batch.end();
-			}
-			if (GameScreen.control.interact) {
-				if (!stations.get(pos).slots.empty() && !GameScreen.cook.full()) {
-					GameScreen.cook.pickUpItem(stations.get(pos).take());
-					return;
+
+			placeIngredientStation(pos);
+			PrepStation station = ((PrepStation) stations.get(pos));
+
+			if (!station.slots.isEmpty()) {
+				if (station.slotsToRecipe()) {
+					GameScreen.cook.locked = true;
+					station.slots.peek().slicing = true;
+					station.updateProgress(.01f);
+
 				}
 			}
 
-			if (GameScreen.cook.heldItems.empty())
-				return;
-			if (GameScreen.control.drop)
-				if (stations.get(pos).place(GameScreen.cook.heldItems.peek())) {
-					GameScreen.cook.dropItem();
-					((PrepStation) stations.get(pos)).slotsToRecipe();
-				}
 			break;
 
 		case 49:
-			// baking stationq
-			if (!stations.containsKey(pos)) {
-				stations.put(pos, new BakingStation(pos));
-			}
-			checkCookingStation(pos);
+			// Baking station
+			checkCookingStation(pos, new BakingStation(pos));
 
 			break;
 		case 6:
+			// Bin to dispose of unwanted ingredients.
 			if (GameScreen.control.drop && !GameScreen.cook.heldItems.empty())
 				GameScreen.cook.dropItem();
 			break;
@@ -120,17 +103,41 @@ public class StationManager {
 
 	}
 
-	private void checkCookingStation(Vector2 pos) {
-		if (!stations.get(pos).slots.empty() && !GameScreen.cook.full() && stations.get(pos).slots.peek().flipped) {
-			MainGameClass.batch.begin();
-			(new BitmapFont()).draw(MainGameClass.batch, "Take [q]", pos.x * 64, pos.y * 64 - 16);
-			MainGameClass.batch.end();
-		} else if (GameScreen.cook.heldItems.size() > 0
-				&& stations.get(pos).isAllowed(GameScreen.cook.heldItems.peek())) {
-			MainGameClass.batch.begin();
-			(new BitmapFont()).draw(MainGameClass.batch, "Drop [e]", pos.x * 64, pos.y * 64);
-			MainGameClass.batch.end();
+	private void drawTakeText(Vector2 pos) {
+		if (!stations.get(pos).slots.empty() && !GameScreen.cook.full()) {
+			drawText("Take [q]", new Vector2(pos.x * 64, pos.y * 64 - 16));
 		}
+
+	}
+
+	private void drawDropText(Vector2 pos) {
+		if (GameScreen.cook.heldItems.size() > 0 && stations.get(pos).isAllowed(GameScreen.cook.heldItems.peek())) {
+			drawText("Drop [e]", new Vector2(pos.x * 64, pos.y * 64));
+		}
+	}
+
+	private void drawText(String text, Vector2 pos) {
+		MainGameClass.batch.begin();
+		(new BitmapFont()).draw(MainGameClass.batch, text, pos.x, pos.y);
+		MainGameClass.batch.end();
+	}
+
+	private boolean checkStationExists(Vector2 pos, Station station) {
+		if (!stations.containsKey(pos)) {
+			stations.put(pos, station);
+			return false;
+		}
+
+		return true;
+	}
+
+	private void checkCookingStation(Vector2 pos, Station station) {
+		checkStationExists(pos, station);
+		if (!stations.get(pos).slots.empty() && !GameScreen.cook.full() && stations.get(pos).slots.peek().flipped)
+			drawText("Take [q]", new Vector2(pos.x * 64, pos.y * 64 - 16));
+		else
+			drawDropText(pos);
+
 		if (GameScreen.control.interact) {
 			if (!stations.get(pos).slots.empty() && !GameScreen.cook.full()) {
 				if (stations.get(pos).slots.peek().flipped)
@@ -151,20 +158,11 @@ public class StationManager {
 	}
 
 	private void placeIngredientStation(Vector2 pos) {
-		if (!stations.containsKey(pos)) {
-			stations.put(pos, new Station(pos, 4, false, null));
-		}
-		if (!stations.get(pos).slots.empty() && !GameScreen.cook.full()) {
-			MainGameClass.batch.begin();
-			(new BitmapFont()).draw(MainGameClass.batch, "Take [q]", pos.x * 64, pos.y * 64 - 16);
-			MainGameClass.batch.end();
-		}
-		if (GameScreen.cook.heldItems.size() > 0) {
-			MainGameClass.batch.begin();
-			(new BitmapFont()).draw(MainGameClass.batch, "Drop [e]", pos.x * 64, pos.y * 64);
-			MainGameClass.batch.end();
-		}
+		checkStationExists(pos, new Station(pos, 4, false, null));
+		drawTakeText(pos);
+		drawDropText(pos);
 		if (GameScreen.control.interact) {
+			GameScreen.cook.locked = false;
 			if (!stations.get(pos).slots.empty() && !GameScreen.cook.full()) {
 				GameScreen.cook.pickUpItem(stations.get(pos).take());
 				return;
@@ -176,21 +174,13 @@ public class StationManager {
 		if (GameScreen.control.drop)
 			if (stations.get(pos).place(GameScreen.cook.heldItems.peek()))
 				GameScreen.cook.dropItem();
-
 	}
 
 	private void takeIngredientStation(Vector2 pos, Ingredient ingredient) {
-		if (!stations.containsKey(pos)) {
-			stations.put(pos, new IngredientStation(pos, ingredient));
-		}
-		if (!stations.get(pos).slots.empty() && !GameScreen.cook.full()) {
-			MainGameClass.batch.begin();
-			(new BitmapFont()).draw(MainGameClass.batch, "Take [q]", pos.x * 64, pos.y * 64 - 8);
-			MainGameClass.batch.end();
-		}
+		checkStationExists(pos, new IngredientStation(pos, ingredient));
+		drawTakeText(pos);
 
 		if (GameScreen.control.interact) {
-
 			GameScreen.cook.pickUpItem(stations.get(pos).take());
 		}
 

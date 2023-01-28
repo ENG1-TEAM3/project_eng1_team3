@@ -195,7 +195,7 @@ public class GameScreen implements Screen {
 		stage2.addActor(ad);
 
 	}
-	
+
 	ShapeRenderer selectedPlayerBox = new ShapeRenderer();
 
 	public void render(float delta) {
@@ -228,7 +228,8 @@ public class GameScreen implements Screen {
 		MainGameClass.batch.end();
 		// ==================================MOVE=COOK===================================================================
 		tempTime = System.currentTimeMillis();
-		cook.update(control, (tempTime - startTime), CLTiles);
+		if (!cook.locked)
+			cook.update(control, (tempTime - startTime), CLTiles);
 		startTime = tempTime;
 		checkInteraction(cook, MainGameClass.shapeRenderer);
 		// =====================================SET=MATRIX=FOR=UI=ELEMENTS===============================================
@@ -236,8 +237,7 @@ public class GameScreen implements Screen {
 		uiMatrix.setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		MainGameClass.batch.setProjectionMatrix(uiMatrix);
 		// =====================================DRAW=UI=ELEMENTS=========================================================
-		
-		
+
 		for (int i = 0; i < cooks.length; i++) {
 			if (i == currentCookIndex) {
 				selectedPlayerBox.setAutoShapeType(true);
@@ -253,7 +253,7 @@ public class GameScreen implements Screen {
 					Gdx.graphics.getHeight() - 256));
 			MainGameClass.batch.end();
 		}
-		
+
 		MainGameClass.batch.begin();
 		MainGameClass.font.draw(MainGameClass.batch, String.valueOf(cook.getDirection()), 0, 300);
 		MainGameClass.font.draw(MainGameClass.batch, Long.toString(startTime - timeOnStartup), 0, 500);

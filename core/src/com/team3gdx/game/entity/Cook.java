@@ -34,6 +34,8 @@ public class Cook extends Entity {
 	TextureRegion[][] currentTextureRegion;
 	private char direction;
 	int cookno;
+	
+	public boolean locked = false;
 
 	public Cook(Vector2 pos, int cooknum) {
 		this.cookno = cooknum;

@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
+import com.team3gdx.game.MainGameClass;
 import com.team3gdx.game.entity.Entity;
 import com.team3gdx.game.screen.GameScreen;
 import com.team3gdx.game.screen.GameScreen.STATE;
@@ -59,10 +60,10 @@ public class Ingredient extends Entity {
 		return (flipped = true);
 	}
 
-	public int slice(SpriteBatch batch) {
-		shapeRenderer.setProjectionMatrix(batch.getProjectionMatrix());
+	public int slice() {
+		shapeRenderer.setProjectionMatrix(MainGameClass.batch.getProjectionMatrix());
 		drawStatusBar(slices / idealSlices, idealSlices);
-		draw(batch);
+//		draw(batch);
 		return ++slices;
 	}
 

@@ -18,7 +18,7 @@ public class CuttingStation extends Station {
 
 	public void interact(SpriteBatch batch, float time, int idealSlices) {
 		if (time % timeBetweenCuts == 0)
-			slots.peek().slice(batch);
+			slots.peek().slice();
 	}
 
 }
