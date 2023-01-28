@@ -59,14 +59,10 @@ public class StationManager {
 			break;
 		case 46:
 			// Frying station
-
 			checkCookingStation(pos, new FryingStation(pos));
-
 			break;
 		case 47:
 			// Preparation station
-
-			int initialItemStackSize = GameScreen.cook.heldItems.size();
 
 			if (!stations.containsKey(pos)) {
 				stations.put(pos, new PrepStation(pos));
@@ -89,7 +85,13 @@ public class StationManager {
 		case 49:
 			// Baking station
 			checkCookingStation(pos, new BakingStation(pos));
-
+			break;
+		case 52:
+			// Service station
+			if (!stations.containsKey(pos)) {
+				stations.put(pos, new ServingStation(pos));
+			}
+			placeIngredientStation(pos);
 			break;
 		case 6:
 			// Bin to dispose of unwanted ingredients.

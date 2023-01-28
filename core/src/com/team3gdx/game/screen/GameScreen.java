@@ -34,6 +34,7 @@ import com.team3gdx.game.MainGameClass;
 import com.team3gdx.game.entity.Cook;
 import com.team3gdx.game.entity.CustomerController;
 import com.team3gdx.game.entity.Entity;
+import com.team3gdx.game.food.Menu;
 import com.team3gdx.game.station.StationManager;
 import com.team3gdx.game.util.CollisionTile;
 import com.team3gdx.game.util.Control;
@@ -237,7 +238,7 @@ public class GameScreen implements Screen {
 		uiMatrix.setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		MainGameClass.batch.setProjectionMatrix(uiMatrix);
 		// =====================================DRAW=UI=ELEMENTS=========================================================
-
+		Menu.RECIPES.get("Burger").displayRecipe(new Vector2(64, 256));
 		for (int i = 0; i < cooks.length; i++) {
 			if (i == currentCookIndex) {
 				selectedPlayerBox.setAutoShapeType(true);
