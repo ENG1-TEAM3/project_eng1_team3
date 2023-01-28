@@ -71,13 +71,19 @@ public class StationManager {
 			placeIngredientStation(pos);
 			PrepStation station = ((PrepStation) stations.get(pos));
 
-			if (!station.slots.isEmpty()) {
-				if (station.slotsToRecipe()) {
+			if (!station.slots.isEmpty() && station.slotsToRecipe()) {
+				System.out.println(station.lockedCook);
+				if (station.lockedCook == null) {
 					GameScreen.cook.locked = true;
-					station.slots.peek().slicing = true;
-					station.updateProgress(.01f);
-
+					station.lockedCook = GameScreen.cook;
+				} else {
+					station.lockedCook.locked = true;
 				}
+				station.slots.peek().slicing = true;
+				station.updateProgress(.01f);
+			} else if (station.lockedCook != null) {
+				station.lockedCook.locked = false;
+				station.lockedCook = null;
 			}
 
 			break;
@@ -164,7 +170,6 @@ public class StationManager {
 		drawTakeText(pos);
 		drawDropText(pos);
 		if (GameScreen.control.interact) {
-			GameScreen.cook.locked = false;
 			if (!stations.get(pos).slots.empty() && !GameScreen.cook.full()) {
 				GameScreen.cook.pickUpItem(stations.get(pos).take());
 				return;

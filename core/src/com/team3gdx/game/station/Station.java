@@ -3,6 +3,7 @@ package com.team3gdx.game.station;
 import java.util.Stack;
 
 import com.badlogic.gdx.math.Vector2;
+import com.team3gdx.game.entity.Cook;
 import com.team3gdx.game.food.Ingredient;
 
 public class Station {
@@ -15,6 +16,8 @@ public class Station {
 	public boolean infinite;
 
 	protected int numberOfSlots;
+	
+	public Cook lockedCook;
 
 	public Station(Vector2 pos, int numberOfSlots, boolean infinite, Ingredient[] allowedIngredients) {
 		this.pos = pos;

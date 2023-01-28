@@ -229,7 +229,7 @@ public class GameScreen implements Screen {
 		MainGameClass.batch.end();
 		// ==================================MOVE=COOK===================================================================
 		tempTime = System.currentTimeMillis();
-		if (!cook.locked)
+		if (!cook.locked && Tutorial.complete)
 			cook.update(control, (tempTime - startTime), CLTiles);
 		startTime = tempTime;
 		checkInteraction(cook, MainGameClass.shapeRenderer);
@@ -271,7 +271,6 @@ public class GameScreen implements Screen {
 				Tutorial.nextStage();
 			}
 			Tutorial.drawBox(delta * 20);
-			cook.locked = true;
 		} else {
 			if (Math.abs(worldCamera.position.x - cook.pos.x) < 2
 					&& Math.abs(worldCamera.position.y - cook.pos.y) < 2) {
@@ -280,7 +279,6 @@ public class GameScreen implements Screen {
 			} else {
 				worldCamera.position.lerp(new Vector3(cook.pos.x, cook.pos.y, 0), .065f);
 			}
-			cook.locked = false;
 		}
 
 		MainGameClass.batch.setProjectionMatrix(worldCamera.combined);
@@ -299,10 +297,12 @@ public class GameScreen implements Screen {
 		MainGameClass.batch.setProjectionMatrix(worldCamera.combined);
 
 		if (control.tab) {
+			cook.locked = false;
 			currentCookIndex += currentCookIndex < cooks.length - 1 ? 1 : -currentCookIndex;
 			cook = cooks[currentCookIndex];
 		}
 		if (control.shift) {
+			cook.locked = false;
 			currentCookIndex -= currentCookIndex > 0 ? 1 : -cooks.length + 1;
 			cook = cooks[currentCookIndex];
 		}
