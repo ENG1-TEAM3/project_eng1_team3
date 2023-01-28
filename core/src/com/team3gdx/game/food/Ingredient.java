@@ -63,7 +63,6 @@ public class Ingredient extends Entity {
 	public int slice() {
 		shapeRenderer.setProjectionMatrix(MainGameClass.batch.getProjectionMatrix());
 		drawStatusBar(slices / idealSlices, idealSlices);
-//		draw(batch);
 		return ++slices;
 	}
 
@@ -112,7 +111,6 @@ public class Ingredient extends Entity {
 
 	@Override
 	public boolean equals(Object o) {
-
 		if (!(o instanceof Ingredient))
 			return false;
 

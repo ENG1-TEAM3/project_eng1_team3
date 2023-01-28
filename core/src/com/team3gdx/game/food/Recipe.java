@@ -5,11 +5,9 @@ import java.util.Map;
 import java.util.Stack;
 
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.team3gdx.game.MainGameClass;
-import com.team3gdx.game.entity.Entity;
 
 public class Recipe extends Ingredient {
 
@@ -48,14 +46,16 @@ public class Recipe extends Ingredient {
 			Ingredient initial = new Ingredient(initialIngredient);
 			initial.pos = new Vector2(pos);
 			initial.pos.x -= 48;
-			initial.pos.y += --i * 32 + (new BitmapFont().getCapHeight() / 2);
+			initial.pos.y += --i * 2 * new BitmapFont().getLineHeight() + new BitmapFont().getLineHeight();
 			initial.draw(MainGameClass.batch);
+		} else {
+			i = -1;
 		}
 		for (Ingredient ingredient : ingredientInstructions.keySet()) {
 			completeRecipe += ingredientInstructions.get(ingredient) + " " + ingredient.name + "\n\n";
 			ingredient.pos = new Vector2(pos);
 			ingredient.pos.x -= 48;
-			ingredient.pos.y += --i * 32 + (new BitmapFont().getCapHeight() / 2);
+			ingredient.pos.y += --i * 2 * new BitmapFont().getLineHeight() + new BitmapFont().getLineHeight();
 			ingredient.draw(MainGameClass.batch);
 
 		}
@@ -63,7 +63,7 @@ public class Recipe extends Ingredient {
 		Ingredient result = new Ingredient(this);
 		result.pos = new Vector2(pos);
 		result.pos.x -= 48;
-		result.pos.y += --i * 32 + (new BitmapFont().getCapHeight() / 2);
+		result.pos.y += --i * 2 * new BitmapFont().getLineHeight() + new BitmapFont().getLineHeight();
 		result.draw(MainGameClass.batch);
 
 		completeRecipe += finalSteps;

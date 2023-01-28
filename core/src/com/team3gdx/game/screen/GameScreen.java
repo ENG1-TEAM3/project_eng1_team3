@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.assets.loaders.AssetLoader;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -26,10 +25,6 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
-import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.ScreenUtils;
@@ -264,7 +259,7 @@ public class GameScreen implements Screen {
 		MainGameClass.font.draw(MainGameClass.batch, String.valueOf(cook.getDirection()), 0, 300);
 		MainGameClass.font.draw(MainGameClass.batch, Long.toString(startTime - timeOnStartup), 0, 500);
 		MainGameClass.font.draw(MainGameClass.batch, "Time in ms:", 0, 550);
-		MainGameClass.batch.draw(new Texture("entities/cook.png"), 0, 0);
+//		MainGameClass.batch.draw(new Texture("entities/cook.png"), 0, 0);
 		MainGameClass.font.draw(MainGameClass.batch, state1.toString(), gameResolutionX / 20.0f,
 				gameResolutionY / 20.0f);
 		MainGameClass.batch.end();
@@ -276,6 +271,7 @@ public class GameScreen implements Screen {
 				Tutorial.nextStage();
 			}
 			Tutorial.drawBox(delta * 20);
+			cook.locked = true;
 		} else {
 			if (Math.abs(worldCamera.position.x - cook.pos.x) < 2
 					&& Math.abs(worldCamera.position.y - cook.pos.y) < 2) {
@@ -284,6 +280,7 @@ public class GameScreen implements Screen {
 			} else {
 				worldCamera.position.lerp(new Vector3(cook.pos.x, cook.pos.y, 0), .065f);
 			}
+			cook.locked = false;
 		}
 
 		MainGameClass.batch.setProjectionMatrix(worldCamera.combined);
