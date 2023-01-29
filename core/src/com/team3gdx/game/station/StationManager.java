@@ -28,7 +28,7 @@ public class StationManager {
 					if (station instanceof PrepStation) {
 						currentIngredient.pos = new Vector2(station.pos.x * 64 + 16, i * 8 + station.pos.y * 64);
 						if (currentIngredient.slicing)
-							((PrepStation)station).updateProgress(.01f);
+							((PrepStation) station).updateProgress(.01f);
 					} else {
 						currentIngredient.pos = new Vector2(station.pos.x * 64 + ((i * 32) % 64),
 								Math.floorDiv((i * 32), 64) * 32 + station.pos.y * 64);
@@ -106,13 +106,15 @@ public class StationManager {
 			}
 			Customer waitingCustomer = GameScreen.cc.isCustomerAtPos(new Vector2(pos.x - 1, pos.y));
 			if (waitingCustomer != null && waitingCustomer.locked) {
-				if (GameScreen.currentOrder.equals(""))
-					GameScreen.currentOrder = possibleOrders[new Random().nextInt(possibleOrders.length)];
-				else if (!stations.get(pos).slots.empty()
-						&& stations.get(pos).slots.peek().equals(Menu.RECIPES.get(GameScreen.currentOrder))) {
+				if (GameScreen.currentWaitingCustomer == null) {
+					waitingCustomer.order = possibleOrders[new Random().nextInt(possibleOrders.length)];
+					GameScreen.currentWaitingCustomer = waitingCustomer;
+				} else if (waitingCustomer == GameScreen.currentWaitingCustomer && !stations.get(pos).slots.empty()
+						&& stations.get(pos).slots.peek().equals(Menu.RECIPES.get(waitingCustomer.order))) {
 					stations.get(pos).slots.pop();
+					GameScreen.cc.delCustomer(waitingCustomer);
 					waitingCustomer.locked = false;
-					GameScreen.cc.delCustomer(0);
+					GameScreen.currentWaitingCustomer = null;
 				}
 
 			}

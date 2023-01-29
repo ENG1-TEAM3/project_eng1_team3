@@ -32,6 +32,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.team3gdx.game.MainGameClass;
 import com.team3gdx.game.entity.Cook;
+import com.team3gdx.game.entity.Customer;
 import com.team3gdx.game.entity.CustomerController;
 import com.team3gdx.game.entity.Entity;
 import com.team3gdx.game.food.Menu;
@@ -68,7 +69,7 @@ public class GameScreen implements Screen {
 	OrthographicCamera uiCamera;
 	public static OrthographicCamera worldCamera;
 
-	public static String currentOrder = "";
+	public static Customer currentWaitingCustomer = null;
 
 	public enum STATE {
 		Pause, Continue, main, audio
@@ -240,8 +241,8 @@ public class GameScreen implements Screen {
 		uiMatrix.setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		MainGameClass.batch.setProjectionMatrix(uiMatrix);
 		// =====================================DRAW=UI=ELEMENTS=========================================================
-		if (!currentOrder.equals(""))
-			Menu.RECIPES.get(currentOrder).displayRecipe(new Vector2(64, 256));
+		if (currentWaitingCustomer != null)
+			Menu.RECIPES.get(currentWaitingCustomer.order).displayRecipe(new Vector2(64, 256));
 		for (int i = 0; i < cooks.length; i++) {
 			if (i == currentCookIndex) {
 				selectedPlayerBox.setAutoShapeType(true);

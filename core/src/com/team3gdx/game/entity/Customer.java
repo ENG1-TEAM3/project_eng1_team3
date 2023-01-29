@@ -16,6 +16,8 @@ public class Customer {
 	public boolean locked;
 	public boolean readyfordeletion;
 
+	public String order = "";
+
 	public Customer(int x, int y, int tg) {
 		targetsquare = tg;
 		text1 = new Texture("entities/chef3_f_f.png");
