@@ -116,7 +116,7 @@ public class Ingredient extends Entity {
 
 		Ingredient compareTo = (Ingredient) o;
 
-		if (compareTo.name.equals(name) && compareTo.flipped == flipped && compareTo.idealSlices >= idealSlices
+		if (compareTo.name.equals(name) && compareTo.idealSlices >= idealSlices
 				&& compareTo.status == status)
 			return true;
 

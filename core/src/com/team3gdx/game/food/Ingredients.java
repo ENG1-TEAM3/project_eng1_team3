@@ -21,6 +21,11 @@ public class Ingredients {
 	public static Ingredient lettuce = new Ingredient(null, 32, 32, "lettuce", 3, 0);
 	public static Ingredient tomato = new Ingredient(null, 32, 32, "tomato", 1, 0);
 	public static Ingredient bun = new Ingredient(new Vector2(0, 0), 32, 32, "burger_bun", 0, .5f);
+	public static Ingredient cooked_bun = new Ingredient(new Vector2(0, 0), 32, 32, "burger_bun", 0, .5f);
+	static {
+		cooked_bun.status = Status.COOKED;
+		cooked_bun.flipped = true;
+	}
 	public static Ingredient onion = new Ingredient(null, 32, 32, "nil", 1, 0);
 
 }

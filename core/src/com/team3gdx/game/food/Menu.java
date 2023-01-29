@@ -7,12 +7,12 @@ public class Menu {
 
 	private static final Map<Ingredient, String> BURGER_STEPS = new HashMap<Ingredient, String>();
 	static {
-		BURGER_STEPS.put(Ingredients.bun, "Toast");
+		BURGER_STEPS.put(Ingredients.cooked_bun, "Toast");
 		BURGER_STEPS.put(Ingredients.cookedPatty, "Fry");
 	}
 	private static final Map<Ingredient, String> BURGER_BURNED_STEPS = new HashMap<Ingredient, String>();
 	static {
-		BURGER_BURNED_STEPS.put(Ingredients.bun, "Toast");
+		BURGER_BURNED_STEPS.put(Ingredients.cooked_bun, "Toast");
 		BURGER_BURNED_STEPS.put(Ingredients.burnedPatty, "Fry");
 	}
 	private static final Map<Ingredient, String> SALAD_STEPS = new HashMap<Ingredient, String>();

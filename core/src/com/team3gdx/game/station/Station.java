@@ -41,7 +41,7 @@ public class Station {
 		if (allowedIngredients == null)
 			return true;
 		for (Ingredient ingredient : allowedIngredients) {
-			if (ingredient.equals(droppedIngredient))
+			if (ingredient.equals(droppedIngredient) && slots.size() < numberOfSlots)
 				return true;
 		}
 
