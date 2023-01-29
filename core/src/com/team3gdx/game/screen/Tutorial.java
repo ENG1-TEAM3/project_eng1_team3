@@ -17,15 +17,15 @@ public class Tutorial {
 	private static List<PosTextPair> stages = new ArrayList<PosTextPair>();
 	static {
 		stages.add(new PosTextPair(new Vector2(64, 256),
-				" Welcome to Piazza Panic! Customers will arrive one-by-one requesting an order."));
-		stages.add(new PosTextPair(GameScreen.cook.pos, " Control the cooks in the kitchen to gather ingredients."));
-		stages.add(new PosTextPair(new Vector2(10 * 64, 11 * 64), " Move to stations:"));
-		stages.add(new PosTextPair(new Vector2(7 * 64, 11 * 64), " [Frying Station]"));
-		stages.add(new PosTextPair(new Vector2(6 * 64, 5 * 64), " [Baking station]"));
-		stages.add(new PosTextPair(new Vector2(6 * 64, 8 * 64), " [Preparation station]"));
+				" Welcome to Piazza Panic! Customers will arrive one-by-one requesting an order. "));
+		stages.add(new PosTextPair(GameScreen.cook.pos, " Control the cooks in the kitchen to gather ingredients. "));
+		stages.add(new PosTextPair(new Vector2(10 * 64, 11 * 64), " Move to different stations: [Ingredient Station] to collect ingredients, "));
+		stages.add(new PosTextPair(new Vector2(7 * 64, 11 * 64), " [Frying Station] to fry patties and other ingredients, "));
+		stages.add(new PosTextPair(new Vector2(6 * 64, 5 * 64), " [Baking station] to bake bread buns, "));
+		stages.add(new PosTextPair(new Vector2(6 * 64, 8 * 64), " [Preparation station] to form patties, slice ingredients, and prepare the order... "));
 		stages.add(new PosTextPair(new Vector2(3 * 64, 9 * 64),
-				" And then serve the customer their completed order in the shortest time."));
-		stages.add(new PosTextPair(GameScreen.cook.pos, " Goodluck!"));
+				" to then serve the customer in the shortest time. "));
+		stages.add(new PosTextPair(GameScreen.cook.pos, " Goodluck! "));
 	}
 
 	public static boolean complete = false;
@@ -38,11 +38,15 @@ public class Tutorial {
 		bitmapFont.setColor(Color.BLACK);
 		bitmapFont.getData().setScale(2);
 		layout.setText(bitmapFont, " [tab] to skip!");
+		
+		for (PosTextPair stage : stages) {
+			stage.text = " " + stage.text + " ";
+		}
 	}
 
 	private static float nextCharTimer = 0;
 	private static String curText;
-
+	
 	public static void drawBox(float dT) {
 		curText = stages.get(stage).text.substring(0, Math.round(nextCharTimer));
 		shapeRenderer.setProjectionMatrix(MainGameClass.batch.getProjectionMatrix());
@@ -63,8 +67,17 @@ public class Tutorial {
 				Gdx.graphics.getWidth() / 10f + 4f * Gdx.graphics.getWidth() / 5f - layout.width,
 				Gdx.graphics.getHeight() / 10f + bitmapFont.getCapHeight() * 1.5f);
 		MainGameClass.batch.end();
-		if (nextCharTimer < stages.get(stage).text.length())
-			nextCharTimer += dT;
+		if (nextCharTimer < stages.get(stage).text.length()) {
+			if (curText.length() > 0 && ".,!?".contains(curText.substring(curText.length() - 1))) {
+				if (addDelay(10, dT)) {
+					delay = 0;
+					nextCharTimer += 1;
+				}
+			}
+			if (delay == 0) {
+				nextCharTimer += dT;
+			}
+		}
 	}
 
 	public static Vector2 getStagePos() {
@@ -76,15 +89,24 @@ public class Tutorial {
 			nextCharTimer = stages.get(stage).text.length();
 			return;
 		}
-		
+
 		nextCharTimer = 0;
-		
+
 		if (stage < stages.size() - 1)
 			stage++;
 		else
 			complete = true;
 	}
 
+	static float delay = 0;
+
+	private static boolean addDelay(float amount, float dT) {
+		if (delay < amount)
+			delay += dT;
+		else
+			return true;
+		return false;
+	}
 }
 
 class PosTextPair {
