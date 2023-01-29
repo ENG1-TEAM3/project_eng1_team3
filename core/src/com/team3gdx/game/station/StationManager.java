@@ -2,13 +2,16 @@ package com.team3gdx.game.station;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.team3gdx.game.MainGameClass;
+import com.team3gdx.game.entity.Customer;
 import com.team3gdx.game.food.Ingredient;
 import com.team3gdx.game.food.Ingredients;
+import com.team3gdx.game.food.Menu;
 import com.team3gdx.game.screen.GameScreen;
 import com.team3gdx.game.screen.GameScreen.STATE;
 
@@ -24,6 +27,8 @@ public class StationManager {
 					Ingredient currentIngredient = station.slots.get(i);
 					if (station instanceof PrepStation) {
 						currentIngredient.pos = new Vector2(station.pos.x * 64 + 16, i * 8 + station.pos.y * 64);
+						if (currentIngredient.slicing)
+							((PrepStation)station).updateProgress(.01f);
 					} else {
 						currentIngredient.pos = new Vector2(station.pos.x * 64 + ((i * 32) % 64),
 								Math.floorDiv((i * 32), 64) * 32 + station.pos.y * 64);
@@ -42,6 +47,8 @@ public class StationManager {
 
 		}
 	}
+
+	String[] possibleOrders = new String[] { "Burger", "Salad" };
 
 	public void checkInteractedTile(int id, Vector2 pos) {
 		switch (id) {
@@ -72,7 +79,6 @@ public class StationManager {
 			PrepStation station = ((PrepStation) stations.get(pos));
 
 			if (!station.slots.isEmpty() && station.slotsToRecipe()) {
-				System.out.println(station.lockedCook);
 				if (station.lockedCook == null) {
 					GameScreen.cook.locked = true;
 					station.lockedCook = GameScreen.cook;
@@ -80,10 +86,11 @@ public class StationManager {
 					station.lockedCook.locked = true;
 				}
 				station.slots.peek().slicing = true;
-				station.updateProgress(.01f);
+
 			} else if (station.lockedCook != null) {
 				station.lockedCook.locked = false;
 				station.lockedCook = null;
+//				if (!station.slots.empty()) station.slots.peek().slicing = false;
 			}
 
 			break;
@@ -97,7 +104,20 @@ public class StationManager {
 			if (!stations.containsKey(pos)) {
 				stations.put(pos, new ServingStation(pos));
 			}
+			Customer waitingCustomer = GameScreen.cc.isCustomerAtPos(new Vector2(pos.x - 1, pos.y));
+			if (waitingCustomer != null && waitingCustomer.locked) {
+				if (GameScreen.currentOrder.equals(""))
+					GameScreen.currentOrder = possibleOrders[new Random().nextInt(possibleOrders.length)];
+				else if (!stations.get(pos).slots.empty()
+						&& stations.get(pos).slots.peek().equals(Menu.RECIPES.get(GameScreen.currentOrder))) {
+					stations.get(pos).slots.pop();
+					waitingCustomer.locked = false;
+					GameScreen.cc.delCustomer(0);
+				}
+
+			}
 			placeIngredientStation(pos);
+
 			break;
 		case 6:
 			// Bin to dispose of unwanted ingredients.

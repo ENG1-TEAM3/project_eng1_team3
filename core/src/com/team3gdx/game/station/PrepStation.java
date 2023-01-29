@@ -13,7 +13,7 @@ import com.team3gdx.game.screen.GameScreen;
 
 public class PrepStation extends Station {
 
-	private float progress = 0;
+	public float progress = 0;
 
 	public PrepStation(Vector2 pos) {
 		super(pos, 5, false, null);
@@ -49,8 +49,9 @@ public class PrepStation extends Station {
 
 			return true;
 		}
-		
+
 		GameScreen.cook.locked = false;
+		slots.peek().slicing = false;
 
 		return false;
 	}
@@ -60,8 +61,11 @@ public class PrepStation extends Station {
 	public void updateProgress(float delta) {
 		if (progress < 1)
 			progress += delta;
-		else
+		else {
 			progress = 1;
+//			slots.peek().slicing = false;
+			slotsToRecipe();
+		}
 		drawStatusBar();
 	}
 
@@ -80,7 +84,6 @@ public class PrepStation extends Station {
 			MainGameClass.batch.end();
 		}
 
-		
 	}
 
 	private Ingredient ingredientMatch(Ingredient toMatch) {

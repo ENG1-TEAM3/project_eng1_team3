@@ -68,6 +68,8 @@ public class GameScreen implements Screen {
 	OrthographicCamera uiCamera;
 	public static OrthographicCamera worldCamera;
 
+	public static String currentOrder = "";
+
 	public enum STATE {
 		Pause, Continue, main, audio
 	}
@@ -96,7 +98,7 @@ public class GameScreen implements Screen {
 	public static Cook[] cooks = { new Cook(new Vector2(64 * 5, 64 * 3), 1), new Cook(new Vector2(64 * 5, 64 * 5), 2) };
 	public static int currentCookIndex = 0;
 	public static Cook cook = cooks[currentCookIndex];
-	CustomerController cc;
+	public static CustomerController cc;
 	InputMultiplexer multi;
 	StationManager stationManager = new StationManager();
 
@@ -238,7 +240,8 @@ public class GameScreen implements Screen {
 		uiMatrix.setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		MainGameClass.batch.setProjectionMatrix(uiMatrix);
 		// =====================================DRAW=UI=ELEMENTS=========================================================
-		Menu.RECIPES.get("Burger").displayRecipe(new Vector2(64, 256));
+		if (!currentOrder.equals(""))
+			Menu.RECIPES.get(currentOrder).displayRecipe(new Vector2(64, 256));
 		for (int i = 0; i < cooks.length; i++) {
 			if (i == currentCookIndex) {
 				selectedPlayerBox.setAutoShapeType(true);
