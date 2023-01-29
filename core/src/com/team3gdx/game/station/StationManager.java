@@ -113,6 +113,10 @@ public class StationManager {
 						&& stations.get(pos).slots.peek().equals(Menu.RECIPES.get(waitingCustomer.order))) {
 					stations.get(pos).slots.pop();
 					GameScreen.cc.delCustomer(waitingCustomer);
+					if (GameScreen.currentWave < GameScreen.NUMBER_OF_WAVES) {
+						GameScreen.currentWave++;
+						GameScreen.cc.spawnCustomer();
+					}
 					waitingCustomer.locked = false;
 					GameScreen.currentWaitingCustomer = null;
 				}

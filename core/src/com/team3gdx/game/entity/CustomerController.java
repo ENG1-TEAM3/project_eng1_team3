@@ -206,9 +206,9 @@ public class CustomerController {
 				}
 			}
 		}
-		if (sumlocked == amountActiveCustomers) {
-			spawnCustomer();
-		}
+//		if (sumlocked == amountActiveCustomers) {
+//			spawnCustomer();
+//		}
 		int ctr = 0;
 		for (Customer c : this.leavingcustomers) {
 			if (c != null) {
