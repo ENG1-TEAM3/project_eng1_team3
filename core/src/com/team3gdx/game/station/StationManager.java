@@ -64,6 +64,9 @@ public class StationManager {
 		case 39:
 			takeIngredientStation(pos, Ingredients.tomato);
 			break;
+		case 53:
+			takeIngredientStation(pos, Ingredients.onion);
+			break;
 		case 46:
 			// Frying station
 			checkCookingStation(pos, new FryingStation(pos));
