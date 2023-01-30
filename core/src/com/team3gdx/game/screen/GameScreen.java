@@ -1,5 +1,7 @@
 package com.team3gdx.game.screen;
 
+import java.util.ArrayList;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputMultiplexer;
@@ -109,6 +111,10 @@ public class GameScreen implements Screen {
 	InputMultiplexer multi;
 	StationManager stationManager = new StationManager();
 
+	public ArrayList<Vector2> tutorialJumpPositions = new ArrayList<Vector2>();
+
+	private static final String[] stationNames = { "Tomatoes", "Frying", "Baking", "Prep", "Service" };
+
 	public GameScreen(MainGameClass game, MainScreen ms) {
 		this.game = game;
 		this.ms = ms;
@@ -121,6 +127,26 @@ public class GameScreen implements Screen {
 		cc = new CustomerController(map1);
 		cc.spawnCustomer();
 
+		tutorialJumpPositions.add(cook.pos);
+		tutorialJumpPositions.add(cook.pos);
+
+//		for (int i = 0; i < stationNames.length; i++) {
+//			station: for (int x = 0; x < ((TiledMapTileLayer) map1.getLayers().get(1)).getWidth(); x++) {
+//				for (int y = 0; y < ((TiledMapTileLayer) map1.getLayers().get(1)).getWidth(); y++) {
+//					Cell currentCell = ((TiledMapTileLayer) map1.getLayers().get(1)).getCell(x, y);
+//					if (currentCell != null) {
+//						Object currentCellStation = currentCell.getTile().getProperties().get("Station");
+//						if (currentCellStation != null && ((String) currentCellStation).equals(stationNames[i])) {
+//							tutorialJumpPositions.add(new Vector2(x * 64, y * 64));
+//							break station;
+//						}
+//					}
+//				}
+//			}
+//		}
+//
+//		tutorialJumpPositions.add(cook.pos);
+//		tutorialJumpPositions.add(cook.pos);
 	}
 
 	public void show() {
@@ -277,7 +303,7 @@ public class GameScreen implements Screen {
 		// =====================================SET=MATRIX=BACK=TO=GAME=MATRIX===========================================
 
 		if (!Tutorial.complete) {
-			worldCamera.position.lerp(new Vector3(Tutorial.getStagePos(), 0), .065f);
+			worldCamera.position.lerp(new Vector3(tutorialJumpPositions.get(Tutorial.stage), 0), .065f);
 			if (control.tab) {
 				Tutorial.nextStage();
 			}
@@ -533,9 +559,16 @@ public class GameScreen implements Screen {
 			break;
 		}
 		Cell viewedTile = ((TiledMapTileLayer) map1.getLayers().get(1)).getCell(checkCellX, checkCellY);
+
 		if (viewedTile != null) {
-			System.out.println(viewedTile.getTile().getId());
-			stationManager.checkInteractedTile(viewedTile.getTile().getId(), new Vector2(checkCellX, checkCellY));
+			Object stationType = viewedTile.getTile().getProperties().get("Station");
+			if (stationType != null) {
+				System.out.println(viewedTile.getTile().getProperties().get("Station"));
+				stationManager.checkInteractedTile((String) viewedTile.getTile().getProperties().get("Station"),
+						new Vector2(checkCellX, checkCellY));
+			} else {
+				stationManager.checkInteractedTile("", new Vector2(checkCellX, checkCellY));
+			}
 		}
 		sr.begin(ShapeRenderer.ShapeType.Line);
 		sr.setColor(new Color(1, 0, 1, 1));

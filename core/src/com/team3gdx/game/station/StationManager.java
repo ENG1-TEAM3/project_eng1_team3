@@ -40,45 +40,44 @@ public class StationManager {
 					} else {
 						currentIngredient.draw(MainGameClass.batch);
 					}
-
 				}
-
 			}
-
 		}
 	}
 
 	String[] possibleOrders = new String[] { "Burger", "Salad" };
 
-	public void checkInteractedTile(int id, Vector2 pos) {
-		switch (id) {
-		case 50:
+	public void checkInteractedTile(String type, Vector2 pos) {
+		switch (type) {
+		case "Buns":
 			takeIngredientStation(pos, Ingredients.bun);
 			break;
-		case 51:
+		case "Patties":
 			takeIngredientStation(pos, Ingredients.unformedPatty);
 			break;
-		case 33:
+		case "Lettuces":
 			takeIngredientStation(pos, Ingredients.lettuce);
 			break;
-		case 39:
+		case "Tomatoes":
 			takeIngredientStation(pos, Ingredients.tomato);
 			break;
-		case 53:
+		case "Onions":
 			takeIngredientStation(pos, Ingredients.onion);
 			break;
-		case 46:
+		case "Frying":
 			// Frying station
 			checkCookingStation(pos, new FryingStation(pos));
 			break;
-		case 47:
+		case "Prep":
 			// Preparation station
 
 			if (!stations.containsKey(pos)) {
 				stations.put(pos, new PrepStation(pos));
 			}
 
-			placeIngredientStation(pos);
+			if ((!stations.get(pos).slots.isEmpty() && !stations.get(pos).slots.peek().slicing)
+					|| stations.get(pos).slots.isEmpty())
+				placeIngredientStation(pos);
 			PrepStation station = ((PrepStation) stations.get(pos));
 
 			if (!station.slots.isEmpty() && station.slotsToRecipe()) {
@@ -93,16 +92,15 @@ public class StationManager {
 			} else if (station.lockedCook != null) {
 				station.lockedCook.locked = false;
 				station.lockedCook = null;
-//				if (!station.slots.empty()) station.slots.peek().slicing = false;
 			}
 
 			break;
 
-		case 49:
+		case "Baking":
 			// Baking station
 			checkCookingStation(pos, new BakingStation(pos));
 			break;
-		case 52:
+		case "Service":
 			// Service station
 			if (!stations.containsKey(pos)) {
 				stations.put(pos, new ServingStation(pos));
@@ -128,7 +126,7 @@ public class StationManager {
 			placeIngredientStation(pos);
 
 			break;
-		case 6:
+		case "Bin":
 			// Bin to dispose of unwanted ingredients.
 			if (GameScreen.control.drop && !GameScreen.cook.heldItems.empty())
 				GameScreen.cook.dropItem();
