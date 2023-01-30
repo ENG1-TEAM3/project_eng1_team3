@@ -18,13 +18,15 @@ public class Tutorial {
 	static {
 		stages.add(new PosTextPair(new Vector2(64, 256),
 				" Welcome to Piazza Panic! Customers will arrive one-by-one requesting an order. "));
-		stages.add(new PosTextPair(GameScreen.cook.pos, " Control the cooks in the kitchen to gather ingredients. "));
-		stages.add(new PosTextPair(new Vector2(10 * 64, 11 * 64), " Move to different stations: [Ingredient Station] to collect ingredients, "));
-		stages.add(new PosTextPair(new Vector2(7 * 64, 11 * 64), " [Frying Station] to fry patties and other ingredients, "));
+		stages.add(new PosTextPair(GameScreen.cook.pos, " Control the cooks (using WASD) in the kitchen to gather ingredients. "));
+		stages.add(new PosTextPair(new Vector2(10 * 64, 11 * 64),
+				" Move to different stations: [Ingredient Station] to collect ingredients (e to pickup, q to drop), "));
+		stages.add(new PosTextPair(new Vector2(7 * 64, 11 * 64),
+				" [Frying Station] to fry patties and other ingredients (f to flip when ready), "));
 		stages.add(new PosTextPair(new Vector2(6 * 64, 5 * 64), " [Baking station] to bake bread buns, "));
-		stages.add(new PosTextPair(new Vector2(6 * 64, 8 * 64), " [Preparation station] to form patties, slice ingredients, and prepare the order... "));
-		stages.add(new PosTextPair(new Vector2(3 * 64, 9 * 64),
-				" to then serve the customer in the shortest time. "));
+		stages.add(new PosTextPair(new Vector2(6 * 64, 8 * 64),
+				" [Preparation station] to form patties, slice ingredients, and prepare the order... "));
+		stages.add(new PosTextPair(new Vector2(3 * 64, 9 * 64), " to then serve the customer in the shortest time. "));
 		stages.add(new PosTextPair(GameScreen.cook.pos, " Goodluck! "));
 	}
 
@@ -38,7 +40,7 @@ public class Tutorial {
 		bitmapFont.setColor(Color.BLACK);
 		bitmapFont.getData().setScale(2);
 		layout.setText(bitmapFont, " [tab] to skip!");
-		
+
 		for (PosTextPair stage : stages) {
 			stage.text = " " + stage.text + " ";
 		}
@@ -46,7 +48,7 @@ public class Tutorial {
 
 	private static float nextCharTimer = 0;
 	private static String curText;
-	
+
 	public static void drawBox(float dT) {
 		curText = stages.get(stage).text.substring(0, Math.round(nextCharTimer));
 		shapeRenderer.setProjectionMatrix(MainGameClass.batch.getProjectionMatrix());

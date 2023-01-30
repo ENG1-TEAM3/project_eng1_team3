@@ -41,14 +41,14 @@ import com.team3gdx.game.util.CollisionTile;
 import com.team3gdx.game.util.Control;
 
 public class GameScreen implements Screen {
-	
+
 	public static final int NUMBER_OF_WAVES = 5;
-	
+
 	final MainGameClass game;
 	final MainScreen ms;
-	
+
 	public static int currentWave = 0;
-	
+
 	Rectangle volSlideBackgr;
 	Rectangle volSlide;
 	Rectangle musSlideBackgr;
@@ -120,6 +120,7 @@ public class GameScreen implements Screen {
 		constructCollisionData(map1);
 		cc = new CustomerController(map1);
 		cc.spawnCustomer();
+
 	}
 
 	public void show() {

@@ -26,9 +26,10 @@ public class Menu {
 
 	public static final Map<String, Recipe> RECIPES = new HashMap<String, Recipe>();
 	static {
-		RECIPES.put("Burger", new Recipe("Form patty", Ingredients.unformedPatty, BURGER_STEPS, "serve together", "burger", true, null, 32, 32, 0));
-		RECIPES.put("Burned burger",
-				new Recipe("Form patty", Ingredients.unformedPatty, BURGER_BURNED_STEPS, "serve together", "burger_burned", true, null, 32, 32, 0));
+		RECIPES.put("Burger", new Recipe("Form patty", Ingredients.unformedPatty, BURGER_STEPS, "serve together",
+				"burger", true, null, 32, 32, 0));
+		RECIPES.put("Burned burger", new Recipe("Form patty", Ingredients.unformedPatty, BURGER_BURNED_STEPS,
+				"serve together", "burger_burned", true, null, 32, 32, 0));
 		RECIPES.put("Salad", new Recipe("", null, SALAD_STEPS, "serve together", "nil", false, null, 32, 32, 0));
 	}
 
