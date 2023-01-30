@@ -1,4 +1,4 @@
-<plantuml>
+
 @startgantt
 
 Project starts 2022-11-14
@@ -73,4 +73,3 @@ Project starts 2022-11-14
 [User Req 2] is colored in DarkOrange
 
 @endgantt
-</plantuml>
