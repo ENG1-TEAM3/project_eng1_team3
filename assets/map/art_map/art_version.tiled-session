@@ -3,7 +3,7 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "customertest.tmx",
+    "activeFile": "art_tileset.tsx",
     "expandedProjectPaths": [
         "."
     ],
@@ -23,7 +23,7 @@
         },
         "customertest.tmx": {
             "scale": 0.75,
-            "selectedLayer": 0,
+            "selectedLayer": 1,
             "viewCenter": {
                 "x": 421.33333333333337,
                 "y": 582
@@ -65,11 +65,11 @@
     "project": "art_version.tiled-project",
     "property.type": "bool",
     "recentFiles": [
-        "art_tileset.tsx",
-        "testmap.tmx",
-        "prototype_map.tmx",
+        "customertest.tmx",
         "64pxshittytiles.tsx",
-        "customertest.tmx"
+        "prototype_map.tmx",
+        "testmap.tmx",
+        "art_tileset.tsx"
     ],
     "tileset.lastUsedFormat": "tsx",
     "tileset.tileSize": {
