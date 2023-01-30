@@ -8,9 +8,16 @@ public class Customer {
 	int targetsquare;
 	int posx;
 	int posy;
-	Texture text1;
-	TextureRegion[][] testreg;
-	TextureRegion[][] custparts1;
+	Texture textf;
+	Texture textb;
+	Texture textr;
+	Texture textl;
+
+	TextureRegion[][] custpartsf;
+	TextureRegion[][] custpartsb;
+	TextureRegion[][] custpartsr;
+	TextureRegion[][] custpartsl;
+	TextureRegion[][] currentcustparts;
 	int startposx;
 	int targetpixel;
 	public boolean locked;
@@ -18,10 +25,20 @@ public class Customer {
 
 	public String order = "";
 
-	public Customer(int x, int y, int tg) {
+	public Customer(int x, int y, int tg, int custno) {
 		targetsquare = tg;
-		text1 = new Texture("entities/chef3_f_f.png");
-		custparts1 = TextureRegion.split(text1, 32, 32);
+		textf = new Texture("entities/cust"+custno+"f.png");
+		textb = new Texture("entities/cust"+custno+"b.png");
+		textr = new Texture("entities/cust"+custno+"r.png");
+		textl = new Texture("entities/cust"+custno+"l.png");
+
+		custpartsf = TextureRegion.split(textf, 32, 32);
+		custpartsb = TextureRegion.split(textb, 32, 32);
+		custpartsr = TextureRegion.split(textr, 32, 32);
+		custpartsl = TextureRegion.split(textl, 32, 32);
+
+		currentcustparts = custpartsb;
+
 		posx = x * 64;
 		posy = y * 64;
 		startposx = posx;
@@ -29,11 +46,11 @@ public class Customer {
 	}
 
 	public void renderCustomersTop(Batch b) {
-		b.draw(custparts1[0][0], posx, posy + 64, 64, 64);
+		b.draw(currentcustparts[0][0], posx, posy + 64, 64, 64);
 	}
 
 	public void renderCustomersBot(Batch b) {
-		b.draw(custparts1[1][0], posx, posy, 64, 64);
+		b.draw(currentcustparts[1][0], posx, posy, 64, 64);
 	}
 
 	public void setTargetsquare(int tg) {
@@ -46,11 +63,13 @@ public class Customer {
 			posy++;
 		} else if (posy > targetpixel) {
 			posy--;
+			currentcustparts = custpartsf;
 		}
 		if (posy == targetpixel) {
 			if (targetpixel > 0) {
 				posx = startposx + 64;
 				locked = true;
+				currentcustparts = custpartsr;
 			} else {
 				readyfordeletion = true;
 			}
