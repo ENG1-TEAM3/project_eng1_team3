@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<tileset version="1.9" tiledversion="1.9.2" name="art_tileset" tilewidth="128" tileheight="64" tilecount="20" columns="0">
+<tileset version="1.9" tiledversion="1.9.2" name="art_tileset" tilewidth="128" tileheight="64" tilecount="24" columns="0">
  <grid orientation="orthogonal" width="1" height="1"/>
  <tile id="0">
   <image width="64" height="64" source="art_images/cnr.png"/>
@@ -63,5 +63,26 @@
  </tile>
  <tile id="26">
   <image width="64" height="64" source="art_images/register.png"/>
+ </tile>
+ <tile id="27">
+  <image width="64" height="64" source="art_images/onioncrate.png"/>
+ </tile>
+ <tile id="28">
+  <properties>
+   <property name="customer_zone" type="bool" value="true"/>
+  </properties>
+  <image width="64" height="64" source="art_images/customer tile 1.png"/>
+ </tile>
+ <tile id="29">
+  <properties>
+   <property name="customer_zone" type="bool" value="true"/>
+  </properties>
+  <image width="64" height="64" source="art_images/customer tile 2.png"/>
+ </tile>
+ <tile id="30">
+  <properties>
+   <property name="customer_zone" type="bool" value="true"/>
+  </properties>
+  <image width="64" height="64" source="art_images/customer tile 3.png"/>
  </tile>
 </tileset>

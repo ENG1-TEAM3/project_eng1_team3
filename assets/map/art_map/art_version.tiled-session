@@ -41,8 +41,8 @@
             "scale": 2,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 234,
-                "y": 261.25
+                "x": 233.5,
+                "y": 260.75
             }
         },
         "testmap.tmx#64pxshittytiles": {
@@ -63,7 +63,7 @@
         "customertest.tmx"
     ],
     "project": "art_version.tiled-project",
-    "property.type": "string",
+    "property.type": "bool",
     "recentFiles": [
         "art_tileset.tsx",
         "testmap.tmx",
