@@ -108,13 +108,13 @@ public class MainScreen implements Screen{
 		viewport = new FitViewport(gameResolutionX,gameResolutionY,camera);
 
 		vButton = new Texture(Gdx.files.internal("uielements/vButton.jpg"));
-		vControl = new Texture(Gdx.files.internal("uielements/vControl.jpg"));
-		startButton = new Texture(Gdx.files.internal("uielements/startButton.jpg"));
+		vControl = new Texture(Gdx.files.internal("uielements/vControl.png"));
+		startButton = new Texture(Gdx.files.internal("uielements/newgame.png"));
 		background = new Texture(Gdx.files.internal("uielements/MainScreenBackground.jpg"));
-		leaderBoard = new Texture(Gdx.files.internal("uielements/leaderBoard.jpg"));
-		audio = new Texture(Gdx.files.internal("uielements/Audio.jpg"));
-		audioEdit = new Texture(Gdx.files.internal("uielements/background.jpg"));
-		exitGame = new Texture(Gdx.files.internal("uielements/Exit.jpg"));
+		leaderBoard = new Texture(Gdx.files.internal("uielements/leaderboard1.png"));
+		audio = new Texture(Gdx.files.internal("uielements/Audio.png"));
+		audioEdit = new Texture(Gdx.files.internal("uielements/background.png"));
+		exitGame = new Texture(Gdx.files.internal("uielements/exitgame.png"));
 
 		sb = new Button(new TextureRegionDrawable(startButton));
 		lb = new Button(new TextureRegionDrawable(leaderBoard));

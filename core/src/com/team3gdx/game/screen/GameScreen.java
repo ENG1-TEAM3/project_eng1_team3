@@ -153,12 +153,12 @@ public class GameScreen implements Screen {
 		// ======================================CREATE=INPUTMULTIPLEXER=================================================
 		multi = new InputMultiplexer(stage, control);
 		// ======================================LOAD=TEXTURES===========================================================
-		MENU = new Texture(Gdx.files.internal("uielements/MENU.jpg"));
-		ESC = new Texture(Gdx.files.internal("uielements/ESC.jpg"));
-		BACKTOMAINSCREEN = new Texture(Gdx.files.internal("uielements/backtomainscreen.jpg"));
-		RESUME = new Texture(Gdx.files.internal("uielements/resume.jpg"));
-		AUDIO = new Texture(Gdx.files.internal("uielements/audio.jpg"));
-		audioEdit = new Texture(Gdx.files.internal("uielements/background.jpg"));
+		MENU = new Texture(Gdx.files.internal("uielements/settings.png"));
+		ESC = new Texture(Gdx.files.internal("uielements/background.png"));
+		BACKTOMAINSCREEN = new Texture(Gdx.files.internal("uielements/exitmenu.png"));
+		RESUME = new Texture(Gdx.files.internal("uielements/resume.png"));
+		AUDIO = new Texture(Gdx.files.internal("uielements/audio2.png"));
+		audioEdit = new Texture(Gdx.files.internal("uielements/background.png"));
 		// ======================================CREATE=BUTTONS==========================================================
 		mn = new Button(new TextureRegionDrawable(MENU));
 		ad = new Button(new TextureRegionDrawable(AUDIO));
