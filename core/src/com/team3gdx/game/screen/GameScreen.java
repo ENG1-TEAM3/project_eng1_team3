@@ -307,12 +307,12 @@ public class GameScreen implements Screen {
 		changeScreen(state1);
 		MainGameClass.batch.setProjectionMatrix(worldCamera.combined);
 
-		if (control.tab) {
+		if (control.tab && Tutorial.complete) {
 			cook.locked = false;
 			currentCookIndex += currentCookIndex < cooks.length - 1 ? 1 : -currentCookIndex;
 			cook = cooks[currentCookIndex];
 		}
-		if (control.shift) {
+		if (control.shift && Tutorial.complete) {
 			cook.locked = false;
 			currentCookIndex -= currentCookIndex > 0 ? 1 : -cooks.length + 1;
 			cook = cooks[currentCookIndex];
@@ -534,7 +534,7 @@ public class GameScreen implements Screen {
 		}
 		Cell viewedTile = ((TiledMapTileLayer) map1.getLayers().get(1)).getCell(checkCellX, checkCellY);
 		if (viewedTile != null) {
-//			System.out.println(viewedTile.getTile().getId());
+			System.out.println(viewedTile.getTile().getId());
 			stationManager.checkInteractedTile(viewedTile.getTile().getId(), new Vector2(checkCellX, checkCellY));
 		}
 		sr.begin(ShapeRenderer.ShapeType.Line);
