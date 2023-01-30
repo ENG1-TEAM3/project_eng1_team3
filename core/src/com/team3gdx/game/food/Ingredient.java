@@ -60,10 +60,24 @@ public class Ingredient extends Entity {
 		return (flipped = true);
 	}
 
-	public int slice() {
+	public boolean slice(SpriteBatch batch, float dT) {
+
 		shapeRenderer.setProjectionMatrix(MainGameClass.batch.getProjectionMatrix());
-		drawStatusBar(slices / idealSlices, idealSlices);
-		return ++slices;
+
+		if (dT / width * width <= width) {
+			drawStatusBar(dT / width, 1);
+		} else {
+			slices++;
+			texture = new Texture("items/" + name + "_chopped.png");
+			return true;
+		}
+
+		MainGameClass.batch.begin();
+		(new BitmapFont()).draw(MainGameClass.batch, String.valueOf(slices), pos.x * 64 + 64 + 8, pos.y * 64 + 64 + 16);
+		MainGameClass.batch.end();
+
+		draw(batch);
+		return false;
 	}
 
 	BitmapFont flipText = new BitmapFont();
@@ -79,6 +93,10 @@ public class Ingredient extends Entity {
 			if (GameScreen.state1 == STATE.Continue)
 				cookedTime += dT;
 			drawStatusBar(cookedTime / idealCookedTime, idealCookedTime);
+			if (cookedTime / idealCookedTime * width > idealCookedTime * width) {
+				texture = new Texture("items/" + name + "_cooked.png");
+				status = Status.COOKED;
+			}
 		} else {
 			status = Status.BURNED;
 			texture = new Texture("items/" + name + "_burned.png");
@@ -96,11 +114,8 @@ public class Ingredient extends Entity {
 
 		if (percentage * width <= optimum * width)
 			shapeRenderer.setColor(Color.GREEN);
-		else {
-			status = Status.COOKED;
+		else
 			shapeRenderer.setColor(Color.RED);
-			texture = new Texture("items/" + name + "_cooked.png");
-		}
 
 		shapeRenderer.rect(pos.x, pos.y + height + height / 10, percentage * width, height / 10);
 
@@ -116,8 +131,7 @@ public class Ingredient extends Entity {
 
 		Ingredient compareTo = (Ingredient) o;
 
-		if (compareTo.name.equals(name) && compareTo.idealSlices >= idealSlices
-				&& compareTo.status == status)
+		if (compareTo.name.equals(name) && compareTo.idealSlices >= idealSlices && compareTo.status == status)
 			return true;
 
 		return false;

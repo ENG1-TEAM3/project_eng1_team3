@@ -27,11 +27,15 @@ public class StationManager {
 					Ingredient currentIngredient = station.slots.get(i);
 					if (station instanceof PrepStation) {
 						currentIngredient.pos = new Vector2(station.pos.x * 64 + 16, i * 8 + station.pos.y * 64);
-						if (currentIngredient.slicing)
+						if (((PrepStation) station).lockedCook != null)
 							((PrepStation) station).updateProgress(.01f);
 					} else {
 						currentIngredient.pos = new Vector2(station.pos.x * 64 + ((i * 32) % 64),
 								Math.floorDiv((i * 32), 64) * 32 + station.pos.y * 64);
+					}
+
+					if (station instanceof CuttingStation && currentIngredient.slicing) {
+						((CuttingStation) station).interact(MainGameClass.batch, .05f);
 					}
 
 					if (currentIngredient.cooking && station instanceof CookingStation) {
@@ -75,9 +79,8 @@ public class StationManager {
 				stations.put(pos, new PrepStation(pos));
 			}
 
-			if ((!stations.get(pos).slots.isEmpty() && !stations.get(pos).slots.peek().slicing)
-					|| stations.get(pos).slots.isEmpty())
-				placeIngredientStation(pos);
+			placeIngredientStation(pos);
+
 			PrepStation station = ((PrepStation) stations.get(pos));
 
 			if (!station.slots.isEmpty() && station.slotsToRecipe()) {
@@ -87,15 +90,37 @@ public class StationManager {
 				} else {
 					station.lockedCook.locked = true;
 				}
-				station.slots.peek().slicing = true;
 
 			} else if (station.lockedCook != null) {
 				station.lockedCook.locked = false;
 				station.lockedCook = null;
+				station.progress = 0;
 			}
 
 			break;
+		case "Chopping":
+			if (!stations.containsKey(pos)) {
+				stations.put(pos, new CuttingStation(pos, 1));
+			}
 
+			placeIngredientStation(pos);
+
+			CuttingStation cutStation = ((CuttingStation) stations.get(pos));
+
+			if (!cutStation.slots.isEmpty()) {
+				if (cutStation.lockedCook == null) {
+					GameScreen.cook.locked = true;
+					cutStation.lockedCook = GameScreen.cook;
+				} else {
+					cutStation.lockedCook.locked = true;
+				}
+				cutStation.slots.peek().slicing = true;
+			} else if (cutStation.lockedCook != null) {
+				cutStation.lockedCook.locked = false;
+				cutStation.lockedCook = null;
+				cutStation.currentCutTime = 0;
+			}
+			break;
 		case "Baking":
 			// Baking station
 			checkCookingStation(pos, new BakingStation(pos));

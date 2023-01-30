@@ -41,15 +41,6 @@ public class PrepStation extends Station {
 			return true;
 		}
 
-		if (slots.peek().slices < slots.peek().idealSlices) {
-			if (progress == 1) {
-				progress = 0;
-				slots.peek().slice();
-			}
-
-			return true;
-		}
-
 		GameScreen.cook.locked = false;
 		slots.peek().slicing = false;
 
@@ -77,12 +68,6 @@ public class PrepStation extends Station {
 		shapeRenderer.setColor(Color.GREEN);
 		shapeRenderer.rect(pos.x * 64, pos.y * 64 + 64 + 64 / 10, progress * 64, 64 / 10);
 		shapeRenderer.end();
-		if (slots.peek().slicing) {
-			MainGameClass.batch.begin();
-			(new BitmapFont()).draw(MainGameClass.batch, String.valueOf(slots.peek().slices), pos.x * 64 + 64 + 8,
-					pos.y * 64 + 64 + 16);
-			MainGameClass.batch.end();
-		}
 
 	}
 

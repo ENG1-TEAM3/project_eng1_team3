@@ -10,15 +10,17 @@ public class CuttingStation extends Station {
 	private final static Ingredient[] ALLOWED_INGREDIENTS = { Ingredients.lettuce, Ingredients.tomato,
 			Ingredients.onion };
 
-	private float timeBetweenCuts;
+	public float currentCutTime;
 
 	public CuttingStation(Vector2 pos, float timeBetweenCuts) {
 		super(pos, 1, false, ALLOWED_INGREDIENTS);
 	}
 
-	public void interact(SpriteBatch batch, float time, int idealSlices) {
-		if (time % timeBetweenCuts == 0)
-			slots.peek().slice();
+	public void interact(SpriteBatch batch, float time) {
+		currentCutTime += time;
+		if (slots.peek().slice(batch, currentCutTime)) {
+			currentCutTime = 0;
+		}
 	}
 
 }
