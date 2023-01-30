@@ -109,6 +109,11 @@ public class GameScreen implements Screen {
 	InputMultiplexer multi;
 	StationManager stationManager = new StationManager();
 
+	/**
+	 * Constructor to initialise game screen;
+	 * @param game - Main entry point class
+	 * @param ms - Title screen class
+	 */
 	public GameScreen(MainGameClass game, MainScreen ms) {
 		this.game = game;
 		this.ms = ms;
@@ -120,9 +125,11 @@ public class GameScreen implements Screen {
 		constructCollisionData(map1);
 		cc = new CustomerController(map1);
 		cc.spawnCustomer();
-
 	}
 
+	/**
+	 * Things that should be done while the game screen is shown
+	 */
 	public void show() {
 		// =======================================START=FRAME=TIMER======================================================
 		startTime = System.currentTimeMillis();
@@ -208,6 +215,11 @@ public class GameScreen implements Screen {
 	}
 
 	ShapeRenderer selectedPlayerBox = new ShapeRenderer();
+
+	/**
+	 * Render method for main game
+	 * @param delta - some change in time
+	 */
 
 	public void render(float delta) {
 		// =====================================CLEAR=SCREEN=============================================================
@@ -326,6 +338,9 @@ public class GameScreen implements Screen {
 
 	}
 
+	/**
+	 * Draws the held items for all cooks on the screen
+	 */
 	private void drawHeldItems() {
 		for (Cook ck : cooks) {
 			int itemIndex = 0;
@@ -337,6 +352,10 @@ public class GameScreen implements Screen {
 		}
 	}
 
+	/**
+	 * Changes game window state
+	 * @param state1 - the state to change to
+	 */
 	public void changeScreen(STATE state1) {
 		if (state1 == STATE.main) {
 			MainGameClass.gameMusic.dispose();
@@ -383,12 +402,18 @@ public class GameScreen implements Screen {
 		}
 	}
 
+	/**
+	 * Checks to see whether escape has been pressed to pause the game
+	 */
 	public void checkState() {
 		if (Gdx.input.isKeyPressed(Keys.ESCAPE)) {
 			state1 = STATE.Pause;
 		}
 	}
 
+	/**
+	 * Updates the music volume slider
+	 */
 	public void musicVolumeUpdate() {
 		float fromTopy = Gdx.input.getY();
 		float fromBottomy = gameResolutionY - fromTopy;
@@ -408,6 +433,9 @@ public class GameScreen implements Screen {
 		}
 	}
 
+	/**
+	 * Updates the game volume slider
+	 */
 	public void gameVolumeUpdate() {
 		float fromTopy = Gdx.input.getY();
 		float fromBottomy = gameResolutionY - fromTopy;
@@ -426,6 +454,9 @@ public class GameScreen implements Screen {
 		}
 	}
 
+	/**
+	 * Calculates coordinates for UI element scaling;
+	 */
 	private void calculateBoxMaths() {
 		this.gameResolutionX = ms.gameResolutionX;
 		this.gameResolutionY = ms.gameResolutionY;
@@ -474,6 +505,10 @@ public class GameScreen implements Screen {
 		this.sliderWidth = volSlideBackgr.width;
 	}
 
+	/**
+	 * Construct an array of CollisionTile objects for collision detection
+	 * @param mp- game tilemap
+	 */
 	private void constructCollisionData(TiledMap mp) {
 		TiledMapTileLayer botlayer = (TiledMapTileLayer) mp.getLayers().get(0);
 		int mapwidth = botlayer.getWidth();
@@ -510,11 +545,16 @@ public class GameScreen implements Screen {
 		}
 	}
 
+	/**
+	 * Check the tile the cook is looking at for interaction
+	 * @param ck - Selected cook
+	 * @param sr - ShapeRenderer to draw the coloured box
+	 */
 	public void checkInteraction(Cook ck, ShapeRenderer sr) {
-		float centralcookx = ck.getX() + ck.getWidth() / 2;
-		float centralcooky = ck.getY();
-		int cellx = (int) Math.floor(centralcookx / 64);
-		int celly = (int) Math.floor(centralcooky / 64);
+		float centralCookX = ck.getX() + ck.getWidth() / 2;
+		float centralCookY = ck.getY();
+		int cellx = (int) Math.floor(centralCookX / 64);
+		int celly = (int) Math.floor(centralCookY / 64);
 		int checkCellX = cellx;
 		int checkCellY = celly;
 		switch (ck.getDirection()) {
@@ -543,6 +583,11 @@ public class GameScreen implements Screen {
 		sr.end();
 	}
 
+	/**
+	 * Resize game screen - Not used in fullscreen mode
+	 * @param width - width to resize to
+	 * @param height - height to resize to
+	 */
 	@Override
 	public void resize(int width, int height) {
 		// TODO Auto-generated method stub
