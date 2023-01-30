@@ -49,8 +49,6 @@ public class StationManager {
 		}
 	}
 
-	String[] possibleOrders = new String[] { "Burger", "Salad" };
-
 	public void checkInteractedTile(String type, Vector2 pos) {
 		switch (type) {
 		case "Buns":
@@ -83,19 +81,7 @@ public class StationManager {
 
 			PrepStation station = ((PrepStation) stations.get(pos));
 
-			if (!station.slots.isEmpty() && station.slotsToRecipe()) {
-				if (station.lockedCook == null) {
-					GameScreen.cook.locked = true;
-					station.lockedCook = GameScreen.cook;
-				} else {
-					station.lockedCook.locked = true;
-				}
-
-			} else if (station.lockedCook != null) {
-				station.lockedCook.locked = false;
-				station.lockedCook = null;
-				station.progress = 0;
-			}
+			station.lockCook();
 
 			break;
 		case "Chopping":
@@ -107,19 +93,7 @@ public class StationManager {
 
 			CuttingStation cutStation = ((CuttingStation) stations.get(pos));
 
-			if (!cutStation.slots.isEmpty()) {
-				if (cutStation.lockedCook == null) {
-					GameScreen.cook.locked = true;
-					cutStation.lockedCook = GameScreen.cook;
-				} else {
-					cutStation.lockedCook.locked = true;
-				}
-				cutStation.slots.peek().slicing = true;
-			} else if (cutStation.lockedCook != null) {
-				cutStation.lockedCook.locked = false;
-				cutStation.lockedCook = null;
-				cutStation.currentCutTime = 0;
-			}
+			cutStation.lockCook();
 			break;
 		case "Baking":
 			// Baking station
@@ -130,24 +104,7 @@ public class StationManager {
 			if (!stations.containsKey(pos)) {
 				stations.put(pos, new ServingStation(pos));
 			}
-			Customer waitingCustomer = GameScreen.cc.isCustomerAtPos(new Vector2(pos.x - 1, pos.y));
-			if (waitingCustomer != null && waitingCustomer.locked) {
-				if (GameScreen.currentWaitingCustomer == null) {
-					waitingCustomer.order = possibleOrders[new Random().nextInt(possibleOrders.length)];
-					GameScreen.currentWaitingCustomer = waitingCustomer;
-				} else if (waitingCustomer == GameScreen.currentWaitingCustomer && !stations.get(pos).slots.empty()
-						&& stations.get(pos).slots.peek().equals(Menu.RECIPES.get(waitingCustomer.order))) {
-					stations.get(pos).slots.pop();
-					GameScreen.cc.delCustomer(waitingCustomer);
-					if (GameScreen.currentWave < GameScreen.NUMBER_OF_WAVES) {
-						GameScreen.currentWave++;
-						GameScreen.cc.spawnCustomer();
-					}
-					waitingCustomer.locked = false;
-					GameScreen.currentWaitingCustomer = null;
-				}
-
-			}
+			((ServingStation) stations.get(pos)).serveCustomer();
 			placeIngredientStation(pos);
 
 			break;

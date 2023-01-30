@@ -47,6 +47,25 @@ public class PrepStation extends Station {
 		return false;
 	}
 
+	public boolean lockCook() {
+		if (!slots.isEmpty() && slotsToRecipe()) {
+			if (lockedCook == null) {
+				GameScreen.cook.locked = true;
+				lockedCook = GameScreen.cook;
+			} else {
+				lockedCook.locked = true;
+			}
+			return true;
+		}
+		if (lockedCook != null) {
+			lockedCook.locked = false;
+			lockedCook = null;
+			progress = 0;
+		}
+
+		return false;
+	}
+
 	private static ShapeRenderer shapeRenderer = new ShapeRenderer();
 
 	public void updateProgress(float delta) {

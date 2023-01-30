@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.team3gdx.game.food.Ingredient;
 import com.team3gdx.game.food.Ingredients;
+import com.team3gdx.game.screen.GameScreen;
 
 public class CuttingStation extends Station {
 
@@ -21,6 +22,27 @@ public class CuttingStation extends Station {
 		if (slots.peek().slice(batch, currentCutTime)) {
 			currentCutTime = 0;
 		}
+	}
+
+	public boolean lockCook() {
+		if (!slots.isEmpty()) {
+			if (lockedCook == null) {
+				GameScreen.cook.locked = true;
+				lockedCook = GameScreen.cook;
+			} else {
+				lockedCook.locked = true;
+			}
+			slots.peek().slicing = true;
+
+			return true;
+		}
+		if (lockedCook != null) {
+			lockedCook.locked = false;
+			lockedCook = null;
+			currentCutTime = 0;
+		}
+
+		return false;
 	}
 
 }
