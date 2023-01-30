@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<tileset version="1.9" tiledversion="1.9.2" name="art_tileset" tilewidth="128" tileheight="64" tilecount="24" columns="0">
+<tileset version="1.9" tiledversion="1.9.2" name="art_tileset" tilewidth="128" tileheight="64" tilecount="26" columns="0">
  <grid orientation="orthogonal" width="1" height="1"/>
  <tile id="0">
   <image width="64" height="64" source="art_images/cnr.png"/>
@@ -84,5 +84,11 @@
    <property name="customer_zone" type="bool" value="true"/>
   </properties>
   <image width="64" height="64" source="art_images/customer tile 3.png"/>
+ </tile>
+ <tile id="31">
+  <image width="128" height="64" source="art_images/chopping.png"/>
+ </tile>
+ <tile id="32">
+  <image width="64" height="64" source="art_images/Trash can.png"/>
  </tile>
 </tileset>
