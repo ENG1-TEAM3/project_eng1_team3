@@ -89,7 +89,7 @@ public class CustomerController {
 		Integer[] uniquexvaluesarray = uniquexvalues.toArray(new Integer[] {});
 		for (Integer unx : uniquexvaluesarray) {
 			for (int i = ymax; i > 0; i--) {
-				ArrayList<Integer> templist = new ArrayList<Integer>();
+				ArrayList<Integer> templist = new ArrayList<>();
 				templist.add(unx);
 				templist.add(i);
 				if (!customerCells.contains(templist)) {
@@ -109,7 +109,7 @@ public class CustomerController {
 	public void spawnCustomer() {
 		for (int i = 0; i < this.customers.length; i++) {
 			if (customers[i] == null) {
-				customers[i] = new Customer(this.xCoordinate, this.bottom, this.top - i);
+				customers[i] = new Customer(this.xCoordinate, this.bottom, this.top - i,3);
 				amountActiveCustomers += 1;
 				break;
 			}
@@ -126,13 +126,11 @@ public class CustomerController {
 	}
 
 	public void delCustomer(Customer customer) {
-		int i = 0;
-		for (Customer curCustomer : customers) {
+		for (int i = 0; i< this.customers.length; i++) {
 			if (customers[i] == customer) {
 				delCustomer(i);
 				return;
 			}
-			i++;
 		}
 
 	}
@@ -172,7 +170,6 @@ public class CustomerController {
 		}
 	}
 
-	public int toRemove;
 
 	public void updateCustomers(Control ctrls) {
 		if (lockout == 100) {
@@ -197,6 +194,7 @@ public class CustomerController {
 				lockout = 1;
 			}
 		}
+
 		int sumlocked = 0;
 		for (Customer c : this.customers) {
 			if (c != null) {
@@ -223,7 +221,7 @@ public class CustomerController {
 
 	public Customer isCustomerAtPos(Vector2 pos) {
 		for (Customer customer : customers)
-			if (customer != null && Math.floor(customer.posx / 60) == pos.x && Math.floor(customer.posy / 60) == pos.y
+			if (customer != null && Math.floor(customer.posx / 60f) == pos.x && Math.floor(customer.posy / 60f) == pos.y
 					&& customer.locked)
 				return customer;
 
