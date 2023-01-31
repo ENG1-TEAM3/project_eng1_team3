@@ -23,14 +23,16 @@ public class Customer {
 	public boolean locked;
 	public boolean readyfordeletion;
 
+	private long arrivalTime;
+
 	public String order = "";
 
 	public Customer(int x, int y, int tg, int custno) {
 		targetsquare = tg;
-		textf = new Texture("entities/cust"+custno+"f.png");
-		textb = new Texture("entities/cust"+custno+"b.png");
-		textr = new Texture("entities/cust"+custno+"r.png");
-		textl = new Texture("entities/cust"+custno+"l.png");
+		textf = new Texture("entities/cust" + custno + "f.png");
+		textb = new Texture("entities/cust" + custno + "b.png");
+		textr = new Texture("entities/cust" + custno + "r.png");
+		textl = new Texture("entities/cust" + custno + "l.png");
 
 		custpartsf = TextureRegion.split(textf, 32, 32);
 		custpartsb = TextureRegion.split(textb, 32, 32);
@@ -43,6 +45,15 @@ public class Customer {
 		posy = y * 64;
 		startposx = posx;
 		locked = false;
+	}
+
+	public void arrived() {
+		arrivalTime = System.currentTimeMillis();
+		System.out.println("UPDATING");
+	}
+
+	public long waitTime() {
+		return System.currentTimeMillis() - arrivalTime;
 	}
 
 	public void renderCustomersTop(Batch b) {

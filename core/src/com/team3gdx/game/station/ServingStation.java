@@ -33,6 +33,7 @@ public class ServingStation extends Station {
 		if (waitingCustomer != null && waitingCustomer.locked) {
 			if (GameScreen.currentWaitingCustomer == null) {
 				waitingCustomer.order = possibleOrders[new Random().nextInt(possibleOrders.length)];
+				waitingCustomer.arrived();
 				GameScreen.currentWaitingCustomer = waitingCustomer;
 				return false;
 			}

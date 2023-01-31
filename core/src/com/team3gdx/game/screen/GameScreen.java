@@ -1,7 +1,5 @@
 package com.team3gdx.game.screen;
 
-import java.util.ArrayList;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputMultiplexer;
@@ -307,9 +305,12 @@ public class GameScreen implements Screen {
 		control.shift = false;
 	}
 
+	public static final float MAX_WAIT_TIME = 10000;
+
 	private void drawUI() {
-		if (currentWaitingCustomer != null)
+		if (currentWaitingCustomer != null && currentWaitingCustomer.waitTime() < MAX_WAIT_TIME) {
 			Menu.RECIPES.get(currentWaitingCustomer.order).displayRecipe(new Vector2(64, 256));
+		}
 		for (int i = 0; i < cooks.length; i++) {
 			if (i == currentCookIndex) {
 				selectedPlayerBox.setAutoShapeType(true);
