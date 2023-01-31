@@ -1,11 +1,10 @@
 package com.team3gdx.game.station;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
-import com.team3gdx.game.MainGameClass;
 import com.team3gdx.game.food.Ingredient;
 import com.team3gdx.game.food.Menu;
 import com.team3gdx.game.food.Recipe;
@@ -68,7 +67,7 @@ public class PrepStation extends Station {
 
 	private static ShapeRenderer shapeRenderer = new ShapeRenderer();
 
-	public void updateProgress(float delta) {
+	public void updateProgress(SpriteBatch batch, float delta) {
 		if (progress < 1)
 			progress += delta;
 		else {
@@ -76,11 +75,11 @@ public class PrepStation extends Station {
 //			slots.peek().slicing = false;
 			slotsToRecipe();
 		}
-		drawStatusBar();
+		drawStatusBar(batch);
 	}
 
-	private void drawStatusBar() {
-		shapeRenderer.setProjectionMatrix(MainGameClass.batch.getProjectionMatrix());
+	private void drawStatusBar(SpriteBatch batch) {
+		shapeRenderer.setProjectionMatrix(batch.getProjectionMatrix());
 		shapeRenderer.begin(ShapeType.Filled);
 		shapeRenderer.setColor(Color.WHITE);
 		shapeRenderer.rect(pos.x * 64, pos.y * 64 + 64 + 64 / 10, 64, 64 / 8);

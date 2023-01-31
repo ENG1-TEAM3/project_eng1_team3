@@ -47,6 +47,7 @@ public class ServingStation extends Station {
 				waitingCustomer.locked = false;
 				GameScreen.currentWaitingCustomer = null;
 			}
+
 		}
 
 	}
