@@ -87,7 +87,7 @@ public class Ingredient extends Entity {
 	 * @return A boolean representing if the ingredient was successfully flipped.
 	 */
 	public boolean flip() {
-		if (cookedTime / idealCookedTime < idealCookedTime)
+		if (cookedTime / idealCookedTime < idealCookedTime * .65f)
 			return false;
 		return (flipped = true);
 	}
@@ -104,7 +104,7 @@ public class Ingredient extends Entity {
 		shapeRenderer.setProjectionMatrix(batch.getProjectionMatrix());
 
 		if (dT / width * width <= width) {
-			drawStatusBar(dT / width, 1);
+			drawStatusBar(dT / width, 1, 1);
 		} else {
 			slices++;
 			texture = new Texture("items/" + name + "_chopped.png");
@@ -130,7 +130,7 @@ public class Ingredient extends Entity {
 	 */
 	public double cook(float dT, SpriteBatch batch) {
 		shapeRenderer.setProjectionMatrix(batch.getProjectionMatrix());
-		if (!flipped && cookedTime / idealCookedTime * width > idealCookedTime * width) {
+		if (!flipped && cookedTime / idealCookedTime * width > idealCookedTime * width * .65f) {
 			batch.begin();
 			flipText.draw(batch, "Flip [f]", pos.x, pos.y);
 			batch.end();
@@ -138,7 +138,7 @@ public class Ingredient extends Entity {
 		if (cookedTime / idealCookedTime * width <= width) {
 			if (GameScreen.state1 == STATE.Continue)
 				cookedTime += dT;
-			drawStatusBar(cookedTime / idealCookedTime, idealCookedTime);
+			drawStatusBar(cookedTime / idealCookedTime, idealCookedTime * .65f, idealCookedTime * 1.35f);
 			if (cookedTime / idealCookedTime * width > idealCookedTime * width) {
 				texture = new Texture("items/" + name + "_cooked.png");
 				status = Status.COOKED;
@@ -158,20 +158,25 @@ public class Ingredient extends Entity {
 	 * @param percentage The current progress of the status bar.
 	 * @param optimum    The optimal status to reach (shown by a black bar).
 	 */
-	private void drawStatusBar(float percentage, float optimum) {
+	private void drawStatusBar(float percentage, float optimumLower, float optimumUpper) {
 		shapeRenderer.begin(ShapeType.Filled);
 		shapeRenderer.setColor(Color.WHITE);
-		shapeRenderer.rect(pos.x, pos.y + height + height / 10, width, height / 8);
+		shapeRenderer.rect(pos.x - width / 2, pos.y + height + height / 10, width * 2, height / 4);
 
-		if (percentage * width <= optimum * width)
+		if (percentage * width < optimumLower * width)
+			shapeRenderer.setColor(Color.RED);
+		else if (percentage * width < optimumUpper * width)
 			shapeRenderer.setColor(Color.GREEN);
 		else
 			shapeRenderer.setColor(Color.RED);
 
-		shapeRenderer.rect(pos.x, pos.y + height + height / 10, percentage * width, height / 10);
+		shapeRenderer.rect(pos.x - width / 2, pos.y + height + height / 10, percentage * width * 2, height / 5);
 
 		shapeRenderer.setColor(Color.BLACK);
-		shapeRenderer.rect(pos.x + optimum * width, pos.y + height + height / 10, height / 10, 2 * height / 10);
+		shapeRenderer.rect(pos.x - width / 2 + optimumLower * width * 2, pos.y + height + height / 10, height / 10,
+				2 * height / 5);
+		shapeRenderer.rect(pos.x - width / 2 + optimumUpper * width * 2, pos.y + height + height / 10, height / 10,
+				2 * height / 5);
 		shapeRenderer.end();
 	}
 

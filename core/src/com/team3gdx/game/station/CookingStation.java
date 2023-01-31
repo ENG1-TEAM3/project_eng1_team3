@@ -41,7 +41,8 @@ public class CookingStation extends Station {
 	 * Render the particles.
 	 * 
 	 * @param batch
-	 * @param slotIndex
+	 * @param slotIndex The slot to draw the particle effects at (which slot is
+	 *                  active).
 	 */
 	public void drawParticles(SpriteBatch batch, int slotIndex) {
 		batch.begin();

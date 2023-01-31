@@ -10,11 +10,12 @@ import com.team3gdx.game.food.Recipe;
 import com.team3gdx.game.screen.GameScreen;
 
 public class ServingStation extends Station {
-	
+
 	String[] possibleOrders = new String[] { "Burger", "Salad" };
 
-	// Allow only components to be placed at station (to give to customer!)
-
+	/**
+	 * Configure allowed ingredient to be those on the menu.
+	 */
 	static Ingredient[] allowedIngredients = new Ingredient[Menu.RECIPES.size()];
 	static {
 		int i = 0;
@@ -27,7 +28,11 @@ public class ServingStation extends Station {
 	public ServingStation(Vector2 pos) {
 		super(pos, 1, false, allowedIngredients);
 	}
-	
+
+	/**
+	 * Check if there is a customer waiting, get their order and check if the
+	 * serving station contains it.
+	 */
 	public void serveCustomer() {
 		Customer waitingCustomer = GameScreen.cc.isCustomerAtPos(new Vector2(pos.x - 1, pos.y));
 		if (waitingCustomer != null && waitingCustomer.locked) {

@@ -11,7 +11,10 @@ import com.team3gdx.game.screen.GameScreen;
 
 /**
  * 
- * Deals with all the stations and cook interactions.
+ * Deals with all the stations and cook interactions. To create a new station,
+ * extend from {@link Station}, check tile in
+ * {@link this#checkInteractedTile(String, Vector2)}, and update station's
+ * ingredients in {@link this#handleStations(SpriteBatch)} if necessary.
  *
  */
 public class StationManager {
