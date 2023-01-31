@@ -93,23 +93,25 @@ public class Cook extends Entity {
 		item.slicing = false;
 		if (!holding) {
 			holding = true;
-			setWalkTexture("entities/cook_walk_hands_" + String.valueOf(cookno) + ".png");
+			setWalkTexture("entities/cook_walk_hands_" + cookno + ".png");
 		}
 
 		if (!full())
 			heldItems.push(item);
 	}
 
-	public Ingredient dropItem() {
+	public void dropItem() {
 		if (heldItems.size() == 1) {
 			holding = false;
 			setWalkTexture("entities/cook_walk_" + String.valueOf(cookno) + ".png");
 		}
 		if (heldItems.size() > 0) {
-			return heldItems.pop();
+			heldItems.pop();
 		}
-
-		return null;
+		if (heldItems.size() == 0){
+			holding = false;
+			setWalkTexture("entities/cook_walk_" + cookno + ".png");
+		}
 	}
 
 	public boolean full() {
