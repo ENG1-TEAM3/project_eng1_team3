@@ -1,25 +1,30 @@
-head {
-    background-color: rgb(240, 80, 21);
+img {
+    border: 5px solid black;
 }
-
 body {
-    background-color: beige;
+    background-color:  #e2e0df;
 }
-
-h1{
-    text-align: center;
-    
+h1 {
+    font-family: Arial;
+    font-size: 45px;
+    color: rgb(0, 0, 0);
+    font-weight: bold;
 }
-
-h3{
-    padding-right: 0px;
+h2 {
+    font-family: Arial;
+    font-size: 20px;
 }
-
 button{
-    text-align: center;
-    margin-left: 45%;
+    background-color: rgb(231, 10, 10);
+    border: 5px black;
     color: white;
-    background-color: red;
-    border: transparent;
-    
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 20px;
+    margin: 10px;
+    padding: 10px;
+}
+button:hover{
+    background-color: rgb(129, 0, 0);
 }
