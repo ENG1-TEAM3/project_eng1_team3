@@ -33,6 +33,11 @@ public class Cook extends Entity {
 	public boolean holding = false;
 	public Stack<Ingredient> heldItems = new Stack<Ingredient>();
 
+	/**
+	 * Cook entity constructor
+	 * @param pos - x y position vector in pixels
+	 * @param cooknum - cook number, changes texture
+	 */
 	public Cook(Vector2 pos, int cooknum) {
 		this.pos = pos;
 		this.cookno = cooknum;
@@ -45,6 +50,12 @@ public class Cook extends Entity {
 		setWalkTexture("entities/cook_walk_" + String.valueOf(cookno) + ".png");
 	}
 
+	/**
+	 * Update cook using user input
+	 * @param control - Control input handling object
+	 * @param dt - some change in time
+	 * @param cl - 2d array of collision tiles for collision detection
+	 */
 	public void update(Control control, float dt, CollisionTile[][] cl) {
 		currentFrame = walkAnimation.getKeyFrame(stateTime, true).split(32, 32);
 
@@ -88,6 +99,10 @@ public class Cook extends Entity {
 
 	}
 
+	/**
+	 * Pick up an item
+	 * @param item - item to pick up
+	 */
 	public void pickUpItem(Ingredient item) {
 		item.cooking = false;
 		item.slicing = false;
@@ -100,10 +115,13 @@ public class Cook extends Entity {
 			heldItems.push(item);
 	}
 
+	/**
+	 * Put down the item on the top of the stack
+	 */
 	public void dropItem() {
 		if (heldItems.size() == 1) {
 			holding = false;
-			setWalkTexture("entities/cook_walk_" + String.valueOf(cookno) + ".png");
+			setWalkTexture("entities/cook_walk_" + cookno + ".png");
 		}
 		if (heldItems.size() > 0) {
 			heldItems.pop();
@@ -118,18 +136,35 @@ public class Cook extends Entity {
 		return heldItems.size() >= MAX_STACK_SIZE;
 	}
 
+	/**
+	 * Draw bottom of cook
+	 * @param batch - spritebatch to draw with
+	 */
 	public void draw_bot(SpriteBatch batch) {
 		batch.draw(currentFrame[1][0], pos.x, pos.y, 64, 64);
 	}
 
+	/**
+	 * Draw top of cook
+	 * @param batch - spritebatch to draw with
+	 */
 	public void draw_top(SpriteBatch batch) {
 		batch.draw(currentFrame[0][0], pos.x, pos.y + 64, 64, 64);
 	}
 
+	/**
+	 * Draw top of cook at a certain position - used for the display in the top right
+	 * @param batch - spritebatch to draw with
+	 * @param position - position in pixels to draw at
+	 */
 	public void draw_top(SpriteBatch batch, Vector2 position) {
 		batch.draw(currentFrame[0][0], position.x, position.y + 128, 128, 128);
 	}
 
+	/**
+	 * Set the texture to draw with
+	 * @param path - Filepath to texture
+	 */
 	private void setWalkTexture(String path) {
 		walkSheet = new Texture(path);
 		spriteSheet = TextureRegion.split(walkSheet, walkSheet.getWidth() / FRAME_COLS,
@@ -138,6 +173,10 @@ public class Cook extends Entity {
 		setWalkFrames(0);
 	}
 
+	/**
+	 * Set specific walk frames
+	 * @param row - row on the sprite sheet to draw
+	 */
 	private void setWalkFrames(int row) {
 		for (int i = 0; i < FRAME_ROWS; i++) {
 			walkFrames[i] = spriteSheet[row][i];
@@ -146,6 +185,13 @@ public class Cook extends Entity {
 		currentFrame = walkAnimation.getKeyFrame(stateTime, true).split(32, 32);
 	}
 
+	/**
+	 * Check collision with collide tiles at a certain coordinate
+	 * @param cookx - cook x pixel coordinate
+	 * @param cooky - cook y pixel coordinate
+	 * @param cltiles - 2d Collision tiles array
+	 * @return True if the cook can move, false if they cant
+	 */
 	public Boolean checkCollision(float cookx, float cooky, CollisionTile[][] cltiles) {
 		if (cooky - 10 < 0) {
 			return false;
@@ -164,42 +210,52 @@ public class Cook extends Entity {
 		return true;
 	}
 
-	Rectangle getCollideBox() {
-		return new Rectangle(pos.x + 12, pos.y - 10, 40, 25);
-	}
-
+	/**
+	 * Return a rectangle which is the hitbox of the cook at a certain coordinate
+	 * @param x - x pixel coordinate
+	 * @param y - y pixel coordinate
+	 * @return Rectangle object of the cook hitbox
+	 */
 	Rectangle getCollideBoxAtPosition(float x, float y) {
 		return new Rectangle(x + 12, y - 10, 40, 25);
 	}
 
-	float[] getCollideBoxAsArray() {
-		return new float[] { pos.x + 12, pos.y - 10, 40, 25 };
-	}
-
+	/**
+	 * Return cook x pixel coordinate
+	 * @return cook x pixel coordinate
+	 */
 	public float getX() {
 		return pos.x;
 	}
 
+	/**
+	 * Return cook y pixel coordinate
+	 * @return cook y pixel coordinate
+	 */
 	public float getY() {
 		return pos.y;
 	}
 
+	/**
+	 * Return cook width
+	 * @return cook width
+	 */
 	public float getWidth() {
 		return width;
 	}
 
+	/**
+	 * return cook height
+	 * @return cook height
+	 */
 	public float getHeight() {
 		return height;
 	}
 
-	public float getCameraX() {
-		return pos.x + width / 2;
-	}
-
-	public float getCameraY() {
-		return pos.y + height / 2;
-	}
-
+	/**
+	 * Return cook direction vector
+	 * @return cook direction vector
+	 */
 	public Vector2 getDirection() {
 		return direction;
 	}

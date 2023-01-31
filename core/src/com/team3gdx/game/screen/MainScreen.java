@@ -62,6 +62,10 @@ public class MainScreen implements Screen {
 
 	STATE state;
 
+	/**
+	 * Constructor for main menu screen
+	 * @param game - Entry point class
+	 */
 	public MainScreen(final MainGameClass game) {
 		this.game = game;
 		this.gameResolutionX = Gdx.graphics.getWidth();
@@ -90,6 +94,9 @@ public class MainScreen implements Screen {
 		this.sliderWidth = volSlideBackgr.width;
 	}
 
+	/**
+	 * What should be done when the screen is shown
+	 */
 	@Override
 	public void show() {
 		float currentMusicVolumeSliderX = (game.musicVolumeScale * sliderWidth) + xSliderMin;
@@ -113,7 +120,7 @@ public class MainScreen implements Screen {
 		startButton = new Texture(Gdx.files.internal("uielements/newgame.png"));
 		background = new Texture(Gdx.files.internal("uielements/MainScreenBackground.jpg"));
 		leaderBoard = new Texture(Gdx.files.internal("uielements/leaderboard1.png"));
-		audio = new Texture(Gdx.files.internal("uielements/Audio.png"));
+		audio = new Texture(Gdx.files.internal("uielements/audio.png"));
 		audioEdit = new Texture(Gdx.files.internal("uielements/background.png"));
 		exitGame = new Texture(Gdx.files.internal("uielements/exitgame.png"));
 
@@ -168,6 +175,10 @@ public class MainScreen implements Screen {
 		stage.addActor(eg);
 	}
 
+	/**
+	 * Main menu render method
+	 * @param delta - some change in time
+	 */
 	@Override
 	public void render(float delta) {
 		// TODO Auto-generated method stub
@@ -187,6 +198,10 @@ public class MainScreen implements Screen {
 		}
 	}
 
+	/**
+	 * Change screen to specified state
+	 * @param state - state to change screen to
+	 */
 	public void changeScreen(STATE state) {
 		if (state == STATE.new_game) {
 			game.mainScreenMusic.dispose();
@@ -218,6 +233,9 @@ public class MainScreen implements Screen {
 		}
 	}
 
+	/**
+	 * Update music volume slider
+	 */
 	public void musicVolumeUpdate() {
 		float fromTopy = Gdx.input.getY();
 		float fromBottomy = gameResolutionY - fromTopy;
@@ -237,6 +255,9 @@ public class MainScreen implements Screen {
 		}
 	}
 
+	/**
+	 * Update game volume slider
+	 */
 	public void gameVolumeUpdate() {
 		float fromTopy = Gdx.input.getY();
 		float fromBottomy = gameResolutionY - fromTopy;
@@ -249,12 +270,16 @@ public class MainScreen implements Screen {
 				if (s < 0.01) {
 					s = 0;
 				}
-				// game.sound.setVolume(game.soundid, s);
 				game.gameVolumeScale = s;
 			}
 		}
 	}
 
+	/**
+	 * Resize window
+	 * @param width - new window width
+	 * @param height - new window height
+	 */
 	@Override
 	public void resize(int width, int height) {
 		// TODO Auto-generated method stub

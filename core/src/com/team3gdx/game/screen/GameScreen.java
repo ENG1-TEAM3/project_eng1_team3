@@ -249,7 +249,7 @@ public class GameScreen implements Screen {
 		game.batch.begin();
 		for (Cook curCook : cooks)
 			curCook.draw_top(game.batch);
-		cc.drawCustTop(game.batch); // todo fix customer z ordering
+		cc.drawCustTop(game.batch);
 		game.batch.end();
 		// ==================================MOVE=COOK===================================================================
 		tempTime = System.currentTimeMillis();
@@ -264,12 +264,9 @@ public class GameScreen implements Screen {
 		// =====================================DRAW=UI=ELEMENTS=========================================================
 		drawUI();
 		// =====================================SET=MATRIX=BACK=TO=GAME=MATRIX===========================================
-
 		setCameraLerp(delta);
-
 		game.batch.setProjectionMatrix(worldCamera.combined);
 		// ==================================MOVE=CAMERA=================================================================
-
 		worldCamera.update();
 		uiCamera.update();
 		// ==================================PLAY=MUSIC==================================================================
@@ -281,11 +278,12 @@ public class GameScreen implements Screen {
 		game.batch.setProjectionMatrix(uiMatrix);
 		changeScreen(state1);
 		game.batch.setProjectionMatrix(worldCamera.combined);
-
 		checkCookSwitch();
-
 	}
 
+	/**
+	 * Code for tutorial controls lockout
+	 */
 	private void checkCookSwitch() {
 		if (control.tab && Tutorial.complete) {
 			cook.locked = false;
@@ -305,8 +303,11 @@ public class GameScreen implements Screen {
 		control.shift = false;
 	}
 
-	public static final float MAX_WAIT_TIME = 10000;
+	public static final float MAX_WAIT_TIME = 100000; //Time until the recipe goes away - use for time until leaving
 
+	/**
+	 * Draw UI elements
+	 */
 	private void drawUI() {
 		if (currentWaitingCustomer != null && currentWaitingCustomer.waitTime() < MAX_WAIT_TIME) {
 			Menu.RECIPES.get(currentWaitingCustomer.order).displayRecipe(game.batch, new Vector2(64, 256));
@@ -335,6 +336,10 @@ public class GameScreen implements Screen {
 		game.batch.end();
 	}
 
+	/**
+	 * Update camera controls
+	 * @param delta - some change in timeu
+	 */
 	private void setCameraLerp(float delta) {
 		if (!Tutorial.complete) {
 			worldCamera.position.lerp(new Vector3(Tutorial.getStagePos(), 0), .065f);
@@ -416,7 +421,7 @@ public class GameScreen implements Screen {
 			game.batch.end();
 		}
 		if (state1 == STATE.Continue) {
-			cc.updateCustomers(control);
+			cc.updateCustomers();
 		}
 	}
 
@@ -466,7 +471,6 @@ public class GameScreen implements Screen {
 				if (s < 0.01) {
 					s = 0;
 				}
-				// game.sound.setVolume(game.soundid, s);
 				game.gameVolumeScale = s;
 			}
 		}
