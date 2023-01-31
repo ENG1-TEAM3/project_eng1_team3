@@ -2,6 +2,10 @@ package com.team3gdx.game.food;
 
 import com.badlogic.gdx.math.Vector2;
 
+/**
+ * All available ingredient.
+ * 
+ */
 public class Ingredients {
 
 	// Meats.

@@ -37,6 +37,8 @@ public class MainGameClass extends Game {
 		gameMusic.setLooping(false);
 		gameMusic.setVolume(musicVolumeScale);
 		// =================================SPRITEBATCH=AND=SHAPERENDERER================================================
+		batch = new SpriteBatch();
+		shapeRenderer = new ShapeRenderer();
 		// ==================================FONT=INITIALISATION=========================================================
 		font = new BitmapFont(Gdx.files.internal("uielements/font.fnt"), Gdx.files.internal("uielements/font.png"),
 				false);

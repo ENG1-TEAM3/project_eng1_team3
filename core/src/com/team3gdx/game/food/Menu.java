@@ -3,6 +3,10 @@ package com.team3gdx.game.food;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * All recipes
+ * 
+ */
 public class Menu {
 
 	// Maps of ingredients in corresponding recipes and steps on what to do with

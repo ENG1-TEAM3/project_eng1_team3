@@ -11,23 +11,46 @@ import com.team3gdx.game.entity.Entity;
 import com.team3gdx.game.screen.GameScreen;
 import com.team3gdx.game.screen.GameScreen.STATE;
 
+/**
+ * Represents an ingredient.
+ * 
+ */
 public class Ingredient extends Entity {
 
+	/**
+	 * Represents internal states of ingredient.
+	 */
 	public int slices = 0;
-	public int idealSlices;
-	public float cookedTime = 0;
-	public float idealCookedTime;
-	public boolean flipped = false;
+	private int idealSlices;
+	private float cookedTime = 0;
+	private float idealCookedTime;
 
 	public Status status = Status.RAW;
 
+	/**
+	 * Represents ongoing states of the ingredient.
+	 */
 	public boolean cooking = false;
 	public boolean slicing = false;
+	public boolean flipped = false;
 
+	/**
+	 * Name of ingredient to get texture.
+	 */
 	public String name;
 
 	private static ShapeRenderer shapeRenderer = new ShapeRenderer();
 
+	/**
+	 * Sets the appropriate properties.
+	 * 
+	 * @param pos             The (x, y) coordinates of the ingredient.
+	 * @param width           The ingredient's texture width.
+	 * @param height          The ingredient's texture height.
+	 * @param name            The name of the ingredient and texture.
+	 * @param idealSlices     The ideal number of times to slice the ingredient.
+	 * @param idealCookedTime The ideal length of time to cook the ingredient.
+	 */
 	public Ingredient(Vector2 pos, float width, float height, String name, int idealSlices, float idealCookedTime) {
 		this.pos = pos;
 		this.width = width;
@@ -39,6 +62,11 @@ public class Ingredient extends Entity {
 
 	}
 
+	/**
+	 * Creates a new instance with identical properties.
+	 * 
+	 * @param ingredient The ingredient to clone.
+	 */
 	public Ingredient(Ingredient ingredient) {
 		this.pos = ingredient.pos;
 		this.width = ingredient.width;
@@ -53,12 +81,24 @@ public class Ingredient extends Entity {
 		this.status = ingredient.status;
 	}
 
+	/**
+	 * Changes the {@link this#flipped} to true if possible.
+	 * 
+	 * @return A boolean representing if the ingredient was successfully flipped.
+	 */
 	public boolean flip() {
 		if (cookedTime / idealCookedTime < idealCookedTime)
 			return false;
 		return (flipped = true);
 	}
 
+	/**
+	 * Begin process of slicing ingredient and show status.
+	 * 
+	 * @param batch {@link SpriteBatch} to render texture and status.
+	 * @param dT    The amount of time to increment by when slicing.
+	 * @return A boolean representing if a complete slice has occurred.
+	 */
 	public boolean slice(SpriteBatch batch, float dT) {
 
 		shapeRenderer.setProjectionMatrix(batch.getProjectionMatrix());
@@ -81,6 +121,13 @@ public class Ingredient extends Entity {
 
 	BitmapFont flipText = new BitmapFont();
 
+	/**
+	 * Begin process of cooking ingredient and show status.
+	 * 
+	 * @param dT    The amount of time to increment {@link this#cookedTime} by.
+	 * @param batch {@link SpriteBatch} to render texture and status.
+	 * @return A double representing the current {@link this#cookedTime}.
+	 */
 	public double cook(float dT, SpriteBatch batch) {
 		shapeRenderer.setProjectionMatrix(batch.getProjectionMatrix());
 		if (!flipped && cookedTime / idealCookedTime * width > idealCookedTime * width) {
@@ -105,7 +152,12 @@ public class Ingredient extends Entity {
 		return cookedTime;
 	}
 
-	// Add stages (e.g. x amount of bars in total, i current, j optimal)
+	/**
+	 * Draw a status bar.
+	 * 
+	 * @param percentage The current progress of the status bar.
+	 * @param optimum    The optimal status to reach (shown by a black bar).
+	 */
 	private void drawStatusBar(float percentage, float optimum) {
 		shapeRenderer.begin(ShapeType.Filled);
 		shapeRenderer.setColor(Color.WHITE);

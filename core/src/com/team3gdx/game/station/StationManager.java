@@ -10,18 +10,31 @@ import com.team3gdx.game.food.Ingredient;
 import com.team3gdx.game.food.Ingredients;
 import com.team3gdx.game.screen.GameScreen;
 
+/**
+ * 
+ * Deals with all the stations and cook interactions.
+ *
+ */
 public class StationManager {
 
+	/**
+	 * A Map representing every station and its (x, y) coordinates.
+	 */
 	public static Map<Vector2, Station> stations = new HashMap<Vector2, Station>();
 
 	SpriteBatch batch;
 
+	/**
+	 * Checks every station for ingredients and updates them accordingly.
+	 * 
+	 * @param The {@link SpriteBatch} to render ingredient textures.
+	 */
 	public void handleStations(SpriteBatch batch) {
 		this.batch = batch;
 		for (Station station : stations.values()) {
 			if (!station.slots.empty() && !station.infinite) {
 				for (int i = 0; i < station.slots.size(); i++) {
-					// Handle each ingredient in slot
+					// Handle each ingredient in slot.
 					Ingredient currentIngredient = station.slots.get(i);
 					if (station instanceof PrepStation) {
 						currentIngredient.pos = new Vector2(station.pos.x * 64 + 16, i * 8 + station.pos.y * 64);
@@ -47,6 +60,12 @@ public class StationManager {
 		}
 	}
 
+	/**
+	 * Check the currently looked at tile for a station.
+	 * 
+	 * @param type The station type.
+	 * @param pos  The position of the tile.
+	 */
 	public void checkInteractedTile(String type, Vector2 pos) {
 		switch (type) {
 		case "Buns":
@@ -65,20 +84,15 @@ public class StationManager {
 			takeIngredientStation(pos, Ingredients.onion);
 			break;
 		case "Frying":
-			// Frying station
 			checkCookingStation(pos, new FryingStation(pos));
 			break;
 		case "Prep":
-			// Preparation station
-
 			if (!stations.containsKey(pos)) {
 				stations.put(pos, new PrepStation(pos));
 			}
 
 			placeIngredientStation(pos);
-
 			PrepStation station = ((PrepStation) stations.get(pos));
-
 			station.lockCook();
 
 			break;
@@ -88,26 +102,24 @@ public class StationManager {
 			}
 
 			placeIngredientStation(pos);
-
 			CuttingStation cutStation = ((CuttingStation) stations.get(pos));
-
 			cutStation.lockCook();
+
 			break;
 		case "Baking":
-			// Baking station
 			checkCookingStation(pos, new BakingStation(pos));
+
 			break;
 		case "Service":
-			// Service station
 			if (!stations.containsKey(pos)) {
 				stations.put(pos, new ServingStation(pos));
 			}
+
 			((ServingStation) stations.get(pos)).serveCustomer();
 			placeIngredientStation(pos);
 
 			break;
 		case "Bin":
-			// Bin to dispose of unwanted ingredients.
 			if (GameScreen.control.drop && !GameScreen.cook.heldItems.empty())
 				GameScreen.cook.dropItem();
 			break;
@@ -118,6 +130,11 @@ public class StationManager {
 
 	}
 
+	/**
+	 * Display text indicating to take the ingredient.
+	 * 
+	 * @param pos The position to draw at.
+	 */
 	private void drawTakeText(Vector2 pos) {
 		if (!stations.get(pos).slots.empty() && !GameScreen.cook.full()) {
 			drawText("Take [q]", new Vector2(pos.x * 64, pos.y * 64 - 16));
@@ -125,18 +142,35 @@ public class StationManager {
 
 	}
 
+	/**
+	 * Display text indicating to drop an item in the station's slot.
+	 * 
+	 * @param pos The position of the station.
+	 */
 	private void drawDropText(Vector2 pos) {
 		if (GameScreen.cook.heldItems.size() > 0 && stations.get(pos).isAllowed(GameScreen.cook.heldItems.peek())) {
 			drawText("Drop [e]", new Vector2(pos.x * 64, pos.y * 64));
 		}
 	}
 
+	/**
+	 * 
+	 * @param text Text to be drawn.
+	 * @param pos  Position to draw at.
+	 */
 	private void drawText(String text, Vector2 pos) {
 		batch.begin();
 		(new BitmapFont()).draw(batch, text, pos.x, pos.y);
 		batch.end();
 	}
 
+	/**
+	 * Check if the given station exists at the given position.
+	 * 
+	 * @param pos     Position to look for.
+	 * @param station The station to check for.
+	 * @return A boolean indicating if the station exists at that position.
+	 */
 	private boolean checkStationExists(Vector2 pos, Station station) {
 		if (!stations.containsKey(pos)) {
 			stations.put(pos, station);
@@ -146,6 +180,11 @@ public class StationManager {
 		return true;
 	}
 
+	/**
+	 * 
+	 * @param pos
+	 * @param station
+	 */
 	private void checkCookingStation(Vector2 pos, Station station) {
 		checkStationExists(pos, station);
 		if (!stations.get(pos).slots.empty() && !GameScreen.cook.full() && stations.get(pos).slots.peek().flipped)
@@ -162,7 +201,6 @@ public class StationManager {
 			}
 		}
 		if (GameScreen.control.drop) {
-
 			if (!GameScreen.cook.heldItems.empty() && stations.get(pos).place(GameScreen.cook.heldItems.peek())) {
 				GameScreen.cook.dropItem();
 				stations.get(pos).slots.peek().cooking = true;

@@ -12,8 +12,17 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 
+/**
+ * The tutorial of the game. Includes instructions on controls and information
+ * on stations.
+ * 
+ */
 public class Tutorial {
 
+	/**
+	 * A list of sections / pages for the tutorial with the position to jump the
+	 * camera to.
+	 */
 	private static List<PosTextPair> stages = new ArrayList<PosTextPair>();
 	static {
 		stages.add(new PosTextPair(new Vector2(64, 256),
@@ -31,12 +40,21 @@ public class Tutorial {
 		stages.add(new PosTextPair(GameScreen.cook.pos, " Goodluck! "));
 	}
 
+	/**
+	 * Represents if the tutorial has been finished.
+	 */
 	public static boolean complete = false;
+	/**
+	 * Represents the current stage of the tutorial.
+	 */
 	public static int stage = 0;
 
 	private static final ShapeRenderer shapeRenderer = new ShapeRenderer();
 	private static final BitmapFont bitmapFont = new BitmapFont();
 	private static GlyphLayout layout = new GlyphLayout();
+	/**
+	 * Sets bottom skip text layout and pads tutorial text.
+	 */
 	static {
 		bitmapFont.setColor(Color.BLACK);
 		bitmapFont.getData().setScale(2);
@@ -47,9 +65,21 @@ public class Tutorial {
 		}
 	}
 
+	/**
+	 * A timer used for text typing animation.
+	 */
 	private static float nextCharTimer = 0;
+	/**
+	 * The currently shown text.
+	 */
 	private static String curText;
 
+	/**
+	 * Draws the tutorial's text and white backdrop.
+	 * 
+	 * @param batch {@link SpriteBatch} to render the text and ingredient textures.
+	 * @param dT    The amount of time to increment by between each character.
+	 */
 	public static void drawBox(SpriteBatch batch, float dT) {
 		curText = stages.get(stage).text.substring(0, Math.round(nextCharTimer));
 		shapeRenderer.setProjectionMatrix(batch.getProjectionMatrix());
@@ -83,10 +113,17 @@ public class Tutorial {
 		}
 	}
 
+	/**
+	 * 
+	 * @return The coordinates of the current stage's position.
+	 */
 	public static Vector2 getStagePos() {
 		return stages.get(stage).pos;
 	}
 
+	/**
+	 * Skip to the next stage of the tutorial if possible.
+	 */
 	public static void nextStage() {
 		delay = 0;
 		if (nextCharTimer < stages.get(stage).text.length()) {
@@ -102,6 +139,10 @@ public class Tutorial {
 			complete = true;
 	}
 
+	/**
+	 * Go back to the previous tutorial stage.
+	 * 
+	 */
 	public static void previousStage() {
 		nextCharTimer = 0;
 		if (stage > 0)
@@ -110,6 +151,13 @@ public class Tutorial {
 
 	static float delay = 0;
 
+	/**
+	 * Add a delay (used between punctuation).
+	 * 
+	 * @param amount How long the delay is.
+	 * @param dT     How much to increment the delay by.
+	 * @return A boolean to indicate if the delay has finished.
+	 */
 	private static boolean addDelay(float amount, float dT) {
 		if (delay < amount)
 			delay += dT;
@@ -119,6 +167,9 @@ public class Tutorial {
 	}
 }
 
+/**
+ * Used to store a position and string.
+ */
 class PosTextPair {
 
 	public Vector2 pos;
