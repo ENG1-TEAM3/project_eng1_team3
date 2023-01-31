@@ -42,4 +42,52 @@ public class CookingStation extends Station {
 		batch.end();
 	}
 
+	public boolean lockCook() {
+		if (!slots.isEmpty()) {
+			if (lockedCook == null) {
+				GameScreen.cook.locked = true;
+				lockedCook = GameScreen.cook;
+			} else {
+				lockedCook.locked = true;
+			}
+			return true;
+		}
+		if (lockedCook != null) {
+			lockedCook.locked = false;
+			lockedCook = null;
+		}
+
+		return false;
+	}
+
+	/**
+	 * 
+	 * @param pos
+	 * @param station
+	 */
+	public void checkCookingStation(SpriteBatch batch) {
+		if (!slots.empty() && !GameScreen.cook.full() && slots.peek().flipped)
+			drawText(batch, "Take [q]", new Vector2(pos.x * 64, pos.y * 64 - 16));
+		else
+			drawDropText(batch);
+
+		if (GameScreen.control.interact) {
+			if (!slots.empty() && !GameScreen.cook.full()) {
+				if (slots.peek().flipped)
+					GameScreen.cook.pickUpItem(take());
+
+				return;
+			}
+		}
+		if (GameScreen.control.drop) {
+			if (!GameScreen.cook.heldItems.empty() && place(GameScreen.cook.heldItems.peek())) {
+				GameScreen.cook.dropItem();
+				slots.peek().cooking = true;
+			}
+		}
+		if (!slots.empty() && GameScreen.control.flip)
+			slots.peek().flip();
+
+	}
+
 }

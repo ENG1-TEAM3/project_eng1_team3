@@ -6,8 +6,8 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public class Customer {
 	int targetsquare;
-	int posx;
-	int posy;
+	public int posx;
+	public int posy;
 	Texture textf;
 	Texture textb;
 	Texture textr;

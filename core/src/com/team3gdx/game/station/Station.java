@@ -2,9 +2,12 @@ package com.team3gdx.game.station;
 
 import java.util.Stack;
 
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.team3gdx.game.entity.Cook;
 import com.team3gdx.game.food.Ingredient;
+import com.team3gdx.game.screen.GameScreen;
 
 /**
  * Represents a station.
@@ -104,6 +107,40 @@ public class Station {
 		}
 
 		return new Ingredient(slots.peek());
+	}
+
+	/**
+	 * Display text indicating to take the ingredient.
+	 * 
+	 * @param pos The position to draw at.
+	 */
+	public void drawTakeText(SpriteBatch batch) {
+		if (slots.empty() && !GameScreen.cook.full()) {
+			drawText(batch, "Take [q]", new Vector2(pos.x * 64, pos.y * 64 - 16));
+		}
+
+	}
+
+	/**
+	 * Display text indicating to drop an item in the station's slot.
+	 * 
+	 * @param pos The position of the station.
+	 */
+	public void drawDropText(SpriteBatch batch) {
+		if (GameScreen.cook.heldItems.size() > 0 && isAllowed(GameScreen.cook.heldItems.peek())) {
+			drawText(batch, "Drop [e]", new Vector2(pos.x * 64, pos.y * 64));
+		}
+	}
+
+	/**
+	 * 
+	 * @param text Text to be drawn.
+	 * @param pos  Position to draw at.
+	 */
+	public void drawText(SpriteBatch batch, String text, Vector2 pos) {
+		batch.begin();
+		(new BitmapFont()).draw(batch, text, pos.x, pos.y);
+		batch.end();
 	}
 
 }
