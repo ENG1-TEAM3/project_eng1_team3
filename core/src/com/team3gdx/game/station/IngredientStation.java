@@ -6,7 +6,7 @@ import com.team3gdx.game.food.Ingredient;
 public class IngredientStation extends Station {
 
 	public IngredientStation(Vector2 pos, Ingredient ingredient) {
-		super(pos, 1, true, null);
+		super(pos, 1, true, null, null);
 		slots.push(ingredient);
 	}
 

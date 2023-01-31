@@ -3,6 +3,7 @@ package com.team3gdx.game.station;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.team3gdx.game.food.Ingredient;
@@ -49,11 +50,13 @@ public class StationManager {
 
 					if (station instanceof CuttingStation && currentIngredient.slicing) {
 						((CuttingStation) station).interact(batch, .1f);
+						station.interactSound();
 					}
 
 					if (currentIngredient.cooking && station instanceof CookingStation) {
 						((CookingStation) station).drawParticles(batch, i);
 						currentIngredient.cook(.0005f, batch);
+						station.interactSound();
 					} else {
 						currentIngredient.draw(batch);
 					}
@@ -125,8 +128,14 @@ public class StationManager {
 
 			break;
 		case "Bin":
-			if (GameScreen.control.drop && !GameScreen.cook.heldItems.empty())
-				GameScreen.cook.dropItem();
+			if (!GameScreen.cook.heldItems.empty()) {
+				batch.begin();
+				(new BitmapFont()).draw(batch, "Drop [e]", pos.x * 64, pos.y * 64);
+				batch.end();
+				if (GameScreen.control.drop) {
+					GameScreen.cook.dropItem();
+				}
+			}
 			break;
 		default:
 			placeIngredientStation(pos);
@@ -157,7 +166,7 @@ public class StationManager {
 	 * @param pos The position to lookup the station.
 	 */
 	private void placeIngredientStation(Vector2 pos) {
-		checkStationExists(pos, new Station(pos, 4, false, null));
+		checkStationExists(pos, new Station(pos, 4, false, null, null));
 		stations.get(pos).drawTakeText(batch);
 		stations.get(pos).drawDropText(batch);
 		if (GameScreen.control.interact) {

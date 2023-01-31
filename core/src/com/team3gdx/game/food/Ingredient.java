@@ -104,7 +104,7 @@ public class Ingredient extends Entity {
 		shapeRenderer.setProjectionMatrix(batch.getProjectionMatrix());
 
 		if (dT / width * width <= width) {
-			drawStatusBar(dT / width, 1, 1);
+			drawStatusBar(dT / width, 0, 1);
 		} else {
 			slices++;
 			texture = new Texture("items/" + name + "_chopped.png");
@@ -139,13 +139,13 @@ public class Ingredient extends Entity {
 			if (GameScreen.state1 == STATE.Continue)
 				cookedTime += dT;
 			drawStatusBar(cookedTime / idealCookedTime, idealCookedTime * .65f, idealCookedTime * 1.35f);
-			if (cookedTime / idealCookedTime * width > idealCookedTime * width) {
+			if (cookedTime / idealCookedTime * width > idealCookedTime * width * .65f) {
 				texture = new Texture("items/" + name + "_cooked.png");
 				status = Status.COOKED;
 			}
 		} else {
-			status = Status.BURNED;
-			texture = new Texture("items/" + name + "_burned.png");
+//			status = Status.BURNED;
+//			texture = new Texture("items/" + name + "_burned.png");
 		}
 
 		draw(batch);

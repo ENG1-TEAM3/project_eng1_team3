@@ -12,8 +12,9 @@ public class CookingStation extends Station {
 
 	ParticleEffect[] pES;
 
-	public CookingStation(Vector2 pos, int numberOfSlots, Ingredient[] allowedIngredients, String particlePath) {
-		super(pos, numberOfSlots, false, allowedIngredients);
+	public CookingStation(Vector2 pos, int numberOfSlots, Ingredient[] allowedIngredients, String particlePath,
+			String soundPath) {
+		super(pos, numberOfSlots, false, allowedIngredients, "audio/soundFX/frying.mp3");
 		createParticleEmitter(pos, particlePath);
 	}
 
@@ -91,8 +92,9 @@ public class CookingStation extends Station {
 
 		if (GameScreen.control.interact) {
 			if (!slots.empty() && !GameScreen.cook.full()) {
-				if (slots.peek().flipped)
+				if (slots.peek().flipped) {
 					GameScreen.cook.pickUpItem(take());
+				}
 
 				return;
 			}

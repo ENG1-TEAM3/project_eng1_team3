@@ -17,8 +17,8 @@ public class MainGameClass extends Game {
 	public BitmapFont font;
 	public Music mainScreenMusic;
 	public Music gameMusic;
-	public float musicVolumeScale;
-	public float gameVolumeScale;
+	public static float musicVolumeScale;
+	public static float gameVolumeScale;
 	private MainScreen mainScreen1;
 	private GameScreen gameScreen1;
 	private LeaderBoard leaderBoardScreen1;

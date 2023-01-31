@@ -136,8 +136,8 @@ public class GameScreen implements Screen {
 		startTime = System.currentTimeMillis();
 		timeOnStartup = startTime;
 		// =======================================SET=POSITIONS=OF=SLIDERS===============================================
-		float currentMusicVolumeSliderX = (game.musicVolumeScale * sliderWidth) + xSliderMin;
-		float currentGameVolumeSliderX = (game.gameVolumeScale * sliderWidth) + xSliderMin;
+		float currentMusicVolumeSliderX = (MainGameClass.musicVolumeScale * sliderWidth) + xSliderMin;
+		float currentGameVolumeSliderX = (MainGameClass.gameVolumeScale * sliderWidth) + xSliderMin;
 		musSlide.setPosition(currentMusicVolumeSliderX, audioBackgroundy + 4 * audioBackgroundHeight / 6
 				+ musSlideBackgr.getHeight() / 2 - musSlide.getHeight() / 2);
 		volSlide.setPosition(currentGameVolumeSliderX, audioBackgroundy + audioBackgroundHeight / 6
@@ -448,7 +448,7 @@ public class GameScreen implements Screen {
 				}
 				game.mainScreenMusic.setVolume(v);
 				game.gameMusic.setVolume(v);
-				game.musicVolumeScale = v;
+				MainGameClass.musicVolumeScale = v;
 			}
 		}
 	}
@@ -469,7 +469,7 @@ public class GameScreen implements Screen {
 					s = 0;
 				}
 				// game.sound.setVolume(game.soundid, s);
-				game.gameVolumeScale = s;
+				MainGameClass.gameVolumeScale = s;
 			}
 		}
 	}

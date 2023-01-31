@@ -2,9 +2,12 @@ package com.team3gdx.game.station;
 
 import java.util.Stack;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
+import com.team3gdx.game.MainGameClass;
 import com.team3gdx.game.entity.Cook;
 import com.team3gdx.game.food.Ingredient;
 import com.team3gdx.game.screen.GameScreen;
@@ -14,6 +17,8 @@ import com.team3gdx.game.screen.GameScreen;
  * 
  */
 public class Station {
+
+	private Music interactSound = Gdx.audio.newMusic(Gdx.files.internal("audio/soundFX/chopping.mp3"));;
 
 	/**
 	 * A list of allowed ingredients in the station's slots.
@@ -53,12 +58,15 @@ public class Station {
 	 * @param allowedIngredients A list of allowed ingredients in the station's
 	 *                           slots.
 	 */
-	public Station(Vector2 pos, int numberOfSlots, boolean infinite, Ingredient[] allowedIngredients) {
+	public Station(Vector2 pos, int numberOfSlots, boolean infinite, Ingredient[] allowedIngredients,
+			String soundPath) {
 		this.pos = pos;
 		this.numberOfSlots = numberOfSlots;
 		this.infinite = infinite;
 		this.allowedIngredients = allowedIngredients;
 		slots = new Stack<Ingredient>();
+		if (soundPath != null)
+			interactSound = Gdx.audio.newMusic(Gdx.files.internal(soundPath));
 	}
 
 	/**
@@ -102,6 +110,7 @@ public class Station {
 	public Ingredient take() {
 		if (slots.empty())
 			return null;
+		interactSound.stop();
 		if (!infinite) {
 			return new Ingredient(slots.pop());
 		}
@@ -141,6 +150,11 @@ public class Station {
 		batch.begin();
 		(new BitmapFont()).draw(batch, text, pos.x, pos.y);
 		batch.end();
+	}
+
+	public void interactSound() {
+		interactSound.setVolume(MainGameClass.gameVolumeScale);
+		interactSound.play();
 	}
 
 }

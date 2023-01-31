@@ -14,7 +14,7 @@ public class CuttingStation extends Station {
 	public float currentCutTime;
 
 	public CuttingStation(Vector2 pos, float timeBetweenCuts) {
-		super(pos, 1, false, ALLOWED_INGREDIENTS);
+		super(pos, 1, false, ALLOWED_INGREDIENTS, "audio/soundFX/chopping.mp3");
 	}
 
 	/**
