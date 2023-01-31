@@ -5,6 +5,8 @@ import java.util.Map;
 
 public class Menu {
 
+	// Maps of ingredients in corresponding recipes and steps on what to do with
+	// them.
 	private static final Map<Ingredient, String> BURGER_STEPS = new HashMap<Ingredient, String>();
 	static {
 		BURGER_STEPS.put(Ingredients.cooked_bun, "Toast");
@@ -17,12 +19,12 @@ public class Menu {
 	}
 	private static final Map<Ingredient, String> SALAD_STEPS = new HashMap<Ingredient, String>();
 	static {
-//		saladSteps.put(Ingredients.onion, "Cut");
 		SALAD_STEPS.put(Ingredients.lettuceChopped, "Cut");
 		SALAD_STEPS.put(Ingredients.tomatoChopped, "Cut");
 		SALAD_STEPS.put(Ingredients.onionChopped, "Cut");
 	}
 
+	// Map of recipes
 	public static final Map<String, Recipe> RECIPES = new HashMap<String, Recipe>();
 	static {
 		RECIPES.put("Burger", new Recipe("Form patty", Ingredients.unformedPatty, BURGER_STEPS, "serve together",
@@ -32,6 +34,8 @@ public class Menu {
 		RECIPES.put("Salad", new Recipe("", null, SALAD_STEPS, "serve together", "salad", false, null, 32, 32, 0));
 	}
 
+	// Map of ingredient transformations on preparation station (ingredient ->
+	// ingredient)
 	public static final Map<Ingredient, Ingredient> INGREDIENT_PREP = new HashMap<Ingredient, Ingredient>();
 	static {
 		INGREDIENT_PREP.put(Ingredients.unformedPatty, Ingredients.formedPatty);

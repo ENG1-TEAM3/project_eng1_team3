@@ -5,9 +5,9 @@ import java.util.Map;
 import java.util.Stack;
 
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
-import com.team3gdx.game.MainGameClass;
 
 public class Recipe extends Ingredient {
 
@@ -37,7 +37,7 @@ public class Recipe extends Ingredient {
 
 	ShapeRenderer shapeRenderer = new ShapeRenderer();
 
-	public void displayRecipe(Vector2 pos) {
+	public void displayRecipe(SpriteBatch batch, Vector2 pos) {
 		// Display recipe on side with title (name) and images of ingredients along with
 		// steps.
 		String completeRecipe = initialSteps + "\n\n";
@@ -47,7 +47,7 @@ public class Recipe extends Ingredient {
 			initial.pos = new Vector2(pos);
 			initial.pos.x -= 48;
 			initial.pos.y += --i * 2 * new BitmapFont().getLineHeight() + new BitmapFont().getLineHeight();
-			initial.draw(MainGameClass.batch);
+			initial.draw(batch);
 		} else {
 			i = -1;
 		}
@@ -56,7 +56,7 @@ public class Recipe extends Ingredient {
 			ingredient.pos = new Vector2(pos);
 			ingredient.pos.x -= 48;
 			ingredient.pos.y += --i * 2 * new BitmapFont().getLineHeight() + new BitmapFont().getLineHeight();
-			ingredient.draw(MainGameClass.batch);
+			ingredient.draw(batch);
 
 		}
 
@@ -64,13 +64,13 @@ public class Recipe extends Ingredient {
 		result.pos = new Vector2(pos);
 		result.pos.x -= 48;
 		result.pos.y += --i * 2 * new BitmapFont().getLineHeight() + new BitmapFont().getLineHeight();
-		result.draw(MainGameClass.batch);
+		result.draw(batch);
 
 		completeRecipe += finalSteps;
 
-		MainGameClass.batch.begin();
-		(new BitmapFont()).draw(MainGameClass.batch, completeRecipe, pos.x - 16, pos.y);
-		MainGameClass.batch.end();
+		batch.begin();
+		(new BitmapFont()).draw(batch, completeRecipe, pos.x - 16, pos.y);
+		batch.end();
 
 	}
 

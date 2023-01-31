@@ -16,7 +16,7 @@ public class Station {
 	public boolean infinite;
 
 	protected int numberOfSlots;
-	
+
 	public Cook lockedCook;
 
 	public Station(Vector2 pos, int numberOfSlots, boolean infinite, Ingredient[] allowedIngredients) {

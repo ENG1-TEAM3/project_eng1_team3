@@ -4,8 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
-import com.team3gdx.game.MainGameClass;
 import com.team3gdx.game.food.Ingredient;
 import com.team3gdx.game.food.Ingredients;
 import com.team3gdx.game.screen.GameScreen;
@@ -14,7 +14,10 @@ public class StationManager {
 
 	public static Map<Vector2, Station> stations = new HashMap<Vector2, Station>();
 
-	public void handleStations() {
+	SpriteBatch batch;
+
+	public void handleStations(SpriteBatch batch) {
+		this.batch = batch;
 		for (Station station : stations.values()) {
 			if (!station.slots.empty() && !station.infinite) {
 				for (int i = 0; i < station.slots.size(); i++) {
@@ -23,21 +26,21 @@ public class StationManager {
 					if (station instanceof PrepStation) {
 						currentIngredient.pos = new Vector2(station.pos.x * 64 + 16, i * 8 + station.pos.y * 64);
 						if (((PrepStation) station).lockedCook != null)
-							((PrepStation) station).updateProgress(.01f);
+							((PrepStation) station).updateProgress(batch, .01f);
 					} else {
 						currentIngredient.pos = new Vector2(station.pos.x * 64 + ((i * 32) % 64),
 								Math.floorDiv((i * 32), 64) * 32 + station.pos.y * 64);
 					}
 
 					if (station instanceof CuttingStation && currentIngredient.slicing) {
-						((CuttingStation) station).interact(MainGameClass.batch, .1f);
+						((CuttingStation) station).interact(batch, .1f);
 					}
 
 					if (currentIngredient.cooking && station instanceof CookingStation) {
-						((CookingStation) station).drawParticles(MainGameClass.batch, i);
-						currentIngredient.cook(.0005f, MainGameClass.batch);
+						((CookingStation) station).drawParticles(batch, i);
+						currentIngredient.cook(.0005f, batch);
 					} else {
-						currentIngredient.draw(MainGameClass.batch);
+						currentIngredient.draw(batch);
 					}
 				}
 			}
@@ -129,9 +132,9 @@ public class StationManager {
 	}
 
 	private void drawText(String text, Vector2 pos) {
-		MainGameClass.batch.begin();
-		(new BitmapFont()).draw(MainGameClass.batch, text, pos.x, pos.y);
-		MainGameClass.batch.end();
+		batch.begin();
+		(new BitmapFont()).draw(batch, text, pos.x, pos.y);
+		batch.end();
 	}
 
 	private boolean checkStationExists(Vector2 pos, Station station) {

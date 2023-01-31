@@ -7,7 +7,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
-import com.team3gdx.game.MainGameClass;
 import com.team3gdx.game.entity.Entity;
 import com.team3gdx.game.screen.GameScreen;
 import com.team3gdx.game.screen.GameScreen.STATE;
@@ -62,7 +61,7 @@ public class Ingredient extends Entity {
 
 	public boolean slice(SpriteBatch batch, float dT) {
 
-		shapeRenderer.setProjectionMatrix(MainGameClass.batch.getProjectionMatrix());
+		shapeRenderer.setProjectionMatrix(batch.getProjectionMatrix());
 
 		if (dT / width * width <= width) {
 			drawStatusBar(dT / width, 1);
@@ -72,9 +71,9 @@ public class Ingredient extends Entity {
 			return true;
 		}
 
-		MainGameClass.batch.begin();
-		(new BitmapFont()).draw(MainGameClass.batch, String.valueOf(slices), pos.x * 64 + 64 + 8, pos.y * 64 + 64 + 16);
-		MainGameClass.batch.end();
+		batch.begin();
+		(new BitmapFont()).draw(batch, String.valueOf(slices), pos.x * 64 + 64 + 8, pos.y * 64 + 64 + 16);
+		batch.end();
 
 		draw(batch);
 		return false;

@@ -7,10 +7,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
-import com.team3gdx.game.MainGameClass;
 
 public class Tutorial {
 
@@ -50,9 +50,9 @@ public class Tutorial {
 	private static float nextCharTimer = 0;
 	private static String curText;
 
-	public static void drawBox(float dT) {
+	public static void drawBox(SpriteBatch batch, float dT) {
 		curText = stages.get(stage).text.substring(0, Math.round(nextCharTimer));
-		shapeRenderer.setProjectionMatrix(MainGameClass.batch.getProjectionMatrix());
+		shapeRenderer.setProjectionMatrix(batch.getProjectionMatrix());
 		shapeRenderer.begin(ShapeType.Filled);
 		shapeRenderer.setColor(Color.WHITE);
 		shapeRenderer.rect(Gdx.graphics.getWidth() / 10f, 1 * Gdx.graphics.getHeight() / 10f,
@@ -63,13 +63,13 @@ public class Tutorial {
 		shapeRenderer.setColor(Color.GREEN);
 		shapeRenderer.rect(getStagePos().x, getStagePos().y, 64, 64);
 		shapeRenderer.end();
-		MainGameClass.batch.begin();
-		bitmapFont.draw(MainGameClass.batch, curText, Gdx.graphics.getWidth() / 10f,
+		batch.begin();
+		bitmapFont.draw(batch, curText, Gdx.graphics.getWidth() / 10f,
 				Gdx.graphics.getHeight() / 10f + Gdx.graphics.getHeight() / 5f - bitmapFont.getCapHeight() / 2);
-		bitmapFont.draw(MainGameClass.batch, "[tab] to skip!",
+		bitmapFont.draw(batch, "[tab] to skip!",
 				Gdx.graphics.getWidth() / 10f + 4f * Gdx.graphics.getWidth() / 5f - layout.width,
 				Gdx.graphics.getHeight() / 10f + bitmapFont.getCapHeight() * 1.5f);
-		MainGameClass.batch.end();
+		batch.end();
 		if (nextCharTimer < stages.get(stage).text.length()) {
 			if (curText.length() > 0 && ".,!?".contains(curText.substring(curText.length() - 1))) {
 				if (addDelay(10, dT)) {

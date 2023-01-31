@@ -16,7 +16,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.team3gdx.game.MainGameClass;
 
-public class MainScreen implements Screen{
+public class MainScreen implements Screen {
 	final MainGameClass game;
 	float v = 0;
 	float s = 0;
@@ -32,20 +32,19 @@ public class MainScreen implements Screen{
 
 	float sliderWidth;
 
-	
 	Button sb;
 	Button lb;
 	Button ad;
 	Button eg;
-	
+
 	Rectangle volSlide;
 	Rectangle volSlideBackgr;
 	Rectangle musSlide;
 	Rectangle musSlideBackgr;
-	
+
 	OrthographicCamera camera;
 	Viewport viewport;
-	
+
 	Texture vButton;
 	Texture vControl;
 	Texture background;
@@ -54,13 +53,15 @@ public class MainScreen implements Screen{
 	Texture exitGame;
 	Texture audio;
 	Texture audioEdit;
-	
+
 	Stage stage;
-	enum STATE{
+
+	enum STATE {
 		main, audio, leaderboard, new_game;
 	}
+
 	STATE state;
-	
+
 	public MainScreen(final MainGameClass game) {
 		this.game = game;
 		this.gameResolutionX = Gdx.graphics.getWidth();
@@ -93,19 +94,19 @@ public class MainScreen implements Screen{
 	public void show() {
 		float currentMusicVolumeSliderX = (game.musicVolumeScale * sliderWidth) + xSliderMin;
 		float currentGameVolumeSliderX = (game.gameVolumeScale * sliderWidth) + xSliderMin;
-		volSlide.setPosition(currentGameVolumeSliderX,
-				2*gameResolutionY/5.0f - buttonheight/ 2 + buttonheight / 6 + volSlideBackgr.height / 2 - volSlide.height/2);
+		volSlide.setPosition(currentGameVolumeSliderX, 2 * gameResolutionY / 5.0f - buttonheight / 2 + buttonheight / 6
+				+ volSlideBackgr.height / 2 - volSlide.height / 2);
 		volSlideBackgr.setPosition((gameResolutionX / 2.0f) + buttonwidth / 12,
-				2*gameResolutionY/5.0f - buttonheight/ 2 + buttonheight / 6);
-		musSlide.setPosition(currentMusicVolumeSliderX,
-				2*gameResolutionY/5.0f - buttonheight/ 2 + 4 * buttonheight / 6 + musSlideBackgr.height / 2 - musSlide.height/2);
+				2 * gameResolutionY / 5.0f - buttonheight / 2 + buttonheight / 6);
+		musSlide.setPosition(currentMusicVolumeSliderX, 2 * gameResolutionY / 5.0f - buttonheight / 2
+				+ 4 * buttonheight / 6 + musSlideBackgr.height / 2 - musSlide.height / 2);
 		musSlideBackgr.setPosition((gameResolutionX / 2.0f) + buttonwidth / 12,
-				2*gameResolutionY/5.0f - buttonheight/ 2 + 4 * buttonheight / 6);
+				2 * gameResolutionY / 5.0f - buttonheight / 2 + 4 * buttonheight / 6);
 
 		state = STATE.main;
 		camera = new OrthographicCamera();
-		camera.setToOrtho(false,gameResolutionX,gameResolutionY);
-		viewport = new FitViewport(gameResolutionX,gameResolutionY,camera);
+		camera.setToOrtho(false, gameResolutionX, gameResolutionY);
+		viewport = new FitViewport(gameResolutionX, gameResolutionY, camera);
 
 		vButton = new Texture(Gdx.files.internal("uielements/vButton.jpg"));
 		vControl = new Texture(Gdx.files.internal("uielements/vControl.png"));
@@ -121,48 +122,44 @@ public class MainScreen implements Screen{
 		ad = new Button(new TextureRegionDrawable(audio));
 		eg = new Button(new TextureRegionDrawable(exitGame));
 
-		sb.setPosition(gameResolutionX/10.0f, 4*gameResolutionY/5.0f - buttonheight/2);
-		lb.setPosition(gameResolutionX/10.0f, 3*gameResolutionY/5.0f - buttonheight/2);
-		ad.setPosition(gameResolutionX/10.0f,2*gameResolutionY/5.0f - buttonheight/2);
-		eg.setPosition(gameResolutionX/10.0f, gameResolutionY/5.0f - buttonheight/2);
+		sb.setPosition(gameResolutionX / 10.0f, 4 * gameResolutionY / 5.0f - buttonheight / 2);
+		lb.setPosition(gameResolutionX / 10.0f, 3 * gameResolutionY / 5.0f - buttonheight / 2);
+		ad.setPosition(gameResolutionX / 10.0f, 2 * gameResolutionY / 5.0f - buttonheight / 2);
+		eg.setPosition(gameResolutionX / 10.0f, gameResolutionY / 5.0f - buttonheight / 2);
 
 		lb.setSize(buttonwidth, buttonheight);
 		ad.setSize(buttonwidth, buttonheight);
 		eg.setSize(buttonwidth, buttonheight);
 		sb.setSize(buttonwidth, buttonheight);
 
-		ad.addListener(new ClickListener(){
-			public void touchUp(InputEvent event, float x, float y
-					,int pointer, int button) {
+		ad.addListener(new ClickListener() {
+			public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
 				state = STATE.audio;
 				super.touchUp(event, x, y, pointer, button);
 			}
 		});
-		sb.addListener(new ClickListener(){
-			public void touchUp(InputEvent event, float x, float y
-					,int pointer, int button) {
+		sb.addListener(new ClickListener() {
+			public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
 				state = STATE.new_game;
 				super.touchUp(event, x, y, pointer, button);
 			}
 		});
-		lb.addListener(new ClickListener(){
-			public void touchUp(InputEvent event, float x, float y
-					,int pointer, int button) {
+		lb.addListener(new ClickListener() {
+			public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
 				state = STATE.leaderboard;
 				super.touchUp(event, x, y, pointer, button);
 			}
 		});
-		eg.addListener(new ClickListener(){
-			public void touchUp(InputEvent event, float x, float y
-					,int pointer, int button) {
-				if(state == STATE.main) {
+		eg.addListener(new ClickListener() {
+			public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+				if (state == STATE.main) {
 					Gdx.app.exit();
 				}
 				super.touchUp(event, x, y, pointer, button);
 			}
 		});
 
-		stage = new Stage(viewport,game.batch);
+		stage = new Stage(viewport, game.batch);
 		Gdx.input.setInputProcessor(stage);
 
 		stage.addActor(sb);
@@ -174,60 +171,63 @@ public class MainScreen implements Screen{
 	@Override
 	public void render(float delta) {
 		// TODO Auto-generated method stub
-		ScreenUtils.clear(0,0,0,0);
+		ScreenUtils.clear(0, 0, 0, 0);
 		game.batch.setProjectionMatrix(camera.combined);
 		game.mainScreenMusic.play();
 
 		game.batch.begin();
-		game.batch.draw(background,0,0,gameResolutionX,gameResolutionY);
+		game.batch.draw(background, 0, 0, gameResolutionX, gameResolutionY);
 		game.batch.end();
 		stage.act();
 		stage.draw();
 		changeScreen(state);
-		
-		if(Gdx.input.isKeyPressed(Keys.ESCAPE)) {
+
+		if (Gdx.input.isKeyPressed(Keys.ESCAPE)) {
 			state = STATE.main;
-			}
+		}
 	}
-	
+
 	public void changeScreen(STATE state) {
-		if(state == STATE.new_game) {
+		if (state == STATE.new_game) {
 			game.mainScreenMusic.dispose();
 			game.setScreen(game.getGameScreen());
 		}
-		if(state == STATE.leaderboard) {
+		if (state == STATE.leaderboard) {
 			game.mainScreenMusic.dispose();
 			game.setScreen(game.getLeaderBoardScreen());
 		}
-		if(state == STATE.audio) {
+		if (state == STATE.audio) {
 			musicVolumeUpdate();
 			gameVolumeUpdate();
-			
+
 			game.batch.begin();
-			game.batch.draw(audioEdit,(float) gameResolutionX / 2,
-					(float)2*gameResolutionY/5 - buttonheight / 2,
-					buttonwidth/2,buttonheight);
-				
-			game.batch.draw(vControl,volSlideBackgr.getX(),volSlideBackgr.getY(),volSlideBackgr.width,volSlideBackgr.height);
-			game.batch.draw(vButton,volSlide.getX()-volSlide.width/2,volSlide.getY(),volSlide.width,volSlide.height);
-				
-			game.batch.draw(vControl,musSlideBackgr.getX(),musSlideBackgr.getY(),musSlideBackgr.width,musSlideBackgr.height);
-			game.batch.draw(vButton,musSlide.getX()-musSlide.width/2,musSlide.getY(),musSlide.width,musSlide.height);
-				
+			game.batch.draw(audioEdit, (float) gameResolutionX / 2, (float) 2 * gameResolutionY / 5 - buttonheight / 2,
+					buttonwidth / 2, buttonheight);
+
+			game.batch.draw(vControl, volSlideBackgr.getX(), volSlideBackgr.getY(), volSlideBackgr.width,
+					volSlideBackgr.height);
+			game.batch.draw(vButton, volSlide.getX() - volSlide.width / 2, volSlide.getY(), volSlide.width,
+					volSlide.height);
+
+			game.batch.draw(vControl, musSlideBackgr.getX(), musSlideBackgr.getY(), musSlideBackgr.width,
+					musSlideBackgr.height);
+			game.batch.draw(vButton, musSlide.getX() - musSlide.width / 2, musSlide.getY(), musSlide.width,
+					musSlide.height);
+
 			game.batch.end();
 		}
 	}
-	
+
 	public void musicVolumeUpdate() {
 		float fromTopy = Gdx.input.getY();
 		float fromBottomy = gameResolutionY - fromTopy;
 		float x = Gdx.input.getX();
-		boolean change = musSlide.getY() <= fromBottomy & fromBottomy<=musSlide.getY() + musSlide.getHeight();
-		if(Gdx.input.isTouched() & change) {
-			if(x>= musSlideBackgr.getX() & x<=musSlideBackgr.getX() + musSlideBackgr.getWidth()) {
+		boolean change = musSlide.getY() <= fromBottomy & fromBottomy <= musSlide.getY() + musSlide.getHeight();
+		if (Gdx.input.isTouched() & change) {
+			if (x >= musSlideBackgr.getX() & x <= musSlideBackgr.getX() + musSlideBackgr.getWidth()) {
 				musSlide.setPosition(Gdx.input.getX(), musSlide.getY());
 				v = (musSlide.getX() - musSlideBackgr.getX()) / musSlideBackgr.getWidth();
-				if (v < 0.01){
+				if (v < 0.01) {
 					v = 0;
 				}
 				game.mainScreenMusic.setVolume(v);
@@ -236,20 +236,20 @@ public class MainScreen implements Screen{
 			}
 		}
 	}
-	
+
 	public void gameVolumeUpdate() {
 		float fromTopy = Gdx.input.getY();
 		float fromBottomy = gameResolutionY - fromTopy;
 		float x = Gdx.input.getX();
-		boolean change = volSlide.getY()<=fromBottomy & fromBottomy<=volSlide.getY() + volSlide.getHeight();
-		if(Gdx.input.isTouched() & change) {
-			if(x>= volSlideBackgr.getX() & x<=volSlideBackgr.getX() + volSlideBackgr.getWidth()) {
-				volSlide.setPosition(Gdx.input.getX(),volSlide.getY());
+		boolean change = volSlide.getY() <= fromBottomy & fromBottomy <= volSlide.getY() + volSlide.getHeight();
+		if (Gdx.input.isTouched() & change) {
+			if (x >= volSlideBackgr.getX() & x <= volSlideBackgr.getX() + volSlideBackgr.getWidth()) {
+				volSlide.setPosition(Gdx.input.getX(), volSlide.getY());
 				s = (volSlide.getX() - volSlideBackgr.getX()) / volSlideBackgr.getWidth();
-				if (s < 0.01){
+				if (s < 0.01) {
 					s = 0;
 				}
-				//game.sound.setVolume(game.soundid, s);
+				// game.sound.setVolume(game.soundid, s);
 				game.gameVolumeScale = s;
 			}
 		}
@@ -264,19 +264,19 @@ public class MainScreen implements Screen{
 	@Override
 	public void pause() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void resume() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void hide() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
