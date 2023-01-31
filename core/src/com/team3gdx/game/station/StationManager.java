@@ -30,7 +30,7 @@ public class StationManager {
 	/**
 	 * Checks every station for ingredients and updates them accordingly.
 	 * 
-	 * @param The {@link SpriteBatch} to render ingredient textures.
+	 * @param batch - SpriteBatch to render ingredient textures.
 	 */
 	public void handleStations(SpriteBatch batch) {
 		this.batch = batch;

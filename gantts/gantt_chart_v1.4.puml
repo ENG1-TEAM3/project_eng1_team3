@@ -33,10 +33,10 @@ Project starts 2022-11-14
 [Cust+item-Harry] starts 2023-01-26 and ends 2023-01-31 and displays on same row as [Customers - James]
 [Cust+item-Harry] is colored in lightGreen
 
-[Website Completion - Cai] lasts 6 days
+[Website Cai + Ivan] lasts 6 days
 [Documentation Completion - Ben] lasts 10 days
 
-[Website Completion - Cai] starts 2023-01-24
+[Website Cai + Ivan] starts 2023-01-24
 [Documentation Completion - Ben] starts 2023-01-16
 [Assessment 1] starts 2023-02-01
 
@@ -48,7 +48,7 @@ Project starts 2022-11-14
 [Plan revaluation] ends 2023-02-01
 [Plan revaluation] is colored in red
 
-[Website Completion - Cai] starts at [Documentation Completion - Ben]'s end
+[Website Cai + Ivan] starts at [Documentation Completion - Ben]'s end
 [Final UML] starts 2023-01-30 and displays on same row as [UML planning - Cai]
 [Risk Assessment Weekly] starts 2022-11-30 and ends 2022-12-20
 [Plan Reassessment Weekly - Ben] starts 2022-12-05 and ends 2022-12-20
@@ -59,7 +59,7 @@ Project starts 2022-11-14
 [Risk Assessment Weekly - Everyone] starts at [Risk Assess. 1 - Everyone]'s end
 [Plan Reassessment Weekly - Ben] starts at [Planning]'s end
 
-[Website Completion - Cai] is colored in Orange
+[Website Cai + Ivan] is colored in Orange
 [Documentation Completion - Ben] is colored in Blue
 [Planning] is colored in Red
 [Risk Assess. 1 - Everyone] is colored in Yellow

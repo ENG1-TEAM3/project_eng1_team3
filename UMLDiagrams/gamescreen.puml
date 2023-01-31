@@ -1,0 +1,27 @@
+@startuml
+'https://plantuml.com/state-diagram
+
+
+[*] --> continue
+
+state continue{
+}
+continue -> continue : rungameandtimer
+continue -> pause : pausebuttonpress
+pause -> continue : continuebuttonpress
+pause -> titlescreen: titlescreenbuttonpress
+pause -> pause : pausetimercount
+
+state pause{
+state normalpausestate{
+}
+
+state editvolume{
+}
+normalpausestate -> editvolume : pressvolumebutton
+editvolume -> normalpausestate : closevolumemenu
+editvolume -> editvolume : updatesliders
+}
+state titlescreen
+
+@enduml
