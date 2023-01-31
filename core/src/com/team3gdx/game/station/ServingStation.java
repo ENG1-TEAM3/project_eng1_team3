@@ -26,7 +26,7 @@ public class ServingStation extends Station {
 	};
 
 	public ServingStation(Vector2 pos) {
-		super(pos, 1, false, allowedIngredients);
+		super(pos, 1, false, allowedIngredients, "audio/soundFX/money-collect.mp3");
 	}
 
 	/**

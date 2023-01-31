@@ -15,7 +15,7 @@ public class PrepStation extends Station {
 	public float progress = 0;
 
 	public PrepStation(Vector2 pos) {
-		super(pos, 5, false, null);
+		super(pos, 5, false, null, null);
 	}
 
 	/**

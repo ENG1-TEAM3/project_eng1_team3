@@ -12,15 +12,12 @@ import com.team3gdx.game.screen.GameScreen.STATE;
 
 public class CookingStation extends Station {
 
-	private Music cookingSound;
-
 	ParticleEffect[] pES;
 
 	public CookingStation(Vector2 pos, int numberOfSlots, Ingredient[] allowedIngredients, String particlePath,
 			String soundPath) {
-		super(pos, numberOfSlots, false, allowedIngredients);
+		super(pos, numberOfSlots, false, allowedIngredients, "audio/soundFX/frying.mp3");
 		createParticleEmitter(pos, particlePath);
-		cookingSound = Gdx.audio.newMusic(Gdx.files.internal(soundPath));
 	}
 
 	/**
@@ -98,7 +95,6 @@ public class CookingStation extends Station {
 		if (GameScreen.control.interact) {
 			if (!slots.empty() && !GameScreen.cook.full()) {
 				if (slots.peek().flipped) {
-					cookingSound.stop();
 					GameScreen.cook.pickUpItem(take());
 				}
 
@@ -114,11 +110,6 @@ public class CookingStation extends Station {
 		if (!slots.empty() && GameScreen.control.flip)
 			slots.peek().flip();
 
-	}
-
-	public void cook() {
-		cookingSound.setVolume(MainGameClass.gameVolumeScale);
-		cookingSound.play();
 	}
 
 }

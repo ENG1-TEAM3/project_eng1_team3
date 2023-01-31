@@ -50,12 +50,13 @@ public class StationManager {
 
 					if (station instanceof CuttingStation && currentIngredient.slicing) {
 						((CuttingStation) station).interact(batch, .1f);
+						station.interactSound();
 					}
 
 					if (currentIngredient.cooking && station instanceof CookingStation) {
 						((CookingStation) station).drawParticles(batch, i);
 						currentIngredient.cook(.0005f, batch);
-						((CookingStation) station).cook();
+						station.interactSound();
 					} else {
 						currentIngredient.draw(batch);
 					}
@@ -165,7 +166,7 @@ public class StationManager {
 	 * @param pos The position to lookup the station.
 	 */
 	private void placeIngredientStation(Vector2 pos) {
-		checkStationExists(pos, new Station(pos, 4, false, null));
+		checkStationExists(pos, new Station(pos, 4, false, null, null));
 		stations.get(pos).drawTakeText(batch);
 		stations.get(pos).drawDropText(batch);
 		if (GameScreen.control.interact) {
