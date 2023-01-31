@@ -264,6 +264,50 @@ public class GameScreen implements Screen {
 		uiMatrix.setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		MainGameClass.batch.setProjectionMatrix(uiMatrix);
 		// =====================================DRAW=UI=ELEMENTS=========================================================
+		drawUI();
+		// =====================================SET=MATRIX=BACK=TO=GAME=MATRIX===========================================
+
+		setCameraLerp(delta);
+
+		MainGameClass.batch.setProjectionMatrix(worldCamera.combined);
+		// ==================================MOVE=CAMERA=================================================================
+
+		worldCamera.update();
+		uiCamera.update();
+		// ==================================PLAY=MUSIC==================================================================
+		MainGameClass.gameMusic.play();
+		// ==================================DRAW=INTERACTIVE=UI=ELEMENTS================================================
+		stage.act();
+		stage.draw();
+		// ==================================JUMP=TO=STATE=SPECIFIC=LOGIC================================================
+		MainGameClass.batch.setProjectionMatrix(uiMatrix);
+		changeScreen(state1);
+		MainGameClass.batch.setProjectionMatrix(worldCamera.combined);
+
+		checkCookSwitch();
+
+	}
+
+	private void checkCookSwitch() {
+		if (control.tab && Tutorial.complete) {
+			cook.locked = false;
+			currentCookIndex += currentCookIndex < cooks.length - 1 ? 1 : -currentCookIndex;
+			cook = cooks[currentCookIndex];
+		}
+		if (control.shift && Tutorial.complete) {
+			cook.locked = false;
+			currentCookIndex -= currentCookIndex > 0 ? 1 : -cooks.length + 1;
+			cook = cooks[currentCookIndex];
+		}
+
+		control.interact = false;
+		control.drop = false;
+		control.flip = false;
+		control.tab = false;
+		control.shift = false;
+	}
+
+	private void drawUI() {
 		if (currentWaitingCustomer != null)
 			Menu.RECIPES.get(currentWaitingCustomer.order).displayRecipe(new Vector2(64, 256));
 		for (int i = 0; i < cooks.length; i++) {
@@ -286,16 +330,18 @@ public class GameScreen implements Screen {
 		MainGameClass.font.draw(MainGameClass.batch, String.valueOf(cook.getDirection()), 0, 300);
 		MainGameClass.font.draw(MainGameClass.batch, Long.toString(startTime - timeOnStartup), 0, 500);
 		MainGameClass.font.draw(MainGameClass.batch, "Time in ms:", 0, 550);
-//		MainGameClass.batch.draw(new Texture("entities/cook.png"), 0, 0);
 		MainGameClass.font.draw(MainGameClass.batch, state1.toString(), gameResolutionX / 20.0f,
 				gameResolutionY / 20.0f);
 		MainGameClass.batch.end();
-		// =====================================SET=MATRIX=BACK=TO=GAME=MATRIX===========================================
+	}
 
+	private void setCameraLerp(float delta) {
 		if (!Tutorial.complete) {
 			worldCamera.position.lerp(new Vector3(Tutorial.getStagePos(), 0), .065f);
 			if (control.tab) {
 				Tutorial.nextStage();
+			} else if (control.shift) {
+				Tutorial.previousStage();
 			}
 			Tutorial.drawBox(delta * 20);
 		} else {
@@ -307,39 +353,6 @@ public class GameScreen implements Screen {
 				worldCamera.position.lerp(new Vector3(cook.pos.x, cook.pos.y, 0), .065f);
 			}
 		}
-
-		MainGameClass.batch.setProjectionMatrix(worldCamera.combined);
-		// ==================================MOVE=CAMERA=================================================================
-
-		worldCamera.update();
-		uiCamera.update();
-		// ==================================PLAY=MUSIC==================================================================
-		MainGameClass.gameMusic.play();
-		// ==================================DRAW=INTERACTIVE=UI=ELEMENTS================================================
-		stage.act();
-		stage.draw();
-		// ==================================JUMP=TO=STATE=SPECIFIC=LOGIC================================================
-		MainGameClass.batch.setProjectionMatrix(uiMatrix);
-		changeScreen(state1);
-		MainGameClass.batch.setProjectionMatrix(worldCamera.combined);
-
-		if (control.tab && Tutorial.complete) {
-			cook.locked = false;
-			currentCookIndex += currentCookIndex < cooks.length - 1 ? 1 : -currentCookIndex;
-			cook = cooks[currentCookIndex];
-		}
-		if (control.shift && Tutorial.complete) {
-			cook.locked = false;
-			currentCookIndex -= currentCookIndex > 0 ? 1 : -cooks.length + 1;
-			cook = cooks[currentCookIndex];
-		}
-
-		control.interact = false;
-		control.drop = false;
-		control.flip = false;
-		control.tab = false;
-		control.shift = false;
-
 	}
 
 	/**
@@ -564,21 +577,8 @@ public class GameScreen implements Screen {
 		int celly = (int) Math.floor(centralCookY / 64);
 		int checkCellX = cellx;
 		int checkCellY = celly;
-		switch (ck.getDirection()) {
-		case 'u':
-			checkCellY += 2;
-			break;
-		case 'd':
-			break;
-		case 'l':
-			checkCellX -= 1;
-			checkCellY += 1;
-			break;
-		case 'r':
-			checkCellX += 1;
-			checkCellY += 1;
-			break;
-		}
+		checkCellX += ck.getDirection().x;
+		checkCellY += ck.getDirection().y + 1;
 		Cell viewedTile = ((TiledMapTileLayer) map1.getLayers().get(1)).getCell(checkCellX, checkCellY);
 
 		if (viewedTile != null) {

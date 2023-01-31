@@ -35,7 +35,7 @@ public class StationManager {
 					}
 
 					if (station instanceof CuttingStation && currentIngredient.slicing) {
-						((CuttingStation) station).interact(MainGameClass.batch, .05f);
+						((CuttingStation) station).interact(MainGameClass.batch, .1f);
 					}
 
 					if (currentIngredient.cooking && station instanceof CookingStation) {

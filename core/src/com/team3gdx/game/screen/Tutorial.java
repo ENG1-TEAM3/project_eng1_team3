@@ -18,7 +18,8 @@ public class Tutorial {
 	static {
 		stages.add(new PosTextPair(new Vector2(64, 256),
 				" Welcome to Piazza Panic! Customers will arrive one-by-one requesting an order. "));
-		stages.add(new PosTextPair(GameScreen.cook.pos, " Control the cooks (using WASD) in the kitchen to gather ingredients. "));
+		stages.add(new PosTextPair(GameScreen.cook.pos,
+				" Control the cooks (using WASD) in the kitchen to gather ingredients. "));
 		stages.add(new PosTextPair(new Vector2(10 * 64, 11 * 64),
 				" Move to different stations: [Ingredient Station] to collect ingredients (e to pickup, q to drop), "));
 		stages.add(new PosTextPair(new Vector2(7 * 64, 11 * 64),
@@ -87,6 +88,7 @@ public class Tutorial {
 	}
 
 	public static void nextStage() {
+		delay = 0;
 		if (nextCharTimer < stages.get(stage).text.length()) {
 			nextCharTimer = stages.get(stage).text.length();
 			return;
@@ -98,6 +100,12 @@ public class Tutorial {
 			stage++;
 		else
 			complete = true;
+	}
+
+	public static void previousStage() {
+		nextCharTimer = 0;
+		if (stage > 0)
+			stage--;
 	}
 
 	static float delay = 0;
