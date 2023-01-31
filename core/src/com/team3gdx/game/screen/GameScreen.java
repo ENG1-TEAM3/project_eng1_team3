@@ -47,7 +47,7 @@ public class GameScreen implements Screen {
 	final MainGameClass game;
 	final MainScreen ms;
 
-	public static int currentWave = 0;
+	public static int currentWave = 5;
 
 	Rectangle volSlideBackgr;
 	Rectangle volSlide;
@@ -98,7 +98,7 @@ public class GameScreen implements Screen {
 	float audioBackgroundy;
 	long startTime;
 	long timeOnStartup;
-	long tempTime;
+	long tempTime, tempThenTime;
 	public static Control control;
 	TiledMapRenderer tiledMapRenderer;
 	public TiledMap map1;
@@ -135,6 +135,7 @@ public class GameScreen implements Screen {
 		// =======================================START=FRAME=TIMER======================================================
 		startTime = System.currentTimeMillis();
 		timeOnStartup = startTime;
+		tempThenTime = startTime;
 		// =======================================SET=POSITIONS=OF=SLIDERS===============================================
 		float currentMusicVolumeSliderX = (MainGameClass.musicVolumeScale * sliderWidth) + xSliderMin;
 		float currentGameVolumeSliderX = (MainGameClass.gameVolumeScale * sliderWidth) + xSliderMin;
@@ -254,8 +255,8 @@ public class GameScreen implements Screen {
 		// ==================================MOVE=COOK===================================================================
 		tempTime = System.currentTimeMillis();
 		if (!cook.locked && Tutorial.complete)
-			cook.update(control, (tempTime - startTime), CLTiles);
-//		startTime = tempTime;
+			cook.update(control, (tempTime - tempThenTime), CLTiles);
+		tempThenTime = tempTime;
 		checkInteraction(cook, game.shapeRenderer);
 		// =====================================SET=MATRIX=FOR=UI=ELEMENTS===============================================
 		Matrix4 uiMatrix = worldCamera.combined.cpy();
@@ -283,7 +284,7 @@ public class GameScreen implements Screen {
 		game.batch.setProjectionMatrix(worldCamera.combined);
 
 		checkCookSwitch();
-		//=========================================CHECK=GAME=OVER======================================================
+		// =========================================CHECK=GAME=OVER======================================================
 		checkGameOver();
 
 	}
@@ -331,7 +332,7 @@ public class GameScreen implements Screen {
 
 		game.batch.begin();
 		game.font.draw(game.batch, String.valueOf(cook.getDirection()), 0, 300);
-		game.font.draw(game.batch, Long.toString(startTime - timeOnStartup), 0, 500);
+		game.font.draw(game.batch, Long.toString((startTime - timeOnStartup) / 1000), 0, 500);
 		game.font.draw(game.batch, "Time in ms:", 0, 550);
 		game.font.draw(game.batch, state1.toString(), gameResolutionX / 20.0f, gameResolutionY / 20.0f);
 		game.batch.end();
@@ -371,7 +372,8 @@ public class GameScreen implements Screen {
 		}
 	}
 
-	
+	long nowTime = 0;
+	long thenTime = 0;
 
 	/**
 	 * Changes game window state
@@ -386,6 +388,7 @@ public class GameScreen implements Screen {
 
 		}
 		if (state1 == STATE.Pause) {
+			thenTime = System.currentTimeMillis() - timeOnStartup;
 			Gdx.input.setInputProcessor(stage2);
 			game.batch.begin();
 			game.batch.draw(ESC, optionsBackground.getX(), optionsBackground.getY(), optionsBackground.getWidth(),
@@ -420,7 +423,10 @@ public class GameScreen implements Screen {
 			game.batch.end();
 		}
 		if (state1 == STATE.Continue) {
+			nowTime = System.currentTimeMillis() - timeOnStartup;
+			startTime += nowTime - thenTime;
 			cc.updateCustomers();
+			thenTime = System.currentTimeMillis() - timeOnStartup;
 		}
 	}
 
@@ -600,19 +606,20 @@ public class GameScreen implements Screen {
 		sr.end();
 	}
 
-	public void checkGameOver(){
-		if (currentWave == NUMBER_OF_WAVES + 1){
-			double totaltimes = (startTime - timeOnStartup)/1000f;
-			game.getLeaderBoardScreen().addLeaderBoardData("PLAYER1",(int)Math.floor(totaltimes));
+	public void checkGameOver() {
+		if (currentWave == NUMBER_OF_WAVES + 1) {
+			game.getLeaderBoardScreen().addLeaderBoardData("PLAYER1",
+					(int) Math.floor((startTime - timeOnStartup) / 1000));
 			game.resetGameScreen();
 			this.resetStatic();
 			game.setScreen(game.getLeaderBoardScreen());
 		}
 	}
 
-	public void resetStatic(){
+	public void resetStatic() {
 		currentWave = 0;
 	}
+
 	/**
 	 * Resize game screen - Not used in fullscreen mode
 	 * 
