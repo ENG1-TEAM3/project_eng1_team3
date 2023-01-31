@@ -27,6 +27,11 @@ public class LeaderBoard implements Screen, TextInputListener {
 	MainScreen ms;
 	ArrayList<ArrayList<String>> playerData;
 
+	/**
+	 * Constructor for leaderboard screen
+	 * @param game - Entry point class
+	 * @param ms - Main screen class
+	 */
 	public LeaderBoard(MainGameClass game, MainScreen ms) {
 		this.game = game;
 		this.ms = ms;
@@ -35,6 +40,11 @@ public class LeaderBoard implements Screen, TextInputListener {
 		sortPlayerData();
 	}
 
+	/**
+	 * Read player data from leaderboard file
+	 * Delete the leaderboard txt file to clear leaderboard
+	 * The file starts with "empty" and then adds scores
+	 */
 	public void readPlayerData() {
 		playerData = new ArrayList<>();
 		boolean doesPlayerDataExist = Gdx.files.local("leaderboarddata/playerData.txt").exists();
@@ -59,6 +69,9 @@ public class LeaderBoard implements Screen, TextInputListener {
 		}
 	}
 
+	/**
+	 * Order leaderboard data
+	 */
 	public void sortPlayerData() {
 		Collections.sort(playerData, new Comparator<ArrayList<String>>() {
 			@Override
@@ -70,6 +83,9 @@ public class LeaderBoard implements Screen, TextInputListener {
 		});
 	}
 
+	/**
+	 * What should be done when screen is shown
+	 */
 	public void show() {
 		ScreenUtils.clear(0, 0, 0, 0);
 		camera = new OrthographicCamera();
@@ -81,6 +97,10 @@ public class LeaderBoard implements Screen, TextInputListener {
 		game.font.getData().setScale((float) 2.5);
 	}
 
+	/**
+	 * Screen render method
+	 * @param delta - some change in time
+	 */
 	public void render(float delta) {
 		// TODO Auto-generated method stub
 		ScreenUtils.clear(0, 0, 0, 0);
@@ -128,6 +148,11 @@ public class LeaderBoard implements Screen, TextInputListener {
 		});
 	}
 
+	/**
+	 * Add data to leaderboard
+	 * @param name - name of player
+	 * @param score - score of player
+	 */
 	public void addLeaderBoardData(String name, int score) {
 		String stringscore = Integer.toString(score);
 		FileHandle handle = Gdx.files.local("leaderboarddata/playerData.txt");
@@ -136,14 +161,21 @@ public class LeaderBoard implements Screen, TextInputListener {
 		this.sortPlayerData();
 	}
 
+	/**
+	 * Change screen back to main menu
+	 */
 	public void changeScreenToMain() {
 		game.gameMusic.pause();
 		game.setScreen(game.getMainScreen());
 	}
 
+	/**
+	 * Change window size
+	 * @param width - new window size
+	 * @param height - new window height
+	 */
 	@Override
 	public void resize(int width, int height) {
-		// TODO Auto-generated method stub
 		viewport.update(width, height);
 	}
 

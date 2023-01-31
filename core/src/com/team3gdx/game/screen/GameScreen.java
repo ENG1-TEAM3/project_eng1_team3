@@ -416,7 +416,7 @@ public class GameScreen implements Screen {
 			game.batch.end();
 		}
 		if (state1 == STATE.Continue) {
-			cc.updateCustomers(control);
+			cc.updateCustomers();
 		}
 	}
 

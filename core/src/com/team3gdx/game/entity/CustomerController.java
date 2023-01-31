@@ -13,7 +13,6 @@ import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 import com.badlogic.gdx.math.Vector2;
-import com.team3gdx.game.util.Control;
 
 public class CustomerController {
 	int lockout;
@@ -33,6 +32,10 @@ public class CustomerController {
 		lockout = 0;
 	}
 
+	/**
+	 * Check whether the customer zone is correct in the tile map, and construct data structures for it
+	 * @param gameMap - The game tilemap
+	 */
 	private void computeCustomerZone(TiledMap gameMap) {
 		// ==============================================================================================================
 		TiledMapTileLayer botlayer = (TiledMapTileLayer) gameMap.getLayers().get(0);
@@ -135,18 +138,10 @@ public class CustomerController {
 
 	}
 
-	// public void drawCustBot(Batch b1){
-	// for (Customer c: this.customers){
-	// if (c != null) {
-	// c.renderCustomersBot(b1);
-	// }
-	// }
-	// for (Customer c: this.leavingcustomers){
-	// if (c != null) {
-	// c.renderCustomersBot(b1);
-	// }
-	// }
-	// }
+	/**
+	 * Draw top of customers
+	 * @param b1 - spritebatch to render with
+	 */
 	public void drawCustTop(Batch b1) {
 		for (Customer c : this.customers) {
 			if (c != null) {
@@ -170,14 +165,10 @@ public class CustomerController {
 		}
 	}
 
-	public void updateCustomers(Control ctrls) {
-		if (lockout == 100) {
-			lockout = 0;
-		}
-		if (lockout > 0) {
-			lockout++;
-		}
-
+	/**
+	 * Update customers
+	 */
+	public void updateCustomers() {
 		for (Customer c : this.customers) {
 			if (c != null) {
 				c.stepTarget();
@@ -195,12 +186,16 @@ public class CustomerController {
 		}
 	}
 
+	/**
+	 * Check if any of the customers is at one position
+	 * @param pos - vector position
+	 * @return null if no customers are at that position, return the customer that is at that position
+	 */
 	public Customer isCustomerAtPos(Vector2 pos) {
 		for (Customer customer : customers)
 			if (customer != null && Math.floor(customer.posx / 64f) == pos.x && Math.floor(customer.posy / 64f) == pos.y
 					&& customer.locked)
 				return customer;
-
 		return null;
 	}
 }

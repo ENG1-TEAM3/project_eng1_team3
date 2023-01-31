@@ -28,8 +28,8 @@ public class MainGameClass extends Game {
 	@Override
 	public void create() {
 		// ====================================MUSIC=INITIALISATION======================================================
-		musicVolumeScale = 0.0f;
-		gameVolumeScale = 0.0f;
+		musicVolumeScale = 0.4f;
+		gameVolumeScale = 0.4f;
 		mainScreenMusic = Gdx.audio.newMusic(Gdx.files.internal("uielements/MainScreenMusic.ogg"));
 		gameMusic = Gdx.audio.newMusic(Gdx.files.internal("uielements/GameMusic.ogg"));
 		mainScreenMusic.setLooping(false);
