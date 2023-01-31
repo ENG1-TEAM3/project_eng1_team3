@@ -255,7 +255,7 @@ public class GameScreen implements Screen {
 		tempTime = System.currentTimeMillis();
 		if (!cook.locked && Tutorial.complete)
 			cook.update(control, (tempTime - startTime), CLTiles);
-		startTime = tempTime;
+//		startTime = tempTime;
 		checkInteraction(cook, game.shapeRenderer);
 		// =====================================SET=MATRIX=FOR=UI=ELEMENTS===============================================
 		Matrix4 uiMatrix = worldCamera.combined.cpy();
@@ -368,6 +368,8 @@ public class GameScreen implements Screen {
 			}
 		}
 	}
+
+	
 
 	/**
 	 * Changes game window state
