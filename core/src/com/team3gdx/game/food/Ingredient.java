@@ -144,8 +144,8 @@ public class Ingredient extends Entity {
 				status = Status.COOKED;
 			}
 		} else {
-			status = Status.BURNED;
-			texture = new Texture("items/" + name + "_burned.png");
+//			status = Status.BURNED;
+//			texture = new Texture("items/" + name + "_burned.png");
 		}
 
 		draw(batch);

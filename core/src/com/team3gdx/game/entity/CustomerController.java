@@ -33,7 +33,9 @@ public class CustomerController {
 	}
 
 	/**
-	 * Check whether the customer zone is correct in the tile map, and construct data structures for it
+	 * Check whether the customer zone is correct in the tile map, and construct
+	 * data structures for it
+	 * 
 	 * @param gameMap - The game tilemap
 	 */
 	private void computeCustomerZone(TiledMap gameMap) {
@@ -140,6 +142,7 @@ public class CustomerController {
 
 	/**
 	 * Draw top of customers
+	 * 
 	 * @param b1 - spritebatch to render with
 	 */
 	public void drawCustTop(Batch b1) {
@@ -188,12 +191,14 @@ public class CustomerController {
 
 	/**
 	 * Check if any of the customers is at one position
+	 * 
 	 * @param pos - vector position
-	 * @return null if no customers are at that position, return the customer that is at that position
+	 * @return null if no customers are at that position, return the customer that
+	 *         is at that position
 	 */
 	public Customer isCustomerAtPos(Vector2 pos) {
 		for (Customer customer : customers)
-			if (customer != null && Math.floor(customer.posx / 64f) == pos.x && Math.floor(customer.posy / 64f) == pos.y
+			if (customer != null && Math.ceil(customer.posx / 64f) == pos.x && Math.ceil(customer.posy / 64f) == pos.y
 					&& customer.locked)
 				return customer;
 		return null;

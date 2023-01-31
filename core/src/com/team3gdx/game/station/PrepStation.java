@@ -28,7 +28,7 @@ public class PrepStation extends Station {
 		for (Recipe recipe : Menu.RECIPES.values()) {
 			if (recipe.matches(slots)) {
 				if (progress == 1) {
-					progress = 0;
+//					progress = 0;
 					slots.clear();
 					slots.add(recipe);
 				}
@@ -39,7 +39,7 @@ public class PrepStation extends Station {
 
 		if (ingredientMatch(slots.peek()) != null) {
 			if (progress == 1) {
-				progress = 0;
+//				progress = 0;
 				slots.add(ingredientMatch(slots.pop()));
 			}
 
