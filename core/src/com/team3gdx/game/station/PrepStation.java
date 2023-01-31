@@ -18,6 +18,12 @@ public class PrepStation extends Station {
 		super(pos, 5, false, null);
 	}
 
+	/**
+	 * Check if the current ingredients are part of a recipe or an ingredient can be
+	 * formed to another begin progress on creating it.
+	 * 
+	 * @return A boolean representing whether the transformation happens.
+	 */
 	public boolean slotsToRecipe() {
 		for (Recipe recipe : Menu.RECIPES.values()) {
 			if (recipe.matches(slots)) {
@@ -46,6 +52,11 @@ public class PrepStation extends Station {
 		return false;
 	}
 
+	/**
+	 * Lock currently interacting cook to station.
+	 * 
+	 * @return A boolean indicating if the cook was locked.
+	 */
 	public boolean lockCook() {
 		if (!slots.isEmpty() && slotsToRecipe()) {
 			if (lockedCook == null) {
@@ -67,12 +78,17 @@ public class PrepStation extends Station {
 
 	private static ShapeRenderer shapeRenderer = new ShapeRenderer();
 
+	/**
+	 * Update and display the progress bar.
+	 * 
+	 * @param batch
+	 * @param delta The amount to update the progress bar by.
+	 */
 	public void updateProgress(SpriteBatch batch, float delta) {
 		if (progress < 1)
 			progress += delta;
 		else {
 			progress = 1;
-//			slots.peek().slicing = false;
 			slotsToRecipe();
 		}
 		drawStatusBar(batch);
@@ -89,6 +105,12 @@ public class PrepStation extends Station {
 
 	}
 
+	/**
+	 * Check whether the ingredient can be formed into another.
+	 * 
+	 * @param toMatch The ingredient to transform.
+	 * @return The ingredient that is formed.
+	 */
 	private Ingredient ingredientMatch(Ingredient toMatch) {
 		for (Ingredient ingredient : Menu.INGREDIENT_PREP.keySet()) {
 			if (ingredient.equals(toMatch)) {

@@ -108,7 +108,7 @@ public class Cook extends Entity {
 		if (heldItems.size() > 0) {
 			heldItems.pop();
 		}
-		if (heldItems.size() == 0){
+		if (heldItems.size() == 0) {
 			holding = false;
 			setWalkTexture("entities/cook_walk_" + cookno + ".png");
 		}

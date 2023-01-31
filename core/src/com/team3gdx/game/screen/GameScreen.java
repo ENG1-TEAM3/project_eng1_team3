@@ -305,7 +305,7 @@ public class GameScreen implements Screen {
 		control.shift = false;
 	}
 
-	public static final float MAX_WAIT_TIME = 10000;
+	public static final float MAX_WAIT_TIME = 1000000;
 
 	private void drawUI() {
 		if (currentWaitingCustomer != null && currentWaitingCustomer.waitTime() < MAX_WAIT_TIME) {

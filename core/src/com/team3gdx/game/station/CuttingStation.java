@@ -17,13 +17,24 @@ public class CuttingStation extends Station {
 		super(pos, 1, false, ALLOWED_INGREDIENTS);
 	}
 
-	public void interact(SpriteBatch batch, float time) {
-		currentCutTime += time;
+	/**
+	 * Slices the ingredient in slot if cook is interacting.
+	 * 
+	 * @param batch
+	 * @param time
+	 */
+	public void interact(SpriteBatch batch, float dT) {
+		currentCutTime += dT;
 		if (slots.peek().slice(batch, currentCutTime)) {
 			currentCutTime = 0;
 		}
 	}
 
+	/**
+	 * Lock interacting cook at station.
+	 * 
+	 * @return A boolean indicating if the cook was successfully locked.
+	 */
 	public boolean lockCook() {
 		if (!slots.isEmpty()) {
 			if (lockedCook == null) {
