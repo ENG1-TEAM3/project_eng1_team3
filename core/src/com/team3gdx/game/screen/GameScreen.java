@@ -47,7 +47,7 @@ public class GameScreen implements Screen {
 	final MainGameClass game;
 	final MainScreen ms;
 
-	public static int currentWave = 0;
+	public static int currentWave = 5;
 
 	Rectangle volSlideBackgr;
 	Rectangle volSlide;
@@ -283,6 +283,8 @@ public class GameScreen implements Screen {
 		game.batch.setProjectionMatrix(worldCamera.combined);
 
 		checkCookSwitch();
+		//=========================================CHECK=GAME=OVER======================================================
+		checkGameOver();
 
 	}
 
@@ -596,6 +598,19 @@ public class GameScreen implements Screen {
 		sr.end();
 	}
 
+	public void checkGameOver(){
+		if (currentWave == NUMBER_OF_WAVES + 1){
+			double totaltimes = (startTime - timeOnStartup)/1000f;
+			game.getLeaderBoardScreen().addLeaderBoardData("PLAYER1",(int)Math.floor(totaltimes));
+			game.resetGameScreen();
+			this.resetStatic();
+			game.setScreen(game.getLeaderBoardScreen());
+		}
+	}
+
+	public void resetStatic(){
+		currentWave = 0;
+	}
 	/**
 	 * Resize game screen - Not used in fullscreen mode
 	 * 
