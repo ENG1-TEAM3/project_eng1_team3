@@ -47,7 +47,7 @@ public class GameScreen implements Screen {
 	final MainGameClass game;
 	final MainScreen ms;
 
-	public static int currentWave = 5;
+	public static int currentWave = 0;
 
 	Rectangle volSlideBackgr;
 	Rectangle volSlide;
