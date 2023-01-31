@@ -3,6 +3,7 @@ package com.team3gdx.game.station;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.team3gdx.game.food.Ingredient;
@@ -54,6 +55,7 @@ public class StationManager {
 					if (currentIngredient.cooking && station instanceof CookingStation) {
 						((CookingStation) station).drawParticles(batch, i);
 						currentIngredient.cook(.0005f, batch);
+						((CookingStation) station).cook();
 					} else {
 						currentIngredient.draw(batch);
 					}
@@ -125,8 +127,14 @@ public class StationManager {
 
 			break;
 		case "Bin":
-			if (GameScreen.control.drop && !GameScreen.cook.heldItems.empty())
-				GameScreen.cook.dropItem();
+			if (!GameScreen.cook.heldItems.empty()) {
+				batch.begin();
+				(new BitmapFont()).draw(batch, "Drop [e]", pos.x * 64, pos.y * 64);
+				batch.end();
+				if (GameScreen.control.drop) {
+					GameScreen.cook.dropItem();
+				}
+			}
 			break;
 		default:
 			placeIngredientStation(pos);

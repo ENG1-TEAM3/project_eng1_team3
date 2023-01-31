@@ -1,20 +1,26 @@
 package com.team3gdx.game.station;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
+import com.team3gdx.game.MainGameClass;
 import com.team3gdx.game.food.Ingredient;
 import com.team3gdx.game.screen.GameScreen;
 import com.team3gdx.game.screen.GameScreen.STATE;
 
 public class CookingStation extends Station {
 
+	private Music cookingSound;
+
 	ParticleEffect[] pES;
 
-	public CookingStation(Vector2 pos, int numberOfSlots, Ingredient[] allowedIngredients, String particlePath) {
+	public CookingStation(Vector2 pos, int numberOfSlots, Ingredient[] allowedIngredients, String particlePath,
+			String soundPath) {
 		super(pos, numberOfSlots, false, allowedIngredients);
 		createParticleEmitter(pos, particlePath);
+		cookingSound = Gdx.audio.newMusic(Gdx.files.internal(soundPath));
 	}
 
 	/**
@@ -91,8 +97,10 @@ public class CookingStation extends Station {
 
 		if (GameScreen.control.interact) {
 			if (!slots.empty() && !GameScreen.cook.full()) {
-				if (slots.peek().flipped)
+				if (slots.peek().flipped) {
+					cookingSound.stop();
 					GameScreen.cook.pickUpItem(take());
+				}
 
 				return;
 			}
@@ -106,6 +114,11 @@ public class CookingStation extends Station {
 		if (!slots.empty() && GameScreen.control.flip)
 			slots.peek().flip();
 
+	}
+
+	public void cook() {
+		cookingSound.setVolume(MainGameClass.gameVolumeScale);
+		cookingSound.play();
 	}
 
 }

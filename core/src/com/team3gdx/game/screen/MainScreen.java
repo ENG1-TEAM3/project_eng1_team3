@@ -92,8 +92,8 @@ public class MainScreen implements Screen {
 
 	@Override
 	public void show() {
-		float currentMusicVolumeSliderX = (game.musicVolumeScale * sliderWidth) + xSliderMin;
-		float currentGameVolumeSliderX = (game.gameVolumeScale * sliderWidth) + xSliderMin;
+		float currentMusicVolumeSliderX = (MainGameClass.musicVolumeScale * sliderWidth) + xSliderMin;
+		float currentGameVolumeSliderX = (MainGameClass.gameVolumeScale * sliderWidth) + xSliderMin;
 		volSlide.setPosition(currentGameVolumeSliderX, 2 * gameResolutionY / 5.0f - buttonheight / 2 + buttonheight / 6
 				+ volSlideBackgr.height / 2 - volSlide.height / 2);
 		volSlideBackgr.setPosition((gameResolutionX / 2.0f) + buttonwidth / 12,
@@ -232,7 +232,7 @@ public class MainScreen implements Screen {
 				}
 				game.mainScreenMusic.setVolume(v);
 				game.gameMusic.setVolume(v);
-				game.musicVolumeScale = v;
+				MainGameClass.musicVolumeScale = v;
 			}
 		}
 	}
@@ -250,7 +250,7 @@ public class MainScreen implements Screen {
 					s = 0;
 				}
 				// game.sound.setVolume(game.soundid, s);
-				game.gameVolumeScale = s;
+				MainGameClass.gameVolumeScale = s;
 			}
 		}
 	}

@@ -197,7 +197,7 @@ public class CustomerController {
 
 	public Customer isCustomerAtPos(Vector2 pos) {
 		for (Customer customer : customers)
-			if (customer != null && Math.floor(customer.posx / 60f) == pos.x && Math.floor(customer.posy / 60f) == pos.y
+			if (customer != null && Math.floor(customer.posx / 64f) == pos.x && Math.floor(customer.posy / 64f) == pos.y
 					&& customer.locked)
 				return customer;
 
