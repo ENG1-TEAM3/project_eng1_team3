@@ -148,6 +148,11 @@ public class StationManager {
 		return true;
 	}
 
+	/**
+	 * Place ingredient on top of cook's stack on station at given position.
+	 * 
+	 * @param pos The position to lookup the station.
+	 */
 	private void placeIngredientStation(Vector2 pos) {
 		checkStationExists(pos, new Station(pos, 4, false, null));
 		stations.get(pos).drawTakeText(batch);
@@ -166,6 +171,12 @@ public class StationManager {
 				GameScreen.cook.dropItem();
 	}
 
+	/**
+	 * Take an item from the ingredient station
+	 * 
+	 * @param pos        The position of the station.
+	 * @param ingredient The ingredient that the station holds.
+	 */
 	private void takeIngredientStation(Vector2 pos, Ingredient ingredient) {
 		checkStationExists(pos, new IngredientStation(pos, ingredient));
 		stations.get(pos).drawTakeText(batch);

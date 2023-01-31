@@ -115,7 +115,7 @@ public class Station {
 	 * @param pos The position to draw at.
 	 */
 	public void drawTakeText(SpriteBatch batch) {
-		if (slots.empty() && !GameScreen.cook.full()) {
+		if (!slots.empty() && !GameScreen.cook.full()) {
 			drawText(batch, "Take [q]", new Vector2(pos.x * 64, pos.y * 64 - 16));
 		}
 

@@ -17,6 +17,12 @@ public class CookingStation extends Station {
 		createParticleEmitter(pos, particlePath);
 	}
 
+	/**
+	 * Create particle effects above the station.
+	 * 
+	 * @param pos          The position of the particles.
+	 * @param particlePath The path to the particle effect's behaviour.
+	 */
 	protected void createParticleEmitter(Vector2 pos, String particlePath) {
 		pES = new ParticleEffect[numberOfSlots];
 		for (int i = 0; i < numberOfSlots; i++) {
@@ -31,6 +37,12 @@ public class CookingStation extends Station {
 
 	}
 
+	/**
+	 * Render the particles.
+	 * 
+	 * @param batch
+	 * @param slotIndex
+	 */
 	public void drawParticles(SpriteBatch batch, int slotIndex) {
 		batch.begin();
 		if (GameScreen.state1 == STATE.Continue)
@@ -42,6 +54,11 @@ public class CookingStation extends Station {
 		batch.end();
 	}
 
+	/**
+	 * Lock the current cook at the station.
+	 * 
+	 * @return A boolean indicating if the cook was successfully locked.
+	 */
 	public boolean lockCook() {
 		if (!slots.isEmpty()) {
 			if (lockedCook == null) {
@@ -61,9 +78,9 @@ public class CookingStation extends Station {
 	}
 
 	/**
+	 * Check interactions with the cooking station.
 	 * 
-	 * @param pos
-	 * @param station
+	 * @param batch
 	 */
 	public void checkCookingStation(SpriteBatch batch) {
 		if (!slots.empty() && !GameScreen.cook.full() && slots.peek().flipped)
