@@ -109,7 +109,7 @@ public class CustomerController {
 	public void spawnCustomer() {
 		for (int i = 0; i < this.customers.length; i++) {
 			if (customers[i] == null) {
-				customers[i] = new Customer(this.xCoordinate, this.bottom, this.top - i,3);
+				customers[i] = new Customer(this.xCoordinate, this.bottom, this.top - i, 3);
 				amountActiveCustomers += 1;
 				break;
 			}
@@ -126,7 +126,7 @@ public class CustomerController {
 	}
 
 	public void delCustomer(Customer customer) {
-		for (int i = 0; i< this.customers.length; i++) {
+		for (int i = 0; i < this.customers.length; i++) {
 			if (customers[i] == customer) {
 				delCustomer(i);
 				return;
@@ -170,7 +170,6 @@ public class CustomerController {
 		}
 	}
 
-
 	public void updateCustomers(Control ctrls) {
 		if (lockout == 100) {
 			lockout = 0;
@@ -179,34 +178,11 @@ public class CustomerController {
 			lockout++;
 		}
 
-		if (ctrls.del && lockout == 0) {
-			int ctr1 = 0;
-			for (Customer c : this.customers) {
-				if (c != null) {
-					if (c.locked) {
-						break;
-					}
-				}
-				ctr1++;
-			}
-			if (ctr1 < 5) {
-				delCustomer(ctr1);
-				lockout = 1;
-			}
-		}
-
-		int sumlocked = 0;
 		for (Customer c : this.customers) {
 			if (c != null) {
 				c.stepTarget();
-				if (c.locked) {
-					sumlocked++;
-				}
 			}
 		}
-//		if (sumlocked == amountActiveCustomers) {
-//			spawnCustomer();
-//		}
 		int ctr = 0;
 		for (Customer c : this.leavingcustomers) {
 			if (c != null) {

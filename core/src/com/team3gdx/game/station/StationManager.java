@@ -2,18 +2,13 @@ package com.team3gdx.game.station;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
 
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.team3gdx.game.MainGameClass;
-import com.team3gdx.game.entity.Customer;
 import com.team3gdx.game.food.Ingredient;
 import com.team3gdx.game.food.Ingredients;
-import com.team3gdx.game.food.Menu;
 import com.team3gdx.game.screen.GameScreen;
-import com.team3gdx.game.screen.GameScreen.STATE;
 
 public class StationManager {
 
