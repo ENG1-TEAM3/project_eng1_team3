@@ -28,14 +28,13 @@ public class ServingStation extends Station {
 		super(pos, 1, false, allowedIngredients);
 	}
 	
-	public boolean serveCustomer() {
+	public void serveCustomer() {
 		Customer waitingCustomer = GameScreen.cc.isCustomerAtPos(new Vector2(pos.x - 1, pos.y));
 		if (waitingCustomer != null && waitingCustomer.locked) {
 			if (GameScreen.currentWaitingCustomer == null) {
 				waitingCustomer.order = possibleOrders[new Random().nextInt(possibleOrders.length)];
 				waitingCustomer.arrived();
 				GameScreen.currentWaitingCustomer = waitingCustomer;
-				return false;
 			}
 			if (waitingCustomer == GameScreen.currentWaitingCustomer && !slots.empty()
 					&& slots.peek().equals(Menu.RECIPES.get(waitingCustomer.order))) {
@@ -48,10 +47,8 @@ public class ServingStation extends Station {
 				waitingCustomer.locked = false;
 				GameScreen.currentWaitingCustomer = null;
 			}
-
 		}
-		
-		return true;
+
 	}
 
 }

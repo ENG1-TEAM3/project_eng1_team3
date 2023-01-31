@@ -281,9 +281,7 @@ public class GameScreen implements Screen {
 		MainGameClass.batch.setProjectionMatrix(uiMatrix);
 		changeScreen(state1);
 		MainGameClass.batch.setProjectionMatrix(worldCamera.combined);
-
 		checkCookSwitch();
-
 	}
 
 	private void checkCookSwitch() {
@@ -305,9 +303,12 @@ public class GameScreen implements Screen {
 		control.shift = false;
 	}
 
-	public static final float MAX_WAIT_TIME = 10000;
+	public static final float MAX_WAIT_TIME = 10000; //the amount of time a recipe will be displayed for
 
 	private void drawUI() {
+		if(currentWaitingCustomer!=null) {
+			System.out.println(currentWaitingCustomer.waitTime());
+		}
 		if (currentWaitingCustomer != null && currentWaitingCustomer.waitTime() < MAX_WAIT_TIME) {
 			Menu.RECIPES.get(currentWaitingCustomer.order).displayRecipe(new Vector2(64, 256));
 		}

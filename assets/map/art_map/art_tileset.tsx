@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<tileset version="1.9" tiledversion="1.9.2" name="art_tileset" tilewidth="128" tileheight="64" tilecount="26" columns="0">
+<tileset version="1.9" tiledversion="1.9.2" name="art_tileset" tilewidth="128" tileheight="64" tilecount="27" columns="0">
  <grid orientation="orthogonal" width="1" height="1"/>
  <tile id="0">
   <image width="64" height="64" source="art_images/cnr.png"/>
@@ -123,5 +123,11 @@
    <property name="Station" value="Bin"/>
   </properties>
   <image width="64" height="64" source="art_images/Trash can.png"/>
+ </tile>
+ <tile id="33">
+  <properties>
+   <property name="Station" value="Baking"/>
+  </properties>
+  <image width="64" height="64" source="art_images/emptygrill.png"/>
  </tile>
 </tileset>
