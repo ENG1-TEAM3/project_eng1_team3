@@ -47,7 +47,7 @@ public class GameScreen implements Screen {
 	final MainGameClass game;
 	final MainScreen ms;
 
-	public static int currentWave = 5;
+	public static int currentWave = 0;
 
 	Rectangle volSlideBackgr;
 	Rectangle volSlide;
@@ -331,10 +331,8 @@ public class GameScreen implements Screen {
 		}
 
 		game.batch.begin();
-		game.font.draw(game.batch, String.valueOf(cook.getDirection()), 0, 300);
-		game.font.draw(game.batch, Long.toString((startTime - timeOnStartup) / 1000), 0, 500);
-		game.font.draw(game.batch, "Time in ms:", 0, 550);
-		game.font.draw(game.batch, state1.toString(), gameResolutionX / 20.0f, gameResolutionY / 20.0f);
+		game.font.draw(game.batch, Long.toString((startTime - timeOnStartup) / 1000), gameResolutionX/2f + gameResolutionX/10f, 19*gameResolutionY/20f);
+		game.font.draw(game.batch, "Time in s:",gameResolutionX/2,19*gameResolutionY/20);
 		game.batch.end();
 	}
 
