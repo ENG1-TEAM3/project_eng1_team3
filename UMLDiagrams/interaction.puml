@@ -3,6 +3,9 @@
 
 autonumber
 
-Cook -> Gamescreen
-Gamescreen-> StationManager
+Cook -> Gamescreen : Pass cook position
+Gamescreen-> StationManager : Check tilemap for interacted tile type
+StationManager -> Cook : Check current cook item stack / give cook item
+Cook -> StationManager : Return item to be placed if needed
+
 @enduml

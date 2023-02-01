@@ -1,0 +1,303 @@
+@startuml
+package util{
+class CollisionTile
+class Control
+}
+
+package station{
+class BakingStation
+class CookingStation
+class CuttingStation
+class FryingStation
+class IngredientStation
+class PrepStation
+class ServingStation
+class Station
+class StationManager
+}
+
+package mainGameClass{
+class MainGameClass
+}
+
+package food{
+class Ingredient
+class Ingredients
+class Menu
+class Recipe
+}
+
+package screen{
+class GameScreen
+class LeaderBoard
+class MainScreen
+class Tutorial
+class PosTextPair
+}
+
+package entity{
+class Cook
+class Customer
+class CustomerController
+class Entity
+}
+
+mainGameClass +-- entity
+MainGameClass -> MainScreen : Stores one instance of
+entity +-- food
+GameScreen +-- station
+mainGameClass +-- util
+mainGameClass +-- screen
+GameScreen -> CollisionTile : Stores many instances of
+GameScreen -> CustomerController : Stores one instance of
+GameScreen -> StationManager : Stores one instance of
+GameScreen -> Cook : Stores max 3 instances
+Station -> Ingredient : Can require ingredients or give
+Cook -> Ingredient : Stores some ingredients
+Customer -> ServingStation : Check customer to serve
+
+class LeaderBoard{
++final MainGameClass game
++MainScreen ms
++playerData
++void readPlayerData()
++void sortPlayerData()
++ addLeaderBoardData(String name,int score)
++void changeScreenToMain()
+}
+MainGameClass -> LeaderBoard : Stores one instance of
+
+class GameScreen{
++MainGameClass game
++MainScreen ms
++Enum STATE
++static Customer currentWaitingCustomer
++static STATE state1
++TiledMapRenderer 
++Cook[] cooks
++CustomerController cc
++StationManager stationManager
++void drawHeldItems()
+-void checkCookSwitch()
++void changeScreen(STATE state1)
++void musicVolumeUpdate()
++void gameVolumeUpdate()
+-void calculateBoxMaths()
+-void constructCollisionData(TiledMap mp)
++void checkInteraction(Cook ck, ShapeRenderer sr)
+}
+GameScreen <- MainGameClass : Stores one instance of
+
+class MainScreen{
++final MainGameClass game
++Enum STATE
++void show()
++changeScreen(STATE state)
++void musicVolumeUpdate()
++void gameVolumeUpdate()
+}
+
+class Station{
++Ingredient[] allowedIngredients
++Stack<Ingredient> slots
++Cook lockedCook
++boolean place(Ingredient ingredient)
++Ingredient take()
++boolean isAllowed(Ingredient droppedIngredient)
+}
+
+Station *-- StationManager
+class CookingStation extends Station
+class CuttingStation extends Station
+class IngredientStation extends Station
+class PrepStation extends Station
+class ServingStation extends Station
+class BakingStation extends CookingStation
+class FryingStation extends CookingStation
+
+
+
+class StationManager{
++static Map<Vector2, Station> stations
++void handleStations()
++void checkInteracterTile(int id, Vector2 pos)
+-void placeIngredientStation(Vector2 pos)
+-void takeIngredientStation(Vector2 pos,Ingredient ingredient)
+}
+
+class BakingStation{
+-final static Ingredient[] ALLOWED_INGREDIENTS
++boolean place(Ingredient ingredient)
+}
+
+class CookingStation{
++ParticleEffect[] pES
+#void createParticleEmitter(Vector2 pos, String particlePath)
++void drawParticles(SpriteBatch batch, int slotIndex)
+}
+
+class CuttingStation{
++final static Ingredient[] ALLOWED_INGREDIENT
++void interact(SpriteBatch batch, float time)
++boolean lockCook()
+}
+
+class FryingStation{
+-final static Ingredient[] ALLOWED_INGREDIENT
+}
+
+class IngredientStation{
++Ingredient ingredient
+}
+
+class PrepStation{
++float progress = 0
++boolean lockCook()
++void updateProgress(float delta)
+-Ingredient ingredientMatch(Ingredient toMatch)
+}
+
+class ServingStation{
++String[] possibleOrders
++static Ingredient[] allowedIngredients
++boolean serveCustomer()
+}
+
+class Cook{
++Stack<Ingredient> heldItems
++int cookno
++boolean locked
++float stateTime
++boolean holding
++Animation<TextureRegion> walkAnimation
++void pickUpItem(Ingredient item)
++boolean full()
++Ingredient dropItem()
++Boolean checkCollision(float cookx, float cooky, CollisionTile[][] cltiles)
+}
+class Cook extends Entity
+
+class Entity{
++Vector2 pos
++Texture texture
++float width
++float height
++float speed
++float dirX
++float dirY
++void draw(SpriteBatch batch)
+}
+class Ingredient extends Entity
+Menu -- Ingredient
+
+class Customer{
++boolean locked
++String order
++void stepTarget()
+}
+Customer -- CustomerController
+
+class CustomerController{
++int lockout
++amountActiveCustomers
++ArrayList<ArrayList<Integer>> customerCells
++Customer[] customers
++Customer[] leavingcustomers
++void spawnCustomer()
++void delCustomer(int num)
++void delCustomer(Customer customer)
++void updateCustomers(Control ctrls)
++Customer isCustomerAtPos(Vector2 pos)
+}
+
+class MainGameClass{
++static SpriteBatch batch
++static BitmapFont font
++Music mainScreenMusic
++static Music gameMusic
+-MainScreen mainScreen1
+-GameScreen gameScreen1
+-LeaderBoard leaderBoardScreen1
++void resetGameScreen()
+}
+
+class Ingredient{
++float cookedTime
++Enum Status
++Status status
++String name
++BitmapFont flipText
++boolean flip()
++boolean slice(SpriteBatch batch, float dT)
++double cook(float dT, SpriteBatch batch)
+-void drawStatusBar(float percentage,float optimum)
+}
+
+class Ingredients{
++static Ingredient unformedPatty
++static Ingredient formedPatty
++static Ingredient cookedPatty
++static Ingredient burnedPatty
++static Ingredient lettuce
++static Ingredient tomato
++static Ingredient onion
++static Ingredient lettuceChopped
++static Ingredient tomatoChopped
++static Ingredient bun
++static Ingredient cooked_bun
+}
+Ingredient o-- Ingredients
+
+class Menu{
+-static final Map<Ingredient, String> BURGER_STEPS
+-static final Map<Ingredient, String> BURGER_BURNED_STEPS
+-static final Map<Ingredient, String> SALAD_STEPS
++static final Map<String, Recipe> RECIPES
++static final Map<Ingredient, Ingredient> INGREDIENT_PREP
+}
+Menu --o Recipe
+
+CLass Recipe{
++final String name
++Map<Ingredient, String> ingredientInstructions
++void displayRecipe(Vector2 pos)
++boolean matches(Stack<Ingredient> givenIngredients)
+-boolean contains(Ingredient checkIngredient, ArrayList<Ingredient> ingredients)
+}
+Recipe -- Ingredient
+
+class Tutorial{
+-static List<PosTextPair> stages
+-static final BitmapFont
+-static GlyphLayout layout
+-static String curText
++static void drawBox(float dT)
+}
+Tutorial -- GameScreen
+
+class PosTextPair{
++Vector2 pos
++String text
+PosTextPair(Vector2 pos, String text)
+}
+Tutorial *-- PosTextPair
+
+class CollisionTile{
++Rectangle returnRect()
+}
+
+class Control{
++boolean up,down,left,right
++boolean del
++boolean interact,drop,flip
++boolean tab,shift
++boolean keyDown(int keyCode)
++boolean keyUp(int keyCode)
++boolean keyTyped(int keyCode)
++boolean touchDown(int screenX, int ScreenY,int pointer, int button)
++boolean touchUp(int screenX, int ScreenY,int pointer, int button)
++boolean touchDragged(int screenX, int ScreenY,int pointer)
++boolean mouseMoved(int screenX, int screenY)
++boolean scrolled(int amount)
+}
+@enduml
