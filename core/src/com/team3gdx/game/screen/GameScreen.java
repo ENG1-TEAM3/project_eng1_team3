@@ -331,8 +331,9 @@ public class GameScreen implements Screen {
 		}
 
 		game.batch.begin();
-		game.font.draw(game.batch, Long.toString((startTime - timeOnStartup) / 1000), gameResolutionX/2f + gameResolutionX/10f, 19*gameResolutionY/20f);
-		game.font.draw(game.batch, "Time in s:",gameResolutionX/2,19*gameResolutionY/20);
+		game.font.draw(game.batch, Long.toString((startTime - timeOnStartup) / 1000),
+				gameResolutionX / 2f + gameResolutionX / 10f, 19 * gameResolutionY / 20f);
+		game.font.draw(game.batch, "Time in s:", gameResolutionX / 2, 19 * gameResolutionY / 20);
 		game.batch.end();
 	}
 
