@@ -1,0 +1,21 @@
+@startuml
+'https://plantuml.com/state-diagram
+
+scale 350 width
+[*] --> StartGame
+StartGame --> Wave1 : pressed new game button
+Wave1-->Wave2 : serve customer 1
+Wave2-->Wave3 : serve customer 2`
+Wave3-->Wave4 : serve customer 3
+Wave4-->Wave5 : serve customer 4
+Wave5-->goToLeaderboard : serve customer 5
+goToLeaderboard-->goToMainScreen: exit leaderboard
+state StartGame
+state Wave1
+state Wave2
+state Wave3
+state Wave4
+state Wave5
+state goToLeaderboard
+state goToMainScreen
+@enduml

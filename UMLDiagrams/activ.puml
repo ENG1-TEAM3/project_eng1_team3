@@ -1,0 +1,16 @@
+@startuml
+'https://plantuml.com/activity-diagram-beta
+
+start
+:CollectUserInput;
+if (PlayerInputType) is (Mouse) then
+  :Check UI interaction;
+  :Update UI accordingly;
+else (Keyboard)
+  :Check game interaction;
+  :Update game accordingly;
+endif
+
+stop
+
+@enduml
