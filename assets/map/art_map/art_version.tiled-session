@@ -22,27 +22,27 @@
             "scaleInEditor": 2
         },
         "customertest.tmx": {
-            "scale": 1.5,
+            "scale": 1,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 470.99999999999994,
-                "y": 435.33333333333326
+                "x": 767,
+                "y": 582.5
             }
         },
         "prototype_map.tmx": {
             "scale": 0.75,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 207.33333333333326,
-                "y": 626.6666666666665
+                "x": 960,
+                "y": 640
             }
         },
         "testmap.tmx": {
             "scale": 2,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 233.25,
-                "y": 260.5
+                "x": 956,
+                "y": 775
             }
         },
         "testmap.tmx#64pxshittytiles": {
@@ -59,7 +59,6 @@
         "art_tileset.tsx",
         "testmap.tmx",
         "prototype_map.tmx",
-        "64pxshittytiles.tsx",
         "customertest.tmx"
     ],
     "project": "art_version.tiled-project",
@@ -68,8 +67,8 @@
         "art_tileset.tsx",
         "testmap.tmx",
         "prototype_map.tmx",
-        "64pxshittytiles.tsx",
-        "customertest.tmx"
+        "customertest.tmx",
+        "64pxshittytiles.tsx"
     ],
     "tileset.lastUsedFormat": "tsx",
     "tileset.tileSize": {
