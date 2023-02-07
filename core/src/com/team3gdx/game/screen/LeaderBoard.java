@@ -16,7 +16,7 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.team3gdx.game.MainGameClass;
 //INCORRECT FILE FORMATTING WILL CRASH GAME
-//MAKE SURE ALL LINES IN LEADERBOARD FILE ARE x;y OR just s
+//MAKE SURE ALL LINES IN LEADERBOARD FILE ARE x;y OR JUST s
 //NO NEWLINE AT END OF FILE
 public class LeaderBoard implements Screen, TextInputListener {
 	final MainGameClass game;
