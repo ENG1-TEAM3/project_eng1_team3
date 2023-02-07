@@ -289,6 +289,9 @@ public class GameScreen implements Screen {
 
 	}
 
+    /**
+     * Change selected cook
+     */
 	private void checkCookSwitch() {
 		if (control.tab && Tutorial.complete) {
 			cook.locked = false;
@@ -308,8 +311,11 @@ public class GameScreen implements Screen {
 		control.shift = false;
 	}
 
-	public static final float MAX_WAIT_TIME = 1000000;
+	public static final float MAX_WAIT_TIME = 1000000; //Customer wait time in ms
 
+    /**
+     * Draw UI elements
+     */
 	private void drawUI() {
 		if (currentWaitingCustomer != null && currentWaitingCustomer.waitTime() < MAX_WAIT_TIME) {
 			Menu.RECIPES.get(currentWaitingCustomer.order).displayRecipe(game.batch, new Vector2(64, 256));
@@ -333,10 +339,14 @@ public class GameScreen implements Screen {
 		game.batch.begin();
 		game.font.draw(game.batch, Long.toString((startTime - timeOnStartup) / 1000),
 				gameResolutionX / 2f + gameResolutionX / 10f, 19 * gameResolutionY / 20f);
-		game.font.draw(game.batch, "Time in s:", gameResolutionX / 2, 19 * gameResolutionY / 20);
+		game.font.draw(game.batch, "Time in s:", gameResolutionX / 2f, 19 * gameResolutionY / 20f);
 		game.batch.end();
 	}
 
+    /**
+     * Change camera movement type depending on position to cook
+     * @param delta - some change in time
+     */
 	private void setCameraLerp(float delta) {
 		if (!Tutorial.complete) {
 			worldCamera.position.lerp(new Vector3(Tutorial.getStagePos(), 0), .065f);
@@ -608,7 +618,7 @@ public class GameScreen implements Screen {
 	public void checkGameOver() {
 		if (currentWave == NUMBER_OF_WAVES + 1) {
 			game.getLeaderBoardScreen().addLeaderBoardData("PLAYER1",
-					(int) Math.floor((startTime - timeOnStartup) / 1000));
+					(int) Math.floor((startTime - timeOnStartup) / 1000f));
 			game.resetGameScreen();
 			this.resetStatic();
 			game.setScreen(game.getLeaderBoardScreen());
