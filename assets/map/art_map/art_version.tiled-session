@@ -18,7 +18,7 @@
         },
         "art_tileset.tsx": {
             "dynamicWrapping": true,
-            "scaleInDock": 0.75,
+            "scaleInDock": 1,
             "scaleInEditor": 2
         },
         "customertest.tmx": {
