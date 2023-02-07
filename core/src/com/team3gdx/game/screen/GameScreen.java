@@ -569,6 +569,8 @@ public class GameScreen implements Screen {
 				if (tl != null) {
 					TiledMapTile tlt = tl.getTile();
 					MapProperties mpr = tlt.getProperties();
+                    //Checks if tile have the "name" custom property
+                    //In this implementation only the floor tiles have "name" property
 					if (mpr.get("name") == null) {
 						CLTiles[x][y] = new CollisionTile(x * 64, y * 64, 64, 64);
 					} else {
