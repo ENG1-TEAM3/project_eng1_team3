@@ -89,7 +89,9 @@ public class StationManager {
 			takeIngredientStation(pos, Ingredients.onion);
 			break;
 		case "Frying":
-			checkStationExists(pos, new FryingStation(pos));
+			if (!stations.containsKey(pos)) {
+				stations.put(pos, new FryingStation(pos));
+			}
 			((CookingStation) stations.get(pos)).checkCookingStation(batch);
 			((CookingStation) stations.get(pos)).lockCook();
 			break;
@@ -114,7 +116,9 @@ public class StationManager {
 
 			break;
 		case "Baking":
-			checkStationExists(pos, new BakingStation(pos));
+			if (!stations.containsKey(pos)) {
+				stations.put(pos, new BakingStation(pos));
+			}
 			((CookingStation) stations.get(pos)).checkCookingStation(batch);
 			((CookingStation) stations.get(pos)).lockCook();
 			break;
@@ -166,7 +170,9 @@ public class StationManager {
 	 * @param pos The position to lookup the station.
 	 */
 	private void placeIngredientStation(Vector2 pos) {
-		checkStationExists(pos, new Station(pos, 4, false, null, null));
+		if (!stations.containsKey(pos)) {
+			stations.put(pos, new Station(pos, 4, false, null, null));
+		}
 		stations.get(pos).drawTakeText(batch);
 		stations.get(pos).drawDropText(batch);
 		if (GameScreen.control.interact) {
@@ -190,7 +196,9 @@ public class StationManager {
 	 * @param ingredient The ingredient that the station holds.
 	 */
 	private void takeIngredientStation(Vector2 pos, Ingredient ingredient) {
-		checkStationExists(pos, new IngredientStation(pos, ingredient));
+		if (!stations.containsKey(pos)) {
+			stations.put(pos, new IngredientStation(pos, ingredient));
+		}
 		stations.get(pos).drawTakeText(batch);
 
 		if (GameScreen.control.interact) {

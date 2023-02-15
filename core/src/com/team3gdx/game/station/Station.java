@@ -49,6 +49,8 @@ public class Station {
 	 */
 	public Cook lockedCook;
 
+	private BitmapFont font = new BitmapFont();
+
 	/**
 	 * 
 	 * @param pos                The (x, y) coordinates of the station.
@@ -148,7 +150,7 @@ public class Station {
 	 */
 	public void drawText(SpriteBatch batch, String text, Vector2 pos) {
 		batch.begin();
-		(new BitmapFont()).draw(batch, text, pos.x, pos.y);
+		font.draw(batch, text, pos.x, pos.y);
 		batch.end();
 	}
 
