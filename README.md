@@ -1,3 +1,3 @@
-# project_eng1_team3
-This is a team project where we make the pizza game
-there are 3 cooks and they cook. The /docs folder is where all the website stuff goes
+Eng1 - Assessment 2
+- here is DecAssociations assessment 2 website and game
+- website files can be found in docs
