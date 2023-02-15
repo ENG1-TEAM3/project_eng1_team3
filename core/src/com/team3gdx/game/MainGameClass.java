@@ -36,7 +36,12 @@ public class MainGameClass extends Game {
 		mainScreenMusic.setVolume(musicVolumeScale);
 		gameMusic.setLooping(false);
 		gameMusic.setVolume(musicVolumeScale);
-		// =================================SPRITEBATCH=AND=SHAPERENDERER================================================
+
+		// Camera Initialisation
+		CameraController.getCamera(Constants.WORLD_CAMERA_ID);
+		CameraController.getCamera(Constants.UI_CAMERA_ID);
+
+		// ===============SPRITEBATCH=AND=SHAPERENDERER==========================
 		batch = new SpriteBatch();
 		shapeRenderer = new ShapeRenderer();
 		// ==================================FONT=INITIALISATION=========================================================
@@ -49,6 +54,12 @@ public class MainGameClass extends Game {
 		leaderBoardScreen1 = new LeaderBoard(this, mainScreen1);
 		this.setScreen(mainScreen1);
 		// ==============================================================================================================
+	}
+
+	@Override
+	public void resize(int width, int height) {
+		CameraController.getViewport(Constants.WORLD_CAMERA_ID).update(width, height);
+		CameraController.getViewport(Constants.UI_CAMERA_ID).update(width, height);
 	}
 
 	public MainScreen getMainScreen() {

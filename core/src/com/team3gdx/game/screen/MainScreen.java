@@ -15,6 +15,8 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.team3gdx.game.MainGameClass;
+import com.team3gdx.game.util.CameraController;
+import com.team3gdx.game.util.Constants;
 
 public class MainScreen implements Screen {
 	final MainGameClass game;
@@ -69,8 +71,8 @@ public class MainScreen implements Screen {
 	 */
 	public MainScreen(final MainGameClass game) {
 		this.game = game;
-		this.gameResolutionX = Gdx.graphics.getWidth();
-		this.gameResolutionY = Gdx.graphics.getHeight();
+		this.gameResolutionX = Constants.V_WIDTH;
+		this.gameResolutionY = Constants.V_HEIGHT;
 		this.buttonwidth = (float) gameResolutionX / 3;
 		this.buttonheight = (float) gameResolutionY / 6;
 
@@ -93,6 +95,9 @@ public class MainScreen implements Screen {
 		this.xSliderMin = gameResolutionX / 2.0f + buttonwidth / 12;
 		this.xSliderMax = xSliderMin + volSlideBackgr.width;
 		this.sliderWidth = volSlideBackgr.width;
+
+		this.camera = CameraController.getCamera(Constants.UI_CAMERA_ID);
+		this.viewport = CameraController.getViewport(Constants.UI_CAMERA_ID);
 	}
 
 	/**
@@ -112,9 +117,6 @@ public class MainScreen implements Screen {
 				2 * gameResolutionY / 5.0f - buttonheight / 2 + 4 * buttonheight / 6);
 
 		state = STATE.main;
-		camera = new OrthographicCamera();
-		camera.setToOrtho(false, gameResolutionX, gameResolutionY);
-		viewport = new FitViewport(gameResolutionX, gameResolutionY, camera);
 
 		vButton = new Texture(Gdx.files.internal("uielements/vButton.jpg"));
 		vControl = new Texture(Gdx.files.internal("uielements/vControl.png"));
@@ -189,7 +191,7 @@ public class MainScreen implements Screen {
 		game.mainScreenMusic.play();
 
 		game.batch.begin();
-		game.batch.draw(background, 0, 0, gameResolutionX, gameResolutionY);
+		game.batch.draw(background, 0, 0, Constants.V_WIDTH, Constants.V_HEIGHT);
 		game.batch.end();
 		stage.act();
 		stage.draw();
@@ -289,7 +291,6 @@ public class MainScreen implements Screen {
 	@Override
 	public void resize(int width, int height) {
 		// TODO Auto-generated method stub
-		viewport.update(width, height);
 	}
 
 	@Override

@@ -11,6 +11,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
+import com.team3gdx.game.util.CameraController;
+import com.team3gdx.game.util.Constants;
 
 /**
  * The tutorial of the game. Includes instructions on controls and information
@@ -90,20 +92,20 @@ public class Tutorial {
 		shapeRenderer.setProjectionMatrix(batch.getProjectionMatrix());
 		shapeRenderer.begin(ShapeType.Filled);
 		shapeRenderer.setColor(Color.WHITE);
-		shapeRenderer.rect(Gdx.graphics.getWidth() / 10f, 1 * Gdx.graphics.getHeight() / 10f,
-				4 * Gdx.graphics.getWidth() / 5f, Gdx.graphics.getHeight() / 5f);
+		shapeRenderer.rect(Constants.V_WIDTH / 10f, 1 * Constants.V_HEIGHT / 10f,
+				4 * Constants.V_WIDTH / 5f, Constants.V_HEIGHT / 5f);
 		shapeRenderer.end();
-		shapeRenderer.setProjectionMatrix(GameScreen.worldCamera.combined);
+		shapeRenderer.setProjectionMatrix(CameraController.getCamera(Constants.WORLD_CAMERA_ID).combined);
 		shapeRenderer.begin(ShapeType.Line);
 		shapeRenderer.setColor(Color.GREEN);
 		shapeRenderer.rect(getStagePos().x, getStagePos().y, 64, 64);
 		shapeRenderer.end();
 		batch.begin();
-		bitmapFont.draw(batch, curText, Gdx.graphics.getWidth() / 10f,
-				Gdx.graphics.getHeight() / 10f + Gdx.graphics.getHeight() / 5f - bitmapFont.getCapHeight() / 2);
+		bitmapFont.draw(batch, curText, Constants.V_WIDTH / 10f,
+				Constants.V_HEIGHT / 13f + Constants.V_WIDTH / 8.5f - bitmapFont.getCapHeight() / 2);
 		bitmapFont.draw(batch, "[tab] to skip!",
-				Gdx.graphics.getWidth() / 10f + 4f * Gdx.graphics.getWidth() / 5f - layout.width,
-				Gdx.graphics.getHeight() / 10f + bitmapFont.getCapHeight() * 1.5f);
+				Constants.V_WIDTH / 10f + 4f * Constants.V_WIDTH / 5f - layout.width,
+				Constants.V_HEIGHT / 10f + bitmapFont.getCapHeight() * 1.5f);
 		batch.end();
 		if (nextCharTimer < stages.get(stage).text.length()) {
 			if (curText.length() > 0 && ".,!?".contains(curText.substring(curText.length() - 1))) {

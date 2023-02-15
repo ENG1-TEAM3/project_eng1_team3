@@ -37,7 +37,9 @@ import com.team3gdx.game.entity.CustomerController;
 import com.team3gdx.game.entity.Entity;
 import com.team3gdx.game.food.Menu;
 import com.team3gdx.game.station.StationManager;
+import com.team3gdx.game.util.CameraController;
 import com.team3gdx.game.util.CollisionTile;
+import com.team3gdx.game.util.Constants;
 import com.team3gdx.game.util.Control;
 
 public class GameScreen implements Screen {
@@ -147,15 +149,13 @@ public class GameScreen implements Screen {
 		vButton = ms.vButton;
 		vControl = ms.vControl;
 		// ======================================START=CAMERAS===========================================================
-		uiCamera = new OrthographicCamera();
-		worldCamera = new OrthographicCamera();
-		uiCamera.setToOrtho(false, gameResolutionX, gameResolutionY);
-		worldCamera.setToOrtho(false, gameResolutionX, gameResolutionY);
+		worldCamera = CameraController.getCamera(Constants.WORLD_CAMERA_ID);
+		uiCamera = CameraController.getCamera(Constants.UI_CAMERA_ID);
 		// ======================================SET=INITAL=STATE========================================================
 		state1 = STATE.Continue;
 		// ======================================START=VIEWPORTS=========================================================
-		worldViewport = new FitViewport(gameResolutionX, gameResolutionY, worldCamera);
-		uiViewport = new FitViewport(gameResolutionX, gameResolutionY, uiCamera);
+		worldViewport = CameraController.getViewport(Constants.WORLD_CAMERA_ID);
+		uiViewport = CameraController.getViewport(Constants.UI_CAMERA_ID);
 		// ======================================START=STAGES============================================================
 		stage = new Stage(uiViewport);
 		stage2 = new Stage(uiViewport);
@@ -259,9 +259,7 @@ public class GameScreen implements Screen {
 		tempThenTime = tempTime;
 		checkInteraction(cook, game.shapeRenderer);
 		// =====================================SET=MATRIX=FOR=UI=ELEMENTS===============================================
-		Matrix4 uiMatrix = worldCamera.combined.cpy();
-		uiMatrix.setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		game.batch.setProjectionMatrix(uiMatrix);
+		game.batch.setProjectionMatrix(uiCamera.combined);
 		// =====================================DRAW=UI=ELEMENTS=========================================================
 		drawUI();
 		// =====================================SET=MATRIX=BACK=TO=GAME=MATRIX===========================================
@@ -279,7 +277,7 @@ public class GameScreen implements Screen {
 		stage.act();
 		stage.draw();
 		// ==================================JUMP=TO=STATE=SPECIFIC=LOGIC================================================
-		game.batch.setProjectionMatrix(uiMatrix);
+		game.batch.setProjectionMatrix(uiCamera.combined);
 		changeScreen(state1);
 		game.batch.setProjectionMatrix(worldCamera.combined);
 
@@ -326,13 +324,13 @@ public class GameScreen implements Screen {
 				selectedPlayerBox.begin(ShapeType.Line);
 
 				selectedPlayerBox.setColor(Color.GREEN);
-				selectedPlayerBox.rect(Gdx.graphics.getWidth() - 128 * cooks.length + i * 128,
-						Gdx.graphics.getHeight() - 128 - 8, 128, 128);
+				selectedPlayerBox.rect(Constants.V_WIDTH - 128 * cooks.length + i * 128,
+						Constants.V_HEIGHT - 128 - 8, 128, 128);
 				selectedPlayerBox.end();
 			}
 			game.batch.begin();
-			cooks[i].draw_top(game.batch, new Vector2(Gdx.graphics.getWidth() - 128 * cooks.length + i * 128,
-					Gdx.graphics.getHeight() - 256));
+			cooks[i].draw_top(game.batch, new Vector2(Constants.V_WIDTH - 128 * cooks.length + i * 128,
+					Constants.V_HEIGHT - 256));
 			game.batch.end();
 		}
 
@@ -495,8 +493,8 @@ public class GameScreen implements Screen {
 	 * Calculates coordinates for UI element scaling;
 	 */
 	private void calculateBoxMaths() {
-		this.gameResolutionX = ms.gameResolutionX;
-		this.gameResolutionY = ms.gameResolutionY;
+		this.gameResolutionX = Constants.V_WIDTH;
+		this.gameResolutionY = Constants.V_HEIGHT;
 		this.buttonwidth = gameResolutionX / 10.0f;
 		this.buttonheight = gameResolutionY / 20.0f;
 
@@ -638,11 +636,7 @@ public class GameScreen implements Screen {
 	 * @param height - height to resize to
 	 */
 	@Override
-	public void resize(int width, int height) {
-		// TODO Auto-generated method stub
-		worldViewport.update(width, height);
-		uiViewport.update(width, height);
-	}
+	public void resize(int width, int height) { }
 
 	@Override
 	public void pause() {
