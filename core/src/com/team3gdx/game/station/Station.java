@@ -114,7 +114,7 @@ public class Station {
 			return null;
 		interactSound.stop();
 		if (!infinite) {
-			return new Ingredient(slots.pop());
+			return slots.pop();
 		}
 
 		return new Ingredient(slots.peek());

@@ -41,6 +41,8 @@ public class Ingredient extends Entity {
 
 	private static ShapeRenderer shapeRenderer = new ShapeRenderer();
 
+	private BitmapFont font = new BitmapFont();
+
 	/**
 	 * Sets the appropriate properties.
 	 * 
@@ -112,7 +114,7 @@ public class Ingredient extends Entity {
 		}
 
 		batch.begin();
-		(new BitmapFont()).draw(batch, String.valueOf(slices), pos.x * 64 + 64 + 8, pos.y * 64 + 64 + 16);
+		font.draw(batch, String.valueOf(slices), pos.x * 64 + 64 + 8, pos.y * 64 + 64 + 16);
 		batch.end();
 
 		draw(batch);
