@@ -41,6 +41,8 @@ public class Recipe extends Ingredient {
 	 */
 	public float cost;
 
+	private BitmapFont font = new BitmapFont();
+
 	/**
 	 * Sets the appropriate recipe properties.
 	 * 
@@ -84,32 +86,32 @@ public class Recipe extends Ingredient {
 		int i = -1;
 		if (initialIngredient != null) {
 			i = 0;
-			Ingredient initial = new Ingredient(initialIngredient);
-			initial.pos = new Vector2(pos);
-			initial.pos.x -= 48;
-			initial.pos.y += --i * 2 * new BitmapFont().getLineHeight() + new BitmapFont().getLineHeight();
-			initial.draw(batch);
+			//Ingredient initial = new Ingredient(initialIngredient);
+			initialIngredient.pos = new Vector2(pos);
+			initialIngredient.pos.x -= 48;
+			initialIngredient.pos.y += --i * 2 * font.getLineHeight() + font.getLineHeight();
+			initialIngredient.draw(batch);
 		}
 		for (Ingredient ingredient : ingredientInstructions.keySet()) {
 			completeRecipe += ingredientInstructions.get(ingredient) + " " + ingredient.name + "\n\n";
 			ingredient.pos = new Vector2(pos);
 			ingredient.pos.x -= 48;
-			ingredient.pos.y += --i * 2 * new BitmapFont().getLineHeight() + new BitmapFont().getLineHeight();
+			ingredient.pos.y += --i * 2 * font.getLineHeight() + font.getLineHeight();
 			ingredient.draw(batch);
 
 		}
 
-		Ingredient result = new Ingredient(this);
+		Ingredient result = this;
 		result.pos = new Vector2(pos);
 		result.pos.x -= 48;
-		result.pos.y += --i * 2 * new BitmapFont().getLineHeight() + new BitmapFont().getLineHeight();
+		result.pos.y += --i * 2 * font.getLineHeight() + font.getLineHeight();
 		result.draw(batch);
 
 		completeRecipe += finalSteps;
 
 		// Display the instructions.
 		batch.begin();
-		(new BitmapFont()).draw(batch, completeRecipe, pos.x - 16, pos.y);
+		font.draw(batch, completeRecipe, pos.x - 16, pos.y);
 		batch.end();
 
 	}

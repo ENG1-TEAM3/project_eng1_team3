@@ -317,7 +317,7 @@ public class GameScreen implements Screen {
      * Draw UI elements
      */
 	private void drawUI() {
-		if (currentWaitingCustomer != null && currentWaitingCustomer.waitTime() < MAX_WAIT_TIME) {
+		if (currentWaitingCustomer != null && currentWaitingCustomer.waitTime() < MAX_WAIT_TIME && !Gdx.input.isKeyPressed(Keys.SPACE)) {
 			Menu.RECIPES.get(currentWaitingCustomer.order).displayRecipe(game.batch, new Vector2(64, 256));
 		}
 		for (int i = 0; i < cooks.length; i++) {
