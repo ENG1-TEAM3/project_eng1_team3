@@ -60,7 +60,7 @@ public class Slider {
     }*/
 
     public void interact(float x, float y) {
-        percent = Math.max(Math.min(x / sliderButton.getWidth(), 1F), 0F);
+        percent = Math.max(Math.min((x-sliderSprite.getWidth()/2) / (sliderButton.getWidth() - sliderSprite.getWidth()), 1F), 0F);
         listenerController.tellListeners(percent);
         // System.out.println(String.format("x: %f, y: %f", x, y));
         // System.out.println(String.format("sliderButton.getWidth(): %f, percent: %f", sliderButton.getWidth(), percent));
@@ -78,8 +78,12 @@ public class Slider {
         sliderButton.setSize(width, height);
     }
 
-    public void setSliderSize(float size) {
-
+    public void setSliderSize(float width, float height) {
+        // Limit the width to the button size.
+        if (sliderButton.getWidth() < width) {
+            width = sliderButton.getWidth();
+        }
+        sliderSprite.setSize(width, height);
     }
 
     public float getValue() {
@@ -92,7 +96,9 @@ public class Slider {
 
     public void render(SpriteBatch batch) {
         // sliderButton.draw(batch, 1F);
-        sliderSprite.setPosition(sliderButton.getX() + sliderButton.getWidth()*percent - sliderSprite.getWidth()/2,
+        // Position of sliderSprite on the Slider so that it visually touches the border of
+        // the Slider (so that anywhere that the sliderSprite is pressed will count as pressing it.
+        sliderSprite.setPosition(sliderButton.getX() + (sliderButton.getWidth()-sliderSprite.getWidth())*percent,
                 sliderButton.getY()+sliderButton.getHeight()/2-sliderSprite.getHeight()/2);
         sliderSprite.draw(batch);
     }
