@@ -29,7 +29,7 @@ public class AssetController {
      * @param asset The {@link Asset} to add.
      * @param assetID The {@link String} ID of the {@link Asset}.
      */
-    protected Asset setAsset(Asset asset, String assetID, String mapKey) {
+    protected Asset<?> setAsset(Asset<?> asset, String assetID, String mapKey) {
         ObjectMap<String, Asset<?>> assetMap = assetMaps.get(mapKey);
         // If the texture is already initialised, dispose of the old one.
         if (assetMap.containsKey(assetID)) {
@@ -50,7 +50,7 @@ public class AssetController {
      * @param assetID The ID of asset that needs updating.
      * @param asset The new {@link Asset}.
      */
-    protected void assetUpdate(String assetID, Asset asset, String mapKey) {
+    protected void assetUpdate(String assetID, Asset<?> asset, String mapKey) {
 
     }
 
@@ -62,7 +62,7 @@ public class AssetController {
      * @param asset The {@link Asset} to add.
      * @param assetID The {@link String} ID to use for the {@link Asset}.
      */
-    protected Asset loadAsset(Asset asset, String assetID, String mapKey) {
+    protected Asset<?> loadAsset(Asset<?> asset, String assetID, String mapKey) {
         if (!assetMaps.containsKey(mapKey)) {
             assetMaps.put(mapKey, new ObjectMap<String, Asset<?>>());
         }
@@ -80,7 +80,7 @@ public class AssetController {
      * @param assetID The {@link String} ID of the {@link Asset}.
      * @return The {@link Asset}.
      */
-    protected Asset getAsset(String assetID, String mapKey) {
+    protected Asset<?> getAsset(String assetID, String mapKey) {
         if (!assetMaps.containsKey(mapKey)) {
             return null;
         }
@@ -125,7 +125,7 @@ public class AssetController {
      */
     public void dispose(ObjectMap<String, Asset<?>> assetMap) {
         // If it does, loop through its assets and then dispose of them
-        for (Asset asset : assetMap.values()) {
+        for (Asset<?> asset : assetMap.values()) {
             asset.dispose();
         }
     }
@@ -134,7 +134,7 @@ public class AssetController {
      * A function that is called everytime a new {@link Asset} is
      * added to a map.
      */
-    protected void newAsset(Asset asset, String mapKey) {
+    protected void newAsset(Asset<?> asset, String mapKey) {
         // To override
     }
 
