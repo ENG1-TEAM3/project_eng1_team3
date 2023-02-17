@@ -32,7 +32,7 @@ public class Audio extends AssetController
         return INSTANCE;
     }
 
-    private ObjectMap<String, Float> volumes = new ObjectMap<>();
+    private final ObjectMap<String, Float> volumes = new ObjectMap<>();
 
     public Music loadMusic(String path, String musicID, String audioGroup) {
         String mapKey = "music_" + audioGroup;
@@ -90,12 +90,12 @@ public class Audio extends AssetController
         // Before doing anything further, just set the volume in the volumes map.
         setMapVolume(volume, "music_" + audioGroup);
 
-        ObjectMap<String, Asset> musicMap = assetMaps.get("music_" + audioGroup);
+        ObjectMap<String, Asset<?>> musicMap = assetMaps.get("music_" + audioGroup);
         // If there is no ObjectMap for the audioGroup, return here.
         if (musicMap == null) {
             return;
         }
-        for (Asset asset : musicMap.values()) {
+        for (Asset<?> asset : musicMap.values()) {
             ((Music) asset.getAsset()).setVolume(volume);
         }
     }
@@ -105,12 +105,12 @@ public class Audio extends AssetController
     }
 
     public void setSoundVolume(float volume, String audioGroup) {
-        ObjectMap<String, Asset> soundMap = assetMaps.get("sound_" + audioGroup);
+        ObjectMap<String, Asset<?>> soundMap = assetMaps.get("sound_" + audioGroup);
         // If there is no ObjectMap for the audioGroup, just return.
         if (soundMap == null) {
             return;
         }
-        for (Asset asset : soundMap.values()) {
+        for (Asset<?> asset : soundMap.values()) {
             ((Sound) asset.getAsset()).setVolume(0, volume);
         }
         setMapVolume(volume, "sound_" + audioGroup);
@@ -121,8 +121,8 @@ public class Audio extends AssetController
     }
 
     public void dispose() {
-        for (ObjectMap<String, Asset> assetMap : assetMaps.values()) {
-            for (Asset asset : assetMap.values()) {
+        for (ObjectMap<String, Asset<?>> assetMap : assetMaps.values()) {
+            for (Asset<?> asset : assetMap.values()) {
                 asset.dispose();
             }
         }

@@ -17,7 +17,7 @@ public class AssetController {
      * An {@link Array} holding {@link ObjectMap} of the {@link Texture}s, allowing
      * each {@link Texture}s to be accessed via a simple {@link String}.
      */
-    protected ObjectMap<String, ObjectMap<String, Asset>> assetMaps = new ObjectMap<>();
+    protected ObjectMap<String, ObjectMap<String, Asset<?>>> assetMaps = new ObjectMap<>();
 
     /**
      * Adds a sprite to the {@link Textures} {@link #assetMaps} that
@@ -29,7 +29,7 @@ public class AssetController {
      * @param assetID The {@link String} ID of the {@link Asset}.
      */
     protected Asset setAsset(Asset asset, String assetID, String mapKey) {
-        ObjectMap<String, Asset> assetMap = assetMaps.get(mapKey);
+        ObjectMap<String, Asset<?>> assetMap = assetMaps.get(mapKey);
         // If the texture is already initialised, dispose of the old one.
         if (assetMap.containsKey(assetID)) {
             assetMap.get(assetID).dispose();
@@ -63,9 +63,9 @@ public class AssetController {
      */
     protected Asset loadAsset(Asset asset, String assetID, String mapKey) {
         if (!assetMaps.containsKey(mapKey)) {
-            assetMaps.put(mapKey, new ObjectMap<String, Asset>());
+            assetMaps.put(mapKey, new ObjectMap<String, Asset<?>>());
         }
-        ObjectMap<String, Asset> assetMap = assetMaps.get(mapKey);
+        ObjectMap<String, Asset<?>> assetMap = assetMaps.get(mapKey);
         // If it exists already, just return the old one
         if (assetMap.containsKey(assetID)) {
             return assetMap.get(assetID);
@@ -92,7 +92,7 @@ public class AssetController {
     public void dispose() {
         // textureAtlases.clear();
         // Loop through the Assets and call their dispose function
-        for (ObjectMap<String, Asset> assetMap : assetMaps.values()) {
+        for (ObjectMap<String, Asset<?>> assetMap : assetMaps.values()) {
             dispose(assetMap);
             // Clear the assetMap
             assetMap.clear();
@@ -122,7 +122,7 @@ public class AssetController {
      *
      * @param assetMap A {@link ObjectMap<String, Asset>} of the Assets.
      */
-    public void dispose(ObjectMap<String, Asset> assetMap) {
+    public void dispose(ObjectMap<String, Asset<?>> assetMap) {
         // If it does, loop through its assets and then dispose of them
         for (Asset asset : assetMap.values()) {
             asset.dispose();
