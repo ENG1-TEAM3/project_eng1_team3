@@ -87,11 +87,46 @@ public class AssetController {
     }
 
     /**
-     * Disposes all the texture atlases, sprites and forgets all the class sprites.
+     * Disposes all Assets in the program, using the Assets' dispose function.
      */
     public void dispose() {
         // textureAtlases.clear();
+        // Loop through the Assets and call their dispose function
+        for (ObjectMap<String, Asset> assetMap : assetMaps.values()) {
+            dispose(assetMap);
+            // Clear the assetMap
+            assetMap.clear();
+        }
+        // Clear all the assetMaps
         assetMaps.clear();
+    }
+
+    /**
+     * Disposes all Assets in a specific mapKey, and removes it
+     * from {@code assetMaps} if it exists.
+     *
+     * @param mapKey A {@link String} ID of the {@code mapKey}.
+     */
+    public void dispose(String mapKey) {
+        // Check if assetMaps has it
+        if (assetMaps.containsKey(mapKey)) {
+            // If it does, loop through its assets and then dispose of them
+            dispose(assetMaps.get(mapKey));
+            // Remove it from the assetMaps
+            assetMaps.remove(mapKey);
+        }
+    }
+
+    /**
+     * Disposes all Assets in the provided {@code assetMap}.
+     *
+     * @param assetMap A {@link ObjectMap<String, Asset>} of the Assets.
+     */
+    public void dispose(ObjectMap<String, Asset> assetMap) {
+        // If it does, loop through its assets and then dispose of them
+        for (Asset asset : assetMap.values()) {
+            asset.dispose();
+        }
     }
 
     /**
