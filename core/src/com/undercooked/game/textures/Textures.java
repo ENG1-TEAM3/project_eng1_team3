@@ -42,6 +42,12 @@ public class Textures extends AssetController {
         public ObjectMap.Keys<String> getSpriteIDs() {
             return sprites.keys();
         }
+
+        public void dispose() {
+            // Clear the sprites array, so that there's nothing directing
+            // to them so that they will be deleted
+            sprites.clear();
+        }
     }
 
     /**
@@ -175,9 +181,15 @@ public class Textures extends AssetController {
     /**
      * Disposes all the texture atlases, sprites and forgets all the class sprites.
      */
+    @Override
     public void dispose() {
         super.dispose();
+        // Loop through the asset instances
+        for (InstanceAssets instance : instanceMap.values()) {
+            // Dispose of the instances
+            instance.dispose();
+        }
+        // Clear the instanceMap so the Instances will be deleted
         instanceMap.clear();
     }
-
 }
