@@ -7,7 +7,6 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.undercooked.game.MainGameClass;
 import com.undercooked.game.util.Listener;
 import com.undercooked.game.util.ListenerController;
 
@@ -17,7 +16,7 @@ import com.undercooked.game.util.ListenerController;
  *
  */
 
-public class AudioSlider {
+public class Slider {
 
     Sprite sliderSprite;
     Button sliderButton;
@@ -25,7 +24,7 @@ public class AudioSlider {
     ListenerController<Float> listenerController;
     String audioGroup;
 
-    public AudioSlider(float x, float y, float value, float minValue, float maxValue, Texture sliderTex, String audioGroup) {
+    public Slider(float x, float y, float value, float minValue, float maxValue, Texture sliderTex, String audioGroup) {
         this.sliderButton = new Button(new Button.ButtonStyle());
         this.sliderButton.setPosition(x,y);
         this.sliderSprite = new Sprite(sliderTex);
@@ -52,7 +51,7 @@ public class AudioSlider {
 
         this.audioGroup = audioGroup;
     }
-    public AudioSlider(float x, float y, float value, float minValue, float maxValue, Texture sliderTex) {
+    public Slider(float x, float y, float value, float minValue, float maxValue, Texture sliderTex) {
         this(x,y,value,minValue,maxValue,sliderTex,"default");
     }
 

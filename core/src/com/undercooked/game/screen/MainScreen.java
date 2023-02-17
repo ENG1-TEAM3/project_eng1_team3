@@ -15,12 +15,11 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.undercooked.game.audio.AudioSettings;
-import com.undercooked.game.audio.AudioSlider;
+import com.undercooked.game.audio.Slider;
 import com.undercooked.game.MainGameClass;
 import com.undercooked.game.textures.Textures;
 import com.undercooked.game.util.CameraController;
 import com.undercooked.game.util.Constants;
-import com.undercooked.game.util.Listener;
 
 public class MainScreen implements Screen {
 	final MainGameClass game;
@@ -185,14 +184,14 @@ public class MainScreen implements Screen {
 		stage.addActor(ad);
 		stage.addActor(eg);
 
-		test = new AudioSlider(1000,500, AudioSettings.getMusicVolume(),0F,1F,vButton,"music");
+		test = new Slider(1000,500, AudioSettings.getMusicVolume(),0F,1F,vButton,"music");
 		test.setSize(330,50);
 		test.addToStage(stage);
 
 		test.addListener(AudioSettings.MusicVolListener);
 	}
 
-	AudioSlider test;
+	Slider test;
 
 	/**
 	 * Main menu render method
