@@ -13,9 +13,9 @@ import com.badlogic.gdx.utils.ObjectMap;
  */
 
 public class AudioController {
-	private static ObjectMap<String, Float> volumes = new ObjectMap<>();
-	private static ObjectMap<String, Music> musics = new ObjectMap<String, Music>();
-	private static ObjectMap<String, Sound> soundFX = new ObjectMap<String, Sound>();
+	private static final ObjectMap<String, Float> volumes = new ObjectMap<>();
+	private static final ObjectMap<String, Music> musics = new ObjectMap<>();
+	private static final ObjectMap<String, Sound> soundFX = new ObjectMap<>();
 
 	static {
 		// Maps music directory

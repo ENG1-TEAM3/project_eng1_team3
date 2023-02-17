@@ -8,15 +8,16 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
-//import com.team4gdx.game.Input.Button;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.undercooked.game.audio.AudioSettings;
-import com.undercooked.game.audio.Slider;
+import com.undercooked.game.audio.AudioSliders;
 import com.undercooked.game.MainGameClass;
+import com.undercooked.game.audio.Slider;
 import com.undercooked.game.textures.Textures;
 import com.undercooked.game.util.CameraController;
 import com.undercooked.game.util.Constants;
@@ -184,14 +185,17 @@ public class MainScreen implements Screen {
 		stage.addActor(ad);
 		stage.addActor(eg);
 
-		test = new Slider(1000,500, AudioSettings.getMusicVolume(),0F,1F,vButton,"music");
-		test.setSize(330,50);
-		test.addToStage(stage);
+		audioSliders = AudioSettings.createAudioSliders(ad.getX() + 650, ad.getY() - 10, stage);
 
-		test.addListener(AudioSettings.MusicVolListener);
+		musicSlider = audioSliders.getSlider(0);
+		musicSlider.setTouchable(Touchable.disabled);
+
+		gameSlider = audioSliders.getSlider(1);
+		gameSlider.setTouchable(Touchable.disabled);
 	}
 
-	Slider test;
+	AudioSliders audioSliders;
+	Slider musicSlider, gameSlider;
 
 	/**
 	 * Main menu render method
@@ -207,7 +211,6 @@ public class MainScreen implements Screen {
 
 		game.batch.begin();
 		game.batch.draw(background, 0, 0, Constants.V_WIDTH, Constants.V_HEIGHT);
-		test.render(game.batch);
 		game.batch.end();
 		stage.act();
 		stage.draw();
@@ -233,11 +236,15 @@ public class MainScreen implements Screen {
 			game.setScreen(game.getLeaderBoardScreen());
 		}
 		if (state == STATE.audio) {
-			musicVolumeUpdate();
-			gameVolumeUpdate();
+
+			musicSlider.setTouchable(Touchable.enabled);
+			gameSlider.setTouchable(Touchable.enabled);
 
 			game.batch.begin();
-			game.batch.draw(audioEdit, (float) gameResolutionX / 2, (float) 2 * gameResolutionY / 5 - buttonheight / 2,
+
+			audioSliders.render(game.batch);
+
+			/*game.batch.draw(audioEdit, (float) gameResolutionX / 2, (float) 2 * gameResolutionY / 5 - buttonheight / 2,
 					buttonwidth / 2, buttonheight);
 
 			game.batch.draw(vControl, volSlideBackgr.getX(), volSlideBackgr.getY(), volSlideBackgr.width,
@@ -248,9 +255,12 @@ public class MainScreen implements Screen {
 			game.batch.draw(vControl, musSlideBackgr.getX(), musSlideBackgr.getY(), musSlideBackgr.width,
 					musSlideBackgr.height);
 			game.batch.draw(vButton, musSlide.getX() - musSlide.width / 2, musSlide.getY(), musSlide.width,
-					musSlide.height);
+					musSlide.height);*/
 
 			game.batch.end();
+		} else {
+			musicSlider.setTouchable(Touchable.disabled);
+			gameSlider.setTouchable(Touchable.disabled);
 		}
 	}
 

@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.undercooked.game.util.Listener;
@@ -60,7 +61,7 @@ public class Slider {
     }*/
 
     public void interact(float x, float y) {
-        percent = Math.max(Math.min((x-sliderSprite.getWidth()/2) / (sliderButton.getWidth() - sliderSprite.getWidth()), 1F), 0F);
+        setPercent((x-sliderSprite.getWidth()/2) / (sliderButton.getWidth() - sliderSprite.getWidth()));
         listenerController.tellListeners(percent);
         // System.out.println(String.format("x: %f, y: %f", x, y));
         // System.out.println(String.format("sliderButton.getWidth(): %f, percent: %f", sliderButton.getWidth(), percent));
@@ -106,5 +107,39 @@ public class Slider {
     public void addToStage(Stage stage) {
         stage.addActor(this.sliderButton);
     }
+
+    // region Setters
+
+    public void setX(float x) {
+        sliderButton.setX(x);
+    }
+
+    public void setY(float y) {
+        sliderButton.setY(y);
+    }
+
+    public void setWidth(float width) {
+        sliderButton.setWidth(width);
+    }
+
+    public void setHeight(float height) {
+        sliderButton.setHeight(height);
+    }
+
+    public float setValue(float value) {
+        float percent = value / (maxValue - minValue);
+        return setPercent(percent);
+    }
+
+    public float setPercent(float percent) {
+        this.percent = Math.max(Math.min(percent, 1F), 0F);
+        return this.percent;
+    }
+
+    public void setTouchable(Touchable touchable) {
+        this.sliderButton.setTouchable(touchable);
+    }
+
+    // endregion
 
 }
