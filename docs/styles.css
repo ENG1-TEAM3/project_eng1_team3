@@ -28,3 +28,8 @@ button{
 button:hover{
     background-color: rgb(129, 0, 0);
 }
+
+#main {
+    text-align: center;
+    margin to 0 auto;
+}
