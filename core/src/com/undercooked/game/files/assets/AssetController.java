@@ -6,9 +6,10 @@ import com.badlogic.gdx.utils.ObjectMap;
 import com.undercooked.game.textures.Textures;
 
 /**
- *
- * TODO: JavaDocs
- *
+ * A class that holds all the {@link Asset}s in the program.
+ * <br>It is used to load and dispose of {@link Asset}s.
+ * <br>It also allows {@link Asset}s to be accessed by a simple
+ * {@link String} ID.
  */
 
 public class AssetController {
