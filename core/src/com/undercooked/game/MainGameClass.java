@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.undercooked.game.audio.Audio;
+import com.undercooked.game.audio.AudioSettings;
 import com.undercooked.game.screen.GameScreen;
 import com.undercooked.game.screen.LeaderBoard;
 import com.undercooked.game.screen.MainScreen;
@@ -34,12 +35,12 @@ public class MainGameClass extends Game {
 		musicVolumeScale = 0.4f;
 		gameVolumeScale = 0.4f;
 		Audio audioInst = Audio.getInstance();
+		AudioSettings.setMusicVolume(Constants.DEFAULT_MUSIC, Constants.MUSIC_GROUP);
+		AudioSettings.setMusicVolume(Constants.DEFAULT_SOUND, Constants.GAME_GROUP);
 		mainScreenMusic = audioInst.loadMusic("uielements/MainScreenMusic.ogg", Constants.MENU_SONG_ID, Constants.MUSIC_GROUP);
 		gameMusic = audioInst.loadMusic("uielements/GameMusic.ogg", Constants.GAME_SONG_ID, Constants.MUSIC_GROUP);
 		mainScreenMusic.setLooping(false);
-		mainScreenMusic.setVolume(musicVolumeScale);
 		gameMusic.setLooping(false);
-		gameMusic.setVolume(musicVolumeScale);
 
 		// Camera Initialisation
 		CameraController.getCamera(Constants.WORLD_CAMERA_ID);
