@@ -460,14 +460,14 @@ public class GameScreen implements Screen {
 		float x = mousePos.x;
 		float fromTopy = mousePos.y;
 		float fromBottomy = gameResolutionY - fromTopy;
-		selectedPlayerBox.setAutoShapeType(true);
+		/*selectedPlayerBox.setAutoShapeType(true);
 		selectedPlayerBox.begin(ShapeType.Filled);
 		selectedPlayerBox.setColor(Color.GREEN);
 		selectedPlayerBox.rect(mousePos.x-2F, mousePos.y-2F, 4F,4F);
 		selectedPlayerBox.setColor(Color.NAVY);
 		selectedPlayerBox.rect(musSlideBackgr.getX(), musSlide.getY(), musSlideBackgr.getWidth(), musSlide.getHeight());
 		selectedPlayerBox.setColor(Color.WHITE);
-		selectedPlayerBox.end();
+		selectedPlayerBox.end();*/
 		boolean change = musSlide.getY() <= fromBottomy & fromBottomy <= musSlide.getY() + musSlide.getHeight();
 		if (Gdx.input.isTouched() & change) {
 			if (x >= musSlideBackgr.getX() & x <= musSlideBackgr.getX() + musSlideBackgr.getWidth()) {
