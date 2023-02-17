@@ -1,5 +1,7 @@
 package com.undercooked.game.audio;
 
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.undercooked.game.textures.Textures;
 import com.undercooked.game.util.Listener;
 
 /**
@@ -13,23 +15,6 @@ public class AudioSettings {
     static float musicVolume;
     static float gameVolume;
     static float soundVolume;
-
-
-    public static AudioSliders createAudioSliders(float x, float y, Stage stage) {
-        AudioSliders audioSliders = new AudioSliders(x,y,300,200, Textures.getInstance().loadTexture("uielements/background.jpg", "background"));
-        audioSliders.setSliderWidth(0.1F);
-
-        Slider musicSlider = audioSliders.addSlider(MusicVolListener);
-        musicSlider.addToStage(stage);
-        musicSlider.setValue(getMusicVolume());
-        audioSliders.setSliderWidth(0.1F);
-
-        Slider gameSlider = audioSliders.addSlider(GameVolListener);
-        gameSlider.addToStage(stage);
-        gameSlider.setValue(getGameVolume());
-
-        return audioSliders;
-    }
 
 
     public static final Listener MusicVolListener = new Listener<Float>() {
@@ -55,6 +40,21 @@ public class AudioSettings {
             setSoundVolume(value);
         }
     };
+
+    public static AudioSliders createAudioSliders(float x, float y, Stage stage) {
+        AudioSliders audioSliders = new AudioSliders(x,y,300,200, Textures.getInstance().loadTexture("uielements/background.jpg", "background"));
+        audioSliders.setSliderWidth(0.18F);
+
+        Slider musicSlider = audioSliders.addSlider(MusicVolListener);
+        musicSlider.addToStage(stage);
+        musicSlider.setValue(getMusicVolume());
+
+        Slider gameSlider = audioSliders.addSlider(GameVolListener);
+        gameSlider.addToStage(stage);
+        gameSlider.setValue(getGameVolume());
+
+        return audioSliders;
+    }
 
     public static void setMusicVolume(float volume, String audioGroup) {
         Audio.getInstance().setMusicVolume(volume, audioGroup);

@@ -23,12 +23,16 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.undercooked.game.MainGameClass;
+import com.undercooked.game.audio.AudioSettings;
+import com.undercooked.game.audio.AudioSliders;
+import com.undercooked.game.audio.Slider;
 import com.undercooked.game.entity.Cook;
 import com.undercooked.game.entity.Customer;
 import com.undercooked.game.entity.CustomerController;
@@ -214,12 +218,21 @@ public class GameScreen implements Screen {
 		stage2.addActor(btms);
 		stage2.addActor(ad);
 
-
-
-
 		selectedPlayerBox.setProjectionMatrix(uiCamera.combined);
 
+		audioSliders = AudioSettings.createAudioSliders(ad.getX()-5,ad.getY()-130,stage2);
+		audioSliders.setWidth(200);
+		audioSliders.setHeight(100);
+
+		musicSlider = audioSliders.getSlider(0);
+		musicSlider.setTouchable(Touchable.disabled);
+		gameSlider = audioSliders.getSlider(0);
+		gameSlider.setTouchable(Touchable.disabled);
+
 	}
+
+	AudioSliders audioSliders;
+	Slider musicSlider, gameSlider;
 
 	ShapeRenderer selectedPlayerBox = new ShapeRenderer();
 
@@ -410,8 +423,10 @@ public class GameScreen implements Screen {
 			stage2.draw();
 		}
 		if (state1 == STATE.audio) {
-			gameVolumeUpdate();
 			checkState();
+
+			musicSlider.setTouchable(Touchable.enabled);
+			gameSlider.setTouchable(Touchable.enabled);
 
 			Gdx.input.setInputProcessor(stage2);
 			game.batch.begin();
@@ -421,18 +436,11 @@ public class GameScreen implements Screen {
 			stage2.act();
 			stage2.draw();
 			game.batch.begin();
-			game.batch.draw(audioEdit, audioBackground.getX(), audioBackground.getY(), audioBackground.getWidth(),
-					audioBackground.getHeight());
-			game.batch.draw(vControl, volSlideBackgr.getX(), volSlideBackgr.getY(), volSlideBackgr.getWidth(),
-					volSlideBackgr.getHeight());
-			game.batch.draw(vButton, volSlide.getX() - volSlide.getWidth() / 2, volSlide.getY(), volSlide.width,
-					volSlide.height);
-			game.batch.draw(vControl, musSlideBackgr.getX(), musSlideBackgr.getY(), musSlideBackgr.getWidth(),
-					musSlideBackgr.getHeight());
-			game.batch.draw(vButton, musSlide.getX() - musSlide.getWidth() / 2, musSlide.getY(), musSlide.width,
-					musSlide.height);
+			audioSliders.render(game.batch);
 			game.batch.end();
-			musicVolumeUpdate();
+		} else {
+			musicSlider.setTouchable(Touchable.disabled);
+			gameSlider.setTouchable(Touchable.disabled);
 		}
 		if (state1 == STATE.Continue) {
 			nowTime = System.currentTimeMillis() - timeOnStartup;
