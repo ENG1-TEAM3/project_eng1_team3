@@ -27,6 +27,8 @@ public class StationManager {
 
 	SpriteBatch batch;
 
+	private BitmapFont font = new BitmapFont();
+
 	/**
 	 * Checks every station for ingredients and updates them accordingly.
 	 * 
@@ -134,7 +136,7 @@ public class StationManager {
 		case "Bin":
 			if (!GameScreen.cook.heldItems.empty()) {
 				batch.begin();
-				(new BitmapFont()).draw(batch, "Drop [e]", pos.x * 64, pos.y * 64);
+				font.draw(batch, "Drop [e]", pos.x * 64, pos.y * 64);
 				batch.end();
 				if (GameScreen.control.drop) {
 					GameScreen.cook.dropItem();
