@@ -65,20 +65,20 @@ project(":tests"){
 
     dependencies {
 
-        compile project(":core")
+        implementation project(":core")
 
-        compile "junit:junit:4.+"
-        compile "org.mockito:mockito-all:1.9.+"
+        implementation "junit:junit:4.+"
+        implementation "org.mockito:mockito-all:1.9.+"
 
-        compile "com.badlogicgames.gdx:gdx-backend-headless:$gdxVersion"
-        compile "com.badlogicgames.gdx:gdx:$gdxVersion"
+        implementation "com.badlogicgames.gdx:gdx-backend-headless:$gdxVersion"
+        implementation "com.badlogicgames.gdx:gdx:$gdxVersion"
 
-        testCompile "junit:junit:4.+"
-        testCompile "org.mockito:mockito-all:1.9.+"
+        testImplementation "junit:junit:4.+"
+        testImplementation "org.mockito:mockito-all:1.9.+"
 
-        testCompile "com.badlogicgames.gdx:gdx-backend-headless:$gdxVersion"
-        testCompile "com.badlogicgames.gdx:gdx:$gdxVersion"
-        testCompile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
+        testImplementation "com.badlogicgames.gdx:gdx-backend-headless:$gdxVersion"
+        testImplementation "com.badlogicgames.gdx:gdx:$gdxVersion"
+        testImplementation "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
 
     }
 }
