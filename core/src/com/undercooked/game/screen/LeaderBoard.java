@@ -8,19 +8,19 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Input.TextInputListener;
 import com.badlogic.gdx.InputAdapter;
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.undercooked.game.MainGameClass;
-import com.undercooked.game.textures.Textures;
+import com.undercooked.game.util.CameraController;
+import com.undercooked.game.util.Constants;
 
 //INCORRECT FILE FORMATTING WILL CRASH GAME
 //MAKE SURE ALL LINES IN LEADERBOARD FILE ARE x;y OR JUST s
 //NO NEWLINE AT END OF FILE
-public class LeaderBoard implements Screen, TextInputListener {
+public class LeaderBoard extends Screen implements TextInputListener {
 	final MainGameClass game;
 
 	Texture background;
@@ -28,17 +28,14 @@ public class LeaderBoard implements Screen, TextInputListener {
 	Texture leaderboard;
 	OrthographicCamera camera;
 	FitViewport viewport;
-	MainScreen ms;
 	ArrayList<ArrayList<String>> playerData;
 
 	/**
 	 * Constructor for leaderboard screen
 	 * @param game - Entry point class
-	 * @param ms - Main screen class
 	 */
-	public LeaderBoard(MainGameClass game, MainScreen ms) {
+	public LeaderBoard(MainGameClass game) {
 		this.game = game;
-		this.ms = ms;
 
 		readPlayerData();
 		sortPlayerData();
@@ -91,15 +88,32 @@ public class LeaderBoard implements Screen, TextInputListener {
 	 * What should be done when screen is shown
 	 */
 	public void show() {
+		game.gameMusic = MainGameClass.assetManager.get("uielements/GameMusic.ogg");
 		ScreenUtils.clear(0, 0, 0, 0);
-		camera = new OrthographicCamera();
-		camera.setToOrtho(false, ms.gameResolutionX, ms.gameResolutionY);
-		viewport = new FitViewport(ms.gameResolutionX, ms.gameResolutionY, camera);
-		Textures texturesInst = Textures.getInstance();
-		background = texturesInst.loadTexture("uielements/MainScreenBackground.jpg", "MSBackground");
-		leaderboard = texturesInst.loadTexture("uielements/LeaderBoard.png","leaderboard");
-		line = texturesInst.loadTexture("uielements/line.jpg", "line");
+		background = MainGameClass.assetManager.get("uielements/MainScreenBackground.jpg");
+		leaderboard = MainGameClass.assetManager.get("uielements/LeaderBoard.png");
+		line = MainGameClass.assetManager.get("uielements/line.jpg");
+		camera = CameraController.getCamera(Constants.UI_CAMERA_ID);
+		viewport = CameraController.getViewport(Constants.UI_CAMERA_ID);
 		game.font.getData().setScale((float) 2.5);
+	}
+
+	/** What needs to be loaded when this screen is loaded. */
+	public void load() {
+		MainGameClass.assetManager.load("uielements/MainScreenBackground.jpg", Texture.class);
+		MainGameClass.assetManager.load("uielements/LeaderBoard.png", Texture.class);
+		MainGameClass.assetManager.load("uielements/line.jpg", Texture.class);
+
+		game.audioManager.loadMusic("uielements/GameMusic.ogg", Constants.MUSIC_GROUP);
+	}
+
+	@Override
+	public void unload() {
+		MainGameClass.assetManager.unload("uielements/MainScreenBackground.jpg");
+		MainGameClass.assetManager.unload("uielements/LeaderBoard.png");
+		MainGameClass.assetManager.unload("uielements/line.jpg");
+
+		game.audioManager.unloadMusic("uielements/GameMusic.ogg");
 	}
 
 	/**
@@ -110,8 +124,10 @@ public class LeaderBoard implements Screen, TextInputListener {
 		// TODO Auto-generated method stub
 		ScreenUtils.clear(0, 0, 0, 0);
 		game.batch.setProjectionMatrix(camera.combined);
-		float lbox = ms.gameResolutionX / 10.0f;
-		float dbox = ms.gameResolutionY / 10.0f;
+		float gameResolutionX = Constants.V_WIDTH,
+			  gameResolutionY = Constants.V_HEIGHT;
+		float lbox = gameResolutionX / 10.0f;
+		float dbox = gameResolutionY / 10.0f;
 		float boxwid = 8 * lbox;
 		float boxhi = 8 * dbox;
 		float entryhi = 7 * dbox;
@@ -119,26 +135,26 @@ public class LeaderBoard implements Screen, TextInputListener {
 		float eachentryhi = entryhi / 7;
 
 		game.batch.begin();
-		game.batch.draw(background, 0, 0, ms.gameResolutionX, ms.gameResolutionY);
+		game.batch.draw(background, 0, 0, gameResolutionX, gameResolutionY);
 		game.batch.draw(leaderboard, lbox, dbox, boxwid, boxhi);
-		game.font.draw(game.batch, "Press ESC to return to menu", ms.gameResolutionX / 20.0f,
-				19 * ms.gameResolutionY / 19.0f);
-		game.font.draw(game.batch, "Name", 4 * ms.gameResolutionX / 20.0f, 17 * ms.gameResolutionY / 20.0f);
-		game.font.draw(game.batch, "Time (s)", 12 * ms.gameResolutionX / 20.0f, 17 * ms.gameResolutionY / 20.0f);
-		game.batch.draw(line, lbox, dbox + eachentryhi, boxwid, ms.gameResolutionY / 100.0f);
-		game.batch.draw(line, lbox, dbox + 2 * eachentryhi, boxwid, ms.gameResolutionY / 100.0f);
-		game.batch.draw(line, lbox, dbox + 3 * eachentryhi, boxwid, ms.gameResolutionY / 100.0f);
-		game.batch.draw(line, lbox, dbox + 4 * eachentryhi, boxwid, ms.gameResolutionY / 100.0f);
-		game.batch.draw(line, lbox, dbox + 5 * eachentryhi, boxwid, ms.gameResolutionY / 100.0f);
-		game.batch.draw(line, lbox, dbox + 6 * eachentryhi, boxwid, ms.gameResolutionY / 100.0f);
+		game.font.draw(game.batch, "Press ESC to return to menu", gameResolutionX / 20.0f,
+				19 * gameResolutionY / 19.0f);
+		game.font.draw(game.batch, "Name", 4 * gameResolutionX / 20.0f, 17 * gameResolutionY / 20.0f);
+		game.font.draw(game.batch, "Time (s)", 12 * gameResolutionX / 20.0f, 17 * gameResolutionY / 20.0f);
+		game.batch.draw(line, lbox, dbox + eachentryhi, boxwid, gameResolutionY / 100.0f);
+		game.batch.draw(line, lbox, dbox + 2 * eachentryhi, boxwid, gameResolutionY / 100.0f);
+		game.batch.draw(line, lbox, dbox + 3 * eachentryhi, boxwid, gameResolutionY / 100.0f);
+		game.batch.draw(line, lbox, dbox + 4 * eachentryhi, boxwid, gameResolutionY / 100.0f);
+		game.batch.draw(line, lbox, dbox + 5 * eachentryhi, boxwid, gameResolutionY / 100.0f);
+		game.batch.draw(line, lbox, dbox + 6 * eachentryhi, boxwid, gameResolutionY / 100.0f);
 
 		for (int scoreno = 0; scoreno < 7; scoreno++) {
 			if (this.playerData.size() >= scoreno + 1) {
 				float ycord = topentry - scoreno * eachentryhi - 0.3f * eachentryhi;
 				String name = this.playerData.get(scoreno).get(0);
 				String stringScore = this.playerData.get(scoreno).get(1);
-				game.font.draw(game.batch, name, 3 * ms.gameResolutionX / 20.0f, ycord);
-				game.font.draw(game.batch, stringScore, 11 * ms.gameResolutionX / 20.0f, ycord);
+				game.font.draw(game.batch, name, 3 * gameResolutionX / 20.0f, ycord);
+				game.font.draw(game.batch, stringScore, 11 * gameResolutionX / 20.0f, ycord);
 			}
 		}
 
@@ -171,7 +187,7 @@ public class LeaderBoard implements Screen, TextInputListener {
 	 */
 	public void changeScreenToMain() {
 		game.gameMusic.pause();
-		game.setScreen(game.getMainScreen());
+		game.screenController.setScreen(Constants.MAIN_SCREEN_ID);
 	}
 
 	/**

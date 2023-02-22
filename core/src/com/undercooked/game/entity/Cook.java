@@ -10,7 +10,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.undercooked.game.textures.Textures;
+import com.undercooked.game.MainGameClass;
 import com.undercooked.game.food.Ingredient;
 import com.undercooked.game.util.CollisionTile;
 import com.undercooked.game.util.Control;
@@ -167,7 +167,7 @@ public class Cook extends Entity {
 	 * @param path - Filepath to texture
 	 */
 	private void setWalkTexture(String path) {
-		walkSheet = Textures.getInstance().loadTexture(path, path);
+		walkSheet = MainGameClass.assetManager.get(path);
 		spriteSheet = TextureRegion.split(walkSheet, walkSheet.getWidth() / FRAME_COLS,
 				walkSheet.getHeight() / FRAME_ROWS);
 		walkFrames = new TextureRegion[FRAME_ROWS];

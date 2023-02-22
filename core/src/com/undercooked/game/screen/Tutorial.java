@@ -30,9 +30,9 @@ public class Tutorial {
 				" Welcome to Piazza Panic! Customers will arrive one-by-one requesting an order. "));
 		stages.add(new PosTextPair(new Vector2(3 * 64, 13 * 64),
 				" To display the order, go up to the service station opposite the customer. "));
-		stages.add(new PosTextPair(GameScreen.cooks[0].pos,
+		stages.add(new PosTextPair(GameScreen.cooks.get(0).pos,
 				" Control the cooks (using WASD) in the kitchen to gather ingredients. "));
-		stages.add(new PosTextPair(GameScreen.cooks[1].pos,
+		stages.add(new PosTextPair(GameScreen.cooks.get(1).pos,
 				" Switch between cooks using tab and shift to go to and fro respectively."));
 		stages.add(new PosTextPair(new Vector2(10 * 64, 11 * 64),
 				" Move to different stations: [Ingredient Station] to collect ingredients (e to pickup, q to drop), "));

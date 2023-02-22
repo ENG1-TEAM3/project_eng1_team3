@@ -2,7 +2,7 @@ package com.undercooked.game.screen;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Rectangle;
@@ -18,11 +18,10 @@ import com.undercooked.game.audio.AudioSettings;
 import com.undercooked.game.audio.AudioSliders;
 import com.undercooked.game.MainGameClass;
 import com.undercooked.game.audio.Slider;
-import com.undercooked.game.textures.Textures;
 import com.undercooked.game.util.CameraController;
 import com.undercooked.game.util.Constants;
 
-public class MainScreen implements Screen {
+public class MainScreen extends Screen {
 	final MainGameClass game;
 	float v = 0;
 	float s = 0;
@@ -107,6 +106,36 @@ public class MainScreen implements Screen {
 		this.viewport = CameraController.getViewport(Constants.UI_CAMERA_ID);
 	}
 
+	@Override
+	public void load() {
+		AssetManager assetManager = MainGameClass.assetManager;
+		assetManager.load("uielements/vButton.jpg", Texture.class);
+		assetManager.load("uielements/vControl.png", Texture.class);
+		assetManager.load("uielements/newgame.png", Texture.class);
+		assetManager.load("uielements/MainScreenBackground.jpg", Texture.class);
+		assetManager.load("uielements/leaderboard1.png", Texture.class);
+		assetManager.load("uielements/audio.png", Texture.class);
+		assetManager.load("uielements/background.png", Texture.class);
+		assetManager.load("uielements/exitgame.png", Texture.class);
+
+		game.audioManager.loadMusic("uielements/MainScreenMusic.ogg", Constants.MUSIC_GROUP);
+	}
+
+	@Override
+	public void unload() {
+		AssetManager assetManager = MainGameClass.assetManager;
+		assetManager.unload("uielements/vButton.jpg");
+		assetManager.unload("uielements/vControl.png");
+		assetManager.unload("uielements/newgame.png");
+		assetManager.unload("uielements/MainScreenBackground.jpg");
+		assetManager.unload("uielements/leaderboard1.png");
+		assetManager.unload("uielements/audio.png");
+		assetManager.unload("uielements/background.png");
+		assetManager.unload("uielements/exitgame.png");
+
+		game.audioManager.unloadMusic("uielements/MainScreenMusic.ogg");
+	}
+
 	/**
 	 * What should be done when the screen is shown
 	 */
@@ -125,15 +154,17 @@ public class MainScreen implements Screen {
 
 		state = STATE.main;
 
-		Textures texturesInst = Textures.getInstance();
-		vButton = texturesInst.loadTexture("uielements/vButton.jpg", "vButton");
-		vControl = texturesInst.loadTexture("uielements/vControl.png", "vControl");
-		startButton = texturesInst.loadTexture("uielements/newgame.png", "newgame");
-		background = texturesInst.loadTexture("uielements/MainScreenBackground.jpg", "MSBackground");
-		leaderBoard = texturesInst.loadTexture("uielements/leaderboard1.png", "leaderboard1");
-		audio = texturesInst.loadTexture("uielements/audio.png", "audio");
-		audioEdit = texturesInst.loadTexture("uielements/background.png", "background");
-		exitGame = texturesInst.loadTexture("uielements/exitgame.png", "exitgame");
+		game.mainScreenMusic = MainGameClass.assetManager.get("uielements/MainScreenMusic.ogg");
+
+		AssetManager assetManager = MainGameClass.assetManager;
+		vButton = assetManager.get("uielements/vButton.jpg");
+		vControl = assetManager.get("uielements/vControl.png");
+		startButton = assetManager.get("uielements/newgame.png");
+		background = assetManager.get("uielements/MainScreenBackground.jpg");
+		leaderBoard = assetManager.get("uielements/leaderboard1.png");
+		audio = assetManager.get("uielements/audio.png");
+		audioEdit = assetManager.get("uielements/background.png");
+		exitGame = assetManager.get("uielements/exitgame.png");
 
 		sb = new Button(new TextureRegionDrawable(startButton));
 		lb = new Button(new TextureRegionDrawable(leaderBoard));
@@ -185,7 +216,7 @@ public class MainScreen implements Screen {
 		stage.addActor(ad);
 		stage.addActor(eg);
 
-		audioSliders = AudioSettings.createAudioSliders(ad.getX() + 650, ad.getY() - 10, stage);
+		audioSliders = AudioSettings.createAudioSliders(ad.getX() + 650, ad.getY() - 10, stage, audioEdit);
 
 		musicSlider = audioSliders.getSlider(0);
 		musicSlider.setTouchable(Touchable.disabled);
@@ -229,11 +260,11 @@ public class MainScreen implements Screen {
 	public void changeScreen(STATE state) {
 		if (state == STATE.new_game) {
 			game.mainScreenMusic.dispose();
-			game.setScreen(game.getGameScreen());
+			game.screenController.setScreen(Constants.GAME_SCREEN_ID);
 		}
 		if (state == STATE.leaderboard) {
 			game.mainScreenMusic.dispose();
-			game.setScreen(game.getLeaderBoardScreen());
+			game.screenController.nextScreen(Constants.LEADERBOARD_SCREEN_ID);
 		}
 		if (state == STATE.audio) {
 

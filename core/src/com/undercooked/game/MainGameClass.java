@@ -2,17 +2,15 @@ package com.undercooked.game;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.undercooked.game.audio.Audio;
+import com.undercooked.game.audio.AudioManager;
 import com.undercooked.game.audio.AudioSettings;
-import com.undercooked.game.screen.GameScreen;
-import com.undercooked.game.screen.LeaderBoard;
-import com.undercooked.game.screen.MainScreen;
-import com.undercooked.game.audio.AudioController;
+import com.undercooked.game.screen.*;
 import com.undercooked.game.util.CameraController;
 import com.undercooked.game.util.Constants;
 
@@ -22,33 +20,45 @@ public class MainGameClass extends Game {
 	public Music gameMusic;
 	public static float musicVolumeScale;
 	public static float gameVolumeScale;
-	private MainScreen mainScreen1;
-	private GameScreen gameScreen1;
-	private LeaderBoard leaderBoardScreen1;
-	public AudioController sounds;
-	public SpriteBatch batch;
-	public ShapeRenderer shapeRenderer;
+	public final ScreenController screenController;
+	public static SpriteBatch batch;
+	public static ShapeRenderer shapeRenderer;
+	public static final AssetManager assetManager = new AssetManager();
+	public final AudioManager audioManager;
+	/**
+	 * Constructor for the Game.
+	 */
+	public MainGameClass() {
+		AudioSettings.game = this;
+		audioManager = new AudioManager(assetManager);
+		screenController = new ScreenController(this);
+	}
+
+	/**
+	 * Things that are loaded into the game that won't be unloaded until the game is
+	 * over.
+	 */
+	public void load() {
+
+	}
 
 	@Override
 	public void create() {
+
+		// Sprite Batch
+		batch = new SpriteBatch();
+		shapeRenderer = new ShapeRenderer();
+		shapeRenderer.setAutoShapeType(true);
+
 		// =============MUSIC=INITIALISATION===========================
 		musicVolumeScale = 0.4f;
 		gameVolumeScale = 0.4f;
-		Audio audioInst = Audio.getInstance();
 		AudioSettings.setMusicVolume(Constants.DEFAULT_MUSIC, Constants.MUSIC_GROUP);
 		AudioSettings.setMusicVolume(Constants.DEFAULT_SOUND, Constants.GAME_GROUP);
-		mainScreenMusic = audioInst.loadMusic("uielements/MainScreenMusic.ogg", Constants.MENU_SONG_ID, Constants.MUSIC_GROUP);
-		gameMusic = audioInst.loadMusic("uielements/GameMusic.ogg", Constants.GAME_SONG_ID, Constants.MUSIC_GROUP);
-		mainScreenMusic.setLooping(false);
-		gameMusic.setLooping(false);
 
 		// Camera Initialisation
 		CameraController.getCamera(Constants.WORLD_CAMERA_ID);
 		CameraController.getCamera(Constants.UI_CAMERA_ID);
-
-		// ===============SPRITEBATCH=AND=SHAPERENDERER==========================
-		batch = new SpriteBatch();
-		shapeRenderer = new ShapeRenderer();
 
 
 		// ===================FONT=INITIALISATION======================
@@ -58,11 +68,12 @@ public class MainGameClass extends Game {
 
 
 		// ===============GAME=SCREEN=INITIALISATION===========================
-		mainScreen1 = new MainScreen(this);
-		gameScreen1 = new GameScreen(this, mainScreen1);
-		leaderBoardScreen1 = new LeaderBoard(this, mainScreen1);
-		this.setScreen(mainScreen1);
 
+		screenController.addScreen(new MainScreen(this), Constants.MAIN_SCREEN_ID);
+		screenController.addScreen(new GameScreen(this), Constants.GAME_SCREEN_ID);
+		screenController.addScreen(new LeaderBoard(this), Constants.LEADERBOARD_SCREEN_ID);
+
+		screenController.nextScreen(Constants.MAIN_SCREEN_ID);
 
 		// ==============================================================================================================
 	}
@@ -73,20 +84,24 @@ public class MainGameClass extends Game {
 		CameraController.getViewport(Constants.UI_CAMERA_ID).update(width, height);
 	}
 
-	public MainScreen getMainScreen() {
-		return mainScreen1;
+	public Screen getScreen() {
+		return (Screen) super.getScreen();
 	}
 
-	public GameScreen getGameScreen() {
-		return gameScreen1;
+	public AudioManager getAudioManager() {
+		return audioManager;
 	}
 
-	public LeaderBoard getLeaderBoardScreen() {
-		return leaderBoardScreen1;
+	public static SpriteBatch getSpriteBatch() {
+		return batch;
 	}
 
-	public void resetGameScreen() {
-		this.gameScreen1 = new GameScreen(this, mainScreen1);
+	public static ShapeRenderer getShapeRenderer() {
+		return shapeRenderer;
+	}
+
+	public void unloadCurrentScreen() {
+		screenController.unload((Screen) screen);
 	}
 
 	@Override
@@ -96,6 +111,7 @@ public class MainGameClass extends Game {
 
 	@Override
 	public void dispose() {
+		assetManager.dispose();
 		batch.dispose();
 	}
 }

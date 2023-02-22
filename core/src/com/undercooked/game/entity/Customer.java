@@ -1,9 +1,10 @@
 package com.undercooked.game.entity;
 
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.undercooked.game.textures.Textures;
+import com.undercooked.game.MainGameClass;
 
 public class Customer {
 	int targetsquare;
@@ -37,11 +38,11 @@ public class Customer {
 	 */
 	public Customer(int x, int y, int tg, int custno) {
 		targetsquare = tg;
-		Textures texturesInst = Textures.getInstance();
-		textf = texturesInst.loadTexture("entities/cust" + custno + "f.png", "cust" + custno + "f");
-		textb = texturesInst.loadTexture("entities/cust" + custno + "b.png", "cust" + custno + "b");
-		textr = texturesInst.loadTexture("entities/cust" + custno + "r.png", "cust" + custno + "r");
-		textl = texturesInst.loadTexture("entities/cust" + custno + "l.png", "cust" + custno + "l");
+		AssetManager assetManager = MainGameClass.assetManager;
+		textf = assetManager.get("entities/cust" + custno + "f.png");
+		textb = assetManager.get("entities/cust" + custno + "b.png");
+		textr = assetManager.get("entities/cust" + custno + "r.png");
+		textl = assetManager.get("entities/cust" + custno + "l.png");
 
 		custpartsf = TextureRegion.split(textf, 32, 32);
 		custpartsb = TextureRegion.split(textb, 32, 32);

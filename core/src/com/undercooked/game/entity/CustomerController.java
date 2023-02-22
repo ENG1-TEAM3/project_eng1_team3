@@ -6,6 +6,8 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -13,6 +15,7 @@ import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 import com.badlogic.gdx.math.Vector2;
+import com.undercooked.game.MainGameClass;
 
 public class CustomerController {
 	int lockout;
@@ -30,6 +33,14 @@ public class CustomerController {
 		computeCustomerZone(gameMap);
 		amountActiveCustomers = 0;
 		lockout = 0;
+	}
+
+	public void load() {
+
+	}
+
+	public void unload() {
+
 	}
 
 	/**

@@ -3,7 +3,7 @@ package com.undercooked.game.screen;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputMultiplexer;
-import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -27,9 +27,11 @@ import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.undercooked.game.MainGameClass;
+import com.undercooked.game.audio.AudioManager;
 import com.undercooked.game.audio.AudioSettings;
 import com.undercooked.game.audio.AudioSliders;
 import com.undercooked.game.audio.Slider;
@@ -39,18 +41,16 @@ import com.undercooked.game.entity.CustomerController;
 import com.undercooked.game.entity.Entity;
 import com.undercooked.game.food.Menu;
 import com.undercooked.game.station.StationManager;
-import com.undercooked.game.textures.Textures;
 import com.undercooked.game.util.CameraController;
 import com.undercooked.game.util.CollisionTile;
 import com.undercooked.game.util.Constants;
 import com.undercooked.game.util.Control;
 
-public class GameScreen implements Screen {
+public class GameScreen extends Screen {
 
 	public static final int NUMBER_OF_WAVES = 5;
 
 	final MainGameClass game;
-	final MainScreen ms;
 
 	public static int currentWave = 0;
 
@@ -107,9 +107,9 @@ public class GameScreen implements Screen {
 	public static Control control;
 	TiledMapRenderer tiledMapRenderer;
 	public TiledMap map1;
-	public static Cook[] cooks = { new Cook(new Vector2(64 * 5, 64 * 3), 1), new Cook(new Vector2(64 * 5, 64 * 5), 2) };
+	public static Array<Cook> cooks;
 	public static int currentCookIndex = 0;
-	public static Cook cook = cooks[currentCookIndex];
+	public static Cook cook = null;
 	public static CustomerController cc;
 	InputMultiplexer multi;
 	StationManager stationManager = new StationManager();
@@ -118,11 +118,10 @@ public class GameScreen implements Screen {
 	 * Constructor to initialise game screen;
 	 * 
 	 * @param game - Main entry point class
-	 * @param ms   - Title screen class
 	 */
-	public GameScreen(MainGameClass game, MainScreen ms) {
+	public GameScreen(MainGameClass game) {
 		this.game = game;
-		this.ms = ms;
+		this.cooks = new Array<>();
 		this.calculateBoxMaths();
 		control = new Control();
 		// map = new TmxMapLoader().load("map/art_map/prototype_map.tmx");
@@ -130,13 +129,64 @@ public class GameScreen implements Screen {
 		tiledMapRenderer = new OrthogonalTiledMapRenderer(map1);
 		constructCollisionData(map1);
 		cc = new CustomerController(map1);
-		cc.spawnCustomer();
+	}
+
+	@Override
+	public void load() {
+		AssetManager assetManager = MainGameClass.assetManager;
+		assetManager.load("uielements/settings.png", Texture.class);
+		assetManager.load("uielements/background.png", Texture.class);
+		assetManager.load("uielements/exitmenu.png", Texture.class);
+		assetManager.load("uielements/resume.png", Texture.class);
+		assetManager.load("uielements/audio2.png", Texture.class);
+		assetManager.load("uielements/background.png", Texture.class);
+		assetManager.load("uielements/vButton.jpg", Texture.class);
+		assetManager.load("uielements/vControl.png", Texture.class);
+		assetManager.load("entities/cook_walk_1.png", Texture.class);
+		assetManager.load("entities/cook_walk_2.png", Texture.class);
+		assetManager.load("entities/cust3f.png", Texture.class);
+		assetManager.load("entities/cust3b.png", Texture.class);
+		assetManager.load("entities/cust3r.png", Texture.class);
+		assetManager.load("entities/cust3l.png", Texture.class);
+
+		game.audioManager.loadMusic("uielements/GameMusic.ogg", Constants.MUSIC_GROUP);
+	}
+
+	@Override
+	public void unload() {
+		AssetManager assetManager = MainGameClass.assetManager;
+		// Unload the chefs
+		for (Cook cook : cooks) {
+			cook.unload(assetManager);
+		}
+
+		cooks.clear();
+		cook = null;
+
+
+		assetManager.unload("uielements/settings.png");
+		assetManager.unload("uielements/background.png");
+		assetManager.unload("uielements/exitmenu.png");
+		assetManager.unload("uielements/resume.png");
+		assetManager.unload("uielements/audio2.png");
+		assetManager.unload("uielements/background.png");
+		assetManager.unload("uielements/vButton.jpg");
+		assetManager.unload("uielements/vControl.png");
+		assetManager.unload("entities/cook_walk_1.png");
+		assetManager.unload("entities/cook_walk_2.png");
+		assetManager.unload("entities/cust3f.png");
+		assetManager.unload("entities/cust3b.png");
+		assetManager.unload("entities/cust3r.png");
+		assetManager.unload("entities/cust3l.png");
+
+		game.audioManager.unloadMusic("uielements/GameMusic.ogg");
 	}
 
 	/**
 	 * Things that should be done while the game screen is shown
 	 */
 	public void show() {
+		game.gameMusic = MainGameClass.assetManager.get("uielements/GameMusic.ogg");
 		// =======================================START=FRAME=TIMER======================================================
 		startTime = System.currentTimeMillis();
 		timeOnStartup = startTime;
@@ -149,8 +199,8 @@ public class GameScreen implements Screen {
 		volSlide.setPosition(currentGameVolumeSliderX, audioBackgroundy + audioBackgroundHeight / 6
 				+ volSlideBackgr.getHeight() / 2 - volSlide.getHeight() / 2);
 		// ======================================INHERIT=TEXTURES=FROM=MAIN=SCREEN=======================================
-		vButton = ms.vButton;
-		vControl = ms.vControl;
+		vButton = MainGameClass.assetManager.get("uielements/vButton.jpg");
+		vControl = MainGameClass.assetManager.get("uielements/vControl.png");
 		// ======================================START=CAMERAS===========================================================
 		worldCamera = CameraController.getCamera(Constants.WORLD_CAMERA_ID);
 		uiCamera = CameraController.getCamera(Constants.UI_CAMERA_ID);
@@ -165,13 +215,13 @@ public class GameScreen implements Screen {
 		// ======================================CREATE=INPUTMULTIPLEXER=================================================
 		multi = new InputMultiplexer(stage, control);
 		// ======================================LOAD=TEXTURES===========================================================
-		Textures textureInst = Textures.getInstance();
-		MENU = textureInst.loadTextureFile("uielements/settings.png", "settings");
-		ESC = textureInst.loadTextureFile("uielements/background.png", "pauseBackground");
-		BACKTOMAINSCREEN = textureInst.loadTextureFile("uielements/exitmenu.png", "exit");
-		RESUME = textureInst.loadTextureFile("uielements/resume.png", "resume");
-		AUDIO = textureInst.loadTextureFile("uielements/audio2.png", "audio2");
-		audioEdit = textureInst.loadTextureFile("uielements/background.png", "audioEdit");
+		AssetManager assetManager = MainGameClass.assetManager;
+		MENU = assetManager.get("uielements/settings.png");
+		ESC = assetManager.get("uielements/background.png");
+		BACKTOMAINSCREEN = assetManager.get("uielements/exitmenu.png");
+		RESUME = assetManager.get("uielements/resume.png");
+		AUDIO = assetManager.get("uielements/audio2.png");
+		audioEdit = assetManager.get("uielements/background.png");
 		// ======================================CREATE=BUTTONS==========================================================
 		mn = new Button(new TextureRegionDrawable(MENU));
 		ad = new Button(new TextureRegionDrawable(AUDIO));
@@ -220,7 +270,7 @@ public class GameScreen implements Screen {
 
 		selectedPlayerBox.setProjectionMatrix(uiCamera.combined);
 
-		audioSliders = AudioSettings.createAudioSliders(ad.getX()-5,ad.getY()-130,stage2);
+		audioSliders = AudioSettings.createAudioSliders(ad.getX()-5,ad.getY()-130,stage2,MainGameClass.assetManager.get("uielements/vButton.jpg", Texture.class));
 		audioSliders.setWidth(200);
 		audioSliders.setHeight(100);
 
@@ -228,6 +278,12 @@ public class GameScreen implements Screen {
 		musicSlider.setTouchable(Touchable.disabled);
 		gameSlider = audioSliders.getSlider(0);
 		gameSlider.setTouchable(Touchable.disabled);
+
+		cooks.add(new Cook(new Vector2(64 * 5, 64 * 3), 1));
+		cooks.add(new Cook(new Vector2(64 * 5, 64 * 5), 2));
+
+		cook = cooks.first();
+		cc.spawnCustomer();
 
 	}
 
@@ -311,13 +367,13 @@ public class GameScreen implements Screen {
 	private void checkCookSwitch() {
 		if (control.tab && Tutorial.complete) {
 			cook.locked = false;
-			currentCookIndex += currentCookIndex < cooks.length - 1 ? 1 : -currentCookIndex;
-			cook = cooks[currentCookIndex];
+			currentCookIndex += currentCookIndex < cooks.size - 1 ? 1 : -currentCookIndex;
+			cook = cooks.get(currentCookIndex);
 		}
 		if (control.shift && Tutorial.complete) {
 			cook.locked = false;
-			currentCookIndex -= currentCookIndex > 0 ? 1 : -cooks.length + 1;
-			cook = cooks[currentCookIndex];
+			currentCookIndex -= currentCookIndex > 0 ? 1 : -cooks.size + 1;
+			cook = cooks.get(currentCookIndex);
 		}
 
 		control.interact = false;
@@ -336,18 +392,18 @@ public class GameScreen implements Screen {
 		if (currentWaitingCustomer != null && currentWaitingCustomer.waitTime() < MAX_WAIT_TIME) {
 			Menu.RECIPES.get(currentWaitingCustomer.order).displayRecipe(game.batch, new Vector2(64, 256));
 		}
-		for (int i = 0; i < cooks.length; i++) {
+		for (int i = 0; i < cooks.size; i++) {
 			if (i == currentCookIndex) {
 				selectedPlayerBox.setAutoShapeType(true);
 				selectedPlayerBox.begin(ShapeType.Line);
 
 				selectedPlayerBox.setColor(Color.GREEN);
-				selectedPlayerBox.rect(Constants.V_WIDTH - 128 * cooks.length + i * 128,
+				selectedPlayerBox.rect(Constants.V_WIDTH - 128 * cooks.size + i * 128,
 						Constants.V_HEIGHT - 128 - 8, 128, 128);
 				selectedPlayerBox.end();
 			}
 			game.batch.begin();
-			cooks[i].draw_top(game.batch, new Vector2(Constants.V_WIDTH - 128 * cooks.length + i * 128,
+			cooks.get(i).draw_top(game.batch, new Vector2(Constants.V_WIDTH - 128 * cooks.size + i * 128,
 					Constants.V_HEIGHT - 256));
 			game.batch.end();
 		}
@@ -408,8 +464,8 @@ public class GameScreen implements Screen {
 	public void changeScreen(STATE state1) {
 		if (state1 == STATE.main) {
 			game.gameMusic.dispose();
-			game.resetGameScreen();
-			game.setScreen(game.getMainScreen());
+			// game.resetGameScreen();
+			game.screenController.setScreen(Constants.MAIN_SCREEN_ID);
 
 		}
 		if (state1 == STATE.Pause) {
@@ -640,11 +696,11 @@ public class GameScreen implements Screen {
 
 	public void checkGameOver() {
 		if (currentWave == NUMBER_OF_WAVES + 1) {
-			game.getLeaderBoardScreen().addLeaderBoardData("PLAYER1",
-					(int) Math.floor((startTime - timeOnStartup) / 1000f));
-			game.resetGameScreen();
+			//game.getLeaderBoardScreen().addLeaderBoardData("PLAYER1",
+			//		(int) Math.floor((startTime - timeOnStartup) / 1000f));
+			// game.resetGameScreen();
 			this.resetStatic();
-			game.setScreen(game.getLeaderBoardScreen());
+			game.screenController.nextScreen(Constants.LEADERBOARD_SCREEN_ID);
 		}
 	}
 

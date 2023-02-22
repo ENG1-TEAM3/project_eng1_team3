@@ -1,5 +1,6 @@
 package com.undercooked.game.entity;
 
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
@@ -22,6 +23,14 @@ public class Entity {
 		batch.begin();
 		batch.draw(texture, pos.x, pos.y, width, height);
 		batch.end();
+	}
+
+	public void load(AssetManager assetManager) {
+		// Load Texture
+	}
+
+	public void unload(AssetManager assetManager) {
+		// Unload Texture
 	}
 
 }

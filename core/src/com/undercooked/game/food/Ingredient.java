@@ -1,15 +1,14 @@
 package com.undercooked.game.food;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
+import com.undercooked.game.MainGameClass;
 import com.undercooked.game.entity.Entity;
 import com.undercooked.game.screen.GameScreen;
-import com.undercooked.game.textures.Textures;
 
 /**
  * Represents an ingredient.
@@ -56,7 +55,7 @@ public class Ingredient extends Entity {
 		this.width = width;
 		this.height = height;
 		this.name = name;
-		this.texture = Textures.getInstance().loadTexture("items/" + name + ".png", name);
+		this.texture = MainGameClass.assetManager.get("items/" + name + ".png");
 		this.idealSlices = idealSlices;
 		this.idealCookedTime = idealCookedTime;
 
@@ -107,7 +106,7 @@ public class Ingredient extends Entity {
 			drawStatusBar(dT / width, 0, 1);
 		} else {
 			slices++;
-			texture = Textures.getInstance().loadTexture("items/" + name + "_chopped.png", name + "_chopped");
+			texture = MainGameClass.assetManager.get("items/" + name + "_chopped.png");
 			return true;
 		}
 
@@ -140,7 +139,7 @@ public class Ingredient extends Entity {
 				cookedTime += dT;
 			drawStatusBar(cookedTime / idealCookedTime, idealCookedTime * .65f, idealCookedTime * 1.35f);
 			if (cookedTime / idealCookedTime * width > idealCookedTime * width * .65f) {
-				texture = Textures.getInstance().loadTexture("items/" + name + "_cooked.png", name + "_cooked");
+				texture = MainGameClass.assetManager.get("items/" + name + "_cooked.png");
 				status = Status.COOKED;
 			}
 		} else {

@@ -8,7 +8,6 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.undercooked.game.MainGameClass;
-import com.undercooked.game.audio.Audio;
 import com.undercooked.game.entity.Cook;
 import com.undercooked.game.food.Ingredient;
 import com.undercooked.game.screen.GameScreen;
@@ -72,6 +71,10 @@ public class Station {
 		//if (soundPath != null)
 			//interactSound = Audio.getInstance().loadMusic(soundPath, soundPath);
 		this.soundPath = soundPath;
+	}
+
+	public void create() {
+		interactSound = MainGameClass.assetManager.get(soundPath);
 	}
 
 	/**
@@ -158,7 +161,6 @@ public class Station {
 	}
 
 	public void interactSound() {
-		interactSound = Audio.getInstance().loadMusic(soundPath, soundPath + lockedCook.getCookNo(), Constants.GAME_GROUP);
 		if (interactSound != null) {
 			interactSound.play();
 		}
