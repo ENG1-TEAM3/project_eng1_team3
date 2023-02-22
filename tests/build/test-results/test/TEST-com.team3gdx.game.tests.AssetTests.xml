@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.team3gdx.game.tests.AssetTests" tests="7" skipped="0" failures="0" errors="0" timestamp="2023-02-22T10:17:54" hostname="DESKTOP-VH7EMK8" time="0.119">
+  <properties/>
+  <testcase name="testCust1AssetExists" classname="com.team3gdx.game.tests.AssetTests" time="0.017"/>
+  <testcase name="testCust2AssetExists" classname="com.team3gdx.game.tests.AssetTests" time="0.005"/>
+  <testcase name="testCust3AssetExists" classname="com.team3gdx.game.tests.AssetTests" time="0.006"/>
+  <testcase name="testCust4AssetExists" classname="com.team3gdx.game.tests.AssetTests" time="0.005"/>
+  <testcase name="testCust5AssetExists" classname="com.team3gdx.game.tests.AssetTests" time="0.007"/>
+  <testcase name="testChefAssetExists" classname="com.team3gdx.game.tests.AssetTests" time="0.008"/>
+  <testcase name="testBurgerAssetExists" classname="com.team3gdx.game.tests.AssetTests" time="0.002"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
