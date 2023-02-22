@@ -1,6 +1,6 @@
 package com.team3.gdx.tests;
 
-import com.badlogic.gdx;
+import com.badlogic.gdx.Gdx;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
