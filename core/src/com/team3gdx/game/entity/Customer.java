@@ -57,8 +57,10 @@ public class Customer {
 	/**
 	 * Set arrival time as cook has arrived
 	 */
-	public void arrived() {
+	public float arrived() {
+
 		arrivalTime = System.currentTimeMillis();
+		return arrivalTime;
 	}
 
 	/**
