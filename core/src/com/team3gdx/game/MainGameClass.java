@@ -46,7 +46,7 @@ public class MainGameClass extends Game {
 		// ====================================GAME=SCREEN=INITIALISATION================================================
 		mainScreen1 = new MainScreen(this);
 		gameScreen1 = new GameScreen(this, mainScreen1);
-		//leaderBoardScreen1 = new LeaderBoard(this, mainScreen1);
+		leaderBoardScreen1 = new LeaderBoard(this, mainScreen1);
 		this.setScreen(mainScreen1);
 		// ==============================================================================================================
 	}

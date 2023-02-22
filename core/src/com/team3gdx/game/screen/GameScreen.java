@@ -48,6 +48,7 @@ public class GameScreen implements Screen {
 	final MainScreen ms;
 
 	public static int currentWave = 0;
+	public static int reputationPoints = 3;
 
 	Rectangle volSlideBackgr;
 	Rectangle volSlide;
@@ -320,6 +321,7 @@ public class GameScreen implements Screen {
 				cc.spawnCustomer();
 			}
 			currentWave++;
+			reputationPoints--;
 			currentWaitingCustomer = null;
 		}
 	}
@@ -350,9 +352,12 @@ public class GameScreen implements Screen {
 		}
 
 		game.batch.begin();
+		game.font.draw(game.batch, "Time in s:", gameResolutionX / 2f, 19 * gameResolutionY / 20f);
 		game.font.draw(game.batch, Long.toString((startTime - timeOnStartup) / 1000),
 				gameResolutionX / 2f + gameResolutionX / 10f, 19 * gameResolutionY / 20f);
-		game.font.draw(game.batch, "Time in s:", gameResolutionX / 2f, 19 * gameResolutionY / 20f);
+		game.font.draw(game.batch, "Reputation Points:", gameResolutionX / 2f, 18 * gameResolutionY / 20f);
+		game.font.draw(game.batch, Integer.toString((reputationPoints)),
+				gameResolutionX / 2f + gameResolutionX / 10f, 18 * gameResolutionY / 20f);
 		game.batch.end();
 	}
 
@@ -631,7 +636,8 @@ public class GameScreen implements Screen {
 	}
 
 	public void checkGameOver() {
-		if (currentWave == NUMBER_OF_WAVES + 1) {
+		if (reputationPoints == 0
+				|| currentWave == NUMBER_OF_WAVES + 1) {
 			game.getLeaderBoardScreen().addLeaderBoardData("PLAYER1",
 					(int) Math.floor((startTime - timeOnStartup) / 1000f));
 			game.resetGameScreen();
@@ -642,6 +648,7 @@ public class GameScreen implements Screen {
 
 	public void resetStatic() {
 		currentWave = 0;
+		reputationPoints = 3;
 	}
 
 	/**
