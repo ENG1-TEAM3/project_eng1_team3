@@ -7,8 +7,8 @@ dependencies {
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 
 sourceSets.main.java.srcDirs = [ "src/" ]
-sourceSets.main.resources.srcDirs = ["../core/assets"]
-project.ext.assetsDir = new File("../core/assets")
+sourceSets.main.resources.srcDirs = ["../assets"]
+project.ext.assetsDir = new File("../assets")
 
 eclipse.project {
     name = appName + "-tests"
