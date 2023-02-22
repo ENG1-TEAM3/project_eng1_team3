@@ -284,6 +284,7 @@ public class GameScreen implements Screen {
 		game.batch.setProjectionMatrix(worldCamera.combined);
 
 		checkCookSwitch();
+		checkCustomerWaitTime();
 		// =========================================CHECK=GAME=OVER======================================================
 		checkGameOver();
 
@@ -309,6 +310,18 @@ public class GameScreen implements Screen {
 		control.flip = false;
 		control.tab = false;
 		control.shift = false;
+	}
+
+	private void checkCustomerWaitTime() { //Removes a customer if wait time is exceeded
+		if (currentWaitingCustomer != null
+				&& currentWaitingCustomer.waitTime() > MAX_WAIT_TIME ) {
+			cc.delCustomer(currentWaitingCustomer);
+			if (currentWave < NUMBER_OF_WAVES) {
+				cc.spawnCustomer();
+			}
+			currentWave++;
+			currentWaitingCustomer = null;
+		}
 	}
 
 	public static final float MAX_WAIT_TIME = 1000000; //Customer wait time in ms
