@@ -26,5 +26,6 @@ public abstract class Screen implements com.badlogic.gdx.Screen {
 
     public void load() {}
     public void unload() {}
+    public void renderScreen() { }
 
 }

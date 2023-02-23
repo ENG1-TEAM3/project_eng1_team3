@@ -77,8 +77,6 @@ public class AudioSliders {
         // Calculate the height of the sliders.
         float slideHeight = this.slideHeight * slideYRoom;
 
-        System.out.println(slideHeight);
-
         // Finally, update the Sliders
         for (int i = sliders.size-1 ; i >= 0 ; i--) {
             Slider slider = sliders.get(i);

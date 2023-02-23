@@ -3,6 +3,7 @@ package com.undercooked.game.screen;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.undercooked.game.MainGameClass;
+import com.undercooked.game.load.LoadScreen;
 
 public class ScreenController {
 
@@ -16,6 +17,11 @@ public class ScreenController {
         this.loadScreen = new LoadScreen(MainGameClass.assetManager, game);
         this.game = game;
         this.screenStack = new Array<>();
+    }
+
+    private void startLoading(Screen lastScreen, Screen nextScreen) {
+        loadScreen.setScreens(lastScreen, nextScreen);
+        loadScreen.start(game);
     }
 
     public void backScreen() {
@@ -41,8 +47,7 @@ public class ScreenController {
         screen.changeLoaded(false);
 
         // Then open the load screen
-        loadScreen.setScreens(game.getScreen(), screen);
-        game.setScreen(loadScreen);
+        startLoading(game.getScreen(), screen);
 
         // Add it to the screen stack
         screenStack.add(screen);
@@ -64,9 +69,8 @@ public class ScreenController {
         }
         screen.changeLoaded(false);
 
-        // Then open the load screen
-        loadScreen.setScreens(game.getScreen(), screen);
-        game.setScreen(loadScreen);
+        // Then start loading
+        startLoading(game.getScreen(), screen);
 
         // Add it to the screen stack
         screenStack.add(screen);
