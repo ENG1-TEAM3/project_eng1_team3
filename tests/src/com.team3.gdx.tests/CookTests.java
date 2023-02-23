@@ -13,7 +13,7 @@ import com.team3gdx.game.util.Control;
 public class CookTests {
     @Test
     public void testMovement(){
-        Cook cook = new Cook(new Vector2(0, 0), 0);
+        Cook cook = new Cook(new Vector2(0, 0), 1);
 
         Control control = new Control();
         boolean[] bools = {true, false};
