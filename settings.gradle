@@ -1,4 +1,2 @@
-include 'desktop', 'core'
-include 'tests:src'
-findProject(':tests:src')?.name = 'src'
+include 'desktop', 'core', 'tests'
 
