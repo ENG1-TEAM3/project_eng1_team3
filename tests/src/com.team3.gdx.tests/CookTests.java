@@ -2,9 +2,11 @@ package com.team3.gdx.tests;
 
 import com.badlogic.gdx.math.Vector2;
 import com.team3gdx.game.entity.Cook;
+import com.team3gdx.game.util.CollisionTile;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import com.team3gdx.game.util.Control;
@@ -13,10 +15,10 @@ import com.team3gdx.game.util.Control;
 public class CookTests {
     @Test
     public void testMovement(){
-        Cook cook = new Cook(new Vector2(0, 0), 1);
+        Cook cook = new Cook(new Vector2(15, 15), 1);
 
         Control control = new Control();
-        boolean[] bools = {true, false};
+        boolean[] bools = {false, true};
         for (boolean UP : bools){
             for (boolean DOWN : bools){
                 for (boolean LEFT : bools){
@@ -28,20 +30,21 @@ public class CookTests {
 
                         float x = cook.pos.x;
                         float y = cook.pos.y;
-                        cook.update(control, 5f, null);
+                        CollisionTile[][] collisionTiles = new CollisionTile[5][5];
+                        cook.update(control, 5f, collisionTiles);
 
                         if (control.up && !control.down) {
-                            assertTrue(cook.pos.y == y + cook.speed * 5f);
+                            assertEquals(cook.pos.y, y + cook.speed * 5f, 0.0);
                         }
                         else if (control.down && !control.up) {
-                            assertTrue(cook.pos.y == y - cook.speed * 5f);
+                            assertEquals(cook.pos.y, y - cook.speed * 5f, 0.0);
                         }
 
                         if (control.left && !control.right) {
-                            assertTrue(cook.pos.x == x + cook.speed * 5f);
+                            assertEquals(cook.pos.x, x - cook.speed * 5f, 0.0);
                         }
                         else if (control.right && !control.left) {
-                            assertTrue(cook.pos.x == x - cook.speed * 5f);
+                            assertEquals(cook.pos.x, x + cook.speed * 5f, 0.0);
                         }
                     }
                 }
