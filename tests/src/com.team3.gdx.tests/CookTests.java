@@ -64,4 +64,87 @@ public class CookTests {
             }
         }
     }
+
+    @Test
+    public void testPickUp(){
+
+    }
+
+    @Test
+    public void testPlace(){
+
+    }
+
+    private void testCollisionAttempt(Cook cook, Control control, CollisionTile[][] cltiles, String assertMessage){
+        cook.update(control, 1f, cltiles);
+        assertTrue(assertMessage, cook.pos.x == 50 && cook.pos.y == 50);
+        cook.pos.x = 50;
+        cook.pos.y = 50;
+        control.up = false;
+        control.down = false;
+        control.left = false;
+        control.right = false;
+    }
+    @Test
+    public void testCollision(){
+
+
+        Cook cook = new Cook(new Vector2(50, 50), 1);
+        Control control = new Control();
+        CollisionTile[][] cltiles = new CollisionTile[3][3];
+
+        // make all tiles same with and height as cook rectangle to make things easier
+        int x = 22;
+        int y = 65;
+        for(int i = 0; i < cltiles.length; i++){
+            x = 22;
+            for(int j = 0; j < cltiles[i].length; j++){
+                if(!(i == 1 && j == 1)){
+                    cltiles[i][j] = new CollisionTile(x, y, 40, 25);
+                    x += 40;
+                }
+            }
+            y -= 25;
+        }
+
+        // no key pressed
+        cook.update(control, 1f, cltiles);
+        assertTrue("no key pressed", cook.pos.x == 50 && cook.pos.y == 50);
+
+        // up and left
+        control.up = true;
+        control.left = true;
+        testCollisionAttempt(cook, control, cltiles, "up and left pressed");
+
+        // up
+        control.up = true;
+        testCollisionAttempt(cook, control, cltiles, "up pressed");
+
+        // up and right
+        control.up = true;
+        control.right = true;
+        testCollisionAttempt(cook, control, cltiles, "up and right pressed");
+
+        // left
+        control.left = true;
+        testCollisionAttempt(cook, control, cltiles, "left pressed");
+
+        // right
+        control.right = true;
+        testCollisionAttempt(cook, control, cltiles, "right pressed");
+
+        // down and left
+        control.down = true;
+        control.left = true;
+        testCollisionAttempt(cook, control, cltiles, "down and left pressed");
+
+        // down
+        control.down = true;
+        testCollisionAttempt(cook, control, cltiles, "down pressed");
+
+        // down and right
+        control.down = true;
+        control.right = true;
+        testCollisionAttempt(cook, control, cltiles, "down and right pressed");
+    }
 }
