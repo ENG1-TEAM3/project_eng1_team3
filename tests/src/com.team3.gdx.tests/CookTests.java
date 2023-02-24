@@ -34,17 +34,30 @@ public class CookTests {
                         cook.update(control, 5f, collisionTiles);
 
                         if (control.up && !control.down) {
-                            assertEquals(cook.pos.y, y + cook.speed * 5f, 0.0);
+                            assertEquals("up and not down", cook.pos.y, y + cook.speed * 5f, 0.0);
                         }
                         else if (control.down && !control.up) {
-                            assertEquals(cook.pos.y, y - cook.speed * 5f, 0.0);
+                            assertEquals("down and not up", cook.pos.y, y - cook.speed * 5f, 0.0);
                         }
 
                         if (control.left && !control.right) {
-                            assertEquals(cook.pos.x, x - cook.speed * 5f, 0.0);
+                            assertEquals("left and not right", cook.pos.x, x - cook.speed * 5f, 0.0);
                         }
                         else if (control.right && !control.left) {
-                            assertEquals(cook.pos.x, x + cook.speed * 5f, 0.0);
+                            assertEquals("right and not left", cook.pos.x, x + cook.speed * 5f, 0.0);
+                        }
+
+                        if (!control.left && !control.right && !control.up && !control.down){
+                            assertEquals("none pressed x", cook.pos.x, x, 0.0);
+                            assertEquals("none pressed y", cook.pos.y, y, 0.0);
+                        }
+
+                        if (control.left && control.right){
+                            assertEquals("left and right", cook.pos.x, x, 0.0);
+                        }
+
+                        if (control.up && control.down){
+                            assertEquals("up and down", cook.pos.y, y, 0.0);
                         }
                     }
                 }
