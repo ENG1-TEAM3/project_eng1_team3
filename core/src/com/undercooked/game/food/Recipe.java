@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
+import com.undercooked.game.screen.GameScreen;
 
 /**
  * Represents a recipe (combination of ingredients and states).
@@ -58,9 +59,9 @@ public class Recipe extends Ingredient {
 	 * @param cost                   How much the menu item will cost.
 	 */
 	public Recipe(String initialSteps, Ingredient initialIngredient, Map<Ingredient, String> ingredientInstructions,
-			String finalSteps, String name, boolean shouldBeOrdered, Vector2 pos, float width, float height,
-			float cost) {
-		super(pos, width, height, name, 0, 0);
+				  String finalSteps, String name, boolean shouldBeOrdered, Vector2 pos, float width, float height,
+				  float cost, GameScreen game) {
+		super(pos, width, height, name, 0, 0, game);
 		this.initialSteps = initialSteps;
 		this.initialIngredient = initialIngredient;
 		this.ingredientInstructions = ingredientInstructions;

@@ -1,5 +1,6 @@
 package com.undercooked.game.screen;
 
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.undercooked.game.MainGameClass;
@@ -12,9 +13,9 @@ public class ScreenController {
     MainGameClass game;
     Array<Screen> screenStack;
 
-    public ScreenController(MainGameClass game) {
+    public ScreenController(MainGameClass game, AssetManager assetManager) {
         this.screens = new ObjectMap<>();
-        this.loadScreen = new LoadScreen(MainGameClass.assetManager, game);
+        this.loadScreen = new LoadScreen(assetManager, game);
         this.game = game;
         this.screenStack = new Array<>();
     }

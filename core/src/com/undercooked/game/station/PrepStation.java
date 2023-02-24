@@ -14,8 +14,8 @@ public class PrepStation extends Station {
 
 	public float progress = 0;
 
-	public PrepStation(Vector2 pos) {
-		super(pos, 5, false, null, null);
+	public PrepStation(Vector2 pos, GameScreen game) {
+		super(pos, 5, false, null, null, game);
 	}
 
 	/**

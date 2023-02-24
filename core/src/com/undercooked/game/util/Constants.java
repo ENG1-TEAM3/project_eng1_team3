@@ -21,6 +21,9 @@ public class Constants {
     public static final String DATA_FILE = "PiazzaPanic_UnderCooked";
     public static final String MENU_SONG_ID = "musicSong";
     public static final String GAME_SONG_ID = "gameSong";
+    public static final String MENU_TEXTURE_ID = "main";
+    public static final String GAME_TEXTURE_ID = "game";
+    public static final String LEADERBOARD_TEXTURE_ID = "leaderboard";
 
     // Sounds
     public static final String MUSIC_GROUP = "music";

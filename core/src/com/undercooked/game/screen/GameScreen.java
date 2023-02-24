@@ -3,7 +3,6 @@ package com.undercooked.game.screen;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputMultiplexer;
-import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -31,7 +30,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.undercooked.game.MainGameClass;
-import com.undercooked.game.audio.AudioManager;
+import com.undercooked.game.assets.TextureManager;
 import com.undercooked.game.audio.AudioSettings;
 import com.undercooked.game.audio.AudioSliders;
 import com.undercooked.game.audio.Slider;
@@ -39,6 +38,7 @@ import com.undercooked.game.entity.Cook;
 import com.undercooked.game.entity.Customer;
 import com.undercooked.game.entity.CustomerController;
 import com.undercooked.game.entity.Entity;
+import com.undercooked.game.food.Ingredients;
 import com.undercooked.game.food.Menu;
 import com.undercooked.game.station.StationManager;
 import com.undercooked.game.util.CameraController;
@@ -49,8 +49,6 @@ import com.undercooked.game.util.Control;
 public class GameScreen extends Screen {
 
 	public static final int NUMBER_OF_WAVES = 5;
-
-	final MainGameClass game;
 
 	public static int currentWave = 0;
 
@@ -112,7 +110,7 @@ public class GameScreen extends Screen {
 	public static Cook cook = null;
 	public static CustomerController cc;
 	InputMultiplexer multi;
-	StationManager stationManager = new StationManager();
+	StationManager stationManager = new StationManager(this);
 
 	/**
 	 * Constructor to initialise game screen;
@@ -120,7 +118,9 @@ public class GameScreen extends Screen {
 	 * @param game - Main entry point class
 	 */
 	public GameScreen(MainGameClass game) {
-		this.game = game;
+		super(game);
+		Ingredients.setupIngredients(this);
+		Menu.setupRecipes(this);
 		this.cooks = new Array<>();
 		this.calculateBoxMaths();
 		control = new Control();
@@ -128,65 +128,53 @@ public class GameScreen extends Screen {
 		map1 = new TmxMapLoader().load("map/art_map/customertest.tmx");
 		tiledMapRenderer = new OrthogonalTiledMapRenderer(map1);
 		constructCollisionData(map1);
-		cc = new CustomerController(map1);
+		cc = new CustomerController(map1, game.textureManager);
 	}
 
 	@Override
 	public void load() {
-		AssetManager assetManager = MainGameClass.assetManager;
-		assetManager.load("uielements/settings.png", Texture.class);
-		assetManager.load("uielements/background.png", Texture.class);
-		assetManager.load("uielements/exitmenu.png", Texture.class);
-		assetManager.load("uielements/resume.png", Texture.class);
-		assetManager.load("uielements/audio2.png", Texture.class);
-		assetManager.load("uielements/background.png", Texture.class);
-		assetManager.load("uielements/vButton.jpg", Texture.class);
-		assetManager.load("uielements/vControl.png", Texture.class);
-		assetManager.load("entities/cook_walk_1.png", Texture.class);
-		assetManager.load("entities/cook_walk_2.png", Texture.class);
-		assetManager.load("entities/cust3f.png", Texture.class);
-		assetManager.load("entities/cust3b.png", Texture.class);
-		assetManager.load("entities/cust3r.png", Texture.class);
-		assetManager.load("entities/cust3l.png", Texture.class);
+		TextureManager textureManager = game.getTextureManager();
+		textureManager.load(Constants.GAME_TEXTURE_ID, "uielements/settings.png");
+		textureManager.load(Constants.GAME_TEXTURE_ID, "uielements/background.png");
+		textureManager.load(Constants.GAME_TEXTURE_ID, "uielements/exitmenu.png");
+		textureManager.load(Constants.GAME_TEXTURE_ID, "uielements/resume.png");
+		textureManager.load(Constants.GAME_TEXTURE_ID, "uielements/audio2.png");
+		textureManager.load(Constants.GAME_TEXTURE_ID, "uielements/background.png");
+		textureManager.load(Constants.GAME_TEXTURE_ID, "uielements/vButton.jpg");
+		textureManager.load(Constants.GAME_TEXTURE_ID, "uielements/vControl.png");
+		textureManager.load(Constants.GAME_TEXTURE_ID, "entities/cook_walk_1.png");
+		textureManager.load(Constants.GAME_TEXTURE_ID, "entities/cook_walk_2.png");
+		textureManager.load(Constants.GAME_TEXTURE_ID, "entities/cook_walk_hands_1.png");
+		textureManager.load(Constants.GAME_TEXTURE_ID, "entities/cook_walk_hands_2.png");
+		cc.load(Constants.GAME_TEXTURE_ID);
 
-		game.audioManager.loadMusic("uielements/GameMusic.ogg", Constants.MUSIC_GROUP);
+		game.audioManager.loadMusic("audio/music/GameMusic.ogg", Constants.MUSIC_GROUP);
+		game.audioManager.loadMusic("audio/soundFX/cash-register-opening.mp3", Constants.GAME_GROUP);
+		game.audioManager.loadMusic("audio/soundFX/chopping.mp3", Constants.GAME_GROUP);
+		game.audioManager.loadMusic("audio/soundFX/frying.mp3", Constants.GAME_GROUP);
+		game.audioManager.loadMusic("audio/soundFX/money-collect.mp3", Constants.GAME_GROUP);
+		game.audioManager.loadMusic("audio/soundFX/timer-bell-ring.mp3", Constants.GAME_GROUP);
 	}
 
 	@Override
 	public void unload() {
-		AssetManager assetManager = MainGameClass.assetManager;
-		// Unload the chefs
-		for (Cook cook : cooks) {
-			cook.unload(assetManager);
-		}
+		TextureManager textureManager = game.getTextureManager();
 
 		cooks.clear();
 		cook = null;
 
+		textureManager.unload(Constants.GAME_TEXTURE_ID);
 
-		assetManager.unload("uielements/settings.png");
-		assetManager.unload("uielements/background.png");
-		assetManager.unload("uielements/exitmenu.png");
-		assetManager.unload("uielements/resume.png");
-		assetManager.unload("uielements/audio2.png");
-		assetManager.unload("uielements/background.png");
-		assetManager.unload("uielements/vButton.jpg");
-		assetManager.unload("uielements/vControl.png");
-		assetManager.unload("entities/cook_walk_1.png");
-		assetManager.unload("entities/cook_walk_2.png");
-		assetManager.unload("entities/cust3f.png");
-		assetManager.unload("entities/cust3b.png");
-		assetManager.unload("entities/cust3r.png");
-		assetManager.unload("entities/cust3l.png");
-
-		game.audioManager.unloadMusic("uielements/GameMusic.ogg");
+		game.audioManager.unloadMusic("audio/music/GameMusic.ogg");
+		stage.dispose();
+		stage2.dispose();
 	}
 
 	/**
 	 * Things that should be done while the game screen is shown
 	 */
 	public void show() {
-		game.gameMusic = MainGameClass.assetManager.get("uielements/GameMusic.ogg");
+		game.gameMusic = game.audioManager.getMusic("audio/music/GameMusic.ogg");
 		// =======================================START=FRAME=TIMER======================================================
 		startTime = System.currentTimeMillis();
 		timeOnStartup = startTime;
@@ -199,8 +187,8 @@ public class GameScreen extends Screen {
 		volSlide.setPosition(currentGameVolumeSliderX, audioBackgroundy + audioBackgroundHeight / 6
 				+ volSlideBackgr.getHeight() / 2 - volSlide.getHeight() / 2);
 		// ======================================INHERIT=TEXTURES=FROM=MAIN=SCREEN=======================================
-		vButton = MainGameClass.assetManager.get("uielements/vButton.jpg");
-		vControl = MainGameClass.assetManager.get("uielements/vControl.png");
+		vButton = game.getTextureManager().get("uielements/vButton.jpg");
+		vControl = game.getTextureManager().get("uielements/vControl.png");
 		// ======================================START=CAMERAS===========================================================
 		worldCamera = CameraController.getCamera(Constants.WORLD_CAMERA_ID);
 		uiCamera = CameraController.getCamera(Constants.UI_CAMERA_ID);
@@ -215,13 +203,13 @@ public class GameScreen extends Screen {
 		// ======================================CREATE=INPUTMULTIPLEXER=================================================
 		multi = new InputMultiplexer(stage, control);
 		// ======================================LOAD=TEXTURES===========================================================
-		AssetManager assetManager = MainGameClass.assetManager;
-		MENU = assetManager.get("uielements/settings.png");
-		ESC = assetManager.get("uielements/background.png");
-		BACKTOMAINSCREEN = assetManager.get("uielements/exitmenu.png");
-		RESUME = assetManager.get("uielements/resume.png");
-		AUDIO = assetManager.get("uielements/audio2.png");
-		audioEdit = assetManager.get("uielements/background.png");
+		TextureManager textureManager = game.getTextureManager();
+		MENU = textureManager.get("uielements/settings.png");
+		ESC = textureManager.get("uielements/background.png");
+		BACKTOMAINSCREEN = textureManager.get("uielements/exitmenu.png");
+		RESUME = textureManager.get("uielements/resume.png");
+		AUDIO = textureManager.get("uielements/audio2.png");
+		audioEdit = textureManager.get("uielements/background.png");
 		// ======================================CREATE=BUTTONS==========================================================
 		mn = new Button(new TextureRegionDrawable(MENU));
 		ad = new Button(new TextureRegionDrawable(AUDIO));
@@ -270,7 +258,7 @@ public class GameScreen extends Screen {
 
 		selectedPlayerBox.setProjectionMatrix(uiCamera.combined);
 
-		audioSliders = AudioSettings.createAudioSliders(ad.getX()-5,ad.getY()-130,stage2,MainGameClass.assetManager.get("uielements/vButton.jpg", Texture.class));
+		audioSliders = AudioSettings.createAudioSliders(ad.getX()-5,ad.getY()-130,stage2,audioEdit, vButton);
 		audioSliders.setWidth(200);
 		audioSliders.setHeight(100);
 
@@ -279,8 +267,8 @@ public class GameScreen extends Screen {
 		gameSlider = audioSliders.getSlider(0);
 		gameSlider.setTouchable(Touchable.disabled);
 
-		cooks.add(new Cook(new Vector2(64 * 5, 64 * 3), 1));
-		cooks.add(new Cook(new Vector2(64 * 5, 64 * 5), 2));
+		cooks.add(new Cook(new Vector2(64 * 5, 64 * 3), 1, game.getTextureManager()));
+		cooks.add(new Cook(new Vector2(64 * 5, 64 * 5), 2, game.getTextureManager()));
 
 		cook = cooks.first();
 		cc.spawnCustomer();

@@ -4,6 +4,7 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
+import com.undercooked.game.assets.TextureManager;
 
 public class Entity {
 
@@ -25,11 +26,11 @@ public class Entity {
 		batch.end();
 	}
 
-	public void load(AssetManager assetManager) {
+	public void load(TextureManager textureManager) {
 		// Load Texture
 	}
 
-	public void unload(AssetManager assetManager) {
+	public void unload(TextureManager textureManager) {
 		// Unload Texture
 	}
 

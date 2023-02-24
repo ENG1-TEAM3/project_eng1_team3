@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.undercooked.game.MainGameClass;
+import com.undercooked.game.assets.TextureManager;
 
 public class Customer {
 	int targetsquare;
@@ -36,9 +37,9 @@ public class Customer {
 	 * @param tg - target y cell coordinate - not in pixels
 	 * @param custno - customer number - changes texture
 	 */
-	public Customer(int x, int y, int tg, int custno) {
+	public Customer(int x, int y, int tg, int custno, TextureManager textureManager) {
 		targetsquare = tg;
-		AssetManager assetManager = MainGameClass.assetManager;
+		TextureManager assetManager = textureManager;
 		textf = assetManager.get("entities/cust" + custno + "f.png");
 		textb = assetManager.get("entities/cust" + custno + "b.png");
 		textr = assetManager.get("entities/cust" + custno + "r.png");

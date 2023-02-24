@@ -43,15 +43,15 @@ public class AudioSettings {
         }
     };
 
-    public static AudioSliders createAudioSliders(float x, float y, Stage stage, Texture texture) {
-        AudioSliders audioSliders = new AudioSliders(x,y,300,200, texture);
+    public static AudioSliders createAudioSliders(float x, float y, Stage stage, Texture backText, Texture buttonTex) {
+        AudioSliders audioSliders = new AudioSliders(x,y,300,200, backText);
         audioSliders.setSliderWidth(0.18F);
 
-        Slider musicSlider = audioSliders.addSlider(MusicVolListener);
+        Slider musicSlider = audioSliders.addSlider(MusicVolListener, buttonTex);
         musicSlider.addToStage(stage);
         musicSlider.setValue(getMusicVolume());
 
-        Slider gameSlider = audioSliders.addSlider(GameVolListener);
+        Slider gameSlider = audioSliders.addSlider(GameVolListener, buttonTex);
         gameSlider.addToStage(stage);
         gameSlider.setValue(getGameVolume());
 

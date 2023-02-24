@@ -88,17 +88,17 @@ public class AudioSliders {
         }
     }
 
-    public Slider addSlider(Listener<Float> listener, String audioGroup) {
+    public Slider addSlider(Listener<Float> listener, String audioGroup, Texture sliderTexture) {
         Slider newSlider = new Slider(x,y,0.5F,0F,1F,
-                MainGameClass.assetManager.<Texture>get("uielements/vButton.jpg"), audioGroup);
+                sliderTexture, audioGroup);
         newSlider.addListener(listener);
         sliders.add(newSlider);
         update();
         return newSlider;
     }
 
-    public Slider addSlider(Listener<Float> listener) {
-        return addSlider(listener, "default");
+    public Slider addSlider(Listener<Float> listener, Texture sliderTexture) {
+        return addSlider(listener, "default", sliderTexture);
     }
 
     public void removeSliderInd(int index) {

@@ -1,5 +1,6 @@
 package com.undercooked.game.screen;
 
+import java.awt.event.ContainerAdapter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -14,6 +15,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.undercooked.game.MainGameClass;
+import com.undercooked.game.assets.TextureManager;
 import com.undercooked.game.util.CameraController;
 import com.undercooked.game.util.Constants;
 
@@ -21,7 +23,6 @@ import com.undercooked.game.util.Constants;
 //MAKE SURE ALL LINES IN LEADERBOARD FILE ARE x;y OR JUST s
 //NO NEWLINE AT END OF FILE
 public class LeaderBoard extends Screen implements TextInputListener {
-	final MainGameClass game;
 
 	Texture background;
 	Texture line;
@@ -35,7 +36,7 @@ public class LeaderBoard extends Screen implements TextInputListener {
 	 * @param game - Entry point class
 	 */
 	public LeaderBoard(MainGameClass game) {
-		this.game = game;
+		super(game);
 
 		readPlayerData();
 		sortPlayerData();
@@ -88,11 +89,12 @@ public class LeaderBoard extends Screen implements TextInputListener {
 	 * What should be done when screen is shown
 	 */
 	public void show() {
-		game.gameMusic = MainGameClass.assetManager.get("uielements/GameMusic.ogg");
+		TextureManager textureManager = game.getTextureManager();
+		game.gameMusic = game.getAudioManager().getMusic("audio/music/GameMusic.ogg");
 		ScreenUtils.clear(0, 0, 0, 0);
-		background = MainGameClass.assetManager.get("uielements/MainScreenBackground.jpg");
-		leaderboard = MainGameClass.assetManager.get("uielements/LeaderBoard.png");
-		line = MainGameClass.assetManager.get("uielements/line.jpg");
+		background = textureManager.get("uielements/MainScreenBackground.jpg");
+		leaderboard = textureManager.get("uielements/LeaderBoard.png");
+		line = textureManager.get("uielements/line.jpg");
 		camera = CameraController.getCamera(Constants.UI_CAMERA_ID);
 		viewport = CameraController.getViewport(Constants.UI_CAMERA_ID);
 		game.font.getData().setScale((float) 2.5);
@@ -100,20 +102,20 @@ public class LeaderBoard extends Screen implements TextInputListener {
 
 	/** What needs to be loaded when this screen is loaded. */
 	public void load() {
-		MainGameClass.assetManager.load("uielements/MainScreenBackground.jpg", Texture.class);
-		MainGameClass.assetManager.load("uielements/LeaderBoard.png", Texture.class);
-		MainGameClass.assetManager.load("uielements/line.jpg", Texture.class);
+		TextureManager textureManager = game.getTextureManager();
+		textureManager.load(Constants.LEADERBOARD_TEXTURE_ID, "uielements/MainScreenBackground.jpg");
+		textureManager.load(Constants.LEADERBOARD_TEXTURE_ID, "uielements/LeaderBoard.png");
+		textureManager.load(Constants.LEADERBOARD_TEXTURE_ID, "uielements/line.jpg");
 
-		game.audioManager.loadMusic("uielements/GameMusic.ogg", Constants.MUSIC_GROUP);
+		game.audioManager.loadMusic("audio/music/GameMusic.ogg", Constants.MUSIC_GROUP);
 	}
 
 	@Override
 	public void unload() {
-		MainGameClass.assetManager.unload("uielements/MainScreenBackground.jpg");
-		MainGameClass.assetManager.unload("uielements/LeaderBoard.png");
-		MainGameClass.assetManager.unload("uielements/line.jpg");
+		game.getTextureManager().unload(Constants.LEADERBOARD_TEXTURE_ID);
+		game.getTextureManager().unload(Constants.GAME_TEXTURE_ID);
 
-		game.audioManager.unloadMusic("uielements/GameMusic.ogg");
+		game.audioManager.unloadMusic("audio/music/GameMusic.ogg");
 	}
 
 	/**

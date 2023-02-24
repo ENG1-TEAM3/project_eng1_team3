@@ -2,6 +2,7 @@ package com.undercooked.game.station;
 
 import java.util.Random;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.math.Vector2;
 import com.undercooked.game.entity.Customer;
 import com.undercooked.game.food.Ingredient;
@@ -25,8 +26,8 @@ public class ServingStation extends Station {
 		}
 	};
 
-	public ServingStation(Vector2 pos) {
-		super(pos, 1, false, allowedIngredients, "audio/soundFX/money-collect.mp3");
+	public ServingStation(Vector2 pos, GameScreen game) {
+		super(pos, 1, false, allowedIngredients, "audio/soundFX/money-collect.mp3", game);
 	}
 
 	/**

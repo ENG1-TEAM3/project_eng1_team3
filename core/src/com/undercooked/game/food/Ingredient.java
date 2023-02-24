@@ -50,12 +50,12 @@ public class Ingredient extends Entity {
 	 * @param idealSlices     The ideal number of times to slice the ingredient.
 	 * @param idealCookedTime The ideal length of time to cook the ingredient.
 	 */
-	public Ingredient(Vector2 pos, float width, float height, String name, int idealSlices, float idealCookedTime) {
+	public Ingredient(Vector2 pos, float width, float height, String name, int idealSlices, float idealCookedTime, GameScreen game) {
 		this.pos = pos;
 		this.width = width;
 		this.height = height;
 		this.name = name;
-		this.texture = MainGameClass.assetManager.get("items/" + name + ".png");
+		this.texture = game.getTextureManager().get("items/" + name + ".png");
 		this.idealSlices = idealSlices;
 		this.idealCookedTime = idealCookedTime;
 
@@ -106,7 +106,7 @@ public class Ingredient extends Entity {
 			drawStatusBar(dT / width, 0, 1);
 		} else {
 			slices++;
-			texture = MainGameClass.assetManager.get("items/" + name + "_chopped.png");
+			// texture = MainGameClass.assetManager.get("items/" + name + "_chopped.png");
 			return true;
 		}
 
@@ -139,7 +139,7 @@ public class Ingredient extends Entity {
 				cookedTime += dT;
 			drawStatusBar(cookedTime / idealCookedTime, idealCookedTime * .65f, idealCookedTime * 1.35f);
 			if (cookedTime / idealCookedTime * width > idealCookedTime * width * .65f) {
-				texture = MainGameClass.assetManager.get("items/" + name + "_cooked.png");
+				// texture = MainGameClass.assetManager.get("items/" + name + "_cooked.png");
 				status = Status.COOKED;
 			}
 		} else {

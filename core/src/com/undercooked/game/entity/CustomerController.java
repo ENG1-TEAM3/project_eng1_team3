@@ -16,11 +16,14 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 import com.badlogic.gdx.math.Vector2;
 import com.undercooked.game.MainGameClass;
+import com.undercooked.game.assets.TextureManager;
+import com.undercooked.game.util.Constants;
 
 public class CustomerController {
 	int lockout;
 	int amountActiveCustomers;
 	ArrayList<ArrayList<Integer>> customerCells;
+	TextureManager textureManager;
 	Customer[] customers = new Customer[5];
 	Customer[] leavingcustomers = new Customer[5];
 	TiledMap gameMap;
@@ -28,18 +31,23 @@ public class CustomerController {
 	int bottom;
 	int xCoordinate;
 
-	public CustomerController(TiledMap map) {
+	public CustomerController(TiledMap map, TextureManager textureManager) {
 		this.gameMap = map;
+		this.textureManager = textureManager;
 		computeCustomerZone(gameMap);
 		amountActiveCustomers = 0;
 		lockout = 0;
 	}
 
-	public void load() {
-
+	public void load(String textureGroup) {
+		// Load all the customer sprites
+		textureManager.load(textureGroup, "entities/cust3f.png");
+		textureManager.load(textureGroup, "entities/cust3b.png");
+		textureManager.load(textureGroup, "entities/cust3r.png");
+		textureManager.load(textureGroup, "entities/cust3l.png");
 	}
 
-	public void unload() {
+	public void unload(String textureGroup) {
 
 	}
 
@@ -125,7 +133,7 @@ public class CustomerController {
 	public void spawnCustomer() {
 		for (int i = 0; i < this.customers.length; i++) {
 			if (customers[i] == null) {
-				customers[i] = new Customer(this.xCoordinate, this.bottom, this.top - i, 3);
+				customers[i] = new Customer(this.xCoordinate, this.bottom, this.top - i, 3, textureManager);
 				amountActiveCustomers += 1;
 				break;
 			}

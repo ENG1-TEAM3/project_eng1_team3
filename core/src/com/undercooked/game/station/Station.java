@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.undercooked.game.MainGameClass;
+import com.undercooked.game.assets.AudioManager;
 import com.undercooked.game.entity.Cook;
 import com.undercooked.game.food.Ingredient;
 import com.undercooked.game.screen.GameScreen;
@@ -19,7 +20,7 @@ import com.undercooked.game.util.Constants;
  */
 public class Station {
 
-	private Music interactSound = Gdx.audio.newMusic(Gdx.files.internal("audio/soundFX/chopping.mp3"));;
+	private Music interactSound;// = Gdx.audio.newMusic(Gdx.files.internal("audio/soundFX/chopping.mp3"));
 
 	/**
 	 * A list of allowed ingredients in the station's slots.
@@ -51,6 +52,7 @@ public class Station {
 	public Cook lockedCook;
 
 	private String soundPath;
+	private AudioManager audioManager;
 
 	/**
 	 * 
@@ -62,7 +64,7 @@ public class Station {
 	 *                           slots.
 	 */
 	public Station(Vector2 pos, int numberOfSlots, boolean infinite, Ingredient[] allowedIngredients,
-			String soundPath) {
+				   String soundPath, GameScreen game) {
 		this.pos = pos;
 		this.numberOfSlots = numberOfSlots;
 		this.infinite = infinite;
@@ -71,10 +73,12 @@ public class Station {
 		//if (soundPath != null)
 			//interactSound = Audio.getInstance().loadMusic(soundPath, soundPath);
 		this.soundPath = soundPath;
+		this.audioManager = game.getAudioManager();
+		this.interactSound = audioManager.getMusic(soundPath);
 	}
 
 	public void create() {
-		interactSound = MainGameClass.assetManager.get(soundPath);
+		interactSound = audioManager.getMusic(soundPath);
 	}
 
 	/**

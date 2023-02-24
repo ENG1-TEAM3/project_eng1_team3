@@ -1,9 +1,10 @@
-package com.undercooked.game.audio;
+package com.undercooked.game.assets;
 
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.undercooked.game.MainGameClass;
 import com.undercooked.game.util.Constants;
@@ -43,6 +44,8 @@ public class AudioManager {
     }
     ObjectMap<String, VolumeGroup> volumes;
     AssetManager assetManager;
+    String DEFAULT_MUSIC = "audio/music/GameMusic.mp3";
+    String DEFAULT_SOUND = "uielements/testsound.mp3";
 
     /**
      * Constructor to set up the Maps for music, sound and volumes.
@@ -50,13 +53,47 @@ public class AudioManager {
     public AudioManager(AssetManager assetManager) {
         volumes = new ObjectMap<>();
         this.assetManager = assetManager;
+        load();
+    }
+
+    /**
+     * Loads the default assets for the music and sound for if they
+     * haven't been loaded, to prevent any crashes.
+     */
+    private void load() {
+        try {
+            // Load directly into the assetManager so that they can't be
+            // unloaded using this class.
+            assetManager.load(DEFAULT_MUSIC, Music.class);
+            assetManager.load(DEFAULT_SOUND, Sound.class);
+        } catch (GdxRuntimeException e) {
+            // Of course, make sure it actually doesn't crash if they can't load
+            System.out.println("Couldn't load default music.");
+            e.printStackTrace();
+        }
     }
 
     public boolean assetLoaded(String path) {
         return assetManager.isLoaded(path);
     }
 
-    public void loadMusic(String path, String audioGroup) {
+    public Music getMusic(String path) {
+        // Try to get the music
+        if (assetManager.isLoaded(path)) {
+            return assetManager.get(path);
+        } else {
+            System.out.println(path + " not loaded.");
+            // If music is not loaded, then load the missing music
+            // But return null if that isn't loaded
+            if (!assetManager.isLoaded(DEFAULT_MUSIC)) {
+                System.out.println("Default music not loaded.");
+                return null;
+            }
+            return assetManager.get(DEFAULT_MUSIC);
+        }
+    }
+
+    public boolean loadMusic(String path, String audioGroup) {
         /**
          * TEMPORARY CODE
          * Should instead make it put the file to load, and then add it
@@ -65,59 +102,72 @@ public class AudioManager {
          * It should then update all the audio sounds by looping through
          * the Maps in another function AFTER everything is loaded.
          * */
-        assetManager.load(path, Music.class);
+        try {
+            assetManager.load(path, Music.class);
+        } catch (GdxRuntimeException e) {
+            e.printStackTrace();
+            // If it couldn't load, then return.
+            return false;
+        }
         // Check if the audioGroup doesn't have a volume yet
-        if (!volumes.containsKey("music/" + audioGroup)) {
+        if (!volumes.containsKey(audioGroup)) {
             // If it doesn't, set it to the default
-            volumes.put("music/" + audioGroup, new VolumeGroup(Constants.DEFAULT_MUSIC));
+            volumes.put(audioGroup, new VolumeGroup(Constants.DEFAULT_MUSIC));
         }
         // Get the VolumeGroup
-        VolumeGroup thisGroup = volumes.get("music/" + audioGroup);
+        VolumeGroup thisGroup = volumes.get(audioGroup);
         // Add this path to it
         thisGroup.addPath(path);
+        return true;
     }
 
     public void unloadMusic(String path) {
-        // Go through all the volumeGroups and remove the path
-        for (VolumeGroup vGroup : volumes.values()) {
-            vGroup.removePath(path);
+        // Only go through the unload process if it's actually loaded
+        if (assetManager.isLoaded(path)) {
+            // Go through all the volumeGroups and remove the path
+            for (VolumeGroup vGroup : volumes.values()) {
+                vGroup.removePath(path);
+            }
+            // Now unload the path
+            assetManager.unload(path);
         }
-        // Now unload the path
-        assetManager.unload(path);
     }
 
-    public Sound loadSound(String path, String audioGroup) {
-        /**
-         * TEMPORARY CODE
-         * Should instead make it put the file to load, and then add it
-         * to the volumes.
-         *
-         * It should then update all the audio sounds by looping through
-         * the Maps in another function AFTER everything is loaded.
-         * */
-        // If the music already exists, just load that.
-        if (assetManager.isLoaded(path)) {
+    public Sound getSound(String path) {
+        // Try to get the music
+        try {
             return assetManager.get(path);
+        } catch (GdxRuntimeException e) {
+            // If sound is not loaded, then load the missing music
+            // But return null if that isn't loaded
+            if (!assetManager.isLoaded(DEFAULT_SOUND)) {
+                System.out.println();
+                return null;
+            }
+            return assetManager.get(DEFAULT_SOUND);
         }
-        assetManager.load(path, Sound.class);
-        // Load the asset by updating it the same frame.
-        assetManager.update();
-        // Get the asset
-        Sound thisSound = assetManager.get(path, Sound.class);
+    }
+
+    public boolean loadSound(String path, String audioGroup) {
+        // Try to load the sound
+        try {
+            assetManager.load(path, Sound.class);
+        } catch (GdxRuntimeException e) {
+            System.out.println(e);
+            // Return false if it can't
+            return false;
+        }
         // Check if the audioGroup doesn't have a volume yet
-        if (!volumes.containsKey("sound/" + audioGroup)) {
+        if (!volumes.containsKey(audioGroup)) {
             // If it doesn't, set it to the default
-            volumes.put("sound/" + audioGroup, new VolumeGroup(Constants.DEFAULT_MUSIC));
+            volumes.put(audioGroup, new VolumeGroup(Constants.DEFAULT_MUSIC));
         }
         // Get the VolumeGroup
-        VolumeGroup thisGroup = volumes.get("sound/" + audioGroup);
+        VolumeGroup thisGroup = volumes.get(audioGroup);
         // Add this path to it
         thisGroup.addPath(path);
-        // Set the music's volume
-        // thisSound.setVolume(volumes.get(audioGroup).volume);
-        // Update the volume for that audioGroup
-        // updateVolume("music/" + audioGroup)
-        return thisSound;
+        // Return true as it has been loaded.
+        return true;
     }
 
     public void updateMusicVolumes(String audioGroup) {
@@ -129,32 +179,32 @@ public class AudioManager {
         for (String path : vGroup.paths) {
             // Loop through the paths, get the music and update
             // their volumes.
-            Music thisMusic = MainGameClass.assetManager.get(path);
+            Music thisMusic = assetManager.get(path);
             thisMusic.setVolume(vGroup.volume);
         }
     }
 
     public void setMusicVolume(float volume, String audioGroup) {
         // Check if the VolumeGroup exists
-        if (!volumes.containsKey("music/" + audioGroup)) {
+        if (!volumes.containsKey(audioGroup)) {
             // If it doesn't, then add it
-            volumes.put("music/" + audioGroup, new VolumeGroup(volume));
+            volumes.put(audioGroup, new VolumeGroup(volume));
             return;
         }
         // If it does, then set it to the volume input
-        volumes.get("music/" + audioGroup).volume = volume;
-        updateMusicVolumes("music/" + audioGroup);
+        volumes.get(audioGroup).volume = volume;
+        updateMusicVolumes(audioGroup);
     }
 
     public void setSoundVolume(float volume, String audioGroup) {
         // Check if the VolumeGroup exists
-        if (!volumes.containsKey("sound/" + audioGroup)) {
+        if (!volumes.containsKey(audioGroup)) {
             // If it doesn't, then add it
-            volumes.put("sound/" + audioGroup, new VolumeGroup(volume));
+            volumes.put(audioGroup, new VolumeGroup(volume));
             return;
         }
         // If it does, then set it to the volume input
-        volumes.get("sound/" + audioGroup).volume = volume;
+        volumes.get(audioGroup).volume = volume;
         // Update the volume for that audioGroup
         // updateVolume("sound/" + audioGroup)
     }

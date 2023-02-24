@@ -1,5 +1,10 @@
 package com.undercooked.game.screen;
 
+import com.badlogic.gdx.utils.ObjectMap;
+import com.undercooked.game.MainGameClass;
+import com.undercooked.game.assets.AudioManager;
+import com.undercooked.game.assets.TextureManager;
+
 public abstract class Screen implements com.badlogic.gdx.Screen {
 
     /**
@@ -7,6 +12,11 @@ public abstract class Screen implements com.badlogic.gdx.Screen {
      * multiple times in the ScreenController Stack.
      */
     private int loaded = 0;
+    protected final MainGameClass game;
+
+    protected Screen(MainGameClass game) {
+        this.game = game;
+    }
 
     public int getLoaded() {
         return loaded;
@@ -28,4 +38,11 @@ public abstract class Screen implements com.badlogic.gdx.Screen {
     public void unload() {}
     public void renderScreen() { }
 
+    public AudioManager getAudioManager() {
+        return game.getAudioManager();
+    }
+
+    public TextureManager getTextureManager() {
+        return game.getTextureManager();
+    }
 }

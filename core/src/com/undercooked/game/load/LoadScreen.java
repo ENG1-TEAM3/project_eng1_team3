@@ -1,12 +1,10 @@
 package com.undercooked.game.load;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.utils.ScreenUtils;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.undercooked.game.MainGameClass;
@@ -25,6 +23,7 @@ public class LoadScreen extends Screen {
     long lastLoad;
 
     public LoadScreen(AssetManager assetManager, MainGameClass game) {
+        super(game);
         this.assetManager = assetManager;
         this.game = game;
         this.camera = CameraController.getCamera(Constants.UI_CAMERA_ID);
@@ -50,7 +49,14 @@ public class LoadScreen extends Screen {
 
         // Update the AssetManager for a short bit before moving on
         while (TimeUtils.timeSinceMillis(lastLoad) <= 100
-                && !assetManager.update()) { }
+                && !assetManager.isFinished()) {
+            // Try to load, but don't crash if it fails
+            try {
+                assetManager.update();
+            } catch (GdxRuntimeException e) {
+                System.out.println(e);
+            }
+        }
 
         lastLoad = TimeUtils.millis();
 

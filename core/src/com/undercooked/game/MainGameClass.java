@@ -8,7 +8,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.undercooked.game.audio.AudioManager;
+import com.undercooked.game.assets.AudioManager;
+import com.undercooked.game.assets.TextureManager;
 import com.undercooked.game.audio.AudioSettings;
 import com.undercooked.game.screen.*;
 import com.undercooked.game.util.CameraController;
@@ -23,15 +24,18 @@ public class MainGameClass extends Game {
 	public final ScreenController screenController;
 	public static SpriteBatch batch;
 	public static ShapeRenderer shapeRenderer;
-	public static final AssetManager assetManager = new AssetManager();
+	private final AssetManager assetManager;
 	public final AudioManager audioManager;
+	public final TextureManager textureManager;
 	/**
 	 * Constructor for the Game.
 	 */
 	public MainGameClass() {
 		AudioSettings.game = this;
+		assetManager = new AssetManager();
 		audioManager = new AudioManager(assetManager);
-		screenController = new ScreenController(this);
+		textureManager = new TextureManager(assetManager);
+		screenController = new ScreenController(this, assetManager);
 	}
 
 	/**
@@ -44,6 +48,9 @@ public class MainGameClass extends Game {
 
 	@Override
 	public void create() {
+
+		// Load the default assets
+		assetManager.finishLoading();
 
 		// Sprite Batch
 		batch = new SpriteBatch();
@@ -90,6 +97,9 @@ public class MainGameClass extends Game {
 
 	public AudioManager getAudioManager() {
 		return audioManager;
+	}
+	public TextureManager getTextureManager() {
+		return textureManager;
 	}
 
 	public static SpriteBatch getSpriteBatch() {

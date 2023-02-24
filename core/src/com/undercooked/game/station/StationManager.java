@@ -6,6 +6,8 @@ import java.util.Map;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
+import com.undercooked.game.MainGameClass;
+import com.undercooked.game.assets.AudioManager;
 import com.undercooked.game.food.Ingredient;
 import com.undercooked.game.food.Ingredients;
 import com.undercooked.game.screen.GameScreen;
@@ -23,9 +25,14 @@ public class StationManager {
 	/**
 	 * A Map representing every station and its (x, y) coordinates.
 	 */
-	public static Map<Vector2, Station> stations = new HashMap<Vector2, Station>();
+	public static Map<Vector2, Station> stations = new HashMap<>();
 
 	SpriteBatch batch;
+	GameScreen game;
+
+	public StationManager(GameScreen game) {
+		this.game = game;
+	}
 
 	/**
 	 * Checks every station for ingredients and updates them accordingly.
@@ -89,13 +96,13 @@ public class StationManager {
 			takeIngredientStation(pos, Ingredients.onion);
 			break;
 		case "Frying":
-			checkStationExists(pos, new FryingStation(pos));
+			checkStationExists(pos, new FryingStation(pos, game));
 			((CookingStation) stations.get(pos)).checkCookingStation(batch);
 			((CookingStation) stations.get(pos)).lockCook();
 			break;
 		case "Prep":
 			if (!stations.containsKey(pos)) {
-				stations.put(pos, new PrepStation(pos));
+				stations.put(pos, new PrepStation(pos, game));
 			}
 
 			placeIngredientStation(pos);
@@ -105,7 +112,7 @@ public class StationManager {
 			break;
 		case "Chopping":
 			if (!stations.containsKey(pos)) {
-				stations.put(pos, new CuttingStation(pos, 1));
+				stations.put(pos, new CuttingStation(pos, 1, game));
 			}
 
 			placeIngredientStation(pos);
@@ -114,13 +121,13 @@ public class StationManager {
 
 			break;
 		case "Baking":
-			checkStationExists(pos, new BakingStation(pos));
+			checkStationExists(pos, new BakingStation(pos, game));
 			((CookingStation) stations.get(pos)).checkCookingStation(batch);
 			((CookingStation) stations.get(pos)).lockCook();
 			break;
 		case "Service":
 			if (!stations.containsKey(pos)) {
-				stations.put(pos, new ServingStation(pos));
+				stations.put(pos, new ServingStation(pos, game));
 			}
 
 			((ServingStation) stations.get(pos)).serveCustomer();
@@ -166,7 +173,7 @@ public class StationManager {
 	 * @param pos The position to lookup the station.
 	 */
 	private void placeIngredientStation(Vector2 pos) {
-		checkStationExists(pos, new Station(pos, 4, false, null, null));
+		checkStationExists(pos, new Station(pos, 4, false, null, null, game));
 		stations.get(pos).drawTakeText(batch);
 		stations.get(pos).drawDropText(batch);
 		if (GameScreen.control.interact) {
@@ -190,7 +197,7 @@ public class StationManager {
 	 * @param ingredient The ingredient that the station holds.
 	 */
 	private void takeIngredientStation(Vector2 pos, Ingredient ingredient) {
-		checkStationExists(pos, new IngredientStation(pos, ingredient));
+		checkStationExists(pos, new IngredientStation(pos, ingredient, game));
 		stations.get(pos).drawTakeText(batch);
 
 		if (GameScreen.control.interact) {

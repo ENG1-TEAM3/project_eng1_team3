@@ -11,6 +11,7 @@ import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.undercooked.game.MainGameClass;
+import com.undercooked.game.assets.TextureManager;
 import com.undercooked.game.food.Ingredient;
 import com.undercooked.game.util.CollisionTile;
 import com.undercooked.game.util.Control;
@@ -24,6 +25,7 @@ public class Cook extends Entity {
 	private int cookno;
 
 	private Texture walkSheet;
+	private TextureManager textureManager;
 	private Animation<TextureRegion> walkAnimation;
 	private TextureRegion[][] spriteSheet;
 	private TextureRegion[][] currentFrame;
@@ -39,7 +41,7 @@ public class Cook extends Entity {
 	 * @param pos - x y position vector in pixels
 	 * @param cooknum - cook number, changes texture
 	 */
-	public Cook(Vector2 pos, int cooknum) {
+	public Cook(Vector2 pos, int cooknum, TextureManager textureManager) {
 		this.pos = pos;
 		this.cookno = cooknum;
 
@@ -48,7 +50,9 @@ public class Cook extends Entity {
 		speed = 0.25f;
 		direction = new Vector2(0, -1);
 
-		setWalkTexture("entities/cook_walk_" + String.valueOf(cookno) + ".png");
+		this.textureManager = textureManager;
+
+		setWalkTexture("entities/cook_walk_" + cookno + ".png");
 	}
 
 	/**
@@ -167,7 +171,7 @@ public class Cook extends Entity {
 	 * @param path - Filepath to texture
 	 */
 	private void setWalkTexture(String path) {
-		walkSheet = MainGameClass.assetManager.get(path);
+		walkSheet = textureManager.get(path);
 		spriteSheet = TextureRegion.split(walkSheet, walkSheet.getWidth() / FRAME_COLS,
 				walkSheet.getHeight() / FRAME_ROWS);
 		walkFrames = new TextureRegion[FRAME_ROWS];
