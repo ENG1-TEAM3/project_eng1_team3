@@ -107,5 +107,15 @@ public class AssetTests {
 
     }
 
+    @Test
+    public void testLeaderboardData(){
+
+        assertTrue("playerData.txt in leaderboarddata", Gdx.files.internal("leaderboarddata/playerData.txt").exists());
+
+    }
+
+
+
+
 
 }
