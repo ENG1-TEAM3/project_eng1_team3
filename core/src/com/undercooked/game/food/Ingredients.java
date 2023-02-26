@@ -9,7 +9,6 @@ import com.undercooked.game.util.Constants;
 
 /**
  * All available ingredient.
- * 
  */
 public class Ingredients {
 

@@ -4,13 +4,16 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputProcessor;
 
-public class Control extends InputAdapter implements InputProcessor {
+// TODO: Make it so that there's an array containing all the inputs currently being pressed.
 
-	public boolean up, down, left, right;
-	public boolean del;
 
-	public boolean interact, drop, flip;
-	public boolean tab, shift;
+public class Control extends InputAdapter {
+
+	public static boolean up, down, left, right;
+	public static boolean del;
+
+	public static boolean interact, drop, flip;
+	public static boolean tab, shift;
 
 	@Override
 	public boolean keyDown(int keyCode) {
@@ -121,8 +124,8 @@ public class Control extends InputAdapter implements InputProcessor {
 		return false;
 	}
 
-	public boolean scrolled(int amount) {
-		return false;
-	}
+	// public boolean scrolled(int amount) {
+	// 	return false;
+	// }
 
 }

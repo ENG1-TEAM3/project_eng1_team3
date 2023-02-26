@@ -35,7 +35,7 @@ public class ServingStation extends Station {
 	 * serving station contains it.
 	 */
 	public void serveCustomer() {
-		Customer waitingCustomer = GameScreen.cc.isCustomerAtPos(new Vector2(pos.x - 1, pos.y));
+		Customer waitingCustomer = GameScreen.customerController.isCustomerAtPos(new Vector2(pos.x - 1, pos.y));
 		if (waitingCustomer != null && waitingCustomer.locked) {
 			if (GameScreen.currentWaitingCustomer == null) {
 				waitingCustomer.order = possibleOrders[new Random().nextInt(possibleOrders.length)];
@@ -45,9 +45,9 @@ public class ServingStation extends Station {
 			if (waitingCustomer == GameScreen.currentWaitingCustomer && !slots.empty()
 					&& slots.peek().equals(Menu.RECIPES.get(waitingCustomer.order))) {
 				slots.pop();
-				GameScreen.cc.delCustomer(waitingCustomer);
+				GameScreen.customerController.delCustomer(waitingCustomer);
 				if (GameScreen.currentWave < GameScreen.NUMBER_OF_WAVES){
-					GameScreen.cc.spawnCustomer();
+					GameScreen.customerController.spawnCustomer();
 				}
 				GameScreen.currentWave++;
 				waitingCustomer.locked = false;

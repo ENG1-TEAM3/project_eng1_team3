@@ -12,7 +12,7 @@ import com.undercooked.game.screen.GameScreen;
 
 /**
  * Represents an ingredient.
- * 
+ *
  */
 public class Ingredient extends Entity {
 
@@ -42,7 +42,7 @@ public class Ingredient extends Entity {
 
 	/**
 	 * Sets the appropriate properties.
-	 * 
+	 *
 	 * @param pos             The (x, y) coordinates of the ingredient.
 	 * @param width           The ingredient's texture width.
 	 * @param height          The ingredient's texture height.
@@ -63,7 +63,7 @@ public class Ingredient extends Entity {
 
 	/**
 	 * Creates a new instance with identical properties.
-	 * 
+	 *
 	 * @param ingredient The ingredient to clone.
 	 */
 	public Ingredient(Ingredient ingredient) {
@@ -82,7 +82,7 @@ public class Ingredient extends Entity {
 
 	/**
 	 * Changes the {@link this#flipped} to true if possible.
-	 * 
+	 *
 	 * @return A boolean representing if the ingredient was successfully flipped.
 	 */
 	public boolean flip() {
@@ -93,7 +93,7 @@ public class Ingredient extends Entity {
 
 	/**
 	 * Begin process of slicing ingredient and show status.
-	 * 
+	 *
 	 * @param batch {@link SpriteBatch} to render texture and status.
 	 * @param dT    The amount of time to increment by when slicing.
 	 * @return A boolean representing if a complete slice has occurred.
@@ -122,7 +122,7 @@ public class Ingredient extends Entity {
 
 	/**
 	 * Begin process of cooking ingredient and show status.
-	 * 
+	 *
 	 * @param dT    The amount of time to increment {@link this#cookedTime} by.
 	 * @param batch {@link SpriteBatch} to render texture and status.
 	 * @return A double representing the current {@link this#cookedTime}.
@@ -153,7 +153,7 @@ public class Ingredient extends Entity {
 
 	/**
 	 * Draw a status bar.
-	 * 
+	 *
 	 * @param percentage The current progress of the status bar.
 	 * @param optimumLower    The optimal status to reach (shown by a black bar).
 	 * @param optimumUpper
