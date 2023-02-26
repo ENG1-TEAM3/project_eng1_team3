@@ -3,12 +3,16 @@ package com.undercooked.game;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.undercooked.game.assets.AudioManager;
+import com.undercooked.game.assets.MapManager;
 import com.undercooked.game.assets.TextureManager;
 import com.undercooked.game.audio.AudioSettings;
 import com.undercooked.game.screen.*;
@@ -27,15 +31,19 @@ public class MainGameClass extends Game {
 	private final AssetManager assetManager;
 	public final AudioManager audioManager;
 	public final TextureManager textureManager;
+	public final MapManager mapManager;
 	/**
 	 * Constructor for the Game.
 	 */
 	public MainGameClass() {
 		AudioSettings.game = this;
 		assetManager = new AssetManager();
+		assetManager.setLoader(TiledMap.class, new TmxMapLoader(new InternalFileHandleResolver()));
 		audioManager = new AudioManager(assetManager);
 		textureManager = new TextureManager(assetManager);
+		mapManager = new MapManager(assetManager);
 		screenController = new ScreenController(this, assetManager);
+		load();
 	}
 
 	/**
@@ -52,16 +60,17 @@ public class MainGameClass extends Game {
 		// Load the default assets
 		assetManager.finishLoading();
 
-		// Sprite Batch
+		// Renderers
 		batch = new SpriteBatch();
 		shapeRenderer = new ShapeRenderer();
+
 		shapeRenderer.setAutoShapeType(true);
 
 		// =============MUSIC=INITIALISATION===========================
 		musicVolumeScale = 0.4f;
 		gameVolumeScale = 0.4f;
-		AudioSettings.setMusicVolume(Constants.DEFAULT_MUSIC, Constants.MUSIC_GROUP);
-		AudioSettings.setMusicVolume(Constants.DEFAULT_SOUND, Constants.GAME_GROUP);
+		AudioSettings.setMusicVolume(Constants.DEFAULT_MUSIC_VOLUME, Constants.MUSIC_GROUP);
+		AudioSettings.setMusicVolume(Constants.DEFAULT_SOUND_VOLUME, Constants.GAME_GROUP);
 
 		// Camera Initialisation
 		CameraController.getCamera(Constants.WORLD_CAMERA_ID);
@@ -79,6 +88,7 @@ public class MainGameClass extends Game {
 		screenController.addScreen(new MainScreen(this), Constants.MAIN_SCREEN_ID);
 		screenController.addScreen(new GameScreen(this), Constants.GAME_SCREEN_ID);
 		screenController.addScreen(new LeaderBoard(this), Constants.LEADERBOARD_SCREEN_ID);
+		screenController.addScreen(new PauseScreen(this), Constants.PAUSE_SCREEN_ID);
 
 		screenController.nextScreen(Constants.MAIN_SCREEN_ID);
 
@@ -121,7 +131,9 @@ public class MainGameClass extends Game {
 
 	@Override
 	public void dispose() {
+		mapManager.unload();
 		assetManager.dispose();
 		batch.dispose();
+		shapeRenderer.dispose();
 	}
 }

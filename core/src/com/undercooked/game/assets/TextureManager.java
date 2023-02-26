@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.ObjectMap;
+import com.undercooked.game.util.Constants;
 
 public class TextureManager {
 
@@ -19,7 +20,6 @@ public class TextureManager {
      */
     ObjectMap<String, Array<String>> textures;
     AssetManager assetManager;
-    String DEFAULT_TEXTURE = "items/missing.png";
 
     public TextureManager (AssetManager assetManager) {
         this.assetManager = assetManager;
@@ -33,7 +33,7 @@ public class TextureManager {
      */
     private void load() {
         try {
-            assetManager.load(DEFAULT_TEXTURE, Texture.class);
+            assetManager.load(Constants.DEFAULT_TEXTURE, Texture.class);
         } catch (GdxRuntimeException e) {
             // Of course, make sure it actually doesn't crash if they can't load
             System.out.println("Couldn't load default texture.");
@@ -48,11 +48,11 @@ public class TextureManager {
             System.out.println(path + " not loaded.");
             // If the Texture isn't loaded, then return the default texture.
             // If it's not loaded, then just return null.
-            if (!assetManager.isLoaded(DEFAULT_TEXTURE)) {
+            if (!assetManager.isLoaded(Constants.DEFAULT_TEXTURE)) {
                 System.out.println("Default path not loaded.");
                 return null;
             }
-            return assetManager.get(DEFAULT_TEXTURE, Texture.class);
+            return assetManager.get(Constants.DEFAULT_TEXTURE, Texture.class);
         }
     }
 
@@ -98,13 +98,14 @@ public class TextureManager {
         // Loop through the paths and unload only the first instance of each path.
         // This allows for loading a page multiple times when using the "nextScreen"
         // function in the ScreenController
-        // (under the possibility that it needs to loop back on itself)
+        // (under the possibility that multiple screens need the same texture)
         Array<String> paths = textures.get(textureGroup);
         Array<String> pathsRemoved = new Array<>();
-        for (String path : paths) {
+        for (int i = paths.size-1 ; i >= 0 ; i--) {
+            String path = paths.get(i);
             if (!pathsRemoved.contains(path, false)) {
-                // Remove the first instance of the path from the paths array
-                paths.removeValue(path, false);
+                // Remove the index of the path from the paths array
+                paths.removeIndex(i);
                 // Add the path to removed paths.
                 pathsRemoved.add(path);
                 if (assetManager.isLoaded(path)) {

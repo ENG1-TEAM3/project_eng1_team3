@@ -19,7 +19,7 @@ import com.undercooked.game.util.Control;
 public class Cook extends Entity {
 
 	private static final int MAX_STACK_SIZE = 5;
-	private static final int FRAME_COLS = 5, FRAME_ROWS = 4;
+	private static final int FRAME_COLS = 8, FRAME_ROWS = 4;
 
 	private Vector2 direction;
 	private int cookno;
@@ -34,7 +34,7 @@ public class Cook extends Entity {
 
 	public boolean locked = false;
 	public boolean holding = false;
-	public Stack<Ingredient> heldItems = new Stack<Ingredient>();
+	public Stack<Ingredient> heldItems = new Stack<>();
 
 	/**
 	 * Cook entity constructor
@@ -62,7 +62,6 @@ public class Cook extends Entity {
 	 * @param cl - 2d array of collision tiles for collision detection
 	 */
 	public void update(Control control, float dt, CollisionTile[][] cl) {
-		currentFrame = walkAnimation.getKeyFrame(stateTime, true).split(32, 32);
 
 		dirX = 0;
 		dirY = 0;
@@ -94,14 +93,15 @@ public class Cook extends Entity {
 			direction.y = 1;
 			direction = new Vector2(1, 0);
 		}
+
+		currentFrame = walkAnimation.getKeyFrame(stateTime, true).split(32, 32);
 		if (dirX != 0 || dirY != 0) {
-			stateTime += Gdx.graphics.getDeltaTime() / 8;
+			stateTime += Gdx.graphics.getDeltaTime();
 		} else {
 			stateTime = 0;
 		}
 		pos.x += dirX * speed * dt;
 		pos.y += dirY * speed * dt;
-
 	}
 
 	/**
@@ -174,7 +174,7 @@ public class Cook extends Entity {
 		walkSheet = textureManager.get(path);
 		spriteSheet = TextureRegion.split(walkSheet, walkSheet.getWidth() / FRAME_COLS,
 				walkSheet.getHeight() / FRAME_ROWS);
-		walkFrames = new TextureRegion[FRAME_ROWS];
+		walkFrames = new TextureRegion[FRAME_COLS];
 		setWalkFrames(0);
 	}
 
@@ -183,10 +183,10 @@ public class Cook extends Entity {
 	 * @param row - row on the sprite sheet to draw
 	 */
 	private void setWalkFrames(int row) {
-		for (int i = 0; i < FRAME_ROWS; i++) {
+		for (int i = 0; i < FRAME_COLS; i++) {
 			walkFrames[i] = spriteSheet[row][i];
 		}
-		walkAnimation = new Animation<>(0.025f, walkFrames);
+		walkAnimation = new Animation<>(0.09f, walkFrames);
 		currentFrame = walkAnimation.getKeyFrame(stateTime, true).split(32, 32);
 	}
 

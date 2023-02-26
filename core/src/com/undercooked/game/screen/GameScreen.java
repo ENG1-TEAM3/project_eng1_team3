@@ -30,6 +30,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.undercooked.game.MainGameClass;
+import com.undercooked.game.assets.MapManager;
 import com.undercooked.game.assets.TextureManager;
 import com.undercooked.game.audio.AudioSettings;
 import com.undercooked.game.audio.AudioSliders;
@@ -40,6 +41,7 @@ import com.undercooked.game.entity.CustomerController;
 import com.undercooked.game.entity.Entity;
 import com.undercooked.game.food.Ingredients;
 import com.undercooked.game.food.Menu;
+import com.undercooked.game.logic.GameLogic;
 import com.undercooked.game.station.StationManager;
 import com.undercooked.game.util.CameraController;
 import com.undercooked.game.util.CollisionTile;
@@ -51,6 +53,7 @@ public class GameScreen extends Screen {
 	public static final int NUMBER_OF_WAVES = 5;
 
 	public static int currentWave = 0;
+	GameLogic gameLogic;
 
 	Rectangle volSlideBackgr;
 	Rectangle volSlide;
@@ -125,28 +128,24 @@ public class GameScreen extends Screen {
 		this.calculateBoxMaths();
 		control = new Control();
 		// map = new TmxMapLoader().load("map/art_map/prototype_map.tmx");
-		map1 = new TmxMapLoader().load("map/art_map/customertest.tmx");
-		tiledMapRenderer = new OrthogonalTiledMapRenderer(map1);
-		constructCollisionData(map1);
-		cc = new CustomerController(map1, game.textureManager);
+	}
+
+	public void setGameLogic(GameLogic gameLogic) {
+		this.gameLogic = gameLogic;
 	}
 
 	@Override
 	public void load() {
 		TextureManager textureManager = game.getTextureManager();
-		textureManager.load(Constants.GAME_TEXTURE_ID, "uielements/settings.png");
-		textureManager.load(Constants.GAME_TEXTURE_ID, "uielements/background.png");
-		textureManager.load(Constants.GAME_TEXTURE_ID, "uielements/exitmenu.png");
-		textureManager.load(Constants.GAME_TEXTURE_ID, "uielements/resume.png");
-		textureManager.load(Constants.GAME_TEXTURE_ID, "uielements/audio2.png");
-		textureManager.load(Constants.GAME_TEXTURE_ID, "uielements/background.png");
-		textureManager.load(Constants.GAME_TEXTURE_ID, "uielements/vButton.jpg");
-		textureManager.load(Constants.GAME_TEXTURE_ID, "uielements/vControl.png");
 		textureManager.load(Constants.GAME_TEXTURE_ID, "entities/cook_walk_1.png");
 		textureManager.load(Constants.GAME_TEXTURE_ID, "entities/cook_walk_2.png");
 		textureManager.load(Constants.GAME_TEXTURE_ID, "entities/cook_walk_hands_1.png");
 		textureManager.load(Constants.GAME_TEXTURE_ID, "entities/cook_walk_hands_2.png");
-		cc.load(Constants.GAME_TEXTURE_ID);
+		// cc.load(Constants.GAME_TEXTURE_ID);
+		textureManager.load(Constants.GAME_TEXTURE_ID, "entities/cust3f.png");
+		textureManager.load(Constants.GAME_TEXTURE_ID, "entities/cust3b.png");
+		textureManager.load(Constants.GAME_TEXTURE_ID, "entities/cust3r.png");
+		textureManager.load(Constants.GAME_TEXTURE_ID, "entities/cust3l.png");
 
 		game.audioManager.loadMusic("audio/music/GameMusic.ogg", Constants.MUSIC_GROUP);
 		game.audioManager.loadMusic("audio/soundFX/cash-register-opening.mp3", Constants.GAME_GROUP);
@@ -154,6 +153,8 @@ public class GameScreen extends Screen {
 		game.audioManager.loadMusic("audio/soundFX/frying.mp3", Constants.GAME_GROUP);
 		game.audioManager.loadMusic("audio/soundFX/money-collect.mp3", Constants.GAME_GROUP);
 		game.audioManager.loadMusic("audio/soundFX/timer-bell-ring.mp3", Constants.GAME_GROUP);
+
+		game.mapManager.load("map/art_map/customertest.tmx");
 	}
 
 	@Override
@@ -165,23 +166,40 @@ public class GameScreen extends Screen {
 
 		textureManager.unload(Constants.GAME_TEXTURE_ID);
 
-		game.audioManager.unloadMusic("audio/music/GameMusic.ogg");
+		game.audioManager.unload(Constants.GAME_GROUP);
+		game.audioManager.unload(Constants.MUSIC_GROUP);
 		stage.dispose();
 		stage2.dispose();
+
+		game.mapManager.unload();
 	}
 
 	/**
-	 * Things that should be done while the game screen is shown
+	 * When the GameScreen is shown.
 	 */
+	@Override
 	public void show() {
+
+	}
+
+	/**
+	 * Things that should be done when the GameScreen has finished loading.
+	 */
+	@Override
+	public void postLoad() {
+		map1 = game.mapManager.get();
+		constructCollisionData(map1);
+		tiledMapRenderer = game.mapManager.createMapRenderer();
+		cc = new CustomerController(map1, game.textureManager);
+
 		game.gameMusic = game.audioManager.getMusic("audio/music/GameMusic.ogg");
 		// =======================================START=FRAME=TIMER======================================================
 		startTime = System.currentTimeMillis();
 		timeOnStartup = startTime;
 		tempThenTime = startTime;
 		// =======================================SET=POSITIONS=OF=SLIDERS===============================================
-		float currentMusicVolumeSliderX = (MainGameClass.musicVolumeScale * sliderWidth) + xSliderMin;
-		float currentGameVolumeSliderX = (MainGameClass.gameVolumeScale * sliderWidth) + xSliderMin;
+		float currentMusicVolumeSliderX = (AudioSettings.getMusicVolume() * sliderWidth) + xSliderMin;
+		float currentGameVolumeSliderX = (AudioSettings.getGameVolume() * sliderWidth) + xSliderMin;
 		musSlide.setPosition(currentMusicVolumeSliderX, audioBackgroundy + 4 * audioBackgroundHeight / 6
 				+ musSlideBackgr.getHeight() / 2 - musSlide.getHeight() / 2);
 		volSlide.setPosition(currentGameVolumeSliderX, audioBackgroundy + audioBackgroundHeight / 6
@@ -226,9 +244,10 @@ public class GameScreen extends Screen {
 				ad.getY());
 		btms.setSize(buttonwidth, buttonheight);
 		// ======================================ADD=LISTENERS=TO=BUTTONS================================================
+		final GameScreen gs = this;
 		mn.addListener(new ClickListener() {
 			public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-				state1 = STATE.Pause;
+				game.screenController.nextScreen(Constants.PAUSE_SCREEN_ID);
 				super.touchUp(event, x, y, pointer, button);
 			}
 		});
@@ -267,8 +286,8 @@ public class GameScreen extends Screen {
 		gameSlider = audioSliders.getSlider(0);
 		gameSlider.setTouchable(Touchable.disabled);
 
-		cooks.add(new Cook(new Vector2(64 * 5, 64 * 3), 1, game.getTextureManager()));
-		cooks.add(new Cook(new Vector2(64 * 5, 64 * 5), 2, game.getTextureManager()));
+		cooks.add(new Cook(new Vector2(MapManager.gridToPos(5), MapManager.gridToPos(3)), 1, game.getTextureManager()));
+		cooks.add(new Cook(new Vector2(MapManager.gridToPos(5), MapManager.gridToPos(5)), 2, game.getTextureManager()));
 
 		cook = cooks.first();
 		cc.spawnCustomer();
@@ -500,59 +519,6 @@ public class GameScreen extends Screen {
 	public void checkState() {
 		if (Gdx.input.isKeyPressed(Keys.ESCAPE)) {
 			state1 = STATE.Pause;
-		}
-	}
-
-	/**
-	 * Updates the music volume slider
-	 */
-	public void musicVolumeUpdate() {
-		Vector3 mousePos = new Vector3();
-		uiCamera.unproject(mousePos.set(Gdx.input.getX(), Gdx.input.getY(), 0));
-		float x = mousePos.x;
-		float fromTopy = mousePos.y;
-		float fromBottomy = gameResolutionY - fromTopy;
-		/*selectedPlayerBox.setAutoShapeType(true);
-		selectedPlayerBox.begin(ShapeType.Filled);
-		selectedPlayerBox.setColor(Color.GREEN);
-		selectedPlayerBox.rect(mousePos.x-2F, mousePos.y-2F, 4F,4F);
-		selectedPlayerBox.setColor(Color.NAVY);
-		selectedPlayerBox.rect(musSlideBackgr.getX(), musSlide.getY(), musSlideBackgr.getWidth(), musSlide.getHeight());
-		selectedPlayerBox.setColor(Color.WHITE);
-		selectedPlayerBox.end();*/
-		boolean change = musSlide.getY() <= fromBottomy & fromBottomy <= musSlide.getY() + musSlide.getHeight();
-		if (Gdx.input.isTouched() & change) {
-			if (x >= musSlideBackgr.getX() & x <= musSlideBackgr.getX() + musSlideBackgr.getWidth()) {
-				musSlide.setPosition(Gdx.input.getX(), musSlide.getY());
-				v = (musSlide.getX() - musSlideBackgr.getX()) / musSlideBackgr.getWidth();
-				if (v < 0.01) {
-					v = 0;
-				}
-				game.mainScreenMusic.setVolume(v);
-				game.gameMusic.setVolume(v);
-				MainGameClass.musicVolumeScale = v;
-			}
-		}
-	}
-
-	/**
-	 * Updates the game volume slider
-	 */
-	public void gameVolumeUpdate() {
-		float fromTopy = Gdx.input.getY();
-		float fromBottomy = gameResolutionY - fromTopy;
-		float x = Gdx.input.getX();
-		boolean change = volSlide.getY() <= fromBottomy & fromBottomy <= volSlide.getY() + volSlide.getHeight();
-		if (Gdx.input.isTouched() & change) {
-			if (x >= volSlideBackgr.getX() & x <= volSlideBackgr.getX() + volSlideBackgr.getWidth()) {
-				volSlide.setPosition(Gdx.input.getX(), volSlide.getY());
-				s = (volSlide.getX() - volSlideBackgr.getX()) / volSlideBackgr.getWidth();
-				if (s < 0.01) {
-					s = 0;
-				}
-				// game.sound.setVolume(game.soundid, s);
-				MainGameClass.gameVolumeScale = s;
-			}
 		}
 	}
 

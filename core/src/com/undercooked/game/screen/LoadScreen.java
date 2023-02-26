@@ -1,4 +1,4 @@
-package com.undercooked.game.load;
+package com.undercooked.game.screen;
 
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
@@ -8,7 +8,6 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.undercooked.game.MainGameClass;
-import com.undercooked.game.screen.Screen;
 import com.undercooked.game.util.CameraController;
 import com.undercooked.game.util.Constants;
 
@@ -64,9 +63,13 @@ public class LoadScreen extends Screen {
 
         // Check if the AssetManager is finished
         if (assetManager.isFinished()) {
+            // Post load function for the Screen
+            next.postLoad();
             // Then swap to the screen that was loading
             System.out.println("Swapped to Screen " + next);
             game.setScreen(next);
+            // Once loaded, tell the Screen what screen loaded it
+            next.fromScreen(previous);
         }
 
     }

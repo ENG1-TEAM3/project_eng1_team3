@@ -6,7 +6,6 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.ObjectMap;
-import com.undercooked.game.MainGameClass;
 import com.undercooked.game.util.Constants;
 
 /**
@@ -44,8 +43,6 @@ public class AudioManager {
     }
     ObjectMap<String, VolumeGroup> volumes;
     AssetManager assetManager;
-    String DEFAULT_MUSIC = "audio/music/GameMusic.mp3";
-    String DEFAULT_SOUND = "uielements/testsound.mp3";
 
     /**
      * Constructor to set up the Maps for music, sound and volumes.
@@ -64,8 +61,8 @@ public class AudioManager {
         try {
             // Load directly into the assetManager so that they can't be
             // unloaded using this class.
-            assetManager.load(DEFAULT_MUSIC, Music.class);
-            assetManager.load(DEFAULT_SOUND, Sound.class);
+            assetManager.load(Constants.DEFAULT_MUSIC, Music.class);
+            assetManager.load(Constants.DEFAULT_SOUND, Sound.class);
         } catch (GdxRuntimeException e) {
             // Of course, make sure it actually doesn't crash if they can't load
             System.out.println("Couldn't load default music.");
@@ -85,11 +82,11 @@ public class AudioManager {
             System.out.println(path + " not loaded.");
             // If music is not loaded, then load the missing music
             // But return null if that isn't loaded
-            if (!assetManager.isLoaded(DEFAULT_MUSIC)) {
+            if (!assetManager.isLoaded(Constants.DEFAULT_MUSIC)) {
                 System.out.println("Default music not loaded.");
                 return null;
             }
-            return assetManager.get(DEFAULT_MUSIC);
+            return assetManager.get(Constants.DEFAULT_MUSIC);
         }
     }
 
@@ -112,7 +109,7 @@ public class AudioManager {
         // Check if the audioGroup doesn't have a volume yet
         if (!volumes.containsKey(audioGroup)) {
             // If it doesn't, set it to the default
-            volumes.put(audioGroup, new VolumeGroup(Constants.DEFAULT_MUSIC));
+            volumes.put(audioGroup, new VolumeGroup(Constants.DEFAULT_MUSIC_VOLUME));
         }
         // Get the VolumeGroup
         VolumeGroup thisGroup = volumes.get(audioGroup);
@@ -140,11 +137,11 @@ public class AudioManager {
         } catch (GdxRuntimeException e) {
             // If sound is not loaded, then load the missing music
             // But return null if that isn't loaded
-            if (!assetManager.isLoaded(DEFAULT_SOUND)) {
+            if (!assetManager.isLoaded(Constants.DEFAULT_SOUND)) {
                 System.out.println();
                 return null;
             }
-            return assetManager.get(DEFAULT_SOUND);
+            return assetManager.get(Constants.DEFAULT_SOUND);
         }
     }
 
@@ -160,7 +157,7 @@ public class AudioManager {
         // Check if the audioGroup doesn't have a volume yet
         if (!volumes.containsKey(audioGroup)) {
             // If it doesn't, set it to the default
-            volumes.put(audioGroup, new VolumeGroup(Constants.DEFAULT_MUSIC));
+            volumes.put(audioGroup, new VolumeGroup(Constants.DEFAULT_MUSIC_VOLUME));
         }
         // Get the VolumeGroup
         VolumeGroup thisGroup = volumes.get(audioGroup);
@@ -207,6 +204,45 @@ public class AudioManager {
         volumes.get(audioGroup).volume = volume;
         // Update the volume for that audioGroup
         // updateVolume("sound/" + audioGroup)
+    }
+
+    /**
+     * Unloads all paths in an audio group from the {@link AssetManager}.
+     * @param audioGroup A {@link String} of the {@code audioGroup}'s name.
+     * @param forgetGroup {@code boolean} for if the group should be deleted
+     *                                   from the map afterwards or not
+     */
+    public void unload(String audioGroup, boolean forgetGroup) {
+        // Check if the group exists
+        if (!volumes.containsKey(audioGroup)) {
+            // If it's not, then return
+            return;
+        }
+        // If the audioGroup exists, then unload all the paths, if they're loaded.
+        // It only unloads each path once, so if they're loaded multiple times (such
+        // as for multiple Screens needing it), then it'll stay loaded for them.
+        VolumeGroup group = volumes.get(audioGroup);
+        Array<String> pathsRemoved = new Array<>();
+        for (int i = group.paths.size-1 ; i >= 0 ; i--) {
+            String path = group.paths.get(i);
+            // Only continue if the current path hasn't been removed.
+            if (!pathsRemoved.contains(path, false)) {
+                if (assetManager.isLoaded(path)) {
+                    assetManager.unload(path);
+                    System.out.println("Unloaded " + path + ".");
+                }
+                pathsRemoved.add(path);
+                group.paths.removeIndex(i);
+            }
+        }
+        // If forgetGroup is true, then remove it from the map.
+        if (forgetGroup) {
+            volumes.remove(audioGroup);
+        }
+    }
+
+    public void unload(String audioGroup) {
+        unload(audioGroup, false);
     }
 
     /**

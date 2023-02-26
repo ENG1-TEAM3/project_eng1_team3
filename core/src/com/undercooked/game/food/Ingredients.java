@@ -3,7 +3,9 @@ package com.undercooked.game.food;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.ObjectMap;
+import com.undercooked.game.assets.TextureManager;
 import com.undercooked.game.screen.GameScreen;
+import com.undercooked.game.util.Constants;
 
 /**
  * All available ingredient.
@@ -18,8 +20,24 @@ public class Ingredients {
 		ingredients.put(ID, texturePath);
 	}
 
-	public void loadIngredients(AssetManager assetManager) {
+	public void addIngredient(String ID) {
+		addIngredient(ID, ID);
+	}
 
+	public void load(TextureManager textureManager) {
+		// Loop through all ingredients and load their textures
+		for (String path : ingredients.values()) {
+			textureManager.load(Constants.GAME_TEXTURE_ID, path);
+		}
+	}
+
+	public void unload(TextureManager textureManager) {
+		// Loop through all the ingredients and unload their textures
+		for (String path : ingredients.values()) {
+			textureManager.load(path);
+		}
+		// Clear the ingredients map, as none of them are loaded now
+		ingredients.clear();
 	}
 
 	/** TEMP. Final will use the functions above. */

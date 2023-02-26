@@ -4,7 +4,6 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.undercooked.game.MainGameClass;
-import com.undercooked.game.load.LoadScreen;
 
 public class ScreenController {
 
@@ -21,12 +20,23 @@ public class ScreenController {
     }
 
     private void startLoading(Screen lastScreen, Screen nextScreen) {
+        nextScreen.preLoad();
         loadScreen.setScreens(lastScreen, nextScreen);
         loadScreen.start(game);
     }
 
     public void backScreen() {
-
+        // If there are no screens beyond the current, then go to the MissingScreen
+        if (screenStack.size <= 1) {
+            setScreen(new MissingScreen(game));
+            return;
+        }
+        // Get the current screen.
+        Screen current = screenStack.pop();
+        // Unload the current Screen
+        unload(current);
+        // Move to the previous Screen (it will already be loaded)
+        game.setScreen(screenStack.peek());
     }
 
     public void setScreen(String ID) {
@@ -65,9 +75,7 @@ public class ScreenController {
 
     public void nextScreen(Screen screen) {
         // Load the screen, if it isn't already.
-        if (!screen.isLoaded()) {
-            screen.load();
-        }
+        screen.load();
         screen.changeLoaded(false);
 
         // Then start loading
