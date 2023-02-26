@@ -5,18 +5,18 @@ import com.badlogic.gdx.utils.*;
 import com.undercooked.game.Input.InputController;
 
 /**
- *
- * TODO: NEEDS TO BE COMPLETED
- *
+ * The class that handles all the saving and loading of files.
  */
 
 public class SaveManager {
 
+    /** The static json class instance. */
     private static Json json;
     static {
         Json json = new Json();
     }
 
+    /** The dictionary of settings to save into json. */
     public static ObjectMap<String, JsonValue> saveSettings;
     static {
         for (SaveFiles key : SaveFiles.values()) {
@@ -24,6 +24,11 @@ public class SaveManager {
         }
     }
 
+    /**
+     * Loads the save file from the given saveID.
+     * @param saveID The save file to load.
+     * @return The root of the json file.
+     */
     public static JsonValue loadSave(SaveFiles saveID) {
         String dir = FileControl.getDataPath();
         String fileData = FileControl.loadFile(dir, saveID.fileName, saveID.defaultData);
@@ -55,6 +60,7 @@ public class SaveManager {
 
 }
 
+/** Contains all the files to save/load. */
 enum SaveFiles {
     /** Contains settings and controls for the game. */
     SETTINGS("settings.json",new Json().toJson(InputController.defaultKeyMap())),

@@ -117,7 +117,7 @@ public class GameScreen extends Screen {
 
 	/**
 	 * Constructor to initialise game screen;
-	 * 
+	 *
 	 * @param game - Main entry point class
 	 */
 	public GameScreen(MainGameClass game) {
@@ -301,7 +301,7 @@ public class GameScreen extends Screen {
 
 	/**
 	 * Render method for main game
-	 * 
+	 *
 	 * @param delta - some change in time
 	 */
 
@@ -465,7 +465,7 @@ public class GameScreen extends Screen {
 
 	/**
 	 * Changes game window state
-	 * 
+	 *
 	 * @param state1 - the state to change to
 	 */
 	public void changeScreen(STATE state1) {
@@ -575,7 +575,7 @@ public class GameScreen extends Screen {
 
 	/**
 	 * Construct an array of CollisionTile objects for collision detection
-	 * 
+	 *
 	 * @param mp- game tilemap
 	 */
 	private void constructCollisionData(TiledMap mp) {
@@ -618,7 +618,7 @@ public class GameScreen extends Screen {
 
 	/**
 	 * Check the tile the cook is looking at for interaction
-	 * 
+	 *
 	 * @param ck - Selected cook
 	 * @param sr - ShapeRenderer to draw the coloured box
 	 */
@@ -664,7 +664,7 @@ public class GameScreen extends Screen {
 
 	/**
 	 * Resize game screen - Not used in fullscreen mode
-	 * 
+	 *
 	 * @param width  - width to resize to
 	 * @param height - height to resize to
 	 */
