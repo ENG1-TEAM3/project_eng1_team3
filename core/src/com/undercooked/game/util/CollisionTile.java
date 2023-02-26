@@ -3,19 +3,19 @@ package com.undercooked.game.util;
 import com.badlogic.gdx.math.Rectangle;
 
 public class CollisionTile {
-	int tilex;
-	int tiley;
-	int tileheight;
-	int tilewidth;
+	int tileX;
+	int tileY;
+	int tileHeight;
+	int tileWidth;
 
 	public CollisionTile(int x, int y, int wid, int hi) {
-		tilex = x;
-		tiley = y;
-		tileheight = hi;
-		tilewidth = wid;
+		tileX = x;
+		tileY = y;
+		tileHeight = hi;
+		tileWidth = wid;
 	}
 
 	public Rectangle returnRect() {
-		return new Rectangle(tilex, tiley, tilewidth, tileheight);
+		return new Rectangle(tileX, tileY, tileWidth, tileHeight);
 	}
 }

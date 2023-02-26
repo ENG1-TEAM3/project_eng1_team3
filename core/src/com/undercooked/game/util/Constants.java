@@ -1,7 +1,10 @@
 package com.undercooked.game.util;
 
+import com.badlogic.gdx.utils.JsonValue;
+import com.undercooked.game.util.json.*;
+
 /** A class filled with public static final variables so that they can be accessed from anywhere. */
-public class Constants {
+public final class Constants {
 
     // Camera
     public static final String WORLD_CAMERA_ID = "WORLD";
@@ -26,6 +29,50 @@ public class Constants {
     public static final String GAME_TEXTURE_ID = "game";
     public static final String PAUSE_TEXTURE_ID = "pause";
     public static final String LEADERBOARD_TEXTURE_ID = "leaderboard";
+
+    // GameInfo, such as file names for maps, ingredients, stations, recipes
+    // and other things.
+    public static final class DefaultJson {
+        // It creates these as to avoid creating them in memory and storing them
+        // at all times
+        public static JsonObject scoreFormat() {
+            JsonObject root = new JsonObject();
+            // Highscore variable set up
+            JsonObject highscore = new JsonObject();
+            highscore.addValue(new JsonType("Name", JsonValue.ValueType.stringValue));
+            highscore.addValue(new JsonInt("Time",-1));
+            JsonObjectArray highscores = new JsonObjectArray("highscores", highscore);
+
+            // Scenario scores
+            JsonObject scenario = new JsonObject("scenario");
+            scenario.addValue(new JsonString("ID", "undefined"));
+            scenario.addValue(highscores);
+            JsonObjectArray scenarios = new JsonObjectArray("scenarios", scenario);
+
+            // Endless scores
+            JsonObjectArray endless = new JsonObjectArray("endless", highscore);
+            root.addValue(endless);
+            root.addValue(scenarios);
+            return root;
+        }
+        public static JsonObject ingredientFormat() {
+            JsonObject root = new JsonObject();
+            root.addValue(new JsonString("ID","undefined"));
+            root.addValue(new JsonString("path", "undefined"));
+            return root;
+        }
+        // public static JsonValue
+    }
+
+    // Preferences
+    public static final class Preferences {
+        // Preference IDs
+        public static final String SETTINGS = "SETTINGS";
+
+        // Preferences names
+        public static final String MUSIC_VOLUME = "music_vol";
+        public static final String GAME_VOLUME = "game_vol";
+    }
 
     // Sounds
     public static final String MUSIC_GROUP = "music";
