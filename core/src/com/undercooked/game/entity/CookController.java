@@ -39,7 +39,7 @@ public class CookController {
     /**
 	 * Change selected cook.
 	 */
-	private void checkCookSwitch() {
+	public void checkCookSwitch() {
 		if (Control.tab && Tutorial.complete) {
 			getCurrentCook().locked = false;
 			currentCookIndex += currentCookIndex < cookController.getCooks().size - 1 ? 1 : -currentCookIndex;

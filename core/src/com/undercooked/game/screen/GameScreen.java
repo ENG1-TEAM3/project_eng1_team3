@@ -373,7 +373,7 @@ public class GameScreen extends Screen {
 		changeScreen(state1);
 		MainGameClass.batch.setProjectionMatrix(worldCamera.combined);
 
-		checkCookSwitch();	// ANCHOR: You were here!
+		cookController.checkCookSwitch();	// ANCHOR: You were here!
 		// =========================================CHECK=GAME=OVER======================================================
 		checkGameOver();
 
