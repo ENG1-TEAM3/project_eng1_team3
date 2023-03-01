@@ -8,7 +8,7 @@ public interface Logic {
     /**
      * Update the game logic. Move chefs, update stations, spawn customer etc.
      */
-    void update();
+    void update(float delta);
 
     /**
      * The GameLogic should load the game assets in this function.

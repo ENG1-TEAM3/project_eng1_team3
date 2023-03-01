@@ -2,7 +2,9 @@ package com.undercooked.game.entity;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
-import com.undercooked.game.assets.MapManager;
+import com.undercooked.game.Input.InputController;
+import com.undercooked.game.Input.Keys;
+import com.undercooked.game.map.MapManager;
 import com.undercooked.game.assets.TextureManager;
 import com.undercooked.game.util.Control;
 
@@ -25,8 +27,8 @@ public class CookController {
 
     // =======================================INITIALISE======================================================
     public void initialiseCooks() {
-        cooks.add(new Cook(new Vector2(MapManager.gridToPos(5), MapManager.gridToPos(3)), 1, textureManager));
-		cooks.add(new Cook(new Vector2(MapManager.gridToPos(5), MapManager.gridToPos(5)), 2, textureManager));
+        //cooks.add(new Cook(new Vector2(MapManager.gridToPos(5), MapManager.gridToPos(3)), 1, textureManager));
+		//cooks.add(new Cook(new Vector2(MapManager.gridToPos(5), MapManager.gridToPos(5)), 2, textureManager));
 
 		currentCook = 0;
     }
@@ -39,16 +41,19 @@ public class CookController {
     /**
 	 * Change selected cook.
 	 */
-	private void checkCookSwitch() {
-		if (Control.tab && Tutorial.complete) {
+    public void update(float delta) {
+        // Change between cooks if needed
+		if (InputController.isKeyJustPressed(Keys.cook_next)) {
 			getCurrentCook().locked = false;
-			currentCookIndex += currentCookIndex < cookController.getCooks().size - 1 ? 1 : -currentCookIndex;
-			cookController.getCurrentCook() = cookController.getCooks().get(currentCookIndex);
+            currentCook = (currentCook + 1) % cooks.size;
+            currentCook = Math.max(currentCook, 0);
 		}
-		if (Control.shift && Tutorial.complete) {
-			cookController.getCurrentCook().locked = false;
-			currentCookIndex -= currentCookIndex > 0 ? 1 : -cookController.getCooks().size + 1;
-			cookController.getCurrentCook() = cookController.getCooks().get(currentCookIndex);
+		if (InputController.isKeyJustPressed(Keys.cook_prev)) {
+            currentCook = currentCook - 1;
+            currentCook = Math.min(currentCook, cooks.size-1);
+            if (currentCook < 0) {
+                currentCook += cooks.size;
+            }
 		}
 
 		Control.interact = false;
@@ -56,7 +61,28 @@ public class CookController {
 		Control.flip = false;
 		Control.tab = false;
 		Control.shift = false;
+
+        // Check input for the current cook
+        if (cooks.size > 0) {
+            cooks.get(currentCook).checkInput(delta);
+        }
+
+        // Update all the Cooks
+        for (Cook cook : cooks) {
+            cook.update(delta);
+        }
 	}
+
+    /**
+     * Function to stop all {@link Cook} movement for when the
+     * {@link com.undercooked.game.screen.GameScreen} pauses.
+     */
+    public void stopMovement() {
+        for (Cook cook : cooks) {
+            cook.dirX = 0;
+            cook.dirY = 0;
+        }
+    }
 
     // =======================================GETTERS======================================================
     /**
@@ -88,5 +114,4 @@ public class CookController {
     public void unload() {
         cooks.clear();
     }
-
 }

@@ -51,6 +51,9 @@ public class CustomerController {
 
 	}
 
+	public void update(float delta) {
+	}
+
 	/**
 	 * Check whether the customer zone is correct in the tile map, and construct
 	 * data structures for it

@@ -1,9 +1,10 @@
-package com.undercooked.game.assets;
+package com.undercooked.game.map;
 
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.undercooked.game.util.Constants;
 
@@ -85,12 +86,16 @@ public class MapManager {
         }
     }
 
-    public static float gridToPos(float gridPos) {
+    public Map mapOfSize(int width, int height) {
+
+    }
+
+    public static float gridToPos(int gridPos) {
         return gridPos * 64F;
     }
 
-    public static float posToGrid(float pos) {
-        return pos / 64F;
+    public static int posToGrid(float pos) {
+        return (int) (pos / 64F);
     }
 
 }

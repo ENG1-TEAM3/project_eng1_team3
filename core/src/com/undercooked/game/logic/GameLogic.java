@@ -4,6 +4,7 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.utils.Array;
 import com.undercooked.game.entity.Cook;
 import com.undercooked.game.entity.CookController;
+import com.undercooked.game.entity.CustomerController;
 import com.undercooked.game.food.Ingredients;
 import com.undercooked.game.screen.GameScreen;
 import com.undercooked.game.screen.ScreenController;
@@ -16,6 +17,7 @@ public abstract class GameLogic implements Logic {
     GameScreen game;
     Ingredients ingredients;
     CookController cookController;
+    CustomerController customerController;
     TiledMap map;
     public GameLogic(GameScreen game) {
         this.game = game;
@@ -29,6 +31,10 @@ public abstract class GameLogic implements Logic {
         game.getScreenController();
     }
 
+    /**
+     * Loads a map from the path provided
+     * @param path {@link String} of the path.
+     */
     public final void loadMap(String path) {
         game.getMapManager().load(path);
     }

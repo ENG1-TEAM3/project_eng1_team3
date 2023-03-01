@@ -10,7 +10,9 @@ import com.badlogic.gdx.math.Vector2;
 import com.undercooked.game.MainGameClass;
 import com.undercooked.game.assets.AudioManager;
 import com.undercooked.game.entity.Cook;
+import com.undercooked.game.entity.Entity;
 import com.undercooked.game.food.Ingredient;
+import com.undercooked.game.map.MapEntity;
 import com.undercooked.game.screen.GameScreen;
 import com.undercooked.game.util.Constants;
 
@@ -18,7 +20,7 @@ import com.undercooked.game.util.Constants;
  * Represents a station.
  * 
  */
-public class Station {
+public class Station extends MapEntity {
 
 	private Music interactSound;// = Gdx.audio.newMusic(Gdx.files.internal("audio/soundFX/chopping.mp3"));
 
@@ -168,6 +170,10 @@ public class Station {
 		if (interactSound != null) {
 			interactSound.play();
 		}
+	}
+
+	public void load() {
+
 	}
 
 }

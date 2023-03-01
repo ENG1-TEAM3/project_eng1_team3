@@ -1,0 +1,10 @@
+{
+  "id": "main",
+  "width": 16,
+  "height": 16,
+  "stations": [{
+    "station_id": "cutting",
+    "x": 5,
+    "y": 5
+  }]
+}

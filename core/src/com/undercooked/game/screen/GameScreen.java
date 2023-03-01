@@ -15,8 +15,6 @@ import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
-import com.badlogic.gdx.maps.tiled.TmxMapLoader;
-import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -26,11 +24,9 @@ import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.undercooked.game.MainGameClass;
-import com.undercooked.game.assets.MapManager;
 import com.undercooked.game.assets.TextureManager;
 import com.undercooked.game.audio.AudioSettings;
 import com.undercooked.game.audio.AudioSliders;
@@ -263,6 +259,7 @@ public class GameScreen extends Screen {
 		final GameScreen gs = this;
 		mn.addListener(new ClickListener() {
 			public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+				cookController.stopMovement();
 				game.screenController.nextScreen(Constants.PAUSE_SCREEN_ID);
 				super.touchUp(event, x, y, pointer, button);
 			}
@@ -317,6 +314,13 @@ public class GameScreen extends Screen {
 	 */
 
 	public void render(float delta) {
+
+		// Update the game
+		gameLogic.update(delta);
+
+		// Render the Screen
+		renderScreen();
+
 		// =====================================CLEAR=SCREEN=============================================================
 		ScreenUtils.clear(0, 0, 0, 0);
 		Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
@@ -346,8 +350,6 @@ public class GameScreen extends Screen {
 		MainGameClass.batch.end();
 		// ==================================MOVE=COOK===================================================================
 		tempTime = System.currentTimeMillis();
-		if (!cookController.getCurrentCook().locked && Tutorial.complete)
-			cookController.getCurrentCook().update(control, (tempTime - tempThenTime), CLTiles);
 		tempThenTime = tempTime;
 		checkInteraction(cookController.getCurrentCook(), MainGameClass.shapeRenderer);
 		// =====================================SET=MATRIX=FOR=UI=ELEMENTS===============================================
@@ -360,7 +362,6 @@ public class GameScreen extends Screen {
 
 		MainGameClass.batch.setProjectionMatrix(worldCamera.combined);
 		// ==================================MOVE=CAMERA=================================================================
-
 		worldCamera.update();
 		uiCamera.update();
 		// ==================================PLAY=MUSIC==================================================================
@@ -373,7 +374,6 @@ public class GameScreen extends Screen {
 		changeScreen(state1);
 		MainGameClass.batch.setProjectionMatrix(worldCamera.combined);
 
-		checkCookSwitch();	// ANCHOR: You were here!
 		// =========================================CHECK=GAME=OVER======================================================
 		checkGameOver();
 
