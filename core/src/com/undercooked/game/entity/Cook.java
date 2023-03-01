@@ -121,8 +121,6 @@ public class Cook extends MoveableEntity {
 	 * @param item - item to pick up
 	 */
 	public void pickUpItem(Ingredient item) {
-		item.cooking = false;
-		item.slicing = false;
 		if (!holding) {
 			holding = true;
 			setWalkTexture("entities/cook_walk_hands_" + cookno + ".png");

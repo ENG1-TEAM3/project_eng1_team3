@@ -31,7 +31,7 @@ public class SaveManager {
      */
     public static JsonValue loadSave(SaveFiles saveID) {
         String dir = FileControl.getDataPath();
-        String fileData = FileControl.loadFile(dir, saveID.fileName, saveID.defaultData);
+        String fileData = FileControl.loadFile(dir, saveID.fileName);
         JsonValue root = new JsonReader().parse(fileData);
         return root;
     }

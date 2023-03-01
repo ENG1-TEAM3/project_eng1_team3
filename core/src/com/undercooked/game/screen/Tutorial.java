@@ -24,7 +24,7 @@ public class Tutorial {
 	 * A list of sections / pages for the tutorial with the position to jump the
 	 * camera to.
 	 */
-	private static List<PosTextPair> stages = new ArrayList<PosTextPair>();
+	/*private static List<PosTextPair> stages = new ArrayList<PosTextPair>();
 	static {
 		stages.add(new PosTextPair(new Vector2(64, 64),
 				" Welcome to Piazza Panic! Customers will arrive one-by-one requesting an order. "));
@@ -44,24 +44,24 @@ public class Tutorial {
 				" [Preparation station] to form patties and prepare the order... "));
 		stages.add(new PosTextPair(new Vector2(3 * 64, 9 * 64), " to then serve the customer in the shortest time. "));
 		stages.add(new PosTextPair(GameScreen.cook.pos, " Goodluck! "));
-	}
+	}*/
 
 	/**
 	 * Represents if the tutorial has been finished.
 	 */
-	public static boolean complete = false;
+	//public static boolean complete = false;
 	/**
 	 * Represents the current stage of the tutorial.
 	 */
-	public static int stage = 0;
+	/*public static int stage = 0;
 
 	private static final ShapeRenderer shapeRenderer = new ShapeRenderer();
 	private static final BitmapFont bitmapFont = new BitmapFont();
-	private static GlyphLayout layout = new GlyphLayout();
+	private static GlyphLayout layout = new GlyphLayout();*/
 	/**
 	 * Sets bottom skip text layout and pads tutorial text.
 	 */
-	static {
+	/*static {
 		bitmapFont.setColor(Color.BLACK);
 		bitmapFont.getData().setScale(2);
 		layout.setText(bitmapFont, " [tab] to skip!");
@@ -69,16 +69,16 @@ public class Tutorial {
 		for (PosTextPair stage : stages) {
 			stage.text = " " + stage.text + " ";
 		}
-	}
+	}*/
 
 	/**
 	 * A timer used for text typing animation.
 	 */
-	private static float nextCharTimer = 0;
+	//private static float nextCharTimer = 0;
 	/**
 	 * The currently shown text.
 	 */
-	private static String curText;
+	//private static String curText;
 
 	/**
 	 * Draws the tutorial's text and white backdrop.
@@ -86,7 +86,7 @@ public class Tutorial {
 	 * @param batch {@link SpriteBatch} to render the text and ingredient textures.
 	 * @param dT    The amount of time to increment by between each character.
 	 */
-	public static void drawBox(SpriteBatch batch, float dT) {
+	/*public static void drawBox(SpriteBatch batch, float dT) {
 		curText = stages.get(stage).text.substring(0, Math.round(nextCharTimer));
 		shapeRenderer.setProjectionMatrix(batch.getProjectionMatrix());
 		shapeRenderer.begin(ShapeType.Filled);
@@ -117,20 +117,20 @@ public class Tutorial {
 				nextCharTimer += dT;
 			}
 		}
-	}
+	}*/
 
 	/**
 	 * 
 	 * @return The coordinates of the current stage's position.
 	 */
-	public static Vector2 getStagePos() {
+	/*public static Vector2 getStagePos() {
 		return stages.get(stage).pos;
-	}
+	}*/
 
 	/**
 	 * Skip to the next stage of the tutorial if possible.
 	 */
-	public static void nextStage() {
+	/*public static void nextStage() {
 		delay = 0;
 		if (nextCharTimer < stages.get(stage).text.length()) {
 			nextCharTimer = stages.get(stage).text.length();
@@ -143,19 +143,19 @@ public class Tutorial {
 			stage++;
 		else
 			complete = true;
-	}
+	}*/
 
 	/**
 	 * Go back to the previous tutorial stage.
 	 * 
 	 */
-	public static void previousStage() {
+	/*public static void previousStage() {
 		nextCharTimer = 0;
 		if (stage > 0)
 			stage--;
 	}
 
-	static float delay = 0;
+	static float delay = 0;*/
 
 	/**
 	 * Add a delay (used between punctuation).
@@ -164,13 +164,13 @@ public class Tutorial {
 	 * @param dT     How much to increment the delay by.
 	 * @return A boolean to indicate if the delay has finished.
 	 */
-	private static boolean addDelay(float amount, float dT) {
+	/*private static boolean addDelay(float amount, float dT) {
 		if (delay < amount)
 			delay += dT;
 		else
 			return true;
 		return false;
-	}
+	}*/
 }
 
 /**

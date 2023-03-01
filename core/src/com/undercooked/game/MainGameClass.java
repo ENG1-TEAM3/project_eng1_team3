@@ -2,9 +2,11 @@ package com.undercooked.game;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -12,10 +14,12 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.undercooked.game.assets.AudioManager;
+import com.undercooked.game.audio.SoundStateChecker;
 import com.undercooked.game.map.MapManager;
 import com.undercooked.game.assets.TextureManager;
 import com.undercooked.game.audio.AudioSettings;
 import com.undercooked.game.screen.*;
+import com.undercooked.game.station.StationManager;
 import com.undercooked.game.util.CameraController;
 import com.undercooked.game.util.Constants;
 
@@ -32,17 +36,20 @@ public class MainGameClass extends Game {
 	public final AudioManager audioManager;
 	public final TextureManager textureManager;
 	public final MapManager mapManager;
+	public final StationManager stationManager;
+	private Preferences settingPref;
 	/**
 	 * Constructor for the Game.
 	 */
-	public MainGameClass() {
+	public MainGameClass(SoundStateChecker soundChecker) {
 		AudioSettings.game = this;
 		assetManager = new AssetManager();
 		assetManager.setLoader(TiledMap.class, new TmxMapLoader(new InternalFileHandleResolver()));
-		audioManager = new AudioManager(assetManager);
+		audioManager = new AudioManager(assetManager, soundChecker);
 		textureManager = new TextureManager(assetManager);
-		mapManager = new MapManager(assetManager);
+		mapManager = new MapManager();
 		screenController = new ScreenController(this, assetManager);
+		stationManager = new StationManager();
 		load();
 	}
 
@@ -57,6 +64,9 @@ public class MainGameClass extends Game {
 	@Override
 	public void create() {
 
+
+		settingPref = Gdx.app.getPreferences(Constants.Preferences.SETTINGS);
+
 		// Load the default assets
 		assetManager.finishLoading();
 
@@ -67,8 +77,8 @@ public class MainGameClass extends Game {
 		shapeRenderer.setAutoShapeType(true);
 
 		// =============MUSIC=INITIALISATION===========================
-		musicVolumeScale = 0.4f;
-		gameVolumeScale = 0.4f;
+		musicVolumeScale = settingPref.getFloat(Constants.Preferences.MUSIC_VOLUME, Constants.DEFAULT_MUSIC_VOLUME);;
+		gameVolumeScale = settingPref.getFloat(Constants.Preferences.MUSIC_VOLUME, Constants.DEFAULT_SOUND_VOLUME);;
 		AudioSettings.setMusicVolume(Constants.DEFAULT_MUSIC_VOLUME, Constants.MUSIC_GROUP);
 		AudioSettings.setMusicVolume(Constants.DEFAULT_SOUND_VOLUME, Constants.GAME_GROUP);
 
@@ -135,5 +145,7 @@ public class MainGameClass extends Game {
 		assetManager.dispose();
 		batch.dispose();
 		shapeRenderer.dispose();
+
+		settingPref.flush();
 	}
 }

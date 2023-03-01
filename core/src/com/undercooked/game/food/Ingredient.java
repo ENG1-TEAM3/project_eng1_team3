@@ -19,19 +19,19 @@ public class Ingredient extends Entity {
 	/**
 	 * Represents internal states of ingredient.
 	 */
-	public int slices = 0;
-	private int idealSlices;
-	private float cookedTime = 0;
-	private float idealCookedTime;
+	//public int slices = 0;
+	//private int idealSlices;
+	//private float cookedTime = 0;
+	//private float idealCookedTime;
 
-	public Status status = Status.RAW;
+	//public Status status = Status.RAW;
 
 	/**
 	 * Represents ongoing states of the ingredient.
 	 */
-	public boolean cooking = false;
-	public boolean slicing = false;
-	public boolean flipped = false;
+	//public boolean cooking = false;
+	//public boolean slicing = false;
+	//public boolean flipped = false;
 
 	/**
 	 * Name of ingredient to get texture.
@@ -40,7 +40,12 @@ public class Ingredient extends Entity {
 
 	private static ShapeRenderer shapeRenderer = new ShapeRenderer();
 
-	/**
+
+	public Ingredient() {
+
+	}
+
+	/*
 	 * Sets the appropriate properties.
 	 *
 	 * @param pos             The (x, y) coordinates of the ingredient.
@@ -50,23 +55,23 @@ public class Ingredient extends Entity {
 	 * @param idealSlices     The ideal number of times to slice the ingredient.
 	 * @param idealCookedTime The ideal length of time to cook the ingredient.
 	 */
-	public Ingredient(Vector2 pos, float width, float height, String name, int idealSlices, float idealCookedTime, GameScreen game) {
+	/*public Ingredient(Vector2 pos, float width, float height, String name, int idealSlices, float idealCookedTime, GameScreen game) {
 		this.pos = pos;
 		this.width = width;
 		this.height = height;
-		this.name = name;
+		//this.name = name;
 		this.texture = game.getTextureManager().get("items/" + name + ".png");
-		this.idealSlices = idealSlices;
-		this.idealCookedTime = idealCookedTime;
+		//this.idealSlices = idealSlices;
+		//this.idealCookedTime = idealCookedTime;
 
-	}
+	}*/
 
 	/**
 	 * Creates a new instance with identical properties.
 	 *
 	 * @param ingredient The ingredient to clone.
 	 */
-	public Ingredient(Ingredient ingredient) {
+	/*public Ingredient(Ingredient ingredient) {
 		this.pos = ingredient.pos;
 		this.width = ingredient.width;
 		this.height = ingredient.height;
@@ -78,18 +83,18 @@ public class Ingredient extends Entity {
 		this.slices = ingredient.slices;
 		this.flipped = ingredient.flipped;
 		this.status = ingredient.status;
-	}
+	}*/
 
 	/**
 	 * Changes the {@link this#flipped} to true if possible.
 	 *
 	 * @return A boolean representing if the ingredient was successfully flipped.
 	 */
-	public boolean flip() {
+	/*public boolean flip() {
 		if (cookedTime / idealCookedTime < idealCookedTime * .65f)
 			return false;
 		return (flipped = true);
-	}
+	}*/
 
 	/**
 	 * Begin process of slicing ingredient and show status.
@@ -98,7 +103,7 @@ public class Ingredient extends Entity {
 	 * @param dT    The amount of time to increment by when slicing.
 	 * @return A boolean representing if a complete slice has occurred.
 	 */
-	public boolean slice(SpriteBatch batch, float dT) {
+	/*public boolean slice(SpriteBatch batch, float dT) {
 
 		shapeRenderer.setProjectionMatrix(batch.getProjectionMatrix());
 
@@ -116,9 +121,9 @@ public class Ingredient extends Entity {
 
 		draw(batch);
 		return false;
-	}
+	}*/
 
-	BitmapFont flipText = new BitmapFont();
+	// BitmapFont flipText = new BitmapFont();
 
 	/**
 	 * Begin process of cooking ingredient and show status.
@@ -127,7 +132,7 @@ public class Ingredient extends Entity {
 	 * @param batch {@link SpriteBatch} to render texture and status.
 	 * @return A double representing the current {@link this#cookedTime}.
 	 */
-	public double cook(float dT, SpriteBatch batch) {
+	/*public double cook(float dT, SpriteBatch batch) {
 		shapeRenderer.setProjectionMatrix(batch.getProjectionMatrix());
 		if (!flipped && cookedTime / idealCookedTime * width > idealCookedTime * width * .65f) {
 			batch.begin();
@@ -149,7 +154,7 @@ public class Ingredient extends Entity {
 
 		draw(batch);
 		return cookedTime;
-	}
+	}*/
 
 	/**
 	 * Draw a status bar.
@@ -158,7 +163,7 @@ public class Ingredient extends Entity {
 	 * @param optimumLower    The optimal status to reach (shown by a black bar).
 	 * @param optimumUpper
 	 */
-	private void drawStatusBar(float percentage, float optimumLower, float optimumUpper) {
+	/*private void drawStatusBar(float percentage, float optimumLower, float optimumUpper) {
 		shapeRenderer.begin(ShapeType.Filled);
 		shapeRenderer.setColor(Color.WHITE);
 		shapeRenderer.rect(pos.x - width / 2, pos.y + height + height / 10, width * 2, height / 4);
@@ -178,9 +183,9 @@ public class Ingredient extends Entity {
 		shapeRenderer.rect(pos.x - width / 2 + optimumUpper * width * 2, pos.y + height + height / 10, height / 10,
 				2 * height / 5);
 		shapeRenderer.end();
-	}
+	}*/
 
-	@Override
+	/*@Override
 	public boolean equals(Object o) {
 		if (!(o instanceof Ingredient))
 			return false;
@@ -191,10 +196,10 @@ public class Ingredient extends Entity {
 			return true;
 
 		return false;
-	}
+	}*/
 
 }
 
-enum Status {
+/*enum Status {
 	RAW, COOKED, BURNED
-}
+}*/

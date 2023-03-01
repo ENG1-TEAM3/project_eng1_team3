@@ -24,6 +24,11 @@ public class Entity {
 		batch.end();
 	}
 
+	public void load(TextureManager textureManager, String textureID) {
+		// Load Texture
+		textureManager.load(textureID, texturePath);
+	}
+
 	public void load(TextureManager textureManager) {
 		// Load Texture
 		textureManager.load(Constants.GAME_TEXTURE_ID, texturePath);
@@ -33,6 +38,11 @@ public class Entity {
 		// Unload Texture
 		textureManager.unload(texturePath);
 	}
+
+	/**
+	 * Function called after the screen has been loaded.
+	 */
+	public void postLoad() {}
 
 	public void setTexture(String texturePath) {
 		this.texturePath = texturePath;

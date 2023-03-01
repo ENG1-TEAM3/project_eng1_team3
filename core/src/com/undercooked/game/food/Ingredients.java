@@ -2,8 +2,10 @@ package com.undercooked.game.food;
 
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.undercooked.game.assets.TextureManager;
+import com.undercooked.game.files.FileControl;
 import com.undercooked.game.screen.GameScreen;
 import com.undercooked.game.util.Constants;
 
@@ -20,7 +22,15 @@ public class Ingredients {
 	}
 
 	public void addIngredient(String ID) {
-		addIngredient(ID, ID);
+		addIngredient(ID, ID + ".png");
+	}
+
+	public boolean addIngredientAsset(String assetPath) {
+		JsonValue ingredientRoot = FileControl.loadJsonAsset(assetPath, "items");
+		if (ingredientRoot != null) {
+			return false;
+		}
+		return true;
 	}
 
 	public void load(TextureManager textureManager) {
@@ -40,7 +50,7 @@ public class Ingredients {
 	}
 
 	/** TEMP. Final will use the functions above. */
-	public static void setupIngredients(GameScreen game) {
+	/*public static void setupIngredients(GameScreen game) {
 		// Meats
 		unformedPatty = new Ingredient(null, 32, 32, "unformed_patty", 0, .5f, game);
 		formedPatty = new Ingredient(null, 32, 32, "patty", 0, .5f, game);
@@ -90,6 +100,6 @@ public class Ingredients {
 	// Breads.
 	public static Ingredient bun;
 	// Toasted breads.
-	public static Ingredient cooked_bun;
+	public static Ingredient cooked_bun;*/
 
 }

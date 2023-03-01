@@ -4,17 +4,22 @@ import java.util.Stack;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.undercooked.game.MainGameClass;
 import com.undercooked.game.assets.AudioManager;
+import com.undercooked.game.assets.TextureManager;
 import com.undercooked.game.entity.Cook;
 import com.undercooked.game.entity.Entity;
 import com.undercooked.game.food.Ingredient;
 import com.undercooked.game.map.MapEntity;
 import com.undercooked.game.screen.GameScreen;
 import com.undercooked.game.util.Constants;
+
+import static com.undercooked.game.MainGameClass.shapeRenderer;
 
 /**
  * Represents a station.
@@ -65,9 +70,8 @@ public class Station extends MapEntity {
 	 * @param allowedIngredients A list of allowed ingredients in the station's
 	 *                           slots.
 	 */
-	public Station(Vector2 pos, int numberOfSlots, boolean infinite, Ingredient[] allowedIngredients,
-				   String soundPath, GameScreen game) {
-		this.pos = pos;
+	public Station() {
+		/*this.pos = pos;
 		this.numberOfSlots = numberOfSlots;
 		this.infinite = infinite;
 		this.allowedIngredients = allowedIngredients;
@@ -76,11 +80,30 @@ public class Station extends MapEntity {
 			//interactSound = Audio.getInstance().loadMusic(soundPath, soundPath);
 		this.soundPath = soundPath;
 		this.audioManager = game.getAudioManager();
-		this.interactSound = audioManager.getMusic(soundPath);
+		this.interactSound = audioManager.getMusic(soundPath);*/
+	}
+
+	public void update(float delta) {
+
 	}
 
 	public void create() {
 		interactSound = audioManager.getMusic(soundPath);
+	}
+
+	public void draw(SpriteBatch batch) {
+
+	}
+
+	public void drawStatusBar(SpriteBatch batch) {
+		shapeRenderer.setProjectionMatrix(batch.getProjectionMatrix());
+		shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+		shapeRenderer.setColor(Color.WHITE);
+		shapeRenderer.rect(pos.x * 64, pos.y * 64 + 64 + 64 / 10, 64, 64 / 8);
+		shapeRenderer.setColor(Color.GREEN);
+		shapeRenderer.rect(pos.x * 64, pos.y * 64 + 64 + 64 / 10, 64, 64 / 10);
+		shapeRenderer.end();
+
 	}
 
 	/**
@@ -89,7 +112,7 @@ public class Station extends MapEntity {
 	 * @param ingredient The ingredient to be placed.
 	 * @return A boolean to indicate if the ingredient was successfully placed.
 	 */
-	public boolean place(Ingredient ingredient) {
+	/*public boolean place(Ingredient ingredient) {
 		if ((slots.size() < numberOfSlots && isAllowed(ingredient)) || infinite) {
 			ingredient.pos = pos;
 			slots.push(ingredient);
@@ -97,7 +120,7 @@ public class Station extends MapEntity {
 		}
 
 		return false;
-	}
+	}*/
 
 	/**
 	 * Check if the ingredient can be placed on the station.
@@ -105,7 +128,7 @@ public class Station extends MapEntity {
 	 * @param droppedIngredient The ingredient to check.
 	 * @return A boolean to indicate if the ingredient was allowed.
 	 */
-	public boolean isAllowed(Ingredient droppedIngredient) {
+	/*public boolean isAllowed(Ingredient droppedIngredient) {
 		if (allowedIngredients == null)
 			return true;
 		for (Ingredient ingredient : allowedIngredients) {
@@ -114,14 +137,14 @@ public class Station extends MapEntity {
 		}
 
 		return false;
-	}
+	}*/
 
 	/**
 	 * Take the ingredient from the top slot.
 	 * 
 	 * @return The ingredient taken if successful, null otherwise.
 	 */
-	public Ingredient take() {
+	/*public Ingredient take() {
 		if (slots.empty())
 			return null;
 		interactSound.stop();
@@ -130,30 +153,30 @@ public class Station extends MapEntity {
 		}
 
 		return new Ingredient(slots.peek());
-	}
+	}*/
 
 	/**
 	 * Display text indicating to take the ingredient.
 	 *
 	 * @param batch The {@link SpriteBatch} that will draw.
 	 */
-	public void drawTakeText(SpriteBatch batch) {
+	/*public void drawTakeText(SpriteBatch batch) {
 		if (!slots.empty() && !GameScreen.cook.full()) {
 			drawText(batch, "Take [q]", new Vector2(pos.x * 64, pos.y * 64 - 16));
 		}
 
-	}
+	}*/
 
 	/**
 	 * Display text indicating to drop an item in the station's slot.
 	 * 
 	 * @param batch The {@link SpriteBatch} that will draw.
 	 */
-	public void drawDropText(SpriteBatch batch) {
+	/*public void drawDropText(SpriteBatch batch) {
 		if (GameScreen.cook.heldItems.size() > 0 && isAllowed(GameScreen.cook.heldItems.peek())) {
 			drawText(batch, "Drop [e]", new Vector2(pos.x * 64, pos.y * 64));
 		}
-	}
+	}*/
 
 	/**
 	 * 
@@ -170,10 +193,6 @@ public class Station extends MapEntity {
 		if (interactSound != null) {
 			interactSound.play();
 		}
-	}
-
-	public void load() {
-
 	}
 
 }

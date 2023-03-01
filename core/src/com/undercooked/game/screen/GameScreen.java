@@ -36,9 +36,11 @@ import com.undercooked.game.entity.CookController;
 import com.undercooked.game.entity.Customer;
 import com.undercooked.game.entity.CustomerController;
 import com.undercooked.game.entity.Entity;
+import com.undercooked.game.files.FileControl;
 import com.undercooked.game.food.Ingredients;
 import com.undercooked.game.food.Menu;
 import com.undercooked.game.logic.GameLogic;
+import com.undercooked.game.map.Map;
 import com.undercooked.game.station.StationManager;
 import com.undercooked.game.util.CameraController;
 import com.undercooked.game.util.CollisionTile;
@@ -117,13 +119,12 @@ public class GameScreen extends Screen {
 	long tempTime, tempThenTime;
 	public static Control control;
 	TiledMapRenderer tiledMapRenderer;
-	public TiledMap map1;
+	public Map map;
 	public static int currentCookIndex = 0;
 	
 	public static CookController cookController;
 	public static CustomerController customerController;
 	InputMultiplexer multi;
-	StationManager stationManager = new StationManager(this);
 
 	/**
 	 * Constructor to initialise game screen;
@@ -132,11 +133,10 @@ public class GameScreen extends Screen {
 	 */
 	public GameScreen(MainGameClass game) {
 		super(game);
-		Ingredients.setupIngredients(this); // TODO: Refactor Ingredients class.
-		Menu.setupRecipes(this); // TODO: Menu uses Ingredients class.
+		//Ingredients.setupIngredients(this); // TODO: Refactor Ingredients class.
+		//Menu.setupRecipes(this); // TODO: Menu uses Ingredients class.
 		this.calculateBoxMaths();
 		control = new Control();
-		// map = new TmxMapLoader().load("map/art_map/prototype_map.tmx");
 	}
 
 	/**
@@ -167,7 +167,7 @@ public class GameScreen extends Screen {
 		game.audioManager.loadMusic("audio/soundFX/money-collect.mp3", Constants.GAME_GROUP);
 		game.audioManager.loadMusic("audio/soundFX/timer-bell-ring.mp3", Constants.GAME_GROUP);
 
-		game.mapManager.load("map/art_map/customertest.tmx");
+		map = game.mapManager.load(FileControl.toPath("<main>:default.json", "maps"), game.stationManager, true);
 	}
 
 	@Override
@@ -183,7 +183,7 @@ public class GameScreen extends Screen {
 		stage.dispose();
 		stage2.dispose();
 
-		game.mapManager.unload();
+		map.dispose();
 	}
 
 	/**
@@ -199,10 +199,7 @@ public class GameScreen extends Screen {
 	 */
 	@Override
 	public void postLoad() {
-		map1 = game.mapManager.get();
-		constructCollisionData(map1);
-		tiledMapRenderer = game.mapManager.createMapRenderer();
-		customerController = new CustomerController(map1, game.textureManager);
+		// customerController = new CustomerController(map1, game.textureManager);
 
 		game.gameMusic = game.audioManager.getMusic("audio/music/GameMusic.ogg");
 		// =======================================START=FRAME=TIMER======================================================
@@ -314,13 +311,6 @@ public class GameScreen extends Screen {
 	 */
 
 	public void render(float delta) {
-
-		// Update the game
-		gameLogic.update(delta);
-
-		// Render the Screen
-		renderScreen();
-
 		// =====================================CLEAR=SCREEN=============================================================
 		ScreenUtils.clear(0, 0, 0, 0);
 		Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
@@ -341,7 +331,6 @@ public class GameScreen extends Screen {
 		// =====================================RENDER=TOP=MAP=LAYER=====================================================
 		tiledMapRenderer.render(new int[] { 1 });
 		// =====================================DRAW=COOK=TOP=HALF=======================================================
-		stationManager.handleStations(MainGameClass.batch);
 		drawHeldItems();
 		MainGameClass.batch.begin();
 		for (Cook curCook : cookController.getCooks())
@@ -351,7 +340,7 @@ public class GameScreen extends Screen {
 		// ==================================MOVE=COOK===================================================================
 		tempTime = System.currentTimeMillis();
 		tempThenTime = tempTime;
-		checkInteraction(cookController.getCurrentCook(), MainGameClass.shapeRenderer);
+		// checkInteraction(cookController.getCurrentCook(), MainGameClass.shapeRenderer);
 		// =====================================SET=MATRIX=FOR=UI=ELEMENTS===============================================
 		MainGameClass.batch.setProjectionMatrix(uiCamera.combined);
 		// =====================================DRAW=UI=ELEMENTS=========================================================
@@ -386,7 +375,7 @@ public class GameScreen extends Screen {
 	 */
 	private void drawUI() {
 		if (currentWaitingCustomer != null && currentWaitingCustomer.waitTime() < MAX_WAIT_TIME) {
-			Menu.RECIPES.get(currentWaitingCustomer.order).displayRecipe(MainGameClass.batch, new Vector2(64, 256));
+			//Menu.RECIPES.get(currentWaitingCustomer.order).displayRecipe(MainGameClass.batch, new Vector2(64, 256));
 		}
 		for (int i = 0; i < cookController.getCooks().size; i++) {
 			if (i == currentCookIndex) {
@@ -416,7 +405,7 @@ public class GameScreen extends Screen {
 		 * @param delta - some change in time
 		 */
 	private void setCameraLerp(float delta) {
-		if (!Tutorial.complete) {
+		/*if (!Tutorial.complete) {
 			worldCamera.position.lerp(new Vector3(Tutorial.getStagePos(), 0), .065f);
 			if (control.tab) {
 				Tutorial.nextStage();
@@ -424,7 +413,7 @@ public class GameScreen extends Screen {
 				Tutorial.previousStage();
 			}
 			Tutorial.drawBox(MainGameClass.batch, delta * 20);
-		} else {
+		} else {*/
 			if (Math.abs(worldCamera.position.x - cookController.getCurrentCook().pos.x) < 2
 					&& Math.abs(worldCamera.position.y - cookController.getCurrentCook().pos.y) < 2) {
 				worldCamera.position.x = cookController.getCurrentCook().pos.x;
@@ -432,7 +421,7 @@ public class GameScreen extends Screen {
 			} else {
 				worldCamera.position.lerp(new Vector3(cookController.getCurrentCook().pos.x, cookController.getCurrentCook().pos.y, 0), .065f);
 			}
-		}
+		//}
 	}
 
 	/**
@@ -604,13 +593,13 @@ public class GameScreen extends Screen {
 		}
 	}
 
-	/**
+	/*
 	 * Check the tile the cookController.getCurrentCook() is looking at for interaction
 	 *
 	 * @param ck - Selected cookController.getCurrentCook()
 	 * @param sr - ShapeRenderer to draw the coloured box
 	 */
-	public void checkInteraction(Cook ck, ShapeRenderer sr) {
+	/*public void checkInteraction(Cook ck, ShapeRenderer sr) {
 		float centralCookX = ck.getX() + ck.getWidth() / 2;
 		float centralCookY = ck.getY();
 		int cellx = (int) Math.floor(centralCookX / 64);
@@ -634,7 +623,7 @@ public class GameScreen extends Screen {
 		sr.setColor(new Color(1, 0, 1, 1));
 		sr.rect(checkCellX * 64, checkCellY * 64, 64, 64);
 		sr.end();
-	}
+	}*/
 
 	public void checkGameOver() {
 		if (currentWave == NUMBER_OF_WAVES + 1) {

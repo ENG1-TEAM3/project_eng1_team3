@@ -39,26 +39,175 @@ public final class Constants {
             JsonObject root = new JsonObject();
             // Highscore variable set up
             JsonObject highscore = new JsonObject();
-            highscore.addValue(new JsonType("Name", JsonValue.ValueType.stringValue));
-            highscore.addValue(new JsonInt("Time",-1));
+            highscore.addValue(new JsonString("name", null));
+            highscore.addValue(new JsonInt("value",-1)); // time in scenario, number of customers in endless.
             JsonObjectArray highscores = new JsonObjectArray("highscores", highscore);
 
             // Scenario scores
             JsonObject scenario = new JsonObject("scenario");
-            scenario.addValue(new JsonString("ID", "undefined"));
+            scenario.addValue(new JsonString("id", null));
             scenario.addValue(highscores);
-            JsonObjectArray scenarios = new JsonObjectArray("scenarios", scenario);
+            root.addValue(new JsonObjectArray("scenarios", scenario));
 
             // Endless scores
-            JsonObjectArray endless = new JsonObjectArray("endless", highscore);
-            root.addValue(endless);
-            root.addValue(scenarios);
+            root.addValue(new JsonObjectArray("endless", highscore));
             return root;
         }
-        public static JsonObject ingredientFormat() {
+        public static JsonObject itemFormat() {
             JsonObject root = new JsonObject();
-            root.addValue(new JsonString("ID","undefined"));
-            root.addValue(new JsonString("path", "undefined"));
+            root.addValue(new JsonString("id",null));
+            root.addValue(new JsonString("texture_path", null));
+            return root;
+        }
+        public static JsonObject stationFormat() {
+            JsonObject root = new JsonObject();
+            root.addValue(new JsonString("id",null));
+            root.addValue(new JsonString("texture_path", null));
+            root.addValue(new JsonInt("texture_rotation", 0));
+            root.addValue(new JsonInt("width", 1)); // How many x tiles it takes up
+            root.addValue(new JsonInt("height", 1)); // How many y tiles it takes up
+            return root;
+        }
+        public static JsonObject mapFormat() {
+            JsonObject root = new JsonObject();
+            // Map ID
+            root.addValue(new JsonString("id",null));
+
+            // Map Stations (Map will not load them by default)
+            JsonObject station = new JsonObject();
+            station.addValue(new JsonString("id", null));
+            station.addValue(new JsonInt("x", -1));
+            station.addValue(new JsonInt("y", -1));
+
+            root.addValue(new JsonObjectArray("stations", station));
+
+            // Other map variables
+            root.addValue(new JsonInt("width", 16)); // The width of the Cook's area
+            root.addValue(new JsonInt("height", 16)); // The height of the Cook's area
+            return root;
+        }
+        public static JsonObject scenarioFormat() {
+            JsonObject root = new JsonObject();
+            // Map ID
+            root.addValue(new JsonString("id",null));
+
+            // Map ID (The map to use)
+            root.addValue((new JsonString("map_id", null)));
+
+            // Where the Cooks should be placed (at the start)
+            JsonObject cook = new JsonObject();
+            cook.addValue(new JsonInt("x", -1));
+            cook.addValue(new JsonInt("y", -1));
+            cook.addValue(new JsonInt("num", -1)); // The cook texture number, -1 being random.
+
+            root.addValue(new JsonObjectArray("cooks", cook));
+
+            // The interactions (these will automatically be sorted through to find the ingredient IDs)
+            root.addValue(new JsonType("interactions", JsonValue.ValueType.array));
+
+            // Requests (What the customers could possibly request)
+            // It is an array of arrays of strings, with the strings being item IDs.
+            root.addValue(new JsonType("requests", JsonValue.ValueType.array));
+
+            // Other variables
+
+            return root;
+        }
+        public static JsonObject interactionFormat() {
+            JsonObject root = new JsonObject();
+            // Interaction ID
+            root.addValue(new JsonString("id",null));
+
+            // The interactions (these will automatically be sorted through to find the ingredient IDs)
+            JsonObject interaction = new JsonObject();
+            interaction.addValue(new JsonString("station_id", null)); // The station ID for the interaction
+            interaction.addValue(new JsonArray("items", JsonValue.ValueType.stringValue)); // An array of item IDs. The exact same number are needed for the interaction to take place,
+            // the interaction only starting once a valid interaction is found.
+
+            // A step in the interaction
+            JsonObject interactionStep = new JsonObject("");
+            interactionStep.addValue(new JsonString("type", null)); // The type (e.g: Wait, wait (with cook locked to the station), set item, interaction input, etc.)
+            /*
+                Examples of types:
+                - Wait : How long it takes for the next step.
+                - Wait, Cook : How long it takes for the next step (requiring a cook to advance the timer)
+                - Wait, Cook timed : Two timers. One for Wait, Cook and another than runs while Cook is not locked.
+                        If Cook timer reaches full, it's a success. If second timer reaches full, it's a failure.
+                - Set : Sets the items on the station to the list provided. Ignores time and moves to next step.
+                - Input : Requires an input of id value to move to the next step.
+                - Input timed : Requires an input within a time limit.
+                - Colour : Colours the bar the colour provided in value. Ignores time and moves to next step.
+             */
+            interactionStep.addValue(new JsonType("value", JsonValue.ValueType.nullValue)); // Can be anything, relying on the type.
+            /** NOTE: THE BELOW LIKELY, CURRENTLY, CAUSES AN INFINITE LOOP. CAN'T TEST AS THERE ARE CODE ERRORS. */
+            interactionStep.addValue(new JsonObjectArray("success", interactionStep)); // Step path to take if the interaction is a success
+            interactionStep.addValue(new JsonObjectArray("failure", interactionStep)); // Step path to take if the interaction is a failure (won't be needed for all interaction types)
+            interactionStep.addValue(new JsonFloat("time", null)); // The time (in seconds) that this step takes.
+            interactionStep.addValue(new JsonString("sound", null)); // The sound this step makes.
+            /* An example format would be
+            {
+                "id": "lettuce_chop",
+                "station_id": "chopping",
+                "items": ["lettuce"],
+                "steps": [{
+                    "type": "wait",
+                    "value": null,
+                    "success": null,
+                    "failure": null,
+                    "time": 3.0,
+                    "sound": "chopping.mp3"
+                },
+                {
+                    "type": "input",
+                    "value": "interact",
+                    "success": [{
+                        "type": "set",
+                        "value": ["chopped_lettuce"],
+                        "success": null,
+                        "failure": null,
+                        "time": 0,
+                        "sound": null
+                    }],
+                    "failure": [{
+                        "type": "set",
+                        "value": ["bad_chopped_lettuce"],
+                        "success": null,
+                        "failure": null,
+                        "time": 0,
+                        "sound": "buzz.mp3"
+                    }],
+                    "time": 4.0,
+                    "sound": "heavy_chopping.mp3"
+                }, ...
+                *something here would happen after EITHER both success or failure.
+                For example, cooking meat successfully, but not taking it off quick enough
+                would mean it's ruined whether you flipped it correctly or not.*
+                ]
+            }
+            */ // Visually, this could be shown as one main bar, and a faded bar above. If you fail, the main bar disappears, and the faded bar replaces it.
+
+            /*
+            Pantries will also be created using this. E.g:
+            {
+                "ID": "take_tomato",
+                "station_ID": "tomato_pantry",
+                "items": [], // When it sets itself to a tomato again, it will no longer apply to this.
+                "steps": [{
+                    "type": "set",
+                    "value": "tomato",
+                    "success": null,
+                    "failure": null,
+                    "time": 0,
+                    "sound": null
+                }]
+            }
+             */
+
+            interaction.addValue(new JsonObjectArray("steps", interactionStep));
+            root.addValue(new JsonObjectArray("interactions", interaction));
+
+            // Other variables
+
             return root;
         }
         // public static JsonValue

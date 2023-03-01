@@ -1,16 +1,24 @@
 package com.undercooked.game.station;
 
+import java.io.FileFilter;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.JsonValue;
+import com.badlogic.gdx.utils.ObjectMap;
 import com.undercooked.game.MainGameClass;
 import com.undercooked.game.assets.AudioManager;
+import com.undercooked.game.assets.TextureManager;
+import com.undercooked.game.files.FileControl;
 import com.undercooked.game.food.Ingredient;
 import com.undercooked.game.food.Ingredients;
 import com.undercooked.game.screen.GameScreen;
+import com.undercooked.game.util.Constants;
+import com.undercooked.game.util.json.JsonFormat;
 
 /**
  * 
@@ -25,13 +33,22 @@ public class StationManager {
 	/**
 	 * A Map representing every station and its (x, y) coordinates.
 	 */
-	public static Map<Vector2, Station> stations = new HashMap<>();
+	public static ObjectMap<String, Station> stations = new ObjectMap<>();
+	public static ObjectMap<String, String> stationPaths;
 
 	SpriteBatch batch;
 	GameScreen game;
 
-	public StationManager(GameScreen game) {
-		this.game = game;
+	public StationManager() {
+		this.stations = new ObjectMap<>();
+		this.stationPaths = new ObjectMap<>();
+	}
+
+	public void update(float delta) {
+		// Update all the stations.
+		for (Station station : stations.values()) {
+			station.update(delta);
+		}
 	}
 
 	/**
@@ -39,7 +56,7 @@ public class StationManager {
 	 * 
 	 * @param batch - SpriteBatch to render ingredient textures.
 	 */
-	public void handleStations(SpriteBatch batch) {
+	/*public void handleStations(SpriteBatch batch) {
 		this.batch = batch;
 		for (Station station : stations.values()) {
 			if (!station.slots.empty() && !station.infinite) {
@@ -70,7 +87,7 @@ public class StationManager {
 				}
 			}
 		}
-	}
+	}*/
 
 	/**
 	 * Check the currently looked at tile for a station.
@@ -78,7 +95,7 @@ public class StationManager {
 	 * @param type The station type.
 	 * @param pos  The position of the tile.
 	 */
-	public void checkInteractedTile(String type, Vector2 pos) {
+	/*public void checkInteractedTile(String type, Vector2 pos) {
 		switch (type) {
 		case "Buns":
 			takeIngredientStation(pos, Ingredients.bun);
@@ -149,7 +166,7 @@ public class StationManager {
 			break;
 		}
 
-	}
+	}*/
 
 	/**
 	 * Check if the given station exists at the given position.
@@ -158,21 +175,21 @@ public class StationManager {
 	 * @param station The station to check for.
 	 * @return A boolean indicating if the station exists at that position.
 	 */
-	private boolean checkStationExists(Vector2 pos, Station station) {
+	/*private boolean checkStationExists(Vector2 pos, Station station) {
 		if (!stations.containsKey(pos)) {
 			stations.put(pos, station);
 			return false;
 		}
 
 		return true;
-	}
+	}*/
 
 	/**
 	 * Place ingredient on top of cook's stack on station at given position.
 	 * 
 	 * @param pos The position to lookup the station.
 	 */
-	private void placeIngredientStation(Vector2 pos) {
+	/*private void placeIngredientStation(Vector2 pos) {
 		checkStationExists(pos, new Station(pos, 4, false, null, null, game));
 		stations.get(pos).drawTakeText(batch);
 		stations.get(pos).drawDropText(batch);
@@ -188,7 +205,7 @@ public class StationManager {
 		if (GameScreen.control.drop)
 			if (stations.get(pos).place(GameScreen.cook.heldItems.peek()))
 				GameScreen.cook.dropItem();
-	}
+	}*/
 
 	/**
 	 * Take an item from the ingredient station
@@ -196,7 +213,7 @@ public class StationManager {
 	 * @param pos        The position of the station.
 	 * @param ingredient The ingredient that the station holds.
 	 */
-	private void takeIngredientStation(Vector2 pos, Ingredient ingredient) {
+	/*private void takeIngredientStation(Vector2 pos, Ingredient ingredient) {
 		checkStationExists(pos, new IngredientStation(pos, ingredient, game));
 		stations.get(pos).drawTakeText(batch);
 
@@ -204,6 +221,62 @@ public class StationManager {
 			GameScreen.cook.pickUpItem(stations.get(pos).take());
 		}
 
+	}*/
+
+	private void loadStationsFromPath(String path, boolean internal) {
+		FileHandle stations = FileControl.getFileHandle(path, internal);
+		for (FileHandle file : stations.list()) {
+			// If it's a directory, then recurse
+			if (file.isDirectory()) {
+				loadStationsFromPath(file.path(), internal);
+			} else {
+				// If it's not, ensure it's a json.
+				if (file.extension() == "json") {
+					// Read the file data
+					JsonValue stationRoot = JsonFormat.formatJson(
+							FileControl.loadJsonData(path, internal),
+							Constants.DefaultJson.stationFormat());
+					// If it's not null...
+					if (stationRoot != null) {
+						// Then
+					}
+				}
+			}
+		}
 	}
 
+	/**
+	 * Loads all the station paths in the game and stores them in an {@link ObjectMap}
+	 * pairing of the station's id and its path.
+	 */
+	public void loadStationPaths() {
+		// First clear the object map
+		stationPaths.clear();
+
+		// Load the internal path.
+		loadStationsFromPath("game/stations", true);
+
+		// Load from the external path.
+		loadStationsFromPath(FileControl.getDataPath() + "game/stations", false);
+	}
+
+	public String getStationPath(String stationID) {
+		return stationPaths.get(stationID);
+	}
+
+	public void addStation(String stationID, Station station) {
+		// Only add if it's not contained already
+		if (!stations.containsKey(stationID)) {
+			stations.put(stationID, station);
+		}
+	}
+
+	public void clear() {
+		// Unload the stations
+		stations.clear();
+	}
+
+	public boolean hasID(String stationID) {
+		return stations.containsKey(stationID);
+	}
 }

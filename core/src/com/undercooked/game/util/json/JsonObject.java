@@ -15,6 +15,9 @@ public class JsonObject extends JsonVal<ObjectMap<String, JsonVal>> {
     public void addValue(JsonVal jsonVal) {
         value.put(jsonVal.getID(), jsonVal);
     }
+    public void addValue(String ID, JsonVal jsonVal) {
+        value.put(ID, jsonVal);
+    }
 
     public Array<JsonVal> getValues() {
         return value.values().toArray();

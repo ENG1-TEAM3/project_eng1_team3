@@ -5,9 +5,12 @@ import com.badlogic.gdx.utils.Array;
 import com.undercooked.game.entity.Cook;
 import com.undercooked.game.entity.CookController;
 import com.undercooked.game.entity.CustomerController;
+import com.undercooked.game.files.FileControl;
 import com.undercooked.game.food.Ingredients;
+import com.undercooked.game.map.Map;
 import com.undercooked.game.screen.GameScreen;
 import com.undercooked.game.screen.ScreenController;
+import com.undercooked.game.station.StationManager;
 
 /**
  * A class to extend from that indicates the logic of the {@link GameScreen}.
@@ -18,7 +21,8 @@ public abstract class GameLogic implements Logic {
     Ingredients ingredients;
     CookController cookController;
     CustomerController customerController;
-    TiledMap map;
+    StationManager stationManager;
+    Map map;
     public GameLogic(GameScreen game) {
         this.game = game;
         this.ingredients = new Ingredients();
@@ -35,8 +39,16 @@ public abstract class GameLogic implements Logic {
      * Loads a map from the path provided
      * @param path {@link String} of the path.
      */
+    public final void loadMap(String path, boolean internal) {
+        game.getMapManager().load(path, stationManager, internal);
+    }
+
+    /**
+     * Loads a map from the path provided
+     * @param path {@link String} of the path.
+     */
     public final void loadMap(String path) {
-        game.getMapManager().load(path);
+        map = game.getMapManager().load(path, stationManager, FileControl.isInternal(path));
     }
 
     /**
@@ -50,7 +62,7 @@ public abstract class GameLogic implements Logic {
      * Called after the game has loaded.
      */
     public void postLoad() {
-        map = game.getMapManager().get();
+
     }
 
     /** Unloads all the objects in this class.

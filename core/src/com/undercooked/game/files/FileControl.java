@@ -1,5 +1,8 @@
 package com.undercooked.game.files;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.utils.*;
 import com.undercooked.game.util.Constants;
 
 import java.io.File;
@@ -32,9 +35,13 @@ public class FileControl {
         return "\\data\\" + Constants.DATA_FILE + endsWith;
     }
 
+    public static String formatDir(String dir) {
+        return (dir.endsWith("\\") || dir.endsWith("/") ? "" : "/");
+    }
+
     public static String dirAndName(String dir, String fileName) {
         return dir
-                + (dir.endsWith("\\") || dir.endsWith("/") ? "" : "/")
+                + formatDir(dir)
                 + fileName;
     }
 
@@ -54,11 +61,11 @@ public class FileControl {
         }
     }
 
-    public static String loadfile(String dir, String fileName) {
-        return loadFile(dir, fileName, "");
+    public static void saveData(String fileName, String data) {
+        saveToFile(getDataPath(), fileName, data);
     }
 
-    public static String loadFile(String dir, String fileName, String defaultData) {
+    public static String loadFile(String dir, String fileName) {
         File directory = new File(dir);
         // If directory isn't a directory, or it doesn't exist, then create the directory.
         if (!(directory.exists() && directory.isDirectory())) {
@@ -69,7 +76,7 @@ public class FileControl {
         if (!(file.exists() && file.isFile())) {
             try {
                 file.createNewFile();
-                saveToFile(dir,fileName,defaultData);
+                saveToFile(dir,fileName,"{}");
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -87,41 +94,114 @@ public class FileControl {
         return fileData;
     }
 
-    /*public static JsonValue loadJsonFile(String dir, String fileName) {
-        return loadJsonFile(dir, fileName, new JsonValue());
+    public static String loadData(String fileName) {
+        return loadFile(getDataPath(), fileName);
     }
 
-    public static JsonValue loadJsonFile(String dir, String fileName, JsonValue defaultJson) {
-        File directory = new File(dir);
+    public static JsonValue loadJsonFile(String dir, String fileName, boolean internal) {
+        FileHandle directory = null;
+        dir = formatDir(dir);
+        if (internal) {
+            directory = Gdx.files.internal(dir + fileName);
+        } else {
+            directory = Gdx.files.external(dir + fileName);
+        }
         // If directory isn't a directory, or it doesn't exist, then return nothing.
         if (!(directory.exists() && directory.isDirectory())) {
             return null;
         }
-        File file = new File (dirAndName(dir, fileName));
+        File file = new File(dirAndName(dir, fileName));
         // If file isn't a file, or it doesn't exist, then return nothing.
         if (!(file.exists() && file.isFile())) {
             return null;
         }
         // Otherwise, load the Json file.
-        JsonReader reader = new JsonReader();
+        String jsonData = loadFile(dir, fileName);
+        JsonReader json = new JsonReader();
         JsonValue fileData = null;
         try {
-            fileData = reader.parse(new FileReader(file));
-        } catch (FileNotFoundException e) {
+            fileData = json.parse(jsonData);
+        } catch (GdxRuntimeException e) {
             e.printStackTrace();
+            return null;
         }
         return fileData;
-    }*/
+    }
 
-    /*
+    public static JsonValue loadJsonData(String fileName, boolean internal) {
+        return loadJsonFile(getDataPath(), fileName, internal);
+    }
 
-    Testing
+    public static JsonValue loadJsonData(String fileName) {
+        return loadJsonData(fileName, true);
+    }
+
+    public static FileHandle getFileHandle(String path, boolean internal) {
+        if (internal) {
+            return Gdx.files.internal(path);
+        }
+        return Gdx.files.external(path);
+    }
+
+    public static boolean isInternal(String path) {
+        if (path.contains(":")) {
+            if (path.startsWith("<main>")) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return !(path.startsWith(getDataPath()));
+        }
+    }
+
+    public static JsonValue loadJsonAsset(String assetPath, String folderName) {
+        // First, change assetPath to path.
+        String path = toPath(assetPath, folderName);
+        // Then, depending on if it starts with "<main>:" or not, change whether it
+        // uses the AppData path or internal path.
+        if (assetPath.startsWith("<main>")) {
+            // Remove the "<main>:"
+            assetPath = assetPath.substring(8);
+            return loadJsonFile("game/", assetPath, true);
+        } else {
+            return loadJsonFile(getDataPath() + "game/", path, false);
+        }
+
+    }
+
+    public static void saveJsonFile(String dir, String fileName, JsonValue root) {
+        // Convert the JSON into text and save it
+        String jsonData = root.toJson(JsonWriter.OutputType.json);
+        saveToFile(dir, fileName, jsonData);
+    }
+
+    public static void saveJsonData(String fileName, JsonValue root) {
+        saveJsonFile(getDataPath(), fileName, root);
+    }
+
+    public static String toPath(String assetPath, String mainFolderName) {
+        mainFolderName = formatDir(mainFolderName);
+        // AssetPath will be in the format group:filePath
+        String[] args = assetPath.split(":", 1);
+        if (args.length != 2) {
+            return assetPath;
+        }
+
+        // Return the asset's path
+        return mainFolderName + args[1];
+    }
 
     public static void main(String[] args) {
         String appdata = getDataPath();
         System.out.println(appdata);
         saveToFile(appdata, "save_data.txt", "Test!");
+        JsonValue jvalue = loadJsonData("settings.json");
+        System.out.println(jvalue);
+        jvalue.addChild("TEST", new JsonValue(JsonValue.ValueType.object));
+        System.out.println(jvalue);
+        saveJsonData("settings.json", jvalue);
+        System.out.println(jvalue.get("TEST"));
     }
-     */
 
 }

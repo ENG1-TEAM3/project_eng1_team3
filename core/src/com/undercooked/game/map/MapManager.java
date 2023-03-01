@@ -6,29 +6,25 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.JsonValue;
+import com.undercooked.game.files.FileControl;
+import com.undercooked.game.station.Station;
+import com.undercooked.game.station.StationManager;
 import com.undercooked.game.util.Constants;
+import com.undercooked.game.util.json.JsonFormat;
+import com.undercooked.game.util.json.JsonVal;
 
 public class MapManager {
 
-    AssetManager assetManager;
-    String mapPath;
-    OrthogonalTiledMapRenderer mapRenderer;
-    public MapManager(AssetManager assetManager) {
-        this.assetManager = assetManager;
+    public MapManager() {
         load();
     }
 
     private void load() {
-        try {
-            assetManager.load(Constants.DEFAULT_MAP, TiledMap.class);
-        } catch (GdxRuntimeException e) {
-            // Of course, make sure it actually doesn't crash if they can't load
-            System.out.println("Couldn't load default TiledMap.");
-            e.printStackTrace();
-        }
+
     }
 
-    public TiledMap get() {
+    /*public Map get() {
         if (assetManager.isLoaded(mapPath)) {
             return assetManager.get(mapPath, TiledMap.class);
         } else {
@@ -41,53 +37,76 @@ public class MapManager {
             }
             return assetManager.get(Constants.DEFAULT_MAP, TiledMap.class);
         }
-    }
+    }*/
 
-    public boolean load(String path) {
-        // Load the TiledMap
-        try {
-            assetManager.load(path, TiledMap.class);
-        } catch (GdxRuntimeException e) {
-            // If it doesn't load, just return.
-            return false;
-        }
-        // If the map loaded, then unload the previous map (if there is one) and save
-        // the path to the new one.
-        if (assetManager.isLoaded(mapPath)) {
-            assetManager.unload(mapPath);
-        }
-        mapPath = path;
-        return true;
-    }
-
-    public OrthogonalTiledMapRenderer createMapRenderer() {
-        // If a renderer already exists, dispose it
-        if (mapRenderer != null) {
-            mapRenderer.dispose();
+    public Map load(String path, StationManager stationManager, boolean internal) {
+        // Try loading the Json
+        JsonValue root = JsonFormat.formatJson(FileControl.loadJsonData(path, internal), Constants.DefaultJson.mapFormat());
+        // If it's null, then just load the default map and return that.
+        if (root == null) {
+            // Make sure this isn't the Default Map, to avoid an infinite loop.
+            if (path != Constants.DEFAULT_MAP){
+                return load(Constants.DEFAULT_MAP, stationManager, internal);
+            } else {
+                return null;
+            }
         }
 
-        try {
-            return new OrthogonalTiledMapRenderer(get());
-        } catch (GdxRuntimeException e) {
-            e.printStackTrace();
-            return null;
+        // First clear the stationManager, as it will be used for this Map#
+        stationManager.clear();
+
+        // Convert the Map Json into an actual map
+        Map outputMap = mapOfSize(root.getInt("width"), root.getInt("height"));
+
+        // Loop through the stations
+        for (JsonValue stationData : root.get("stations").iterator()) {
+            // Put the whole thing in a try, just in case
+            try {
+                // Check station ID isn't null
+                // If it is, just ignore.
+                if (stationData.getString("id") != null) {
+                    // If it isn't, load the json data for it
+                    JsonValue stationRoot = JsonFormat.formatJson(FileControl.loadJsonData(stationManager.getStationPath(stationData.getString("id"))),
+                            Constants.DefaultJson.stationFormat());
+                    // If station root is null, then ignore.
+                    // This will happen if the file wasn't found.
+                    if (stationRoot == null) {
+                        String stationID = stationRoot.getString("id");
+                        // If station ID already exists, then skip the following
+                        if (stationManager.hasID(stationID)) {
+                            continue;
+                        }
+                        // Initialise the Station
+                        Station newStation = new Station();
+                        newStation.setTexture(stationData.getString("texture_path"));
+                        newStation.setWidth(stationRoot.getInt("width"));
+                        newStation.setHeight(stationRoot.getInt("height"));
+
+                        stationManager.addStation(stationID, newStation);
+
+                        // Add it to the map
+                        outputMap.addMapEntity(newStation,
+                                               stationRoot.getInt("x"),
+                                               stationRoot.getInt("y"));
+                    }
+                }
+            } catch (GdxRuntimeException e) {
+                e.printStackTrace();
+            }
         }
+        return outputMap;
     }
 
     /**
      * Unloads the map and renderer, if there is one of either.
      */
     public void unload() {
-        if (assetManager.isLoaded(mapPath)) {
-            assetManager.unload(mapPath);
-        }
-        if (mapRenderer != null) {
-            mapRenderer.dispose();
-        }
+
     }
 
-    public Map mapOfSize(int width, int height) {
-
+    // Creates a map of size width and height.
+    public static Map mapOfSize(int width, int height) {
+        return new Map(width, height);
     }
 
     public static float gridToPos(int gridPos) {

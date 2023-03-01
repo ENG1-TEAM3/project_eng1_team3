@@ -6,6 +6,7 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.ObjectMap;
+import com.undercooked.game.audio.SoundStateChecker;
 import com.undercooked.game.util.Constants;
 
 /**
@@ -43,14 +44,27 @@ public class AudioManager {
     }
     ObjectMap<String, VolumeGroup> volumes;
     AssetManager assetManager;
+    SoundStateChecker soundStateChecker;
 
     /**
      * Constructor to set up the Maps for music, sound and volumes.
      */
-    public AudioManager(AssetManager assetManager) {
+    public AudioManager(AssetManager assetManager, SoundStateChecker soundStateChecker) {
         volumes = new ObjectMap<>();
         this.assetManager = assetManager;
+        this.soundStateChecker = soundStateChecker;
         load();
+    }
+
+    /**
+     * Returns whether the sound ID is playing or not.
+     *
+     * @param soundID The {@code soundID} as an {@code int}.
+     * @return {@code boolean} : {@code True} if the {@link Sound} is playing,
+     *                           {@code False} if not.
+     */
+    public boolean soundIsPlaying(long soundID) {
+        return soundStateChecker.isPlaying((int) soundID);
     }
 
     /**

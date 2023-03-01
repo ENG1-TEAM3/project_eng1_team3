@@ -1,32 +1,26 @@
 package com.undercooked.game.map;
 
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
+import com.undercooked.game.assets.TextureManager;
 import com.undercooked.game.entity.Cook;
 import com.undercooked.game.entity.Entity;
 import com.undercooked.game.station.Station;
 
 public class Map {
 
-    class MapCell {
-        boolean collidable;
-        MapEntity mapEntity;
-
-        public MapCell(boolean collidable) {
-            this.collidable = collidable;
-        }
-    }
-
     Array<Array<MapCell>> map;
     int width;
     int height;
 
     public Map(int width, int height) {
-
-    }
-
-    public void load(String path) {
-
+        // Initialise the columns
+        map = new Array<>(width);
+        // Then initialise the rows
+        for (int i = 0 ; i < map.size ; i++) {
+            map.add(new Array<MapCell>(height));
+        }
     }
 
     public boolean validCell(int x, int y) {
@@ -50,27 +44,92 @@ public class Map {
         return map.get(x).get(y);
     }
 
-    public boolean removeEntity() {
-
+    /**
+     * Removes all instances of a {@link MapEntity} from
+     * the {@link Map}.
+     * @param entity The {@link MapEntity} to remove.
+     * @return {@code boolean}: {@code True} if the entity was on the map,
+     *                          {@code False} if it was not.
+     */
+    public boolean removeEntity(MapEntity entity) {
+        boolean found = false;
+        MapCell cornerCell = null;
+        // Loop through all cells, left to right, bottom to top
+        for (int x = 0 ; x < width ; x++) {
+            for (int y = 0 ; y < height ; y++) {
+                // Check if the entity in this cell == entity.
+                // If it does, then set that cell to null
+                if (getCell(x,y).mapEntity == entity) {
+                    map.get(x).set(y, null);
+                }
+            }
+        }
+        return found;
     }
 
+    /**
+     * Removes all instances of a {@link MapCell} from
+     * the {@link Map}.
+     * @param mapCell The {@link MapCell} to remove.
+     * @return {@code boolean}: {@code True} if the entity was on the map,
+     *                          {@code False} if it was not.
+     */
+    private boolean removeEntity(MapCell mapCell) {
+        boolean found = false;
+        MapCell cornerCell = null;
+        // Loop through all cells, left to right, bottom to top
+        for (int x = 0 ; x < width ; x++) {
+            for (int y = 0 ; y < height ; y++) {
+                // Check if the entity in this cell == entity.
+                // If it does, then set that cell to null
+                if (getCell(x,y) == mapCell) {
+                    map.get(x).set(y, null);
+                }
+            }
+        }
+        return found;
+    }
+
+    /**
+     * Adds an entity to the map at the specified grid coordinates x and y.
+     * @param entity The {@link MapEntity} to add.
+     * @param x The {@code x} position of the {@link MapEntity}.
+     * @param y The {@code y} position of the {@link MapEntity}.
+     */
     public void addMapEntity(MapEntity entity, int x, int y) {
         // Make sure the range is valid
         // (x, x+entity.width, y, y+entity.height all in range)
+        // Make sure that width and height are > 0
+        if (entity.width <= 0 || entity.height <= 0) {
+            return;
+        }
         // Make sure that the cell is valid
         if (!(validCell(x,y) && validCell(x+entity.width,y+entity.height))) {
             // If it's not, then return as it can't be added.
             return;
         }
 
-        // And now add the entity
+        // Create a new map cell for this entity. It only needs the one.
+        MapCell newCell = new MapCell(false);
+        newCell.mapEntity = entity;
 
-        //
+        // And now add the entity
+        for (int i = x ; x < width ; x++) {
+            for (int j = y ; y < height ; y++) {
+                // If there's already a station here, remove it completely.
+                if (getCell(i, j) != null) {
+                    removeEntity(getCell(i, j).mapEntity);
+                }
+                map.get(i).set(j, newCell);
+            }
+        }
 
         // Below it, if there isn't a MapCell already, place a cupboard
-        MapCell
-        if (getCell(x,y-1) != null) {
-
+        MapCell cellBelow = getCell(x, y-1);
+        if (cellBelow == null) {
+            cellBelow = new MapCell(true);
+            cellBelow.mapEntity = new MapEntity();
+            cellBelow.mapEntity.setTexture("game/textures/cupboard.png");
         }
 
     }
@@ -107,4 +166,64 @@ public class Map {
         return cell.mapEntity.isColliding(collision);
     }
 
+    /**
+     * Loads all the {@link com.badlogic.gdx.graphics.Texture}s of the
+     * {@link MapEntity}s.
+     * @param textureManager The {@link TextureManager} to load using.
+     */
+    public void loadAll(TextureManager textureManager, String textureID) {
+        for (int x = 0 ; x < width ; x++) {
+            for (int y = 0 ; y < height ; y++) {
+                MapCell thisCell = getCell(x,y);
+                if (thisCell != null) {
+                    thisCell.mapEntity.load(textureManager, textureID);
+                }
+            }
+        }
+    }
+
+    // Draw function
+    public Array<MapEntity> getAllEntities() {
+        Array<MapEntity> entities = new Array<>();
+        // Loop through all the cells
+        for (int x = 0 ; x < width ; x++) {
+            for (int y = 0 ; y < height ; y++) {
+                // Get the current cell
+                MapCell thisCell = getCell(x,y);
+                // Make sure it's not null
+                if (thisCell != null) {
+                    // Get the entity of the cell
+                    MapEntity thisEntity = thisCell.mapEntity;
+                    // If it's not null...
+                    if (thisEntity != null) {
+                        // and it's not already in the array...
+                        if (!entities.contains(thisEntity, true)) {
+                            // then add it to the array.
+                            entities.add(thisEntity);
+                        }
+                    }
+                }
+            }
+        }
+        // Return all the entities.
+        return entities;
+    }
+
+    /**
+     * Unloads all of the {@link com.badlogic.gdx.graphics.Texture}s of the
+     * {@link MapEntity}s, and then clears the map.
+     */
+    public void dispose() {
+        // Loop through the cells
+        for (int x = 0 ; x < width ; x++) {
+            for (int y = 0 ; y < height ; y++) {
+                // Get the current cell
+                MapCell thisCell = getCell(x,y);
+                // Make sure it's not nothing
+                if (thisCell != null) {
+
+                }
+            }
+        }
+    }
 }
