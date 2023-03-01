@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public class Customer {
-	int targetsquare;
+	public int targetsquare;
 	public int posx;
 	public int posy;
 	Texture textf;
@@ -18,8 +18,8 @@ public class Customer {
 	TextureRegion[][] custpartsr;
 	TextureRegion[][] custpartsl;
 	TextureRegion[][] currentcustparts;
-	int startposx;
-	int targetpixel;
+	public int startposx;
+	public int targetpixel;
 	public boolean locked;
 	public boolean readyfordeletion;
 
