@@ -11,7 +11,7 @@ public class Endless extends GameLogic {
     }
 
     @Override
-    public void update() {
+    public void update(float delta) {
 
     }
 

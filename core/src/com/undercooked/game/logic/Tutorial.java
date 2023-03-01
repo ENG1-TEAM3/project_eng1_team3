@@ -9,7 +9,7 @@ public class Tutorial extends GameLogic {
     }
 
     @Override
-    public void update() {
+    public void update(float delta) {
 
     }
 

@@ -1,9 +1,8 @@
 package com.undercooked.game.screen;
 
-import com.badlogic.gdx.utils.ObjectMap;
 import com.undercooked.game.MainGameClass;
 import com.undercooked.game.assets.AudioManager;
-import com.undercooked.game.assets.MapManager;
+import com.undercooked.game.map.MapManager;
 import com.undercooked.game.assets.TextureManager;
 
 public abstract class Screen implements IScreen {

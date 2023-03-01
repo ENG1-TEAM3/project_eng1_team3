@@ -10,13 +10,17 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.undercooked.game.Input.InputController;
+import com.undercooked.game.Input.Keys;
 import com.undercooked.game.MainGameClass;
 import com.undercooked.game.assets.TextureManager;
 import com.undercooked.game.food.Ingredient;
+import com.undercooked.game.map.Map;
+import com.undercooked.game.map.MapEntity;
 import com.undercooked.game.util.CollisionTile;
 import com.undercooked.game.util.Control;
 
-public class Cook extends Entity {
+public class Cook extends MoveableEntity {
 
 	private static final int MAX_STACK_SIZE = 5;
 	private static final int FRAME_COLS = 8, FRAME_ROWS = 4;
@@ -35,15 +39,16 @@ public class Cook extends Entity {
 	public boolean locked = false;
 	public boolean holding = false;
 	public Stack<Ingredient> heldItems = new Stack<>();
+	Map map;
 
 	/**
 	 * Cook entity constructor
 	 * @param pos - x y position vector in pixels
-	 * @param cooknum - cook number, changes texture
+	 * @param cookNum - cook number, changes texture
 	 */
-	public Cook(Vector2 pos, int cooknum, TextureManager textureManager) {
+	public Cook(Vector2 pos, int cookNum, TextureManager textureManager, Map map) {
 		this.pos = pos;
-		this.cookno = cooknum;
+		this.cookno = cookNum;
 
 		width = 64;
 		height = 128;
@@ -51,47 +56,42 @@ public class Cook extends Entity {
 		direction = new Vector2(0, -1);
 
 		this.textureManager = textureManager;
+		this.map = map;
 
 		setWalkTexture("entities/cook_walk_" + cookno + ".png");
 	}
 
-	/**
-	 * Update cook using user input
-	 * @param control - Control input handling object
-	 * @param dt - some change in time
-	 * @param cl - 2d array of collision tiles for collision detection
-	 */
-	public void update(Control control, float dt, CollisionTile[][] cl) {
-
+	public void checkInput(float delta) {
+		// Check inputs, and change things based on the result
 		dirX = 0;
 		dirY = 0;
-		if (control.up && !control.down) {
-			if (this.checkCollision(pos.x, pos.y + (speed * dt), cl)) {
-				dirY = 1;
-			}
+		if (InputController.isKeyPressed(Keys.cook_down)) {
+			dirY -= 1;
 			setWalkFrames(2);
 			direction = new Vector2(0, 1);
-		} else if (control.down && !control.up) {
-			if (this.checkCollision(pos.x, pos.y - (speed * dt), cl)) {
-				dirY = -1;
-			}
+		} else if (InputController.isKeyPressed(Keys.cook_up)) {
+			dirY += 1;
 			setWalkFrames(0);
 			direction = new Vector2(0, -1);
 		}
-		if (control.left && !control.right) {
-			if (this.checkCollision(pos.x - (speed * dt), pos.y, cl)) {
-				dirX = -1;
-			}
+		if (InputController.isKeyPressed(Keys.cook_left)) {
+			dirX -= 1;
 			setWalkFrames(1);
 			direction = new Vector2(-1, 0);
-		} else if (control.right && !control.left) {
-			if (this.checkCollision(pos.x + (speed * dt), pos.y, cl)) {
-				dirX = +1;
-			}
+		} else if (InputController.isKeyPressed(Keys.cook_right)) {
+			dirY -= 1;
 			setWalkFrames(3);
-			direction.x = 1;
-			direction.y = 1;
 			direction = new Vector2(1, 0);
+		}
+
+		// X
+		if (map.checkCollision(this, pos.x + (speed * delta), pos.y)) {
+			dirX = 0;
+		}
+
+		// Y
+		if (map.checkCollision(this, pos.x + (dirX * speed * delta), pos.y)) {
+			dirX = 0;
 		}
 
 		currentFrame = walkAnimation.getKeyFrame(stateTime, true).split(32, 32);
@@ -100,8 +100,20 @@ public class Cook extends Entity {
 		} else {
 			stateTime = 0;
 		}
-		pos.x += dirX * speed * dt;
-		pos.y += dirY * speed * dt;
+	}
+
+	/**
+	 * Update cook using user input
+	 * @param delta - The time difference from the last frame
+	 */
+	public void update(float delta) {
+		// Move
+		pos.x += dirX * speed * delta;
+		pos.y += dirY * speed * delta;
+
+		// Reset move speed
+		dirX = 0;
+		dirY = 0;
 	}
 
 	/**

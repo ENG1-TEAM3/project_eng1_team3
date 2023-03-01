@@ -13,7 +13,15 @@ public class Scenario extends GameLogic {
     }
 
     @Override
-    public void update() {
+    public void update(float delta) {
+
+        // Check if game is over.
+
+        // Update cooks.
+        cookController.update(delta);
+
+        // Update Customers.
+        customerController.update(delta);
 
     }
 
@@ -26,6 +34,8 @@ public class Scenario extends GameLogic {
     public void load() {
         // Load cookCount number of cooks.
         //addCook(new Cook());
+
+        // Add listener to CustomerController to remove 1 from count
     }
 
     @Override
