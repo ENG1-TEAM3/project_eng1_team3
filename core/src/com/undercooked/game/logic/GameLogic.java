@@ -39,16 +39,8 @@ public abstract class GameLogic implements Logic {
      * Loads a map from the path provided
      * @param path {@link String} of the path.
      */
-    public final void loadMap(String path, boolean internal) {
-        game.getMapManager().load(path, stationManager, internal);
-    }
-
-    /**
-     * Loads a map from the path provided
-     * @param path {@link String} of the path.
-     */
     public final void loadMap(String path) {
-        map = game.getMapManager().load(path, stationManager, FileControl.isInternal(path));
+        game.getMapManager().load(path, stationManager);
     }
 
     /**

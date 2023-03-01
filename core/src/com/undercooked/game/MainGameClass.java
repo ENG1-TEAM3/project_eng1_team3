@@ -22,6 +22,7 @@ import com.undercooked.game.screen.*;
 import com.undercooked.game.station.StationManager;
 import com.undercooked.game.util.CameraController;
 import com.undercooked.game.util.Constants;
+import com.undercooked.game.util.json.JsonFormat;
 
 public class MainGameClass extends Game {
 	public BitmapFont font;
@@ -50,6 +51,7 @@ public class MainGameClass extends Game {
 		mapManager = new MapManager();
 		screenController = new ScreenController(this, assetManager);
 		stationManager = new StationManager();
+
 		load();
 	}
 
@@ -63,7 +65,6 @@ public class MainGameClass extends Game {
 
 	@Override
 	public void create() {
-
 
 		settingPref = Gdx.app.getPreferences(Constants.Preferences.SETTINGS);
 

@@ -167,7 +167,7 @@ public class GameScreen extends Screen {
 		game.audioManager.loadMusic("audio/soundFX/money-collect.mp3", Constants.GAME_GROUP);
 		game.audioManager.loadMusic("audio/soundFX/timer-bell-ring.mp3", Constants.GAME_GROUP);
 
-		map = game.mapManager.load(FileControl.toPath("<main>:default.json", "maps"), game.stationManager, true);
+		map = game.mapManager.load("<main>:main.json", game.stationManager);
 	}
 
 	@Override

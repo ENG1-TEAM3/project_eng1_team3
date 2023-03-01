@@ -1,0 +1,18 @@
+{
+  "id": "burger_make",
+  "station_id": "counter",
+  "items": ["burger_bun_cooked","meat_cooked"],
+  "steps": [{
+    "type": "wait",
+    "time": 10,
+    "success": [{
+      "type": "set",
+      "value": "burger"
+    }],
+    "failure": [{
+      "type": "set",
+      "value": "void"
+    }],
+    "sound": "frying.mp4"
+  }]
+}

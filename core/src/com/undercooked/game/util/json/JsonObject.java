@@ -22,4 +22,7 @@ public class JsonObject extends JsonVal<ObjectMap<String, JsonVal>> {
     public Array<JsonVal> getValues() {
         return value.values().toArray();
     }
+    public JsonVal getValue(String ID) {
+        return value.get(ID);
+    }
 }

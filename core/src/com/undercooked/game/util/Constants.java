@@ -120,12 +120,12 @@ public final class Constants {
 
             // The interactions (these will automatically be sorted through to find the ingredient IDs)
             JsonObject interaction = new JsonObject();
-            interaction.addValue(new JsonString("station_id", null)); // The station ID for the interaction
-            interaction.addValue(new JsonArray("items", JsonValue.ValueType.stringValue)); // An array of item IDs. The exact same number are needed for the interaction to take place,
+            root.addValue(new JsonString("station_id", null)); // The station ID for the interaction
+            root.addValue(new JsonArray("items", JsonValue.ValueType.stringValue)); // An array of item IDs. The exact same number are needed for the interaction to take place,
             // the interaction only starting once a valid interaction is found.
 
             // A step in the interaction
-            JsonObject interactionStep = new JsonObject("");
+            JsonObject interactionStep = new JsonObject("intStep");
             interactionStep.addValue(new JsonString("type", null)); // The type (e.g: Wait, wait (with cook locked to the station), set item, interaction input, etc.)
             /*
                 Examples of types:
@@ -138,7 +138,7 @@ public final class Constants {
                 - Input timed : Requires an input within a time limit.
                 - Colour : Colours the bar the colour provided in value. Ignores time and moves to next step.
              */
-            interactionStep.addValue(new JsonType("value", JsonValue.ValueType.nullValue)); // Can be anything, relying on the type.
+            interactionStep.addValue(new JsonString("value", null)); // Can be anything, relying on the type.
             /** NOTE: THE BELOW LIKELY, CURRENTLY, CAUSES AN INFINITE LOOP. CAN'T TEST AS THERE ARE CODE ERRORS. */
             interactionStep.addValue(new JsonObjectArray("success", interactionStep)); // Step path to take if the interaction is a success
             interactionStep.addValue(new JsonObjectArray("failure", interactionStep)); // Step path to take if the interaction is a failure (won't be needed for all interaction types)
@@ -203,8 +203,8 @@ public final class Constants {
             }
              */
 
-            interaction.addValue(new JsonObjectArray("steps", interactionStep));
-            root.addValue(new JsonObjectArray("interactions", interaction));
+            // interaction.addValue(new JsonObjectArray("steps_arr", interactionStep));
+            root.addValue(new JsonObjectArray("steps", interactionStep));
 
             // Other variables
 
@@ -234,7 +234,7 @@ public final class Constants {
     // Defaults
     public static final float DEFAULT_MUSIC_VOLUME = 0.5F;
     public static final float DEFAULT_SOUND_VOLUME = 0.5F;
-    public static final String DEFAULT_MAP = "map/art_map/customertest.tmx";
+    public static final String DEFAULT_MAP = "<main>:art_map/customertest.tmx";
     public static final String DEFAULT_TEXTURE = "items/missing.png";
     public static final String DEFAULT_MUSIC = "audio/music/GameMusic.mp3";
     public static final String DEFAULT_SOUND = "uielements/testsound.mp3";

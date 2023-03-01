@@ -1,7 +1,10 @@
 package com.undercooked.game.util.json;
 
 import com.badlogic.gdx.utils.JsonValue;
+import com.undercooked.game.files.FileControl;
 import com.undercooked.game.util.Constants;
+
+import javax.sound.midi.SysexMessage;
 
 public class JsonFormat {
 
@@ -27,12 +30,16 @@ public class JsonFormat {
             Class jsonClass = jsonVal.getClass();
             // System.out.println("Class: " + jsonClass);
             // Check that the value exists in json
-            if (!json.hasChild(jsonVal.ID)) {
+            if (!json.has(jsonVal.ID)) {
                 exists = false;
                 // If it doesn't, then add it.
                 JsonValue jvalue;
                 // All cases of JsonObject
-                if (jsonClass == JsonObject.class) {
+                // First, if the value is null then just make it null
+                if (jsonVal.value == null) {
+                    jvalue = new JsonValue(JsonValue.ValueType.nullValue);
+                }
+                else if (jsonClass == JsonObject.class) {
                     // System.out.println(jsonVal.ID + ": Object");
                     jvalue = new JsonValue(JsonValue.ValueType.object);
                 }
@@ -44,7 +51,7 @@ public class JsonFormat {
                 else if (jsonClass == JsonFloat.class) {
                     // System.out.println(jsonVal.ID + ": Float");
                     jvalue = new JsonValue(JsonValue.ValueType.doubleValue);
-                    jvalue.set((Double) jsonVal.value, null);
+                    jvalue.set((float) jsonVal.value, null);
                 }
                 else if (jsonClass == JsonInt.class) {
                     // System.out.println(jsonVal.ID + ": Int");
@@ -78,17 +85,26 @@ public class JsonFormat {
                 else if (jsonClass == JsonString.class && jsonType != JsonValue.ValueType.stringValue) {
                     valToSet.set((String) jsonVal.value);
                 }
-                else if (jsonClass == JsonFloat.class && jsonType != JsonValue.ValueType.doubleValue) {
+                else if (jsonClass == JsonFloat.class && jsonType != JsonValue.ValueType.doubleValue && jsonType != JsonValue.ValueType.longValue) {
                     // System.out.println(jsonVal.ID + ": Float");
-                    valToSet.set((Double) jsonVal.value, null);
+                    valToSet.set((float) jsonVal.value, null);
                 }
-                else if (jsonClass == JsonInt.class && jsonType != JsonValue.ValueType.doubleValue) {
+                else if (jsonClass == JsonInt.class && jsonType != JsonValue.ValueType.doubleValue && jsonType != JsonValue.ValueType.longValue) {
                     // System.out.println(jsonVal.ID + ": Int");
-                    valToSet.set((Double) jsonVal.value, null);
+                    valToSet.set((Integer) jsonVal.value, null);
                 }
-                else if (jsonClass == JsonObjectArray.class && jsonType != JsonValue.ValueType.array) {
-                    // System.out.println(jsonVal.ID + ": Object Array");
-                    valToSet.setType(JsonValue.ValueType.array);
+                else if (jsonClass == JsonObjectArray.class) {
+                    if (jsonType != JsonValue.ValueType.array) {
+                        valToSet.setType(JsonValue.ValueType.array);
+                    } else {
+                        JsonValue jsonArray = json.get(jsonVal.ID);
+                        for (int i = jsonArray.size-1 ; i >= 0 ; i--) {
+                            JsonValue val = jsonArray.get(i);
+                            if (val.type() != JsonValue.ValueType.object) {
+                                jsonArray.remove(i);
+                            }
+                        }
+                    }
                 }
                 else if (jsonClass == JsonType.class && jsonType != jsonVal.value) {
                     // System.out.println(jsonVal.ID + ": " + jsonVal.value);
@@ -110,10 +126,6 @@ public class JsonFormat {
                         }
                     }
                 }
-                else {
-                    // System.out.println(jsonVal.ID + ": Null");
-                    valToSet.setType(JsonValue.ValueType.nullValue);
-                }
             }
             // If the current json did not exist before this, then skip these two following ifs.
             // This is to prevent infinite loops where the json doesn't have any values (to avoid checking where it doesn't need to)
@@ -124,16 +136,17 @@ public class JsonFormat {
                     // If it's a JsonObject, recurse.
                     // But only recurse if the value is actually an object
                     if (json.type() == JsonValue.ValueType.object) {
-                        formatJson(json.get(jsonVal.ID), (JsonObject) jsonVal, exists);
+                        formatJson(json.get(jsonVal.ID), (JsonObject) jsonVal.value, !exists);
                     }
                 }
                 // If it's an Object Array, make sure all objects within follow the
                 // correct formatting
-                else if (jsonClass == JsonObjectArray.class) {
+                if (jsonClass == JsonObjectArray.class) {
+                    JsonObject nextObj = (JsonObject) jsonVal.value;
                     for (JsonValue jval : json.get(jsonVal.ID).iterator()) {
                         // Only recurse if the value is an object
                         if (jval.type() == JsonValue.ValueType.object) {
-                            formatJson(jval, (JsonObject) jsonVal.value, exists);
+                            formatJson(jval, nextObj, !exists);
                         }
                     }
                 }
@@ -146,17 +159,10 @@ public class JsonFormat {
 
     // TESTING
     public static void main(String[] args) {
-        JsonValue jvalue = new JsonValue(JsonValue.ValueType.object); // FileControl.loadJsonData("settings.json");
-        JsonValue test1 = new JsonValue(JsonValue.ValueType.object);
-        JsonValue test2 = new JsonValue(JsonValue.ValueType.object);
-        JsonValue test = new JsonValue(JsonValue.ValueType.array);
-        JsonValue endless = new JsonValue(JsonValue.ValueType.array);
-        jvalue.addChild("scenarios", test);
-        jvalue.addChild("endless", endless);
-        test.addChild(test1);
-        test.addChild(test2);
-        endless.addChild(new JsonValue(JsonValue.ValueType.object));
-        formatJson(jvalue, Constants.DefaultJson.mapFormat());
+        JsonValue jvalue = FileControl.loadJsonAsset("<main>:burger.json", "interactions");
+        //System.out.println(FileControl.toPath("<main>:burger.json", "interactions"));
+        System.out.println(jvalue);
+        formatJson(jvalue, Constants.DefaultJson.interactionFormat());
         // System.out.println(jvalue);
         // jvalue.get("scenarios").addChild("a", new JsonValue("a"));
         System.out.println(jvalue);

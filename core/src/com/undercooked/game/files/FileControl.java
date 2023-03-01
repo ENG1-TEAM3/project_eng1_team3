@@ -36,12 +36,11 @@ public class FileControl {
     }
 
     public static String formatDir(String dir) {
-        return (dir.endsWith("\\") || dir.endsWith("/") ? "" : "/");
+        return dir + (dir.endsWith("\\") || dir.endsWith("/") ? "" : "\\");
     }
 
     public static String dirAndName(String dir, String fileName) {
-        return dir
-                + formatDir(dir)
+        return formatDir(dir)
                 + fileName;
     }
 
@@ -69,11 +68,13 @@ public class FileControl {
         File directory = new File(dir);
         // If directory isn't a directory, or it doesn't exist, then create the directory.
         if (!(directory.exists() && directory.isDirectory())) {
+            System.out.println("Directory doesn't exist: " + directory);
             directory.mkdir();
         }
         File file = new File (dirAndName(dir, fileName));
         // If file isn't a file, or it doesn't exist, then create the file using the default data.
         if (!(file.exists() && file.isFile())) {
+            System.out.println("File doesn't exist: " + fileName);
             try {
                 file.createNewFile();
                 saveToFile(dir,fileName,"{}");
@@ -102,17 +103,29 @@ public class FileControl {
         FileHandle directory = null;
         dir = formatDir(dir);
         if (internal) {
-            directory = Gdx.files.internal(dir + fileName);
+            System.out.println("Internal directory doesn't exist: " + dir);
+            directory = Gdx.files.internal(dir);
         } else {
-            directory = Gdx.files.external(dir + fileName);
+            System.out.println("External directory doesn't exist: " + dir);
+            directory = Gdx.files.external(dir);
         }
         // If directory isn't a directory, or it doesn't exist, then return nothing.
         if (!(directory.exists() && directory.isDirectory())) {
             return null;
         }
-        File file = new File(dirAndName(dir, fileName));
+        FileHandle file = null;
+        if (internal) {
+            file = Gdx.files.internal(dirAndName(dir, fileName));
+        } else {
+            file = Gdx.files.external(dirAndName(dir, fileName));
+        }
         // If file isn't a file, or it doesn't exist, then return nothing.
-        if (!(file.exists() && file.isFile())) {
+        if (!(file.exists() && file.file().isFile())) {
+            if (internal) {
+                System.out.println("Internal file doesn't exist: " + dirAndName(dir, fileName));
+            } else {
+                System.out.println("External file doesn't exist: " + dirAndName(dir, fileName));
+            }
             return null;
         }
         // Otherwise, load the Json file.
@@ -151,7 +164,7 @@ public class FileControl {
                 return false;
             }
         } else {
-            return !(path.startsWith(getDataPath()));
+            return true;
         }
     }
 
@@ -162,8 +175,8 @@ public class FileControl {
         // uses the AppData path or internal path.
         if (assetPath.startsWith("<main>")) {
             // Remove the "<main>:"
-            assetPath = assetPath.substring(8);
-            return loadJsonFile("game/", assetPath, true);
+            System.out.println(dirAndName("game/", path));
+            return loadJsonFile("game/", path, true);
         } else {
             return loadJsonFile(getDataPath() + "game/", path, false);
         }
@@ -183,7 +196,11 @@ public class FileControl {
     public static String toPath(String assetPath, String mainFolderName) {
         mainFolderName = formatDir(mainFolderName);
         // AssetPath will be in the format group:filePath
-        String[] args = assetPath.split(":", 1);
+        String[] args = assetPath.split(":", 2);
+        System.out.println(assetPath);
+        for (String str : args) {
+            System.out.println(str);
+        }
         if (args.length != 2) {
             return assetPath;
         }
