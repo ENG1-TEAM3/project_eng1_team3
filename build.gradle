@@ -63,6 +63,14 @@ project(":tests") {
 
     sourceSets.test.java.srcDirs = ["src/"]
 
+    test {
+        testLogging {
+            exceptionFormat "full"
+            events "skipped", "passed", "failed"
+            showStandardStreams true
+        }
+    }
+
     dependencies {
 
         implementation project(":core")
