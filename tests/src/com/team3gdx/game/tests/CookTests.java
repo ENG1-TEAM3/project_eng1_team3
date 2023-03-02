@@ -3,6 +3,7 @@ package com.team3gdx.game.tests;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.team3gdx.game.entity.Cook;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -56,20 +57,4 @@ public class CookTests {
         Boolean result = cook.checkCollision(10, 1, null);
         assertFalse(result);
     }
-
-    //public Boolean checkCollision(float cookx, float cooky, CollisionTile[][] cltiles) {
-    //    int wid = cltiles.length;
-    //    int hi = cltiles[0].length;
-    //    for (int x = 0; x < wid; x++) {
-    //        for (int y = 0; y < hi; y++) {
-    //            if (cltiles[x][y] != null) {
-    //                if (Intersector.overlaps(cltiles[x][y].returnRect(), this.getCollideBoxAtPosition(cookx, cooky))) {
-    //                   return false;
-    //                }
-    //            }
-    //        }
-    //    }
-    //    return true;
-    //}
-
 }

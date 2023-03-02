@@ -15,10 +15,10 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 import com.badlogic.gdx.math.Vector2;
 
 public class CustomerController {
-	int lockout;
-	int amountActiveCustomers;
+	public int lockout;
+	public int amountActiveCustomers;
 	ArrayList<ArrayList<Integer>> customerCells;
-	Customer[] customers = new Customer[5];
+	public Customer[] customers = new Customer[5];
 	Customer[] leavingcustomers = new Customer[5];
 	TiledMap gameMap;
 	int top;
