@@ -216,7 +216,7 @@ public class Cook extends Entity {
 	 * @param y - y pixel coordinate
 	 * @return Rectangle object of the cook hitbox
 	 */
-	Rectangle getCollideBoxAtPosition(float x, float y) {
+	public Rectangle getCollideBoxAtPosition(float x, float y) {
 		return new Rectangle(x + 12, y - 10, 40, 25);
 	}
 

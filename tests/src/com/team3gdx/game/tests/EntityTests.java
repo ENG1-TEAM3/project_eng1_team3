@@ -7,7 +7,7 @@ import org.junit.Test;
 public class EntityTests {
 
     @Test
-    public void testDraw(SpriteBatch batch) {
+    public void testDraw() {
         //Entity.draw(texture, pos.x, pos.y, width, height);
     }
 }
