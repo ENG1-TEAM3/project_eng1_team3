@@ -7,7 +7,7 @@ on:
     branches: ["master"]
     
 jobs:
-  build: # check build works cross platform
+  build:
     strategy:
       matrix:
         os: [ubuntu-22.04, windows-2022]
@@ -35,3 +35,15 @@ jobs:
       with:
         name: jacoco-report
         path: ./tests/build/reports/jacoco/test/html
+        
+    - name: Upload core Checkstyle Report
+      uses: actions/upload-artifact@v3.1.2
+      with:
+        name: checkstyle-report-core
+        path: ./core/build/reports/checkstyle
+        
+    - name: Upload desktop Checkstyle Report
+      uses: actions/upload-artifact@v3.1.2
+      with:
+        name: checkstyle-report-desktop
+        path: ./desktop/build/reports/checkstyle
