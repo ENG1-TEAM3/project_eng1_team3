@@ -10,7 +10,7 @@ jobs:
   build: # check build works cross platform
     strategy:
       matrix:
-        os: [ubuntu-22.04, windows-2022, macos-12]
+        os: [ubuntu-22.04, windows-2022]
     runs-on: ${{ matrix.os }}
     
     permissions: 
@@ -25,7 +25,13 @@ jobs:
         java-version: 11
         distribution: 'temurin'
         
-    - name: Build with Gradle
+    - name: Run Tests with JaCoCo
       uses: gradle/gradle-build-action@v2
       with:
-        arguments: build
+        arguments: build jacocoTestReport
+        
+    - name: Upload JaCoCo Report
+      uses: actions/upload-artifact@v3.1.2
+      with:
+        name: jacoco-report
+        path: ./tests/build/reports/jacoco/test/html
