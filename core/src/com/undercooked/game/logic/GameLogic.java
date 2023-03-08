@@ -11,20 +11,29 @@ import com.undercooked.game.map.Map;
 import com.undercooked.game.screen.GameScreen;
 import com.undercooked.game.screen.ScreenController;
 import com.undercooked.game.station.StationManager;
+import com.undercooked.game.util.Constants;
 
 /**
- * A class to extend from that indicates the logic of the {@link GameScreen}.
+ * A class to extend from that indicates the logic of the
+ * {@link GameScreen}.
  */
 public abstract class GameLogic implements Logic {
 
-    GameScreen game;
+    /** The number of customers to serve. */
+    public static final int NUMBER_OF_WAVES = 5;
+
+    /** The number of customers that have been served. */
+    public static int currentWave = 0;
+
+    GameScreen gameScreen;
     Ingredients ingredients;
     CookController cookController;
     CustomerController customerController;
     StationManager stationManager;
     Map map;
+
     public GameLogic(GameScreen game) {
-        this.game = game;
+        this.gameScreen = game;
         this.ingredients = new Ingredients();
     }
 
@@ -32,15 +41,30 @@ public abstract class GameLogic implements Logic {
      * Will require a LeaderBoard rework.
      */
     public final void win() {
-        game.getScreenController();
+        gameScreen.getScreenController();
+    }
+
+    public void checkGameOver() {
+        if (currentWave == NUMBER_OF_WAVES + 1) {
+            // game.getLeaderBoardScreen().addLeaderBoardData("PLAYER1",
+            // (int) Math.floor((startTime - timeOnStartup) / 1000f));
+            // game.resetGameScreen();
+            this.resetStatic();
+            gameScreen.ChangeGameOver();
+        }
+    }
+
+    public void resetStatic() {
+        currentWave = 0;
     }
 
     /**
      * Loads a map from the path provided
+     * 
      * @param path {@link String} of the path.
      */
     public final void loadMap(String path) {
-        game.getMapManager().load(path, stationManager);
+        gameScreen.getMapManager().load(path, stationManager);
     }
 
     /**
@@ -57,8 +81,9 @@ public abstract class GameLogic implements Logic {
 
     }
 
-    /** Unloads all the objects in this class.
-     * (Most likely will call each objects unload method)
+    /**
+     * Unloads all the objects in this class. (Most likely will call
+     * each objects unload method)
      */
     public void unloadObjects() {
         cookController.unload();
