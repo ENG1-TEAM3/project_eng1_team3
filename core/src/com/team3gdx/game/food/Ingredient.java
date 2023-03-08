@@ -39,8 +39,6 @@ public class Ingredient extends Entity {
 	 */
 	public String name;
 
-	private static ShapeRenderer shapeRenderer = new ShapeRenderer();
-
 	/**
 	 * Sets the appropriate properties.
 	 * 
@@ -99,12 +97,12 @@ public class Ingredient extends Entity {
 	 * @param dT    The amount of time to increment by when slicing.
 	 * @return A boolean representing if a complete slice has occurred.
 	 */
-	public boolean slice(SpriteBatch batch, float dT) {
+	public boolean slice(SpriteBatch batch, ShapeRenderer shapeRenderer, float dT) {
 
 		shapeRenderer.setProjectionMatrix(batch.getProjectionMatrix());
 
 		if (dT / width * width <= width) {
-			drawStatusBar(dT / width, 0, 1);
+			drawStatusBar(shapeRenderer, dT / width, 0, 1);
 		} else {
 			slices++;
 			texture = new Texture("items/" + name + "_chopped.png");
@@ -128,7 +126,7 @@ public class Ingredient extends Entity {
 	 * @param batch {@link SpriteBatch} to render texture and status.
 	 * @return A double representing the current {@link this#cookedTime}.
 	 */
-	public double cook(float dT, SpriteBatch batch) {
+	public double cook(float dT, SpriteBatch batch, ShapeRenderer shapeRenderer) {
 		shapeRenderer.setProjectionMatrix(batch.getProjectionMatrix());
 		if (!flipped && cookedTime / idealCookedTime * width > idealCookedTime * width * .65f) {
 			batch.begin();
@@ -138,7 +136,7 @@ public class Ingredient extends Entity {
 		if (cookedTime / idealCookedTime * width <= width) {
 			if (GameScreen.state1 == STATE.Continue)
 				cookedTime += dT;
-			drawStatusBar(cookedTime / idealCookedTime, idealCookedTime * .65f, idealCookedTime * 1.35f);
+			drawStatusBar(shapeRenderer, cookedTime / idealCookedTime, idealCookedTime * .65f, idealCookedTime * 1.35f);
 			if (cookedTime / idealCookedTime * width > idealCookedTime * width * .65f) {
 				texture = new Texture("items/" + name + "_cooked.png");
 				status = Status.COOKED;
@@ -158,7 +156,7 @@ public class Ingredient extends Entity {
 	 * @param percentage The current progress of the status bar.
 	 * @param optimum    The optimal status to reach (shown by a black bar).
 	 */
-	private void drawStatusBar(float percentage, float optimumLower, float optimumUpper) {
+	private void drawStatusBar(ShapeRenderer shapeRenderer, float percentage, float optimumLower, float optimumUpper) {
 		shapeRenderer.begin(ShapeType.Filled);
 		shapeRenderer.setColor(Color.WHITE);
 		shapeRenderer.rect(pos.x - width / 2, pos.y + height + height / 10, width * 2, height / 4);

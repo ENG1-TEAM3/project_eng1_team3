@@ -245,7 +245,7 @@ public class GameScreen implements Screen {
 		// =====================================RENDER=TOP=MAP=LAYER=====================================================
 		tiledMapRenderer.render(new int[] { 1 });
 		// =====================================DRAW=COOK=TOP=HALF=======================================================
-		stationManager.handleStations(game.batch);
+		stationManager.handleStations(game.batch, game.shapeRenderer);
 		drawHeldItems();
 		game.batch.begin();
 		for (Cook curCook : cooks)
