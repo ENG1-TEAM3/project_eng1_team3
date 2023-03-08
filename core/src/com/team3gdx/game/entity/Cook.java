@@ -133,6 +133,7 @@ public class Cook extends Entity {
 	}
 
 	public boolean full() {
+
 		return heldItems.size() >= MAX_STACK_SIZE;
 	}
 
