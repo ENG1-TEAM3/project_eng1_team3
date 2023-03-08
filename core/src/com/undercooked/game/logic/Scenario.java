@@ -2,14 +2,36 @@ package com.undercooked.game.logic;
 
 import com.undercooked.game.entity.Cook;
 import com.undercooked.game.screen.GameScreen;
+import com.undercooked.game.screen.GameScreen.STATE;
 
 public class Scenario extends GameLogic {
 
+    /** The number of cooks in-game. */
     int cookCount;
+
+    /** The number of customers to serve. */
+    public static final int NUMBER_OF_WAVES = 5;
+
+    /** The number of customers that have been served. */
+    public static int currentWave = 0;
 
     public Scenario(GameScreen game) {
         super(game);
         cookCount = 1;
+    }
+
+    public void checkGameOver() {
+        if (currentWave == NUMBER_OF_WAVES + 1) {
+            // game.getLeaderBoardScreen().addLeaderBoardData("PLAYER1",
+            // (int) Math.floor((startTime - timeOnStartup) / 1000f));
+            // game.resetGameScreen();
+            this.resetStatic();
+            gameScreen.changeScreen(STATE.GAME_OVER);
+        }
+    }
+
+    public void resetStatic() {
+        currentWave = 0;
     }
 
     @Override

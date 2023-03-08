@@ -20,12 +20,6 @@ import com.undercooked.game.util.Constants;
  */
 public abstract class GameLogic implements Logic {
 
-    /** The number of customers to serve. */
-    public static final int NUMBER_OF_WAVES = 5;
-
-    /** The number of customers that have been served. */
-    public static int currentWave = 0;
-
     GameScreen gameScreen;
     Ingredients ingredients;
     CookController cookController;
@@ -43,20 +37,6 @@ public abstract class GameLogic implements Logic {
      */
     public final void win() {
         gameScreen.getScreenController();
-    }
-
-    public void checkGameOver() {
-        if (currentWave == NUMBER_OF_WAVES + 1) {
-            // game.getLeaderBoardScreen().addLeaderBoardData("PLAYER1",
-            // (int) Math.floor((startTime - timeOnStartup) / 1000f));
-            // game.resetGameScreen();
-            this.resetStatic();
-            gameScreen.changeScreen(STATE.GAME_OVER);
-        }
-    }
-
-    public void resetStatic() {
-        currentWave = 0;
     }
 
     /**
