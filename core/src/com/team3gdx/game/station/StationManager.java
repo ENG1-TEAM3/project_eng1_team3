@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.team3gdx.game.food.Ingredient;
 import com.team3gdx.game.food.Ingredients;
@@ -15,7 +16,7 @@ import com.team3gdx.game.screen.GameScreen;
  * Deals with all the stations and cook interactions. To create a new station,
  * extend from {@link Station}, check tile in
  * {@link this#checkInteractedTile(String, Vector2)}, and update station's
- * ingredients in {@link this#handleStations(SpriteBatch)} if necessary.
+ * ingredients in {@link this#handleStations(SpriteBatch, ShapeRenderer)} if necessary.
  *
  */
 public class StationManager {
@@ -32,7 +33,7 @@ public class StationManager {
 	 * 
 	 * @param batch - SpriteBatch to render ingredient textures.
 	 */
-	public void handleStations(SpriteBatch batch) {
+	public void handleStations(SpriteBatch batch, ShapeRenderer shapeRenderer) {
 		this.batch = batch;
 		for (Station station : stations.values()) {
 			if (!station.slots.empty() && !station.infinite) {
@@ -49,13 +50,13 @@ public class StationManager {
 					}
 
 					if (station instanceof CuttingStation && currentIngredient.slicing) {
-						((CuttingStation) station).interact(batch, .1f);
+						((CuttingStation) station).interact(batch, shapeRenderer, .1f);
 						station.interactSound();
 					}
 
 					if (currentIngredient.cooking && station instanceof CookingStation) {
 						((CookingStation) station).drawParticles(batch, i);
-						currentIngredient.cook(.0005f, batch);
+						currentIngredient.cook(.0005f, batch, shapeRenderer);
 						station.interactSound();
 					} else {
 						currentIngredient.draw(batch);
