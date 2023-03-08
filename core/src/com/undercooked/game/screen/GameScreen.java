@@ -615,10 +615,6 @@ public class GameScreen extends Screen {
 		}
 	}
 
-	// public void ChangeGameOver() {
-	// game.screenController.nextScreen(Constants.LEADERBOARD_SCREEN_ID);
-	// }
-
 	/*
 	 * Check the tile the cookController.getCurrentCook() is looking at
 	 * for interaction
