@@ -3,24 +3,52 @@ package com.team3gdx.game.tests.UtilTests;
 import com.badlogic.gdx.Gdx;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import static org.junit.Assert.*;
 
 import com.team3gdx.game.tests.GdxTestRunner;
 import com.team3gdx.game.util.AudioController;
 
 @RunWith(GdxTestRunner.class)
-public class AudioControllerTests {
+public class AudioControllerTests extends AudioController {
 
     @Test
     public void testmusicExists() {
         assertTrue(Gdx.files.internal("./bin/main/audio/music").exists());
     }
     @Test
-    public void testsoudFXExists() {
+    public void testsoundFXExists() {
         assertTrue(Gdx.files.internal("./bin/main/audio/soundFX").exists());
     }
     @Test
     public void testAddMusic() {
         
+        addMusic("testMusic.mp3");
+        assertTrue(Gdx.files.internal("./bin/main/audio/music/testMusic.mp3").exists());
+
     }
+    @Test
+    public void testAddSoundfx() {
+        
+        addSoundFX("testSoundFX.mp3");
+        assertTrue(Gdx.files.internal("./bin/main/audio/soundFX/testSoundFX.mp3").exists());
+    }
+    @Test
+    public void testGetMusic() {
+        Music testMusic = getMusic("testMusic.mp3");
+        
+    }
+    @Test
+    public void testGetSoundfx() {
+        Sound testSoundfx = getSoundFX("testSoundFX.mp3");
+        
+    }
+    @Test
+    public void testVolume() {
+        setVolume("testMusic.mp3",6);
+        float testVolume = getVolume("testMusic.mp3");
+        
+    }
+
 }
