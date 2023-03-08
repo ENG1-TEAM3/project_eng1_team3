@@ -4,11 +4,15 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.team3gdx.game.entity.Cook;
 
+import com.team3gdx.game.food.Ingredient;
+import com.team3gdx.game.food.Ingredients;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 
 @RunWith(GdxTestRunner.class)
 public class CookTests {
@@ -56,5 +60,54 @@ public class CookTests {
         Cook cook = new Cook(new Vector2(64 * 5, 64 * 3), 1);
         Boolean result = cook.checkCollision(10, 1, null);
         assertFalse(result);
+    }
+
+    @Test
+    public void testingPickUpItem() {
+        Cook cook = new Cook(new Vector2(64 * 5, 64 * 3), 1);
+        Ingredient newIngr = Ingredients.unformedPatty;
+        cook.pickUpItem(newIngr);
+        assertEquals(cook.heldItems.size(), 1, 0.0001);
+        assertFalse(newIngr.cooking);
+        assertFalse(newIngr.slicing);
+    }
+
+    @Test
+    public void testDropItem() {
+        Cook cook = new Cook(new Vector2(64 * 5, 64 * 3), 1);
+        Ingredient newIngr = Ingredients.unformedPatty;
+        // One ingredient
+        cook.pickUpItem(newIngr);
+        assertEquals(cook.heldItems.size(), 1, 0.0001);
+        cook.dropItem();
+        assertFalse(cook.holding);
+        assertEquals(cook.heldItems.size(), 0, 0.0001);
+        // No Ingredient
+        assertFalse(cook.holding);
+        assertEquals(cook.heldItems.size(), 0, 0.0001);
+        // Multiple Ingredient
+        Ingredient newIngr2 = Ingredients.lettuce;
+        cook.pickUpItem(newIngr);
+        cook.pickUpItem(newIngr2);
+        assertEquals(cook.heldItems.size(), 2, 0.0001);
+        Boolean prevHold = cook.holding;
+        cook.dropItem();
+        assertEquals(cook.heldItems.size(), 1, 0.0001);
+        assertEquals(cook.holding, prevHold);
+    }
+
+    @Test
+    public void testFull() {
+        Cook cook = new Cook(new Vector2(64 * 5, 64 * 3), 1);
+        Ingredient newIngr = Ingredients.unformedPatty;
+        cook.pickUpItem(newIngr);
+        cook.pickUpItem(newIngr);
+        cook.pickUpItem(newIngr);
+        cook.pickUpItem(newIngr);
+        cook.pickUpItem(newIngr);
+        assertEquals(cook.heldItems.size(), 5, 0.0001);
+        cook.pickUpItem(newIngr);
+        assertEquals(cook.heldItems.size(), 5, 0.0001);
+        assertTrue(cook.full());
     }
 }
