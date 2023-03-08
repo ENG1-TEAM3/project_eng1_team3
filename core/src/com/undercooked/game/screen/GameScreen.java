@@ -39,6 +39,7 @@ import com.undercooked.game.entity.Entity;
 import com.undercooked.game.files.FileControl;
 import com.undercooked.game.food.Ingredients;
 import com.undercooked.game.food.Menu;
+import com.undercooked.game.logic.Scenario;
 import com.undercooked.game.logic.GameLogic;
 import com.undercooked.game.map.Map;
 import com.undercooked.game.station.StationManager;
@@ -373,7 +374,9 @@ public class GameScreen extends Screen {
 		MainGameClass.batch.setProjectionMatrix(worldCamera.combined);
 
 		// =========================================CHECK=GAME=OVER======================================================
-		gameLogic.checkGameOver();
+		// WARNING: Endless mode cannot be enabled without changing this
+		// code. This is a hacky way to check if the game is over.
+		((Scenario) gameLogic).checkGameOver();
 
 	}
 
