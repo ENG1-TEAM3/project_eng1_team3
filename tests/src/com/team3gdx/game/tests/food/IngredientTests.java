@@ -25,4 +25,9 @@ public class IngredientTests {
 
         assertTrue(bun.flipped);
     }
+
+    @Test
+    public void testTrue() {
+        assertTrue(true);
+    }
 }
