@@ -32,19 +32,18 @@ public class Scenario extends GameLogic {
 
     @Override
     public void load() {
-        // Load cookCount number of cooks.
-        //addCook(new Cook());
+        // Load cookCount number of cooks. addCook(new Cook());
 
         // Add listener to CustomerController to remove 1 from count
     }
 
     @Override
     public void unload() {
-        ingredients.unload(game.getTextureManager());
+        ingredients.unload(gameScreen.getTextureManager());
     }
 
     public void addIngredient() {
-       ingredients.load(game.getTextureManager());
+        ingredients.load(gameScreen.getTextureManager());
     }
 
     public void setCookCount(int cookCount) {
