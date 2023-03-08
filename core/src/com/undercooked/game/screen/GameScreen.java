@@ -89,7 +89,7 @@ public class GameScreen extends Screen {
 
 	/** The IDs for each screen the game can show. */
 	public enum STATE {
-		Pause, Continue, main, audio
+		PAUSE, CONTINUE, MAIN, AUDIO, GAME_OVER
 	}
 
 	/**
@@ -221,7 +221,7 @@ public class GameScreen extends Screen {
 		worldCamera = CameraController.getCamera(Constants.WORLD_CAMERA_ID);
 		uiCamera = CameraController.getCamera(Constants.UI_CAMERA_ID);
 		// ======================================SET=INITAL=STATE========================================================
-		state1 = STATE.Continue;
+		state1 = STATE.CONTINUE;
 		// ======================================START=VIEWPORTS=========================================================
 		worldViewport = CameraController.getViewport(Constants.WORLD_CAMERA_ID);
 		uiViewport = CameraController.getViewport(Constants.UI_CAMERA_ID);
@@ -264,19 +264,19 @@ public class GameScreen extends Screen {
 		});
 		rs.addListener(new ClickListener() {
 			public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-				state1 = STATE.Continue;
+				state1 = STATE.CONTINUE;
 				super.touchUp(event, x, y, pointer, button);
 			}
 		});
 		ad.addListener(new ClickListener() {
 			public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-				state1 = STATE.audio;
+				state1 = STATE.AUDIO;
 				super.touchUp(event, x, y, pointer, button);
 			}
 		});
 		btms.addListener(new ClickListener() {
 			public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-				state1 = STATE.main;
+				state1 = STATE.MAIN;
 				super.touchUp(event, x, y, pointer, button);
 			}
 		});
@@ -460,13 +460,13 @@ public class GameScreen extends Screen {
 	 * @param state1 - The state to change to. Refer to {@link STATE}.
 	 */
 	public void changeScreen(STATE state1) {
-		if (state1 == STATE.main) {
+		if (state1 == STATE.MAIN) {
 			game.gameMusic.dispose();
 			// game.resetGameScreen();
 			game.screenController.setScreen(Constants.MAIN_SCREEN_ID);
 
 		}
-		if (state1 == STATE.Pause) {
+		if (state1 == STATE.PAUSE) {
 			thenTime = System.currentTimeMillis() - timeOnStartup;
 			Gdx.input.setInputProcessor(stage2);
 			MainGameClass.batch.begin();
@@ -476,7 +476,7 @@ public class GameScreen extends Screen {
 			stage2.act();
 			stage2.draw();
 		}
-		if (state1 == STATE.audio) {
+		if (state1 == STATE.AUDIO) {
 			checkState();
 
 			musicSlider.setTouchable(Touchable.enabled);
@@ -496,11 +496,15 @@ public class GameScreen extends Screen {
 			musicSlider.setTouchable(Touchable.disabled);
 			gameSlider.setTouchable(Touchable.disabled);
 		}
-		if (state1 == STATE.Continue) {
+		if (state1 == STATE.CONTINUE) {
 			nowTime = System.currentTimeMillis() - timeOnStartup;
 			startTime += nowTime - thenTime;
 			customerController.updateCustomers();
 			thenTime = System.currentTimeMillis() - timeOnStartup;
+		}
+		if (state1 == STATE.GAME_OVER) {
+			game.gameMusic.dispose();
+			game.screenController.setScreen(Constants.LEADERBOARD_SCREEN_ID);
 		}
 	}
 
@@ -509,7 +513,7 @@ public class GameScreen extends Screen {
 	 */
 	public void checkState() {
 		if (Gdx.input.isKeyPressed(Keys.ESCAPE)) {
-			state1 = STATE.Pause;
+			state1 = STATE.PAUSE;
 		}
 	}
 
@@ -608,10 +612,9 @@ public class GameScreen extends Screen {
 		}
 	}
 
-	public void ChangeGameOver()
-	{
-		game.screenController.nextScreen(Constants.LEADERBOARD_SCREEN_ID);
-	}
+	// public void ChangeGameOver() {
+	// game.screenController.nextScreen(Constants.LEADERBOARD_SCREEN_ID);
+	// }
 
 	/*
 	 * Check the tile the cookController.getCurrentCook() is looking at

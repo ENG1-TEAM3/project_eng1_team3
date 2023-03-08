@@ -10,6 +10,7 @@ import com.undercooked.game.food.Ingredients;
 import com.undercooked.game.map.Map;
 import com.undercooked.game.screen.GameScreen;
 import com.undercooked.game.screen.ScreenController;
+import com.undercooked.game.screen.GameScreen.STATE;
 import com.undercooked.game.station.StationManager;
 import com.undercooked.game.util.Constants;
 
@@ -50,7 +51,7 @@ public abstract class GameLogic implements Logic {
             // (int) Math.floor((startTime - timeOnStartup) / 1000f));
             // game.resetGameScreen();
             this.resetStatic();
-            gameScreen.ChangeGameOver();
+            gameScreen.changeScreen(STATE.GAME_OVER);
         }
     }
 
