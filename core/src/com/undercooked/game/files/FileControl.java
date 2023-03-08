@@ -100,6 +100,10 @@ public class FileControl {
     }
 
     public static JsonValue loadJsonFile(String dir, String fileName, boolean internal) {
+        // If file name does not end with ".json", then add it
+        if (!fileName.endsWith(".json")) {
+            fileName += ".json";
+        }
         FileHandle directory = null;
         dir = formatDir(dir);
         if (internal) {

@@ -25,20 +25,20 @@ import com.undercooked.game.util.Constants;
 import com.undercooked.game.util.json.JsonFormat;
 
 public class MainGameClass extends Game {
-	public BitmapFont font;
 	public Music mainScreenMusic;
 	public Music gameMusic;
 	public static float musicVolumeScale;
 	public static float gameVolumeScale;
 	public final ScreenController screenController;
-	public static SpriteBatch batch;
-	public static ShapeRenderer shapeRenderer;
 	private final AssetManager assetManager;
 	public final AudioManager audioManager;
 	public final TextureManager textureManager;
 	public final MapManager mapManager;
 	public final StationManager stationManager;
 	private Preferences settingPref;
+	public static SpriteBatch batch;
+	public static BitmapFont font;
+	public static ShapeRenderer shapeRenderer;
 	/**
 	 * Constructor for the Game.
 	 */

@@ -1,5 +1,6 @@
 package com.undercooked.game.logic;
 
+import com.undercooked.game.assets.TextureManager;
 import com.undercooked.game.entity.Cook;
 import com.undercooked.game.screen.GameScreen;
 import com.undercooked.game.screen.GameScreen.STATE;
@@ -15,8 +16,8 @@ public class Scenario extends GameLogic {
     /** The number of customers that have been served. */
     public static int currentWave = 0;
 
-    public Scenario(GameScreen game) {
-        super(game);
+    public Scenario(GameScreen game, TextureManager textureManager) {
+        super(game, textureManager);
         cookCount = 1;
     }
 
@@ -26,7 +27,6 @@ public class Scenario extends GameLogic {
             // (int) Math.floor((startTime - timeOnStartup) / 1000f));
             // game.resetGameScreen();
             this.resetStatic();
-            gameScreen.changeScreen(STATE.GAME_OVER);
         }
     }
 
@@ -34,8 +34,14 @@ public class Scenario extends GameLogic {
         currentWave = 0;
     }
 
+    public Scenario() {
+        this(null, null);
+    }
+
     @Override
     public void update(float delta) {
+
+        elapsedTime += delta;
 
         // Check if game is over.
 

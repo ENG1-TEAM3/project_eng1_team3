@@ -18,6 +18,9 @@ import com.undercooked.game.audio.AudioSettings;
 import com.undercooked.game.audio.AudioSliders;
 import com.undercooked.game.MainGameClass;
 import com.undercooked.game.audio.Slider;
+import com.undercooked.game.logic.GameLogic;
+import com.undercooked.game.logic.Scenario;
+import com.undercooked.game.render.GameRenderer;
 import com.undercooked.game.util.CameraController;
 import com.undercooked.game.util.Constants;
 
@@ -181,8 +184,15 @@ public class MainScreen extends Screen {
 		});
 		sb.addListener(new ClickListener() {
 			public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-				state = STATE.new_game;
 				super.touchUp(event, x, y, pointer, button);
+				// TEMP - Using default Scenario
+				GameScreen gameScreen = (GameScreen) game.screenController.getScreen(Constants.GAME_SCREEN_ID);
+				gameScreen.setGameLogic(new Scenario());
+				gameScreen.setGameRenderer(new GameRenderer());
+
+				// Move to the game screen
+				game.mainScreenMusic.dispose();
+				game.screenController.setScreen(Constants.GAME_SCREEN_ID);
 			}
 		});
 		lb.addListener(new ClickListener() {
@@ -250,10 +260,6 @@ public class MainScreen extends Screen {
 	 * @param state - state to change screen to
 	 */
 	public void changeScreen(STATE state) {
-		if (state == STATE.new_game) {
-			game.mainScreenMusic.dispose();
-			game.screenController.setScreen(Constants.GAME_SCREEN_ID);
-		}
 		if (state == STATE.leaderboard) {
 			game.mainScreenMusic.dispose();
 			game.screenController.nextScreen(Constants.LEADERBOARD_SCREEN_ID);

@@ -6,9 +6,14 @@ import com.undercooked.game.util.Constants;
 
 public class Endless extends GameLogic {
 
-    public Endless(GameScreen game) {
-        super(game);
+    public Endless(GameScreen game, TextureManager textureManager) {
+        super(game, textureManager);
     }
+
+    public Endless() {
+        this(null, null);
+    }
+
 
     @Override
     public void update(float delta) {

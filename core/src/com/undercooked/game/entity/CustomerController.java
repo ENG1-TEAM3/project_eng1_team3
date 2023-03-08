@@ -31,10 +31,9 @@ public class CustomerController {
 	int bottom;
 	int xCoordinate;
 
-	public CustomerController(TiledMap map, TextureManager textureManager) {
-		this.gameMap = map;
+	public CustomerController(TextureManager textureManager) {
 		this.textureManager = textureManager;
-		computeCustomerZone(gameMap);
+		// computeCustomerZone(gameMap);
 		amountActiveCustomers = 0;
 		lockout = 0;
 	}

@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.ObjectMap;
+import com.undercooked.game.files.FileControl;
 import com.undercooked.game.util.Constants;
 
 public class TextureManager {
@@ -56,6 +57,22 @@ public class TextureManager {
         }
     }
 
+    public Texture getAsset(String path) {
+        path = "game/" + FileControl.toPath(path, "textures");
+        if (assetManager.isLoaded(path)) {
+            return assetManager.get(path, Texture.class);
+        } else {
+            System.out.println(path + " not loaded.");
+            // If the Texture isn't loaded, then return the default texture.
+            // If it's not loaded, then just return null.
+            if (!assetManager.isLoaded(Constants.DEFAULT_TEXTURE)) {
+                System.out.println("Default path not loaded.");
+                return null;
+            }
+            return assetManager.get(Constants.DEFAULT_TEXTURE, Texture.class);
+        }
+    }
+
     public boolean load(String textureGroup, String path) {
         try {
             // Try to load the Texture
@@ -75,6 +92,15 @@ public class TextureManager {
         textures.get(textureGroup).add(path);
         return true;
     }
+
+    public boolean loadAsset(String textureGroup, String path, String assetFolder) {
+        return load(textureGroup, "game/" + FileControl.toPath(path, assetFolder));
+    }
+
+    public boolean loadAsset(String path, String assetFolder) {
+        return loadAsset("default", path, assetFolder);
+    }
+
 
     public boolean load(String path) {
         return load("default", path);

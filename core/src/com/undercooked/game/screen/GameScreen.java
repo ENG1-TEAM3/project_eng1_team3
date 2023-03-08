@@ -39,9 +39,9 @@ import com.undercooked.game.entity.Entity;
 import com.undercooked.game.files.FileControl;
 import com.undercooked.game.food.Ingredients;
 import com.undercooked.game.food.Menu;
-import com.undercooked.game.logic.Scenario;
 import com.undercooked.game.logic.GameLogic;
 import com.undercooked.game.map.Map;
+import com.undercooked.game.render.GameRenderer;
 import com.undercooked.game.station.StationManager;
 import com.undercooked.game.util.CameraController;
 import com.undercooked.game.util.CollisionTile;
@@ -54,6 +54,7 @@ import com.undercooked.game.util.Control;
  */
 public class GameScreen extends Screen {
 	GameLogic gameLogic;
+	GameRenderer gameRenderer;
 
 	Rectangle volSlideBackgr;
 	Rectangle volSlide;
@@ -90,7 +91,7 @@ public class GameScreen extends Screen {
 
 	/** The IDs for each screen the game can show. */
 	public enum STATE {
-		PAUSE, CONTINUE, MAIN, AUDIO, GAME_OVER
+		Pause, Continue, main, audio
 	}
 
 	/**
@@ -119,7 +120,7 @@ public class GameScreen extends Screen {
 	TiledMapRenderer tiledMapRenderer;
 	public Map map;
 	public static int currentCookIndex = 0;
-
+	
 	public static CookController cookController;
 	public static CustomerController customerController;
 	InputMultiplexer multi;
@@ -131,20 +132,38 @@ public class GameScreen extends Screen {
 	 */
 	public GameScreen(MainGameClass game) {
 		super(game);
-		// Ingredients.setupIngredients(this); // TODO: Refactor
-		// Ingredients class. Menu.setupRecipes(this); // TODO: Menu uses
-		// Ingredients class.
 		this.calculateBoxMaths();
 		control = new Control();
 	}
 
 	/**
-	 * Set the game logic class.
-	 * 
-	 * @param gameLogic - The game logic class.
+	 * Set the {@link GameLogic}.
+	 * @param gameLogic - The {@link GameLogic} instance.
 	 */
 	public void setGameLogic(GameLogic gameLogic) {
 		this.gameLogic = gameLogic;
+		// If it has a GameRenderer, update it there
+		if (this.gameRenderer != null) {
+			this.gameRenderer.setLogic(gameLogic);
+		}
+	}
+
+	/**
+	 * Set the {@link GameRenderer}.
+	 * @param gameRenderer - The {@link GameRenderer} instance.
+	 */
+	public void setGameRenderer(GameRenderer gameRenderer) {
+		// Update the GameRenderer
+		this.gameRenderer = gameRenderer;
+		// If it's not null, update its SpriteBatch and ShapeRenderer
+		if (gameRenderer != null) {
+			gameRenderer.setSpriteBatch(game.batch);
+			gameRenderer.setShapeRenderer(game.shapeRenderer);
+		}
+		// If this has a GameLogic, set it
+		if (this.gameLogic != null) {
+			this.gameRenderer.setLogic(gameLogic);
+		}
 	}
 
 	@Override
@@ -168,6 +187,13 @@ public class GameScreen extends Screen {
 		game.audioManager.loadMusic("audio/soundFX/timer-bell-ring.mp3", Constants.GAME_GROUP);
 
 		map = game.mapManager.load("<main>:main.json", game.stationManager);
+		System.out.println(map.getAllEntities());
+		// Add the map entities to the GameRenderer
+		for (Entity mapEntity : map.getAllEntities()) {
+			gameRenderer.addEntity(mapEntity);
+			mapEntity.load(textureManager);
+			System.out.println(mapEntity.pos.x);
+		}
 	}
 
 	@Override
@@ -191,7 +217,8 @@ public class GameScreen extends Screen {
 	 */
 	@Override
 	public void show() {
-
+		// When this screen is shown, reset the input processor
+		Gdx.input.setInputProcessor(multi);
 	}
 
 	/**
@@ -200,14 +227,10 @@ public class GameScreen extends Screen {
 	 */
 	@Override
 	public void postLoad() {
-		// customerController = new CustomerController(map1,
-		// game.textureManager);
 
+		// Get the game music
 		game.gameMusic = game.audioManager.getMusic("audio/music/GameMusic.ogg");
-		// =======================================START=FRAME=TIMER======================================================
-		startTime = System.currentTimeMillis();
-		timeOnStartup = startTime;
-		tempThenTime = startTime;
+
 		// =======================================SET=POSITIONS=OF=SLIDERS===============================================
 		float currentMusicVolumeSliderX = (AudioSettings.getMusicVolume() * sliderWidth) + xSliderMin;
 		float currentGameVolumeSliderX = (AudioSettings.getGameVolume() * sliderWidth) + xSliderMin;
@@ -222,7 +245,7 @@ public class GameScreen extends Screen {
 		worldCamera = CameraController.getCamera(Constants.WORLD_CAMERA_ID);
 		uiCamera = CameraController.getCamera(Constants.UI_CAMERA_ID);
 		// ======================================SET=INITAL=STATE========================================================
-		state1 = STATE.CONTINUE;
+
 		// ======================================START=VIEWPORTS=========================================================
 		worldViewport = CameraController.getViewport(Constants.WORLD_CAMERA_ID);
 		uiViewport = CameraController.getViewport(Constants.UI_CAMERA_ID);
@@ -258,26 +281,8 @@ public class GameScreen extends Screen {
 		final GameScreen gs = this;
 		mn.addListener(new ClickListener() {
 			public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-				cookController.stopMovement();
+				gameLogic.pause();
 				game.screenController.nextScreen(Constants.PAUSE_SCREEN_ID);
-				super.touchUp(event, x, y, pointer, button);
-			}
-		});
-		rs.addListener(new ClickListener() {
-			public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-				state1 = STATE.CONTINUE;
-				super.touchUp(event, x, y, pointer, button);
-			}
-		});
-		ad.addListener(new ClickListener() {
-			public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-				state1 = STATE.AUDIO;
-				super.touchUp(event, x, y, pointer, button);
-			}
-		});
-		btms.addListener(new ClickListener() {
-			public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-				state1 = STATE.MAIN;
 				super.touchUp(event, x, y, pointer, button);
 			}
 		});
@@ -287,31 +292,15 @@ public class GameScreen extends Screen {
 		stage2.addActor(btms);
 		stage2.addActor(ad);
 
-		shapeRenderer.setProjectionMatrix(uiCamera.combined);
-
-		audioSliders = AudioSettings.createAudioSliders(ad.getX() - 5, ad.getY() - 130, stage2, audioEdit, vButton);
-		audioSliders.setWidth(200);
-		audioSliders.setHeight(100);
-
-		musicSlider = audioSliders.getSlider(0);
-		musicSlider.setTouchable(Touchable.disabled);
-		gameSlider = audioSliders.getSlider(0);
-		gameSlider.setTouchable(Touchable.disabled);
-		customerController.spawnCustomer();
+		// Set up map textures
+		for (Entity mapEntity : map.getAllEntities()) {
+			mapEntity.postLoad(textureManager);
+		}
 
 	}
 
 	AudioSliders audioSliders;
 	Slider musicSlider, gameSlider;
-
-	/**
-	 * Responsible for rendering all the shapes.
-	 * <p>
-	 * NOTE: The old name was "selectedPlayerBox", but I couldn't see
-	 * why they did that!
-	 * </p>
-	 */
-	ShapeRenderer shapeRenderer = new ShapeRenderer();
 
 	/**
 	 * Render method for main game
@@ -320,205 +309,36 @@ public class GameScreen extends Screen {
 	 */
 
 	public void render(float delta) {
-		// =====================================CLEAR=SCREEN=============================================================
-		ScreenUtils.clear(0, 0, 0, 0);
-		Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		// =====================================SET=INPUT=PROCESSOR======================================================
-		Gdx.input.setInputProcessor(multi);
-		// =====================================SET=PROJECTION=MATRICES=FOR=GAME=RENDERING===============================
-		MainGameClass.shapeRenderer.setProjectionMatrix(worldCamera.combined);
-		MainGameClass.batch.setProjectionMatrix(worldCamera.combined);
-		// =====================================RENDER=BOTTOM=MAP=LAYER==================================================
-		tiledMapRenderer.setView(worldCamera);
-		tiledMapRenderer.render(new int[] { 0 });
-		// =====================================DRAW=COOK=LEGS===========================================================
-		MainGameClass.batch.begin();
-		for (Cook curCook : cookController.getCooks())
-			curCook.draw_bot(MainGameClass.batch);
-		MainGameClass.batch.end();
-		// =====================================RENDER=TOP=MAP=LAYER=====================================================
-		tiledMapRenderer.render(new int[] { 1 });
-		// =====================================DRAW=COOK=TOP=HALF=======================================================
-		drawHeldItems();
-		MainGameClass.batch.begin();
-		for (Cook curCook : cookController.getCooks())
-			curCook.draw_top(MainGameClass.batch);
-		customerController.drawCustTop(MainGameClass.batch); // todo fix customer z ordering
-		MainGameClass.batch.end();
-		// ==================================MOVE=COOK===================================================================
-		tempTime = System.currentTimeMillis();
-		tempThenTime = tempTime;
-		// checkInteraction(cookController.getCurrentCook(),
-		// MainGameClass.shapeRenderer);
-		// =====================================SET=MATRIX=FOR=UI=ELEMENTS===============================================
-		MainGameClass.batch.setProjectionMatrix(uiCamera.combined);
-		// =====================================DRAW=UI=ELEMENTS=========================================================
-		drawUI();
-		// =====================================SET=MATRIX=BACK=TO=GAME=MATRIX===========================================
 
-		setCameraLerp(delta);
+		// Update the game logic.
+		gameLogic.update(delta);
 
-		MainGameClass.batch.setProjectionMatrix(worldCamera.combined);
-		// ==================================MOVE=CAMERA=================================================================
-		worldCamera.update();
-		uiCamera.update();
-		// ==================================PLAY=MUSIC==================================================================
+		// Move the camera for the game renderer
+		gameRenderer.moveCamera(delta);
+
+		// Render the game
+		renderScreen(delta);
+
+		// Play Game Music
 		game.gameMusic.play();
-		// ==================================DRAW=INTERACTIVE=UI=ELEMENTS================================================
+		// Draw Pause Button
+		MainGameClass.batch.setProjectionMatrix(uiCamera.combined);
 		stage.act();
 		stage.draw();
-		// ==================================JUMP=TO=STATE=SPECIFIC=LOGIC================================================
-		MainGameClass.batch.setProjectionMatrix(uiCamera.combined);
-		changeScreen(state1);
-		MainGameClass.batch.setProjectionMatrix(worldCamera.combined);
 
 		// =========================================CHECK=GAME=OVER======================================================
-		// WARNING: Endless mode cannot be enabled without changing this
-		// code. This is a hacky way to check if the game is over.
-		((Scenario) gameLogic).checkGameOver();
 
 	}
 
-	public static final float MAX_WAIT_TIME = 1000000; // Customer wait time in ms
-
-	/**
-	 * Draw UI elements
-	 */
-	private void drawUI() {
-		if (currentWaitingCustomer != null && currentWaitingCustomer.waitTime() < MAX_WAIT_TIME) {
-			// Menu.RECIPES.get(currentWaitingCustomer.order).displayRecipe(MainGameClass.batch,
-			// new Vector2(64, 256));
-		}
-		// For each cook, draw ???? UI
-		for (int i = 0; i < cookController.getCooks().size; i++) {
-			if (i == currentCookIndex) {
-				shapeRenderer.setAutoShapeType(true);
-				shapeRenderer.begin(ShapeType.Line);
-
-				shapeRenderer.setColor(Color.GREEN);
-				shapeRenderer.rect(Constants.V_WIDTH - 128 * cookController.getCooks().size + i * 128,
-						Constants.V_HEIGHT - 128 - 8, 128, 128);
-				shapeRenderer.end();
-			}
-			MainGameClass.batch.begin();
-			cookController.getCooks().get(i).draw_top(MainGameClass.batch,
-					new Vector2(Constants.V_WIDTH - 128 * cookController.getCooks().size + i * 128,
-							Constants.V_HEIGHT - 256));
-			MainGameClass.batch.end();
-		}
-
-		MainGameClass.batch.begin();
-		game.font.draw(MainGameClass.batch, Long.toString((startTime - timeOnStartup) / 1000),
-				gameResolutionX / 2f + gameResolutionX / 10f, 19 * gameResolutionY / 20f);
-		game.font.draw(MainGameClass.batch, "Time in s:", gameResolutionX / 2f, 19 * gameResolutionY / 20f);
-		MainGameClass.batch.end();
+	@Override
+	public void renderScreen(float delta) {
+		gameRenderer.render(delta);
 	}
 
-	/**
-	 * Change camera movement type depending on position to
-	 * cookController.getCurrentCook()
-	 *
-	 * @param delta - some change in time
-	 */
-	private void setCameraLerp(float delta) {
-		/*
-		 * if (!Tutorial.complete) { worldCamera.position.lerp(new
-		 * Vector3(Tutorial.getStagePos(), 0), .065f); if (control.tab) {
-		 * Tutorial.nextStage(); } else if (control.shift) {
-		 * Tutorial.previousStage(); }
-		 * Tutorial.drawBox(MainGameClass.batch, delta * 20); } else {
-		 */
-		if (Math.abs(worldCamera.position.x - cookController.getCurrentCook().pos.x) < 2
-				&& Math.abs(worldCamera.position.y - cookController.getCurrentCook().pos.y) < 2) {
-			worldCamera.position.x = cookController.getCurrentCook().pos.x;
-			worldCamera.position.y = cookController.getCurrentCook().pos.y;
-		} else {
-			worldCamera.position
-					.lerp(new Vector3(cookController.getCurrentCook().pos.x, cookController.getCurrentCook().pos.y, 0), .065f);
-		}
-	}
-
-	/**
-	 * Draws the held items for all cookController.getCooks() on the
-	 * screen
-	 */
-	private void drawHeldItems() {
-		for (Cook ck : cookController.getCooks()) {
-			int itemIndex = 0;
-			for (Entity ingredient : ck.heldItems) {
-				ingredient.pos = new Vector2(ck.pos.x + 16, ck.pos.y + 112 + itemIndex * 8);
-				ingredient.draw(MainGameClass.batch);
-				itemIndex++;
-			}
-		}
-	}
+	public static final float MAX_WAIT_TIME = 1000000; //Customer wait time in ms
 
 	long nowTime = 0;
 	long thenTime = 0;
-
-	/**
-	 * Change the screen to the specified game state.
-	 * 
-	 * @param state1 - The state to change to. Refer to {@link STATE}.
-	 */
-	public void changeScreen(STATE state1) {
-		if (state1 == STATE.MAIN) {
-			game.gameMusic.dispose();
-			// game.resetGameScreen();
-			game.screenController.setScreen(Constants.MAIN_SCREEN_ID);
-
-		}
-		if (state1 == STATE.PAUSE) {
-			thenTime = System.currentTimeMillis() - timeOnStartup;
-			Gdx.input.setInputProcessor(stage2);
-			MainGameClass.batch.begin();
-			MainGameClass.batch.draw(ESC, optionsBackground.getX(), optionsBackground.getY(), optionsBackground.getWidth(),
-					optionsBackground.getHeight());
-			MainGameClass.batch.end();
-			stage2.act();
-			stage2.draw();
-		}
-		if (state1 == STATE.AUDIO) {
-			checkState();
-
-			musicSlider.setTouchable(Touchable.enabled);
-			gameSlider.setTouchable(Touchable.enabled);
-
-			Gdx.input.setInputProcessor(stage2);
-			MainGameClass.batch.begin();
-			MainGameClass.batch.draw(ESC, optionsBackground.getX(), optionsBackground.getY(), optionsBackground.getWidth(),
-					optionsBackground.getHeight());
-			MainGameClass.batch.end();
-			stage2.act();
-			stage2.draw();
-			MainGameClass.batch.begin();
-			audioSliders.render(MainGameClass.batch);
-			MainGameClass.batch.end();
-		} else {
-			musicSlider.setTouchable(Touchable.disabled);
-			gameSlider.setTouchable(Touchable.disabled);
-		}
-		if (state1 == STATE.CONTINUE) {
-			nowTime = System.currentTimeMillis() - timeOnStartup;
-			startTime += nowTime - thenTime;
-			customerController.updateCustomers();
-			thenTime = System.currentTimeMillis() - timeOnStartup;
-		}
-		if (state1 == STATE.GAME_OVER) {
-			game.gameMusic.dispose();
-			game.screenController.setScreen(Constants.LEADERBOARD_SCREEN_ID);
-		}
-	}
-
-	/**
-	 * Checks to see whether escape has been pressed to pause the game
-	 */
-	public void checkState() {
-		if (Gdx.input.isKeyPressed(Keys.ESCAPE)) {
-			state1 = STATE.PAUSE;
-		}
-	}
 
 	/**
 	 * Calculates coordinates for UI element scaling;
@@ -631,7 +451,7 @@ public class GameScreen extends Screen {
 	 * checkCellY += ck.getDirection().y + 1; Cell viewedTile =
 	 * ((TiledMapTileLayer) map1.getLayers().get(1)).getCell(checkCellX,
 	 * checkCellY);
-	 * 
+	 *
 	 * if (viewedTile != null) { Object stationType =
 	 * viewedTile.getTile().getProperties().get("Station"); if
 	 * (stationType != null) {
@@ -645,7 +465,7 @@ public class GameScreen extends Screen {
 	 */
 
 	/**
-	 * Resize game screen - Not used in fullscreen mode
+	 * Resize game screen
 	 *
 	 * @param width  - width to resize to
 	 * @param height - height to resize to

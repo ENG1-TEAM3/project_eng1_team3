@@ -1,0 +1,14 @@
+{
+  "id": "lettuce_chop",
+  "station_id": "<main>:cutting",
+  "items": ["<main>:lettuce"],
+  "steps": [{
+    "id": "wait",
+    "time": 10,
+    "success": [{
+      "id": "set",
+      "value": "<main>:lettuce_chopped"
+    }],
+    "sound": "<main>:cutting.mp3"
+  }]
+}

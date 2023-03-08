@@ -11,12 +11,15 @@ public class Entity {
 
 	public Vector2 pos;
 
-	String texturePath;
-	public Sprite sprite;
+	protected String texturePath;
+	protected Sprite sprite;
 
 	public float width;
 	public float height;
 	public Rectangle collision;
+	public Entity() {
+		this.pos = new Vector2();
+	}
 
 	public void draw(SpriteBatch batch) {
 		batch.begin();
@@ -26,12 +29,12 @@ public class Entity {
 
 	public void load(TextureManager textureManager, String textureID) {
 		// Load Texture
-		textureManager.load(textureID, texturePath);
+		textureManager.loadAsset(textureID, texturePath, "textures");
 	}
 
 	public void load(TextureManager textureManager) {
 		// Load Texture
-		textureManager.load(Constants.GAME_TEXTURE_ID, texturePath);
+		textureManager.loadAsset(Constants.GAME_TEXTURE_ID, texturePath, "textures");
 	}
 
 	public void unload(TextureManager textureManager) {
@@ -42,7 +45,10 @@ public class Entity {
 	/**
 	 * Function called after the screen has been loaded.
 	 */
-	public void postLoad() {}
+	public void postLoad(TextureManager textureManager) {
+		// Get texture
+		this.sprite = new Sprite(textureManager.getAsset(texturePath));
+	}
 
 	public void setTexture(String texturePath) {
 		this.texturePath = texturePath;

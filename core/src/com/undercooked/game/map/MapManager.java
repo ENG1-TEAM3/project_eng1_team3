@@ -1,18 +1,14 @@
 package com.undercooked.game.map;
 
-import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
-import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.JsonValue;
 import com.undercooked.game.files.FileControl;
 import com.undercooked.game.station.Station;
+import com.undercooked.game.station.StationData;
 import com.undercooked.game.station.StationManager;
 import com.undercooked.game.util.Constants;
 import com.undercooked.game.util.json.JsonFormat;
-import com.undercooked.game.util.json.JsonVal;
 
 public class MapManager {
 
@@ -52,42 +48,47 @@ public class MapManager {
             }
         }
 
-        // First clear the stationManager, as it will be used for this Map#
+        // First clear the stationManager, as it will be used for this Map
         stationManager.clear();
 
         // Convert the Map Json into an actual map
         Map outputMap = mapOfSize(root.getInt("width"), root.getInt("height"));
 
+        System.out.println(root);
+
         // Loop through the stations
         for (JsonValue stationData : root.get("stations").iterator()) {
+            System.out.println(stationData);
             // Put the whole thing in a try, just in case
             try {
                 // Check station ID isn't null
                 // If it is, just ignore.
-                if (stationData.getString("id") != null) {
-                    // If it isn't, load the json data for it
-                    JsonValue stationRoot = JsonFormat.formatJson(FileControl.loadJsonData(stationManager.getStationPath(stationData.getString("id"))),
-                            Constants.DefaultJson.stationFormat());
+                String stationID = stationData.getString("station_id");
+                if (stationID != null) {
+                    // If stationManager doesn't have this station loaded, then load it
+                    if (!stationManager.hasID(stationID)) {
+                        stationManager.loadStationPath(stationID);
+                    }
+                    // If it's loaded, get the data for the Station
+                    StationData data = stationManager.getStationData(stationID);
+                    System.out.println(data);
                     // If station root is null, then ignore.
                     // This will happen if the file wasn't found.
-                    if (stationRoot == null) {
-                        String stationID = stationRoot.getString("id");
-                        // If station ID already exists, then skip the following
-                        if (stationManager.hasID(stationID)) {
-                            continue;
-                        }
+                    if (data != null) {
                         // Initialise the Station
-                        Station newStation = new Station();
-                        newStation.setTexture(stationData.getString("texture_path"));
-                        newStation.setWidth(stationRoot.getInt("width"));
-                        newStation.setHeight(stationRoot.getInt("height"));
+                        Station newStation = new Station(data);
+                        newStation.setTexture(data.getTexturePath());
+                        newStation.setWidth(data.getWidth());
+                        newStation.setHeight(data.getWidth());
+                        newStation.pos.x = stationData.getInt("x");
+                        newStation.pos.y = stationData.getInt("y");
 
-                        stationManager.addStation(stationID, newStation);
+                        stationManager.addStation(newStation);
 
                         // Add it to the map
                         outputMap.addMapEntity(newStation,
-                                               stationRoot.getInt("x"),
-                                               stationRoot.getInt("y"));
+                                               stationData.getInt("x"),
+                                               stationData.getInt("y"));
                     }
                 }
             } catch (GdxRuntimeException e) {

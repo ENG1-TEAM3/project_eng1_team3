@@ -98,6 +98,9 @@ public class CookController {
      * @return Cook
      */
     public final Cook getCurrentCook() {
+        if (cooks.size == 0) {
+            return null;
+        }
         return cooks.get(currentCook);
     }
 
@@ -113,5 +116,9 @@ public class CookController {
      */
     public void unload() {
         cooks.clear();
+    }
+
+    public int getCurrentCookIndex() {
+        return currentCook;
     }
 }

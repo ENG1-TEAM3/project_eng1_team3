@@ -130,7 +130,7 @@ public class PauseScreen extends Screen {
 
         // First render the screen below, if there is one.
         if (displayScreen != null) {
-            displayScreen.renderScreen();
+            displayScreen.renderScreen(delta);
         } else {
             // Otherwise, just draw a blank screen.
             Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);

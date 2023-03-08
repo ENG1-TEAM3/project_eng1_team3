@@ -15,11 +15,28 @@ public class Map {
     int height;
 
     public Map(int width, int height) {
+        this.width = width;
+        this.height = height;
         // Initialise the columns
         map = new Array<>(width);
         // Then initialise the rows
         for (int i = 0 ; i < map.size ; i++) {
             map.add(new Array<MapCell>(height));
+        }
+        // Then init the map (so that it's empty)
+        init();
+    }
+
+    private void init() {
+        // Clear the array
+        map.clear();
+        // Load all of the values
+        for (int x = 0 ; x < width ; x++) {
+            Array thisCol = new Array<MapCell>();
+            map.add(thisCol);
+            for (int y = 0 ; y < width ; y++) {
+                thisCol.add(null);
+            }
         }
     }
 
@@ -57,10 +74,14 @@ public class Map {
         // Loop through all cells, left to right, bottom to top
         for (int x = 0 ; x < width ; x++) {
             for (int y = 0 ; y < height ; y++) {
-                // Check if the entity in this cell == entity.
-                // If it does, then set that cell to null
-                if (getCell(x,y).mapEntity == entity) {
-                    map.get(x).set(y, null);
+                MapCell thisCell = getCell(x,y);
+                // If the current cell isn't empty.
+                if (thisCell != null) {
+                    // Check if the entity in this cell == entity.
+                    // If it does, then set that cell to null
+                    if (thisCell.mapEntity == entity){
+                        map.get(x).set(y, null);
+                    }
                 }
             }
         }

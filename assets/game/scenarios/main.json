@@ -2,6 +2,14 @@
   "id": "main",
   "map_id": "main",
   "interactions": [
-
+    "<main>:burger"
+  ],
+  "requests": [
+    {
+      "item_id": "<main>:burger",
+      "value": 5,
+      "time_min": 30,
+      "time_max": 40
+    }
   ]
 }

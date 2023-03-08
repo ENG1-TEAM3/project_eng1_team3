@@ -82,7 +82,7 @@ public class LoadScreen extends Screen {
 
         // Render the previous screen underneath (if there is one)
         if (previous != null) {
-            previous.renderScreen();
+            previous.renderScreen(delta);
         }
 
         // Render the loading bar

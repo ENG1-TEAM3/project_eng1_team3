@@ -2,6 +2,8 @@ package com.undercooked.game.logic;
 
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.utils.Array;
+import com.undercooked.game.MainGameClass;
+import com.undercooked.game.assets.TextureManager;
 import com.undercooked.game.entity.Cook;
 import com.undercooked.game.entity.CookController;
 import com.undercooked.game.entity.CustomerController;
@@ -10,9 +12,7 @@ import com.undercooked.game.food.Ingredients;
 import com.undercooked.game.map.Map;
 import com.undercooked.game.screen.GameScreen;
 import com.undercooked.game.screen.ScreenController;
-import com.undercooked.game.screen.GameScreen.STATE;
 import com.undercooked.game.station.StationManager;
-import com.undercooked.game.util.Constants;
 
 /**
  * A class to extend from that indicates the logic of the
@@ -26,10 +26,23 @@ public abstract class GameLogic implements Logic {
     CustomerController customerController;
     StationManager stationManager;
     Map map;
+    long elapsedTime;
 
-    public GameLogic(GameScreen game) {
+    public GameLogic(GameScreen game, TextureManager textureManager) {
         this.gameScreen = game;
         this.ingredients = new Ingredients();
+        this.elapsedTime = 0;
+
+        this.cookController = new CookController(textureManager);
+        this.customerController = new CustomerController(textureManager);
+    }
+
+    public GameLogic(GameScreen game) {
+        this(game, null);
+    }
+
+    public GameLogic() {
+        this(null, null);
     }
 
     /**
@@ -41,7 +54,7 @@ public abstract class GameLogic implements Logic {
 
     /**
      * Loads a map from the path provided
-     * 
+     *
      * @param path {@link String} of the path.
      */
     public final void loadMap(String path) {
@@ -68,5 +81,20 @@ public abstract class GameLogic implements Logic {
      */
     public void unloadObjects() {
         cookController.unload();
+    }
+
+    /**
+     * Called when the {@link GameScreen} moves to the {@link com.undercooked.game.screen.PauseScreen}.
+     */
+    public void pause() {
+        cookController.stopMovement();
+    };
+
+    public CookController getCookController() {
+        return cookController;
+    }
+
+    public long getElapsedTime() {
+        return elapsedTime;
     }
 }

@@ -1,21 +1,12 @@
 package com.undercooked.game.station;
 
-import java.io.FileFilter;
-import java.util.HashMap;
-import java.util.Map;
-
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.ObjectMap;
-import com.undercooked.game.MainGameClass;
-import com.undercooked.game.assets.AudioManager;
-import com.undercooked.game.assets.TextureManager;
 import com.undercooked.game.files.FileControl;
-import com.undercooked.game.food.Ingredient;
-import com.undercooked.game.food.Ingredients;
 import com.undercooked.game.screen.GameScreen;
 import com.undercooked.game.util.Constants;
 import com.undercooked.game.util.json.JsonFormat;
@@ -33,20 +24,20 @@ public class StationManager {
 	/**
 	 * A Map representing every station and its (x, y) coordinates.
 	 */
-	public static ObjectMap<String, Station> stations = new ObjectMap<>();
-	public static ObjectMap<String, String> stationPaths;
+	public static Array<Station> stations = new Array<>();
+	public static ObjectMap<String, StationData> stationPaths;
 
 	SpriteBatch batch;
 	GameScreen game;
 
 	public StationManager() {
-		this.stations = new ObjectMap<>();
+		this.stations = new Array<>();
 		this.stationPaths = new ObjectMap<>();
 	}
 
 	public void update(float delta) {
 		// Update all the stations.
-		for (Station station : stations.values()) {
+		for (Station station : stations) {
 			station.update(delta);
 		}
 	}
@@ -234,11 +225,18 @@ public class StationManager {
 				if (file.extension() == "json") {
 					// Read the file data
 					JsonValue stationRoot = JsonFormat.formatJson(
-							FileControl.loadJsonData(path, internal),
+							FileControl.loadJsonData(file.path(), internal),
 							Constants.DefaultJson.stationFormat());
 					// If it's not null...
 					if (stationRoot != null) {
-						// Then
+						// Load the data
+						StationData data = new StationData();
+						data.setPath(file.path());
+						data.setTexturePath(stationRoot.getString("texture_path"));
+						data.setWidth(stationRoot.getInt("width"));
+						data.setHeight(stationRoot.getInt("height"));
+						// Then add it to the stations list
+						stationPaths.put(stationRoot.getString("id"), data);
 					}
 				}
 			}
@@ -260,14 +258,35 @@ public class StationManager {
 		loadStationsFromPath(FileControl.getDataPath() + "game/stations", false);
 	}
 
-	public String getStationPath(String stationID) {
+	public void loadStationPath(String stationPath) {
+		// Try to load this single station path
+		// Read the file data
+		JsonValue stationRoot = JsonFormat.formatJson(
+				FileControl.loadJsonAsset(stationPath, "stations"),
+				Constants.DefaultJson.stationFormat());
+		System.out.println(stationPath);
+		System.out.println(stationRoot);
+		// If it's not null...
+		if (stationRoot != null) {
+			// Load the data
+			StationData data = new StationData();
+			data.setPath(stationPath);
+			data.setTexturePath(stationRoot.getString("texture_path"));
+			data.setWidth(stationRoot.getInt("width"));
+			data.setHeight(stationRoot.getInt("height"));
+			// Then add it to the stations list
+			stationPaths.put(stationPath, data);
+		}
+	}
+
+	public StationData getStationData(String stationID) {
 		return stationPaths.get(stationID);
 	}
 
-	public void addStation(String stationID, Station station) {
+	public void addStation(Station station) {
 		// Only add if it's not contained already
-		if (!stations.containsKey(stationID)) {
-			stations.put(stationID, station);
+		if (!stations.contains(station, true)) {
+			stations.add(station);
 		}
 	}
 
@@ -277,6 +296,6 @@ public class StationManager {
 	}
 
 	public boolean hasID(String stationID) {
-		return stations.containsKey(stationID);
+		return stationPaths.containsKey(stationID);
 	}
 }

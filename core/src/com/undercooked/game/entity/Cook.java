@@ -32,7 +32,7 @@ public class Cook extends MoveableEntity {
 	private TextureManager textureManager;
 	private Animation<TextureRegion> walkAnimation;
 	private TextureRegion[][] spriteSheet;
-	private TextureRegion[][] currentFrame;
+	private TextureRegion currentFrame;
 	private TextureRegion[] walkFrames;
 	private float stateTime = 0;
 
@@ -94,7 +94,7 @@ public class Cook extends MoveableEntity {
 			dirX = 0;
 		}
 
-		currentFrame = walkAnimation.getKeyFrame(stateTime, true).split(32, 32);
+		currentFrame = walkAnimation.getKeyFrame(stateTime, true);
 		if (dirX != 0 || dirY != 0) {
 			stateTime += Gdx.graphics.getDeltaTime();
 		} else {
@@ -155,25 +155,39 @@ public class Cook extends MoveableEntity {
 	 * Draw bottom of cook
 	 * @param batch - spritebatch to draw with
 	 */
-	public void draw_bot(SpriteBatch batch) {
+	/*public void draw_bot(SpriteBatch batch) {
 		batch.draw(currentFrame[1][0], pos.x, pos.y, 64, 64);
-	}
+	}*/
 
 	/**
 	 * Draw top of cook
 	 * @param batch - spritebatch to draw with
 	 */
-	public void draw_top(SpriteBatch batch) {
+	/*public void draw_top(SpriteBatch batch) {
 		batch.draw(currentFrame[0][0], pos.x, pos.y + 64, 64, 64);
-	}
+	}*/
 
 	/**
 	 * Draw top of cook at a certain position - used for the display in the top right
 	 * @param batch - spritebatch to draw with
 	 * @param position - position in pixels to draw at
 	 */
-	public void draw_top(SpriteBatch batch, Vector2 position) {
+	/*public void draw_top(SpriteBatch batch, Vector2 position) {
 		batch.draw(currentFrame[0][0], position.x, position.y + 128, 128, 128);
+	}*/
+
+	public void draw(SpriteBatch batch) {
+		batch.draw(currentFrame, pos.x, pos.y + 64, 64, 64);
+		drawHeldItems(batch);
+	}
+
+	public void drawHeldItems(SpriteBatch batch) {
+		int itemIndex = 0;
+		for (Entity ingredient : heldItems) {
+			ingredient.pos = new Vector2(pos.x + 16, pos.y + 112 + itemIndex * 8);
+			ingredient.draw(MainGameClass.batch);
+			itemIndex++;
+		}
 	}
 
 	/**
@@ -197,7 +211,7 @@ public class Cook extends MoveableEntity {
 			walkFrames[i] = spriteSheet[row][i];
 		}
 		walkAnimation = new Animation<>(0.09f, walkFrames);
-		currentFrame = walkAnimation.getKeyFrame(stateTime, true).split(32, 32);
+		currentFrame = walkAnimation.getKeyFrame(stateTime, true);
 	}
 
 	/**

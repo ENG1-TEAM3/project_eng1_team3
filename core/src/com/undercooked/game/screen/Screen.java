@@ -50,7 +50,7 @@ public abstract class Screen implements IScreen {
     public final boolean isLoaded() {
         return loaded > 0;
     }
-    public void renderScreen() { }
+    public void renderScreen(float delta) { }
 
     public final AudioManager getAudioManager() {
         return game.audioManager;

@@ -13,6 +13,6 @@
       "type": "set",
       "value": "void"
     }],
-    "sound": "frying.mp4"
+    "sound": "<main>:frying.mp4"
   }]
 }
