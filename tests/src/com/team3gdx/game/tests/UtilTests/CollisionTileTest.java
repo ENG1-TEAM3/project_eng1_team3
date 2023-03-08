@@ -17,8 +17,6 @@ public class CollisionTileTest {
     public void checkrectangle() {
         //given
         CollisionTile collisionTile1 = new CollisionTile(5,5,5,5);
-
-        assertTrue(collisionTile1.returnRect() == new Rectangle(5,5,5,5));
-
+        assertEquals(collisionTile1.returnRect(), new Rectangle(5,5,5,5));
     }
 }
