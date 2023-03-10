@@ -1,14 +1,21 @@
 package com.team3gdx.game.tests;
 
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
+import com.badlogic.gdx.maps.tiled.TmxMapLoader;
+import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.team3gdx.game.entity.Cook;
 
 import com.team3gdx.game.food.Ingredient;
 import com.team3gdx.game.food.Ingredients;
+import com.team3gdx.game.screen.GameScreen;
+import com.team3gdx.game.util.Control;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import static com.team3gdx.game.screen.GameScreen.CLTiles;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -58,8 +65,12 @@ public class CookTests {
     @Test
     public void testCheckCollision() {
         Cook cook = new Cook(new Vector2(64 * 5, 64 * 3), 1);
-        Boolean result = cook.checkCollision(10, 1, null);
+        TiledMap map1 = new TmxMapLoader().load("map/art_map/customertest.tmx");
+        GameScreen.constructCollisionData(map1);
+        Boolean result = cook.checkCollision(10, 1, CLTiles);
         assertFalse(result);
+        Boolean result2 = cook.checkCollision(10, 20, CLTiles);
+        assertTrue(result2);
     }
 
     @Test
@@ -109,5 +120,34 @@ public class CookTests {
         cook.pickUpItem(newIngr);
         assertEquals(cook.heldItems.size(), 5, 0.0001);
         assertTrue(cook.full());
+    }
+
+    @Test
+    public void testUpdate() {
+        // Setup
+        Cook cook = new Cook(new Vector2(64 * 5, 64 * 3), 1);
+        Control control = new Control();
+        TiledMap map1 = new TmxMapLoader().load("map/art_map/customertest.tmx");
+        GameScreen.constructCollisionData(map1);
+        // Move up
+        control.up = true;
+        control.down = false;
+        cook.update(control, System.currentTimeMillis(), GameScreen.CLTiles);
+        assertEquals(cook.getDirection(), new Vector2(0, 1));
+        // Move Down
+        control.up = false;
+        control.down = true;
+        cook.update(control, System.currentTimeMillis(), GameScreen.CLTiles);
+        assertEquals(cook.getDirection(), new Vector2(0, -1));
+        // Move Left
+        control.right = false;
+        control.left = true;
+        cook.update(control, System.currentTimeMillis(), GameScreen.CLTiles);
+        assertEquals(cook.getDirection(), new Vector2(-1, 0));
+        // Move Right
+        control.right = true;
+        control.left = false;
+        cook.update(control, System.currentTimeMillis(), GameScreen.CLTiles);
+        assertEquals(cook.getDirection(), new Vector2(1, 0));
     }
 }
