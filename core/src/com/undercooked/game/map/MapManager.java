@@ -82,11 +82,13 @@ public class MapManager {
                     if (data != null) {
                         // Initialise the Station
                         Station newStation = new Station(data);
-                        //newStation.setTexture(data.getTexturePath());
-                        //newStation.setWidth(data.getWidth());
-                        //newStation.setHeight(data.getHeight());
-                        // newStation.collision.x = gridToPos(stationData.getInt("x"));
-                        // newStation.collision.y = gridToPos(stationData.getInt("y"));
+
+                        // Check if there is a custom base
+                        String basePath = stationData.getString("base_texture");
+                        if (basePath != null) {
+                            // If there is, then set the newStation to use it
+                            newStation.setBasePath(basePath);
+                        }
 
                         stationManager.addStation(newStation);
 

@@ -1,13 +1,12 @@
 package com.undercooked.game.map;
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.undercooked.game.MainGameClass;
 import com.undercooked.game.entity.Entity;
 
 public class MapEntity extends Entity {
 
     protected int width;
     protected int height;
+    String basePath;
     public void setWidth(int width) {
         this.collision.width = Math.max(MapManager.gridToPos(1),MapManager.gridToPos(width));
         this.width = Math.max(1,width);
@@ -26,6 +25,10 @@ public class MapEntity extends Entity {
 
     public int getCellHeight() {
         return this.height;
+    }
+
+    public void setBasePath(String basePath) {
+        this.basePath = basePath;
     }
 
     /*public void draw(SpriteBatch batch) {

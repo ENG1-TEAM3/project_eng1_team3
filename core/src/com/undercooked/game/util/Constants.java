@@ -67,6 +67,7 @@ public final class Constants {
             root.addValue(new JsonInt("texture_rotation", 0));
             root.addValue(new JsonInt("width", 1)); // How many x tiles it takes up
             root.addValue(new JsonInt("height", 1)); // How many y tiles it takes up
+            root.addValue(new JsonString("default_base", "<main>:blank.png"));
             return root;
         }
         public static JsonObject mapFormat() {
@@ -79,6 +80,7 @@ public final class Constants {
             station.addValue(new JsonString("id", null));
             station.addValue(new JsonInt("x", -1));
             station.addValue(new JsonInt("y", -1));
+            station.addValue(new JsonString("base_texture", null));
 
             root.addValue(new JsonObjectArray("stations", station));
 

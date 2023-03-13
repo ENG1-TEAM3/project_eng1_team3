@@ -236,6 +236,7 @@ public class StationManager {
 						data.setTexturePath(stationRoot.getString("texture_path"));
 						data.setWidth(stationRoot.getInt("width"));
 						data.setHeight(stationRoot.getInt("height"));
+						data.setDefaultBase(stationRoot.getString("default_base"));
 						// System.out.println("Width: " + data.getWidth() + ", Height: " + data.getHeight());
 						// Then add it to the stations list
 						stationData.put(curPath + ":" + file.nameWithoutExtension(), data);

@@ -30,6 +30,7 @@ public class Station extends MapEntity {
 		super();
 		this.stationData = stationData;
 		this.texturePath = stationData.getTexturePath();
+		this.setBasePath(stationData.defaultBase);
 		setWidth(stationData.getWidth());
 		setHeight(stationData.getHeight());
 	}

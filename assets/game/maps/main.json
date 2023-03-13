@@ -6,7 +6,8 @@
     {
       "station_id": "<main>:cutting",
       "x": 5,
-      "y": 5
+      "y": 5,
+      "base_texture": "<main>:cupboard.png"
     }],
   "cooks": [
     {

@@ -4,6 +4,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import com.undercooked.game.assets.TextureManager;
 import com.undercooked.game.entity.Entity;
+import com.undercooked.game.station.Station;
 
 public class Map {
 
@@ -193,16 +194,17 @@ public class Map {
                     }
                 }
             }
+
             // Below it, if there isn't a MapCell already, place a cupboard
             // It is not in the loop above, as only the lowest y needs it below
             MapCell cellBelow = getCell(i, y-1);
             if (cellBelow == null) {
-                // If y-1 is valid
-                if (validCell(i,y-1)) {
+                // If y-1 is valid, and basePath is not null
+                if (entity.basePath != null && validCell(i,y-1)) {
                     // Make a cupboard cell below and add it to the map
                     MapCell newBelow = new MapCell(true);
                     newBelow.mapEntity = new MapEntity();
-                    newBelow.mapEntity.setTexture("textures/cupboard.png");
+                    newBelow.mapEntity.setTexture(entity.basePath);
                     newBelow.mapEntity.setWidth(1);
                     newBelow.mapEntity.setHeight(1);
                     newBelow.mapEntity.setX(MapManager.gridToPos(offsetX + i));
