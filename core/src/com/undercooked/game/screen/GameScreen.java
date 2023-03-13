@@ -49,8 +49,8 @@ import com.undercooked.game.util.Constants;
 import com.undercooked.game.util.Control;
 
 /**
- * Responsible for handling all the rendering related tasks. For game
- * logic, see {@link GameLogic}.
+ * Responsible for handling all the rendering related tasks.
+ * For game logic, see {@link GameLogic}.
  */
 public class GameScreen extends Screen {
 	GameLogic gameLogic;
@@ -117,7 +117,6 @@ public class GameScreen extends Screen {
 	long timeOnStartup;
 	long tempTime, tempThenTime;
 	public static Control control;
-	TiledMapRenderer tiledMapRenderer;
 	public Map map;
 	public static int currentCookIndex = 0;
 	
@@ -142,8 +141,11 @@ public class GameScreen extends Screen {
 	 */
 	public void setGameLogic(GameLogic gameLogic) {
 		this.gameLogic = gameLogic;
+		gameLogic.setGameScreen(this);
+		gameLogic.setStationManager(game.stationManager);
 		// If it has a GameRenderer, update it there
 		if (this.gameRenderer != null) {
+			this.gameLogic.setGameRenderer(this.gameRenderer);
 			this.gameRenderer.setLogic(gameLogic);
 		}
 	}
@@ -162,7 +164,8 @@ public class GameScreen extends Screen {
 		}
 		// If this has a GameLogic, set it
 		if (this.gameLogic != null) {
-			this.gameRenderer.setLogic(gameLogic);
+			this.gameLogic.setGameRenderer(this.gameRenderer);
+			this.gameRenderer.setLogic(this.gameLogic);
 		}
 	}
 
@@ -186,14 +189,11 @@ public class GameScreen extends Screen {
 		game.audioManager.loadMusic("audio/soundFX/money-collect.mp3", Constants.GAME_GROUP);
 		game.audioManager.loadMusic("audio/soundFX/timer-bell-ring.mp3", Constants.GAME_GROUP);
 
-		map = game.mapManager.load("<main>:main.json", game.stationManager);
-		System.out.println(map.getAllEntities());
+		gameLogic.setTextureManager(textureManager);
+		gameLogic.loadMap("<main>:main.json");
+		// System.out.println(map.getAllEntities());
 		// Add the map entities to the GameRenderer
-		for (Entity mapEntity : map.getAllEntities()) {
-			gameRenderer.addEntity(mapEntity);
-			mapEntity.load(textureManager);
-			System.out.println(mapEntity.pos.x);
-		}
+
 	}
 
 	@Override
@@ -209,7 +209,7 @@ public class GameScreen extends Screen {
 		stage.dispose();
 		stage2.dispose();
 
-		map.dispose();
+		gameLogic.dispose();
 	}
 
 	/**
@@ -292,10 +292,8 @@ public class GameScreen extends Screen {
 		stage2.addActor(btms);
 		stage2.addActor(ad);
 
-		// Set up map textures
-		for (Entity mapEntity : map.getAllEntities()) {
-			mapEntity.postLoad(textureManager);
-		}
+		// GameLogic post load
+		gameLogic.postLoad();
 
 	}
 

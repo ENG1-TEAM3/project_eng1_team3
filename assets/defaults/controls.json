@@ -1,0 +1,13 @@
+{
+  "c_up": ["w"],
+  "c_left": ["a"],
+  "c_right": ["d"],
+  "c_down": ["s"],
+
+  "c_next": ["tab"],
+  "c_prev": ["enter"],
+
+  "interact": ["enter"],
+  "take": ["tab"],
+  "drop": ["l"]
+}

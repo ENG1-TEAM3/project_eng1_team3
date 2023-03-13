@@ -11,25 +11,25 @@ import com.undercooked.game.Input.InputController;
 public class SaveManager {
 
     /** The static json class instance. */
-    private static Json json;
+    /*private static Json json;
     static {
         Json json = new Json();
-    }
+    }*/
 
     /** The dictionary of settings to save into json. */
-    public static ObjectMap<String, JsonValue> saveSettings;
+    /*public static ObjectMap<String, JsonValue> saveSettings;
     static {
         for (SaveFiles key : SaveFiles.values()) {
             loadSave(key);
         }
-    }
+    }*/
 
     /**
      * Loads the save file from the given saveID.
      * @param saveID The save file to load.
      * @return The root of the json file.
      */
-    public static JsonValue loadSave(SaveFiles saveID) {
+    /*public static JsonValue loadSave(SaveFiles saveID) {
         String dir = FileControl.getDataPath();
         String fileData = FileControl.loadFile(dir, saveID.fileName);
         JsonValue root = new JsonReader().parse(fileData);
@@ -61,10 +61,10 @@ public class SaveManager {
 }
 
 /** Contains all the files to save/load. */
-enum SaveFiles {
-    /** Contains settings and controls for the game. */
+/*enum SaveFiles {
+    /** Contains settings and controls for the game. * /
     SETTINGS("settings.json",new Json().toJson(InputController.defaultKeyMap())),
-    /** Contains data on the leaderboard for the game. */
+    /** Contains data on the leaderboard for the game. * /
     LEADERBOARD("leaderboard.json",new Json().toJson(new JsonValue("")));
     final String fileName;
     final String defaultData;
@@ -73,4 +73,4 @@ enum SaveFiles {
         this.fileName = fileName;
         this.defaultData = defaultData;
     }
-}
+}*/

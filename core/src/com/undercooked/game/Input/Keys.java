@@ -1,5 +1,6 @@
 package com.undercooked.game.Input;
 
+/** The ids of the keys used within the controls.json folder. */
 public class Keys {
 
     //region Cook Keys

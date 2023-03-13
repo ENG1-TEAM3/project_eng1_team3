@@ -2,10 +2,12 @@ package com.undercooked.game.entity;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.JsonValue;
 import com.undercooked.game.Input.InputController;
 import com.undercooked.game.Input.Keys;
-import com.undercooked.game.map.MapManager;
 import com.undercooked.game.assets.TextureManager;
+import com.undercooked.game.map.Map;
+import com.undercooked.game.map.MapManager;
 import com.undercooked.game.util.Control;
 
 /** Responsible for all functions cook related. */
@@ -108,6 +110,7 @@ public class CookController {
     public void load(String textureGroup) {
         textureManager.load(textureGroup, "entities/cook_walk_1.png");
         textureManager.load(textureGroup, "entities/cook_walk_2.png");
+        textureManager.load(textureGroup, "entities/cook_walk_3.png");
     }
 
     /**
@@ -120,5 +123,18 @@ public class CookController {
 
     public int getCurrentCookIndex() {
         return currentCook;
+    }
+
+    public void loadCooksIntoMap(JsonValue mapRoot, Map map, TextureManager textureManager) {
+        JsonValue cookArray = mapRoot.get("cooks");
+        currentCook = 0;
+        // System.out.println(cookArray);
+        // Iterate through the cooks and add them
+        for (JsonValue cookData : cookArray.iterator()) {
+            // System.out.println(cookData);
+            Vector2 cookPos = new Vector2(MapManager.gridToPos(cookData.getFloat("x")), MapManager.gridToPos(cookData.getFloat("y")));
+            Cook newCook = new Cook(cookPos, 1, textureManager, map);
+            cooks.add(newCook);
+        }
     }
 }

@@ -151,7 +151,7 @@ public class MainScreen extends Screen {
 
 		game.mainScreenMusic = game.audioManager.getMusic("audio/music/MainScreenMusic.ogg");
 
-		TextureManager textureManager = game.getTextureManager();
+		final TextureManager textureManager = game.getTextureManager();
 		vButton = textureManager.get("uielements/vButton.jpg");
 		vControl = textureManager.get("uielements/vControl.png");
 		startButton = textureManager.get("uielements/newgame.png");
@@ -187,7 +187,7 @@ public class MainScreen extends Screen {
 				super.touchUp(event, x, y, pointer, button);
 				// TEMP - Using default Scenario
 				GameScreen gameScreen = (GameScreen) game.screenController.getScreen(Constants.GAME_SCREEN_ID);
-				gameScreen.setGameLogic(new Scenario());
+				gameScreen.setGameLogic(new Scenario(gameScreen, textureManager));
 				gameScreen.setGameRenderer(new GameRenderer());
 
 				// Move to the game screen

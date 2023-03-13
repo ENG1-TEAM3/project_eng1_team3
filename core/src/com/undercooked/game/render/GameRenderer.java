@@ -33,10 +33,11 @@ public class GameRenderer {
     private Comparator<Entity> entityCompare = new Comparator<Entity>() {
         @Override
         public int compare(Entity o1, Entity o2) {
-            if (o1.pos.y > o2.pos.y) {
-                return 1;
-            } else if (o2.pos.y > o1.pos.y) {
+            if (o1.getY() > o2.getY()) {
                 return -1;
+            }
+            if (o2.getY() > o1.getY()) {
+                return 1;
             }
             return 0;
         }
@@ -76,12 +77,12 @@ public class GameRenderer {
     public void moveCamera(float delta) {
         CookController cookController = logic.getCookController();
         if (cookController.getCurrentCook() != null) {
-            if (Math.abs(worldCamera.position.x - cookController.getCurrentCook().pos.x) < 2
-                    && Math.abs(worldCamera.position.y - cookController.getCurrentCook().pos.y) < 2) {
-                worldCamera.position.x = cookController.getCurrentCook().pos.x;
-                worldCamera.position.y = cookController.getCurrentCook().pos.y;
+            if (Math.abs(worldCamera.position.x - cookController.getCurrentCook().collision.x) < 2
+                    && Math.abs(worldCamera.position.y - cookController.getCurrentCook().collision.y) < 2) {
+                worldCamera.position.x = cookController.getCurrentCook().collision.x;
+                worldCamera.position.y = cookController.getCurrentCook().collision.y;
             } else {
-                worldCamera.position.lerp(new Vector3(cookController.getCurrentCook().pos.x, cookController.getCurrentCook().pos.y, 0), .065f * delta);
+                worldCamera.position.lerp(new Vector3(cookController.getCurrentCook().collision.x, cookController.getCurrentCook().collision.y, 0), .9f * delta);
             }
         }
     }
@@ -101,6 +102,7 @@ public class GameRenderer {
         worldCamera.update();
 
         // Render the floor of the map
+
         // Render the entities in order, highest Y to lowest Y
         renderEntities.sort(entityCompare);
         for (Entity renderEntity : renderEntities) {
@@ -109,9 +111,16 @@ public class GameRenderer {
             batch.end();
         }
 
+        // Render all the entities' debug
+        /*for (Entity renderEntity : renderEntities) {
+            shape.begin();
+            renderEntity.drawDebug(shape);
+            shape.end();
+        }*/
+
         // Following that, render the UI
-        MainGameClass.shapeRenderer.setProjectionMatrix(uiCamera.combined);
-        MainGameClass.batch.setProjectionMatrix(uiCamera.combined);
+        shape.setProjectionMatrix(uiCamera.combined);
+        batch.setProjectionMatrix(uiCamera.combined);
 
         CookController cookController = logic.getCookController();
         for (int i = 0; i < cookController.getCooks().size; i++) {
@@ -124,15 +133,15 @@ public class GameRenderer {
                         Constants.V_HEIGHT - 128 - 8, 128, 128);
                 shape.end();
             }
-            MainGameClass.batch.begin();
-            cookController.getCooks().get(i).draw(batch);
-            MainGameClass.batch.end();
+            batch.begin();
+            cookController.getCooks().get(i).draw_top(batch, Constants.V_WIDTH-(64*i), Constants.V_HEIGHT-64);
+            batch.end();
         }
 
-        MainGameClass.batch.begin();
-        font.draw(MainGameClass.batch, "Time in s: " + (logic.getElapsedTime() / 1000),
+        batch.begin();
+        font.draw(batch, "Time in s: " + (logic.getElapsedTime() / 1000),
                 500, 500);
-        MainGameClass.batch.end();
+        batch.end();
     }
 
     public void addEntity(Entity entity) {
@@ -146,4 +155,7 @@ public class GameRenderer {
         renderEntities.removeValue(entity,true);
     }
 
+    public Array<Entity> getEntities() {
+        return renderEntities;
+    }
 }

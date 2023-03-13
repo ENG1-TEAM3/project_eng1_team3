@@ -13,6 +13,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
+import com.undercooked.game.Input.InputController;
 import com.undercooked.game.assets.AudioManager;
 import com.undercooked.game.audio.SoundStateChecker;
 import com.undercooked.game.map.MapManager;
@@ -48,11 +49,9 @@ public class MainGameClass extends Game {
 		assetManager.setLoader(TiledMap.class, new TmxMapLoader(new InternalFileHandleResolver()));
 		audioManager = new AudioManager(assetManager, soundChecker);
 		textureManager = new TextureManager(assetManager);
-		mapManager = new MapManager();
+		mapManager = new MapManager(textureManager,audioManager);
 		screenController = new ScreenController(this, assetManager);
 		stationManager = new StationManager();
-
-		load();
 	}
 
 	/**
@@ -60,11 +59,18 @@ public class MainGameClass extends Game {
 	 * over.
 	 */
 	public void load() {
+		// Load all station paths
+		stationManager.loadStationPaths();
 
+		// Load the controls
+		InputController.loadControls();
 	}
 
 	@Override
 	public void create() {
+
+		// Load the game
+		load();
 
 		settingPref = Gdx.app.getPreferences(Constants.Preferences.SETTINGS);
 

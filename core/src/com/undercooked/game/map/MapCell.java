@@ -7,4 +7,5 @@ public class MapCell {
     public MapCell(boolean collidable) {
         this.collidable = collidable;
     }
+
 }

@@ -25,14 +25,14 @@ public class StationManager {
 	 * A Map representing every station and its (x, y) coordinates.
 	 */
 	public static Array<Station> stations = new Array<>();
-	public static ObjectMap<String, StationData> stationPaths;
+	public static ObjectMap<String, StationData> stationData;
 
 	SpriteBatch batch;
 	GameScreen game;
 
 	public StationManager() {
 		this.stations = new Array<>();
-		this.stationPaths = new ObjectMap<>();
+		this.stationData = new ObjectMap<>();
 	}
 
 	public void update(float delta) {
@@ -214,18 +214,19 @@ public class StationManager {
 
 	}*/
 
-	private void loadStationsFromPath(String path, boolean internal) {
+	private void loadStationsFromPath(String path, boolean internal, String curPath) {
 		FileHandle stations = FileControl.getFileHandle(path, internal);
 		for (FileHandle file : stations.list()) {
 			// If it's a directory, then recurse
 			if (file.isDirectory()) {
-				loadStationsFromPath(file.path(), internal);
+				loadStationsFromPath(path + "/" + file.name(), internal, curPath + (curPath.isEmpty() ? "/" : "") + file.name());
 			} else {
 				// If it's not, ensure it's a json.
-				if (file.extension() == "json") {
+				if (file.extension().equals("json")) {
+					// System.out.println("File path: " + file.path());
 					// Read the file data
 					JsonValue stationRoot = JsonFormat.formatJson(
-							FileControl.loadJsonData(file.path(), internal),
+							FileControl.loadJsonAsset(curPath + ":" + file.nameWithoutExtension(), "stations"),
 							Constants.DefaultJson.stationFormat());
 					// If it's not null...
 					if (stationRoot != null) {
@@ -235,11 +236,20 @@ public class StationManager {
 						data.setTexturePath(stationRoot.getString("texture_path"));
 						data.setWidth(stationRoot.getInt("width"));
 						data.setHeight(stationRoot.getInt("height"));
+						// System.out.println("Width: " + data.getWidth() + ", Height: " + data.getHeight());
 						// Then add it to the stations list
-						stationPaths.put(stationRoot.getString("id"), data);
+						stationData.put(curPath + ":" + file.nameWithoutExtension(), data);
 					}
 				}
 			}
+		}
+	}
+
+	private void loadStationsFromPath(String path, boolean internal) {
+		if (internal) {
+			loadStationsFromPath(path, true, "<main>");
+		} else {
+			loadStationsFromPath(path, false, "");
 		}
 	}
 
@@ -249,13 +259,15 @@ public class StationManager {
 	 */
 	public void loadStationPaths() {
 		// First clear the object map
-		stationPaths.clear();
+		stationData.clear();
 
 		// Load the internal path.
 		loadStationsFromPath("game/stations", true);
 
 		// Load from the external path.
 		loadStationsFromPath(FileControl.getDataPath() + "game/stations", false);
+
+		// System.out.println(stationData);
 	}
 
 	public void loadStationPath(String stationPath) {
@@ -264,8 +276,8 @@ public class StationManager {
 		JsonValue stationRoot = JsonFormat.formatJson(
 				FileControl.loadJsonAsset(stationPath, "stations"),
 				Constants.DefaultJson.stationFormat());
-		System.out.println(stationPath);
-		System.out.println(stationRoot);
+		// System.out.println("stationPath: " + stationPath);
+		// System.out.println("stationRoot: " + stationRoot);
 		// If it's not null...
 		if (stationRoot != null) {
 			// Load the data
@@ -275,12 +287,12 @@ public class StationManager {
 			data.setWidth(stationRoot.getInt("width"));
 			data.setHeight(stationRoot.getInt("height"));
 			// Then add it to the stations list
-			stationPaths.put(stationPath, data);
+			stationData.put(stationPath, data);
 		}
 	}
 
 	public StationData getStationData(String stationID) {
-		return stationPaths.get(stationID);
+		return stationData.get(stationID);
 	}
 
 	public void addStation(Station station) {
@@ -296,6 +308,6 @@ public class StationManager {
 	}
 
 	public boolean hasID(String stationID) {
-		return stationPaths.containsKey(stationID);
+		return stationData.containsKey(stationID);
 	}
 }

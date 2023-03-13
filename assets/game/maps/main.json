@@ -2,9 +2,19 @@
   "id": "main",
   "width": 16,
   "height": 16,
-  "stations": [{
-    "station_id": "<main>:cutting",
-    "x": 5,
-    "y": 5
-  }]
+  "stations": [
+    {
+      "station_id": "<main>:cutting",
+      "x": 5,
+      "y": 5
+    }],
+  "cooks": [
+    {
+      "x": 4,
+      "y": 4
+    },
+    {
+      "x": 6,
+      "y": 6
+    }]
 }

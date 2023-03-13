@@ -37,8 +37,7 @@ public class Customer {
 	 * @param tg - target y cell coordinate - not in pixels
 	 * @param custno - customer number - changes texture
 	 */
-	public Customer(int x, int y, int tg, int custno, TextureManager textureManager) {
-		targetsquare = tg;
+	public Customer(int x, int y, int custno, TextureManager textureManager) {
 		TextureManager assetManager = textureManager;
 		textf = assetManager.get("entities/cust" + custno + "f.png");
 		textb = assetManager.get("entities/cust" + custno + "b.png");

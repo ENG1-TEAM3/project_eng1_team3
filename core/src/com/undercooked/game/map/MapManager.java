@@ -1,9 +1,12 @@
 package com.undercooked.game.map;
 
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.JsonValue;
+import com.undercooked.game.assets.AudioManager;
+import com.undercooked.game.assets.TextureManager;
+import com.undercooked.game.entity.CookController;
 import com.undercooked.game.files.FileControl;
+import com.undercooked.game.station.UniqueStation;
 import com.undercooked.game.station.Station;
 import com.undercooked.game.station.StationData;
 import com.undercooked.game.station.StationManager;
@@ -12,7 +15,12 @@ import com.undercooked.game.util.json.JsonFormat;
 
 public class MapManager {
 
-    public MapManager() {
+    private TextureManager textureManager;
+    private AudioManager audioManager;
+
+    public MapManager(TextureManager textureManager, AudioManager audioManager) {
+        this.textureManager = textureManager;
+        this.audioManager = audioManager;
         load();
     }
 
@@ -35,14 +43,14 @@ public class MapManager {
         }
     }*/
 
-    public Map load(String path, StationManager stationManager) {
+    public Map load(String path, StationManager stationManager, CookController cookController) {
         // Try loading the Json
         JsonValue root = JsonFormat.formatJson(FileControl.loadJsonAsset(path, "maps"), Constants.DefaultJson.mapFormat());
         // If it's null, then just load the default map and return that.
         if (root == null) {
             // Make sure this isn't the Default Map, to avoid an infinite loop.
             if (path != Constants.DEFAULT_MAP){
-                return load(Constants.DEFAULT_MAP, stationManager);
+                return load(Constants.DEFAULT_MAP, stationManager, cookController);
             } else {
                 return null;
             }
@@ -54,11 +62,8 @@ public class MapManager {
         // Convert the Map Json into an actual map
         Map outputMap = mapOfSize(root.getInt("width"), root.getInt("height"));
 
-        System.out.println(root);
-
         // Loop through the stations
         for (JsonValue stationData : root.get("stations").iterator()) {
-            System.out.println(stationData);
             // Put the whole thing in a try, just in case
             try {
                 // Check station ID isn't null
@@ -77,11 +82,11 @@ public class MapManager {
                     if (data != null) {
                         // Initialise the Station
                         Station newStation = new Station(data);
-                        newStation.setTexture(data.getTexturePath());
-                        newStation.setWidth(data.getWidth());
-                        newStation.setHeight(data.getWidth());
-                        newStation.pos.x = stationData.getInt("x");
-                        newStation.pos.y = stationData.getInt("y");
+                        //newStation.setTexture(data.getTexturePath());
+                        //newStation.setWidth(data.getWidth());
+                        //newStation.setHeight(data.getHeight());
+                        // newStation.collision.x = gridToPos(stationData.getInt("x"));
+                        // newStation.collision.y = gridToPos(stationData.getInt("y"));
 
                         stationManager.addStation(newStation);
 
@@ -95,6 +100,11 @@ public class MapManager {
                 e.printStackTrace();
             }
         }
+
+        // Give the map to the CookController so that it can load the cooks
+        cookController.loadCooksIntoMap(root, outputMap, textureManager);
+
+        System.out.println(outputMap);
         return outputMap;
     }
 
@@ -105,17 +115,49 @@ public class MapManager {
 
     }
 
+    public static UniqueStation newCounter() {
+        UniqueStation newCounter = new UniqueStation(StationManager.stationData.get("<main>:counter"));
+        return newCounter;
+    }
+
     // Creates a map of size width and height.
     public static Map mapOfSize(int width, int height) {
-        return new Map(width, height);
+        // The map size is the area that the players can run around in.
+        // Therefore, height += 2, for top and bottom counters, and then
+        // width has a few more added, primarily on the left.
+        Map returnMap = new Map(width, height, width+5, height+2);
+        int offsetX = 3, offsetY = 1;
+        returnMap.setOffsetX(offsetX);
+        returnMap.setOffsetY(offsetY);
+
+        // Add the counter border
+        // X entities
+        for (int i = 0 ; i < width ; i++) {
+            returnMap.addMapEntity(newCounter(),i,1);
+            returnMap.addMapEntity(newCounter(),i,height-1);
+        }
+        // Y entities
+        for (int j = 2 ; j < height-1 ; j++) {
+            returnMap.addMapEntity(newCounter(),0,j);
+            returnMap.addMapEntity(newCounter(),width-1,j);
+        }
+        return returnMap;
     }
 
     public static float gridToPos(int gridPos) {
         return gridPos * 64F;
     }
 
-    public static int posToGrid(float pos) {
+    public static float gridToPos(float gridPos) {
+        return gridPos * 64F;
+    }
+
+    public static int posToGridFloor(float pos) {
         return (int) (pos / 64F);
+    }
+
+    public static float posToGrid(float pos) {
+        return (pos / 64F);
     }
 
 }

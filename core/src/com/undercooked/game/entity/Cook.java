@@ -3,10 +3,12 @@ package com.undercooked.game.entity;
 import java.util.Stack;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -17,23 +19,23 @@ import com.undercooked.game.assets.TextureManager;
 import com.undercooked.game.food.Ingredient;
 import com.undercooked.game.map.Map;
 import com.undercooked.game.map.MapEntity;
+import com.undercooked.game.map.MapManager;
 import com.undercooked.game.util.CollisionTile;
 import com.undercooked.game.util.Control;
+import jdk.jfr.Description;
 
 public class Cook extends MoveableEntity {
 
 	private static final int MAX_STACK_SIZE = 5;
-	private static final int FRAME_COLS = 8, FRAME_ROWS = 4;
+	private static final int FRAME_COLS = 5, FRAME_ROWS = 4;
 
 	private Vector2 direction;
-	private int cookno;
+	private final int cookno;
 
-	private Texture walkSheet;
-	private TextureManager textureManager;
+	private final TextureManager textureManager;
 	private Animation<TextureRegion> walkAnimation;
 	private TextureRegion[][] spriteSheet;
 	private TextureRegion currentFrame;
-	private TextureRegion[] walkFrames;
 	private float stateTime = 0;
 
 	public boolean locked = false;
@@ -47,17 +49,25 @@ public class Cook extends MoveableEntity {
 	 * @param cookNum - cook number, changes texture
 	 */
 	public Cook(Vector2 pos, int cookNum, TextureManager textureManager, Map map) {
+		super();
 		this.pos = pos;
+		this.collision.x = pos.x;
+		this.collision.y = pos.y;
 		this.cookno = cookNum;
 
-		width = 64;
-		height = 128;
-		speed = 0.25f;
+		collision.width = 32;
+		offsetX = (64 - collision.getWidth())/2;
+		collision.height = 10;
+		offsetY = -collision.height/2;
+		speed = 2.5f;
 		direction = new Vector2(0, -1);
 
 		this.textureManager = textureManager;
 		this.map = map;
+	}
 
+	@Override
+	public void postLoad(TextureManager textureManager) {
 		setWalkTexture("entities/cook_walk_" + cookno + ".png");
 	}
 
@@ -67,38 +77,23 @@ public class Cook extends MoveableEntity {
 		dirY = 0;
 		if (InputController.isKeyPressed(Keys.cook_down)) {
 			dirY -= 1;
-			setWalkFrames(2);
-			direction = new Vector2(0, 1);
-		} else if (InputController.isKeyPressed(Keys.cook_up)) {
-			dirY += 1;
 			setWalkFrames(0);
+			direction = new Vector2(0, 1);
+		}
+		if (InputController.isKeyPressed(Keys.cook_up)) {
+			dirY += 1;
+			setWalkFrames(2);
 			direction = new Vector2(0, -1);
 		}
 		if (InputController.isKeyPressed(Keys.cook_left)) {
 			dirX -= 1;
 			setWalkFrames(1);
 			direction = new Vector2(-1, 0);
-		} else if (InputController.isKeyPressed(Keys.cook_right)) {
-			dirY -= 1;
+		}
+		if (InputController.isKeyPressed(Keys.cook_right)) {
+			dirX += 1;
 			setWalkFrames(3);
 			direction = new Vector2(1, 0);
-		}
-
-		// X
-		if (map.checkCollision(this, pos.x + (speed * delta), pos.y)) {
-			dirX = 0;
-		}
-
-		// Y
-		if (map.checkCollision(this, pos.x + (dirX * speed * delta), pos.y)) {
-			dirX = 0;
-		}
-
-		currentFrame = walkAnimation.getKeyFrame(stateTime, true);
-		if (dirX != 0 || dirY != 0) {
-			stateTime += Gdx.graphics.getDeltaTime();
-		} else {
-			stateTime = 0;
 		}
 	}
 
@@ -107,9 +102,42 @@ public class Cook extends MoveableEntity {
 	 * @param delta - The time difference from the last frame
 	 */
 	public void update(float delta) {
+		// Update super
+		super.update(delta);
+
+		// Check collision
+		// X
+		if (map.checkCollision(this, collision.x + (moveCalc(dirX, delta)), collision.y)) {
+			// Move the player as close as possible on the x
+			while (!map.checkCollision(this, collision.x + 0.001F * dirX, collision.y)) {
+				collision.x += 0.001F * dirX;
+			}
+			collision.x -= 0.001F * dirX;
+			pos.x = collision.x-offsetX;
+			dirX = 0;
+		}
+
+		// Y
+		if (map.checkCollision(this, collision.x, collision.y + (moveCalc(dirY, delta)))) {
+			// Move the player as close as possible on the y
+			while (!map.checkCollision(this, collision.x, collision.y + 0.001F * dirY)) {
+				collision.y += 0.001F * dirY;
+			}
+			collision.y -= 0.001F * dirY;
+			pos.y = collision.y-offsetY;
+			dirY = 0;
+		}
+
 		// Move
-		pos.x += dirX * speed * delta;
-		pos.y += dirY * speed * delta;
+		move(delta);
+
+		// Update animation
+		currentFrame = walkAnimation.getKeyFrame(stateTime, true);
+		if (dirX != 0 || dirY != 0) {
+			stateTime += delta;
+		} else {
+			stateTime = 0;
+		}
 
 		// Reset move speed
 		dirX = 0;
@@ -176,15 +204,32 @@ public class Cook extends MoveableEntity {
 		batch.draw(currentFrame[0][0], position.x, position.y + 128, 128, 128);
 	}*/
 
+	/**
+	 * Draw the {@link Cook}.
+	 * @param batch
+	 */
+	@Override
 	public void draw(SpriteBatch batch) {
-		batch.draw(currentFrame, pos.x, pos.y + 64, 64, 64);
+		batch.draw(currentFrame, pos.x, pos.y, 64, 128);
 		drawHeldItems(batch);
+	}
+
+	/**
+	 * Draw the top half of the {@link Cook} at the location provided.
+	 * @param batch {@link SpriteBatch} : The {@link SpriteBatch} to draw with.
+	 * @param x {@code float} : The {@code x} position to draw at.
+	 * @param y {@code float} : The {@code y} position to draw at.
+	 */
+	public void draw_top(SpriteBatch batch, int x, int y) {
+		TextureRegion chef_top = new TextureRegion(currentFrame, 0, 64, 64, 64);
+		batch.draw(chef_top, x, y, 128, 128);
 	}
 
 	public void drawHeldItems(SpriteBatch batch) {
 		int itemIndex = 0;
 		for (Entity ingredient : heldItems) {
-			ingredient.pos = new Vector2(pos.x + 16, pos.y + 112 + itemIndex * 8);
+			ingredient.pos.x = pos.x + 16;
+			ingredient.pos.y = pos.y + 112 + itemIndex * 8;
 			ingredient.draw(MainGameClass.batch);
 			itemIndex++;
 		}
@@ -195,10 +240,10 @@ public class Cook extends MoveableEntity {
 	 * @param path - Filepath to texture
 	 */
 	private void setWalkTexture(String path) {
-		walkSheet = textureManager.get(path);
+		Texture walkSheet = textureManager.get(path);
 		spriteSheet = TextureRegion.split(walkSheet, walkSheet.getWidth() / FRAME_COLS,
 				walkSheet.getHeight() / FRAME_ROWS);
-		walkFrames = new TextureRegion[FRAME_COLS];
+		// walkFrames = new TextureRegion[FRAME_COLS];
 		setWalkFrames(0);
 	}
 
@@ -207,10 +252,10 @@ public class Cook extends MoveableEntity {
 	 * @param row - row on the sprite sheet to draw
 	 */
 	private void setWalkFrames(int row) {
-		for (int i = 0; i < FRAME_COLS; i++) {
+		/*for (int i = 0; i < FRAME_COLS; i++) {
 			walkFrames[i] = spriteSheet[row][i];
-		}
-		walkAnimation = new Animation<>(0.09f, walkFrames);
+		}*/
+		walkAnimation = new Animation<>(0.09f, spriteSheet[row]);
 		currentFrame = walkAnimation.getKeyFrame(stateTime, true);
 	}
 
@@ -270,7 +315,7 @@ public class Cook extends MoveableEntity {
 	 * @return cook width
 	 */
 	public float getWidth() {
-		return width;
+		return collision.width;
 	}
 
 	/**
@@ -278,7 +323,7 @@ public class Cook extends MoveableEntity {
 	 * @return cook height
 	 */
 	public float getHeight() {
-		return height;
+		return collision.height;
 	}
 
 	/**

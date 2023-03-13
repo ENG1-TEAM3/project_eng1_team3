@@ -1,5 +1,6 @@
 package com.undercooked.game.logic;
 
+import com.undercooked.game.Input.InputController;
 import com.undercooked.game.assets.TextureManager;
 import com.undercooked.game.entity.Cook;
 import com.undercooked.game.screen.GameScreen;
@@ -41,6 +42,8 @@ public class Scenario extends GameLogic {
     @Override
     public void update(float delta) {
 
+        InputController.updateKeys();
+
         elapsedTime += delta;
 
         // Check if game is over.
@@ -60,8 +63,6 @@ public class Scenario extends GameLogic {
 
     @Override
     public void load() {
-        // Load cookCount number of cooks. addCook(new Cook());
-
         // Add listener to CustomerController to remove 1 from count
     }
 

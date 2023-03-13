@@ -64,19 +64,29 @@ public class FileControl {
         saveToFile(getDataPath(), fileName, data);
     }
 
-    public static String loadFile(String dir, String fileName) {
-        File directory = new File(dir);
-        // If directory isn't a directory, or it doesn't exist, then create the directory.
-        if (!(directory.exists() && directory.isDirectory())) {
-            System.out.println("Directory doesn't exist: " + directory);
-            directory.mkdir();
+    public static String loadFile(String dir, String fileName, boolean internal) {
+        FileHandle directory;
+        if (internal) {
+            directory = Gdx.files.internal(dir);
+        } else {
+            directory = new FileHandle(dir);
         }
-        File file = new File (dirAndName(dir, fileName));
+        // If directory isn't a directory, or it doesn't exist, then create the directory.
+        if (!directory.isDirectory()) {
+            System.out.println("Directory doesn't exist: " + directory);
+            directory.file().mkdir();
+        }
+        FileHandle file;
+        if (internal) {
+            file = Gdx.files.internal(dirAndName(dir, fileName));
+        } else {
+            file = new FileHandle(dirAndName(dir, fileName));
+        }
         // If file isn't a file, or it doesn't exist, then create the file using the default data.
-        if (!(file.exists() && file.isFile())) {
+        if (!file.file().isFile()) {
             System.out.println("File doesn't exist: " + fileName);
             try {
-                file.createNewFile();
+                file.file().createNewFile();
                 saveToFile(dir,fileName,"{}");
             } catch (IOException e) {
                 e.printStackTrace();
@@ -85,7 +95,7 @@ public class FileControl {
         // Otherwise, load the Json file.
         String fileData = "";
         try {
-            Scanner reader = new Scanner(file);
+            Scanner reader = new Scanner(file.file());
             while (reader.hasNextLine()) {
                 fileData += reader.nextLine();
             }
@@ -93,6 +103,10 @@ public class FileControl {
             e.printStackTrace();
         }
         return fileData;
+    }
+
+    public static String loadFile(String dir, String fileName) {
+        return loadFile(dir, fileName, true);
     }
 
     public static String loadData(String fileName) {
@@ -104,27 +118,30 @@ public class FileControl {
         if (!fileName.endsWith(".json")) {
             fileName += ".json";
         }
-        FileHandle directory = null;
+        FileHandle directory;
         dir = formatDir(dir);
         if (internal) {
-            System.out.println("Internal directory doesn't exist: " + dir);
             directory = Gdx.files.internal(dir);
         } else {
-            System.out.println("External directory doesn't exist: " + dir);
-            directory = Gdx.files.external(dir);
+            directory = new FileHandle(dir);
         }
         // If directory isn't a directory, or it doesn't exist, then return nothing.
-        if (!(directory.exists() && directory.isDirectory())) {
+        if (!directory.isDirectory()) {
+            if (internal) {
+                System.out.println("Internal directory doesn't exist: " + dir);
+            } else {
+                System.out.println("External directory doesn't exist: " + dir);
+            }
             return null;
         }
-        FileHandle file = null;
+        FileHandle file;
         if (internal) {
             file = Gdx.files.internal(dirAndName(dir, fileName));
         } else {
-            file = Gdx.files.external(dirAndName(dir, fileName));
+            file = new FileHandle(dirAndName(dir, fileName));
         }
         // If file isn't a file, or it doesn't exist, then return nothing.
-        if (!(file.exists() && file.file().isFile())) {
+        if (!file.file().isFile()) {
             if (internal) {
                 System.out.println("Internal file doesn't exist: " + dirAndName(dir, fileName));
             } else {
@@ -133,7 +150,7 @@ public class FileControl {
             return null;
         }
         // Otherwise, load the Json file.
-        String jsonData = loadFile(dir, fileName);
+        String jsonData = loadFile(dir, fileName, internal);
         JsonReader json = new JsonReader();
         JsonValue fileData = null;
         try {
@@ -145,12 +162,8 @@ public class FileControl {
         return fileData;
     }
 
-    public static JsonValue loadJsonData(String fileName, boolean internal) {
-        return loadJsonFile(getDataPath(), fileName, internal);
-    }
-
     public static JsonValue loadJsonData(String fileName) {
-        return loadJsonData(fileName, true);
+        return loadJsonFile(getDataPath(), fileName, false);
     }
 
     public static FileHandle getFileHandle(String path, boolean internal) {
@@ -201,10 +214,10 @@ public class FileControl {
         mainFolderName = formatDir(mainFolderName);
         // AssetPath will be in the format group:filePath
         String[] args = assetPath.split(":", 2);
-        System.out.println(assetPath);
+        /* System.out.println(assetPath);
         for (String str : args) {
             System.out.println(str);
-        }
+        }*/
         if (args.length != 2) {
             return assetPath;
         }

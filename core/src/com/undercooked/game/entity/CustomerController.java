@@ -15,6 +15,7 @@ import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
 import com.undercooked.game.MainGameClass;
 import com.undercooked.game.assets.TextureManager;
 import com.undercooked.game.util.Constants;
@@ -24,9 +25,7 @@ public class CustomerController {
 	int amountActiveCustomers;
 	ArrayList<ArrayList<Integer>> customerCells;
 	TextureManager textureManager;
-	Customer[] customers = new Customer[5];
-	Customer[] leavingcustomers = new Customer[5];
-	TiledMap gameMap;
+	Array<Customer> customers;
 	int top;
 	int bottom;
 	int xCoordinate;
@@ -133,16 +132,12 @@ public class CustomerController {
 	}
 
 	public void spawnCustomer() {
-		for (int i = 0; i < this.customers.length; i++) {
-			if (customers[i] == null) {
-				customers[i] = new Customer(this.xCoordinate, this.bottom, this.top - i, 3, textureManager);
-				amountActiveCustomers += 1;
-				break;
-			}
-		}
+		customers.add(new Customer(this.xCoordinate, this.bottom, 3, textureManager));
+		amountActiveCustomers += 1;
+
 	}
 
-	public void delCustomer(int num) {
+	/*public void delCustomer(int num) {
 		if (this.customers[num].locked) {
 			amountActiveCustomers -= 1;
 			this.leavingcustomers[num] = this.customers[num];
@@ -159,14 +154,14 @@ public class CustomerController {
 			}
 		}
 
-	}
+	}*/
 
 	/**
 	 * Draw top of customers
 	 * 
 	 * @param b1 - spritebatch to render with
 	 */
-	public void drawCustTop(Batch b1) {
+	/*public void drawCustTop(Batch b1) {
 		for (Customer c : this.customers) {
 			if (c != null) {
 				c.renderCustomersBot(b1);
@@ -187,12 +182,12 @@ public class CustomerController {
 				c.renderCustomersTop(b1);
 			}
 		}
-	}
+	}*/
 
 	/**
 	 * Update customers
 	 */
-	public void updateCustomers() {
+	/*public void updateCustomers() {
 		for (Customer c : this.customers) {
 			if (c != null) {
 				c.stepTarget();
@@ -208,7 +203,7 @@ public class CustomerController {
 			}
 			ctr++;
 		}
-	}
+	}*/
 
 	/**
 	 * Check if any of the customers is at one position
@@ -217,11 +212,11 @@ public class CustomerController {
 	 * @return null if no customers are at that position, return the customer that
 	 *         is at that position
 	 */
-	public Customer isCustomerAtPos(Vector2 pos) {
+	/*public Customer isCustomerAtPos(Vector2 pos) {
 		for (Customer customer : customers)
 			if (customer != null && Math.ceil(customer.posx / 64f) == pos.x && Math.ceil(customer.posy / 64f) == pos.y
 					&& customer.locked)
 				return customer;
 		return null;
-	}
+	}*/
 }
