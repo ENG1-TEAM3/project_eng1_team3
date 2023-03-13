@@ -1,7 +1,7 @@
 {
   "id": "cutting",
-  "texture_path": "<main>:cutting.png",
+  "texture_path": "<main>:station/cutting.png",
   "width": 2,
   "height": 1,
-  "default_bottom": "<main>:cupboard.png"
+  "default_bottom": "<main>:station/blank.png"
 }
