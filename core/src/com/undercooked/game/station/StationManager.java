@@ -11,6 +11,8 @@ import com.undercooked.game.screen.GameScreen;
 import com.undercooked.game.util.Constants;
 import com.undercooked.game.util.json.JsonFormat;
 
+import java.awt.datatransfer.StringSelection;
+
 /**
  * 
  * Deals with all the stations and cook interactions. To create a new station,
@@ -214,19 +216,21 @@ public class StationManager {
 
 	}*/
 
-	private void loadStationsFromPath(String path, boolean internal, String curPath) {
-		FileHandle stations = FileControl.getFileHandle(path, internal);
+	private void loadStationsFromPath(String path, boolean internal, String pathPrefix) {
+		FileHandle stations = FileControl.getFileHandle("game/stations/" + path, internal);
 		for (FileHandle file : stations.list()) {
 			// If it's a directory, then recurse
 			if (file.isDirectory()) {
-				loadStationsFromPath(path + "/" + file.name(), internal, curPath + (curPath.isEmpty() ? "/" : "") + file.name());
+				loadStationsFromPath(path + file.name() + "/", internal, pathPrefix);
 			} else {
 				// If it's not, ensure it's a json.
 				if (file.extension().equals("json")) {
-					// System.out.println("File path: " + file.path());
+					System.out.println("File path: " + file.path());
+					System.out.println("curpath: " + path);
 					// Read the file data
+					System.out.println(file.nameWithoutExtension());
 					JsonValue stationRoot = JsonFormat.formatJson(
-							FileControl.loadJsonAsset(curPath + ":" + file.nameWithoutExtension(), "stations"),
+							FileControl.loadJsonAsset(pathPrefix + path + file.nameWithoutExtension(), "stations"),
 							Constants.DefaultJson.stationFormat());
 					// If it's not null...
 					if (stationRoot != null) {
@@ -239,7 +243,7 @@ public class StationManager {
 						data.setDefaultBase(stationRoot.getString("default_base"));
 						// System.out.println("Width: " + data.getWidth() + ", Height: " + data.getHeight());
 						// Then add it to the stations list
-						stationData.put(curPath + ":" + file.nameWithoutExtension(), data);
+						stationData.put(pathPrefix + path + file.nameWithoutExtension(), data);
 					}
 				}
 			}
@@ -248,8 +252,9 @@ public class StationManager {
 
 	private void loadStationsFromPath(String path, boolean internal) {
 		if (internal) {
-			loadStationsFromPath(path, true, "<main>");
+			loadStationsFromPath(path, true, "<main>:");
 		} else {
+			// Look at the stations folder
 			loadStationsFromPath(path, false, "");
 		}
 	}
@@ -263,10 +268,10 @@ public class StationManager {
 		stationData.clear();
 
 		// Load the internal path.
-		loadStationsFromPath("game/stations", true);
+		loadStationsFromPath("", true);
 
 		// Load from the external path.
-		loadStationsFromPath(FileControl.getDataPath() + "game/stations", false);
+		loadStationsFromPath(FileControl.getDataPath(), false);
 
 		// System.out.println(stationData);
 	}

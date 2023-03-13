@@ -105,18 +105,21 @@ public class GameRenderer {
 
         // Render the entities in order, highest Y to lowest Y
         renderEntities.sort(entityCompare);
+        batch.begin();
         for (Entity renderEntity : renderEntities) {
-            batch.begin();
             renderEntity.draw(batch);
-            batch.end();
         }
+        batch.end();
+
+        // Draw map debug
+        //shape.begin();
+        //logic.getMap().drawDebug(shape);
 
         // Render all the entities' debug
         /*for (Entity renderEntity : renderEntities) {
-            shape.begin();
             renderEntity.drawDebug(shape);
-            shape.end();
         }*/
+        //shape.end();
 
         // Following that, render the UI
         shape.setProjectionMatrix(uiCamera.combined);

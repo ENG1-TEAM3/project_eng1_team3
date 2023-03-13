@@ -1,5 +1,7 @@
 package com.undercooked.game.map;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import com.undercooked.game.assets.TextureManager;
@@ -154,6 +156,56 @@ public class Map {
         setFullMapCell(x+offsetX, y+offsetY, cell);
     }
 
+    protected void addFullMapEntity(MapEntity entity, int x, int y) {
+        // And now add the entity
+        for (int i = x ; i < x + entity.getCellWidth() ; i++) {
+            for (int j = y ; j < y + entity.getCellHeight() ; j++) {
+                MapCell newCell = new MapCell(false);
+                newCell.mapEntity = entity;
+                // If it's a valid cell
+                if (validCellFull(i,j)) {
+                    // If there's already a station here, remove it completely.
+                    if (getCellFull(i, j) != null) {
+                        removeEntity(getCellFull(i, j).mapEntity);
+                    }
+                    setFullMapCell(i,j,newCell);
+                    // If there is a station above this...
+                    if (validCellFull(i,j+1)) {
+                        if (getCellFull(i,j+1) != null) {
+                            // Then set this one to collidable
+                            newCell.collidable = true;
+                        }
+                    }
+                }
+            }
+
+            // Below it, if there isn't a MapCell already, place a cupboard
+            // It is not in the loop above, as only the lowest y needs it below
+            MapCell cellBelow = getCellFull(i, y-1);
+            if (cellBelow == null) {
+                // If y-1 is valid, and basePath is not null
+                if (entity.basePath != null && validCellFull(i,y-1)) {
+                    // Make a cupboard cell below and add it to the map
+                    MapCell newBelow = new MapCell(true);
+                    newBelow.mapEntity = new MapEntity();
+                    newBelow.mapEntity.setTexture(entity.basePath);
+                    newBelow.mapEntity.setWidth(1);
+                    newBelow.mapEntity.setHeight(1);
+                    newBelow.mapEntity.setX(MapManager.gridToPos(i));
+                    newBelow.mapEntity.setY(MapManager.gridToPos(y-1));
+                    setFullMapCell(i,y-1,newBelow);
+                }
+            } else {
+                // If not, set the cell below to be collidable
+                cellBelow.collidable = true;
+            }
+        }
+
+        // Set the entity's position
+        entity.setX(MapManager.gridToPos(x));
+        entity.setY(MapManager.gridToPos(y));
+    }
+
     /**
      * Adds an entity to the map at the specified grid coordinates x and y.
      * @param entity The {@link MapEntity} to add.
@@ -173,53 +225,8 @@ public class Map {
             return;
         }
 
-        // And now add the entity
-        for (int i = x ; i < x + entity.getCellWidth() ; i++) {
-            for (int j = y ; j < y + entity.getCellHeight() ; j++) {
-                MapCell newCell = new MapCell(false);
-                newCell.mapEntity = entity;
-                // If it's a valid cell
-                if (validCell(i,j)) {
-                    // If there's already a station here, remove it completely.
-                    if (getCell(i, j) != null) {
-                        removeEntity(getCell(i, j).mapEntity);
-                    }
-                    setMapCell(i,j,newCell);
-                    // If there is a station above this...
-                    if (validCell(i,j+1)) {
-                        if (getCell(i,j+1) != null) {
-                            // Then set this one to collidable
-                            newCell.collidable = true;
-                        }
-                    }
-                }
-            }
-
-            // Below it, if there isn't a MapCell already, place a cupboard
-            // It is not in the loop above, as only the lowest y needs it below
-            MapCell cellBelow = getCell(i, y-1);
-            if (cellBelow == null) {
-                // If y-1 is valid, and basePath is not null
-                if (entity.basePath != null && validCell(i,y-1)) {
-                    // Make a cupboard cell below and add it to the map
-                    MapCell newBelow = new MapCell(true);
-                    newBelow.mapEntity = new MapEntity();
-                    newBelow.mapEntity.setTexture(entity.basePath);
-                    newBelow.mapEntity.setWidth(1);
-                    newBelow.mapEntity.setHeight(1);
-                    newBelow.mapEntity.setX(MapManager.gridToPos(offsetX + i));
-                    newBelow.mapEntity.setY(MapManager.gridToPos(offsetY + y-1));
-                    setMapCell(i,y-1,newBelow);
-                }
-            } else {
-                // If not, set the cell below to be collidable
-                cellBelow.collidable = true;
-            }
-        }
-
-        // Set the entity's position
-        entity.setX(MapManager.gridToPos(offsetX + x));
-        entity.setY(MapManager.gridToPos(offsetY + y));
+        // Add it to the map
+        addFullMapEntity(entity, x+offsetX, y+offsetY);
     }
 
     /**
@@ -244,8 +251,8 @@ public class Map {
         int cellY    = MapManager.posToGridFloor(collision.y);
         int cellYMax = MapManager.posToGridFloor(collision.y + collision.height);
 
-        System.out.println("cellX: " + cellX + ", cellXMax: " + cellXMax);
-        System.out.println("cellY: " + cellY + ", cellYMax: " + cellYMax);
+        //System.out.println("cellX: " + cellX + ", cellXMax: " + cellXMax);
+        //System.out.println("cellY: " + cellY + ", cellYMax: " + cellYMax);
 
         // Loop through all the cells in the range
         for (int x = cellX ; x <= cellXMax ; x++) {
@@ -274,6 +281,19 @@ public class Map {
         }
         // If none of the above returns, then return false as they're not colliding
         return false;
+    }
+
+    public void drawDebug(ShapeRenderer shape) {
+        for (int x = 0 ; x < fullWidth ; x++) {
+            for (int y = 0 ; y < fullHeight ; y++) {
+                shape.setColor(Color.SKY);
+                if ((x > offsetX && x < width + offsetX) &&
+                        (y > offsetY && y < height + offsetY)) {
+                    shape.setColor(Color.GREEN);
+                }
+                shape.rect(MapManager.gridToPos(x), MapManager.gridToPos(y), 64, 64);
+            }
+        }
     }
 
     /**

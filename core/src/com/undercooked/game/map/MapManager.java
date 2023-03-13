@@ -135,11 +135,11 @@ public class MapManager {
         // Add the counter border
         // X entities
         for (int i = 0 ; i < width ; i++) {
-            returnMap.addMapEntity(newCounter(),i,1);
+            returnMap.addMapEntity(newCounter(),i,0);
             returnMap.addMapEntity(newCounter(),i,height-1);
         }
         // Y entities
-        for (int j = 2 ; j < height-1 ; j++) {
+        for (int j = 1 ; j < height-1 ; j++) {
             returnMap.addMapEntity(newCounter(),0,j);
             returnMap.addMapEntity(newCounter(),width-1,j);
         }

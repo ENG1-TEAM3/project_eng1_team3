@@ -129,12 +129,14 @@ public class CookController {
         JsonValue cookArray = mapRoot.get("cooks");
         currentCook = 0;
         // System.out.println(cookArray);
+        int cookNo = 1;
         // Iterate through the cooks and add them
         for (JsonValue cookData : cookArray.iterator()) {
             // System.out.println(cookData);
             Vector2 cookPos = new Vector2(MapManager.gridToPos(cookData.getFloat("x")), MapManager.gridToPos(cookData.getFloat("y")));
-            Cook newCook = new Cook(cookPos, 1, textureManager, map);
+            Cook newCook = new Cook(cookPos, cookNo, textureManager, map);
             cooks.add(newCook);
+            cookNo = Math.max(1, (cookNo+1) % 4);
         }
     }
 }

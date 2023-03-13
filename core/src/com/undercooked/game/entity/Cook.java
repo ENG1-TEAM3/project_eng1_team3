@@ -109,10 +109,10 @@ public class Cook extends MoveableEntity {
 		// X
 		if (map.checkCollision(this, collision.x + (moveCalc(dirX, delta)), collision.y)) {
 			// Move the player as close as possible on the x
-			while (!map.checkCollision(this, collision.x + 0.001F * dirX, collision.y)) {
-				collision.x += 0.001F * dirX;
+			while (!map.checkCollision(this, collision.x + 0.01F * dirX, collision.y)) {
+				collision.x += 0.01F * dirX;
 			}
-			collision.x -= 0.001F * dirX;
+			collision.x -= 0.01F * dirX;
 			pos.x = collision.x-offsetX;
 			dirX = 0;
 		}
@@ -120,10 +120,10 @@ public class Cook extends MoveableEntity {
 		// Y
 		if (map.checkCollision(this, collision.x, collision.y + (moveCalc(dirY, delta)))) {
 			// Move the player as close as possible on the y
-			while (!map.checkCollision(this, collision.x, collision.y + 0.001F * dirY)) {
-				collision.y += 0.001F * dirY;
+			while (!map.checkCollision(this, collision.x, collision.y + 0.01F * dirY)) {
+				collision.y += 0.01F * dirY;
 			}
-			collision.y -= 0.001F * dirY;
+			collision.y -= 0.01F * dirY;
 			pos.y = collision.y-offsetY;
 			dirY = 0;
 		}

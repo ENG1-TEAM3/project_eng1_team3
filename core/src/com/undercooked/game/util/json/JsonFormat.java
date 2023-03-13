@@ -83,7 +83,10 @@ public class JsonFormat {
                     valToSet.setType(JsonValue.ValueType.object);
                 }
                 else if (jsonClass == JsonString.class && jsonType != JsonValue.ValueType.stringValue) {
-                    valToSet.set((String) jsonVal.value);
+                    // If it's null, then leave it alone
+                    if (jsonType != JsonValue.ValueType.nullValue) {
+                        valToSet.set((String) jsonVal.value);
+                    }
                 }
                 else if (jsonClass == JsonFloat.class && jsonType != JsonValue.ValueType.doubleValue && jsonType != JsonValue.ValueType.longValue) {
                     // System.out.println(jsonVal.ID + ": Float");
