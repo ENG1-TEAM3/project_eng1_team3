@@ -37,7 +37,6 @@ public class AudioControllerTests extends AudioController {
     @Test
     public void testGetMusic() {
         Music testMusic = getMusic("testMusic.mp3");
-        
     }
     @Test
     public void testGetSoundfx() {
