@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public class Customer {
-	int targetsquare;
+	public int targetsquare;
 	public int posx;
 	public int posy;
 	Texture textf;
@@ -18,7 +18,7 @@ public class Customer {
 	TextureRegion[][] custpartsr;
 	TextureRegion[][] custpartsl;
 	TextureRegion[][] currentcustparts;
-	int startposx;
+	public int startposx;
 	int targetpixel;
 	public boolean locked;
 	public boolean readyfordeletion;
@@ -57,8 +57,9 @@ public class Customer {
 	/**
 	 * Set arrival time as cook has arrived
 	 */
-	public void arrived() {
+	public float arrived() {
 		arrivalTime = System.currentTimeMillis();
+		return arrivalTime;
 	}
 
 	/**

@@ -245,7 +245,7 @@ public class GameScreen implements Screen {
 		// =====================================RENDER=TOP=MAP=LAYER=====================================================
 		tiledMapRenderer.render(new int[] { 1 });
 		// =====================================DRAW=COOK=TOP=HALF=======================================================
-		stationManager.handleStations(game.batch);
+		stationManager.handleStations(game.batch, game.shapeRenderer);
 		drawHeldItems();
 		game.batch.begin();
 		for (Cook curCook : cooks)
@@ -547,7 +547,7 @@ public class GameScreen implements Screen {
 	 * 
 	 * @param mp- game tilemap
 	 */
-	private void constructCollisionData(TiledMap mp) {
+	public static void constructCollisionData(TiledMap mp) {
 		TiledMapTileLayer botlayer = (TiledMapTileLayer) mp.getLayers().get(0);
 		int mapwidth = botlayer.getWidth();
 		int mapheight = botlayer.getHeight();

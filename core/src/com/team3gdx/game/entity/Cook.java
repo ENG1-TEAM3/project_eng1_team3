@@ -19,7 +19,7 @@ public class Cook extends Entity {
 	private static final int MAX_STACK_SIZE = 5;
 	private static final int FRAME_COLS = 5, FRAME_ROWS = 4;
 
-	private Vector2 direction;
+	public Vector2 direction;
 	private int cookno;
 
 	private Texture walkSheet;
@@ -133,6 +133,7 @@ public class Cook extends Entity {
 	}
 
 	public boolean full() {
+
 		return heldItems.size() >= MAX_STACK_SIZE;
 	}
 
@@ -216,7 +217,7 @@ public class Cook extends Entity {
 	 * @param y - y pixel coordinate
 	 * @return Rectangle object of the cook hitbox
 	 */
-	Rectangle getCollideBoxAtPosition(float x, float y) {
+	public Rectangle getCollideBoxAtPosition(float x, float y) {
 		return new Rectangle(x + 12, y - 10, 40, 25);
 	}
 

@@ -1,5 +1,5 @@
 buildscript {
-    
+
 
     repositories {
         mavenLocal()
@@ -15,6 +15,14 @@ buildscript {
 
 allprojects {
     apply plugin: "eclipse"
+    apply plugin: "jacoco"
+    apply plugin: "checkstyle"
+
+    def checkstyleVersion = '10.4'
+
+    configurations {
+        checkstyleRules
+    }
 
     version = '1.0'
     ext {
@@ -36,6 +44,17 @@ allprojects {
         maven { url "https://oss.sonatype.org/content/repositories/releases/" }
         maven { url "https://jitpack.io" }
     }
+
+    dependencies {
+        checkstyleRules("com.puppycrawl.tools:checkstyle:${checkstyleVersion}") {
+            transitive = false
+        }
+    }
+
+    checkstyle {
+        toolVersion "${checkstyleVersion}"
+        config = resources.text.fromArchiveEntry(configurations.checkstyleRules, 'google_checks.xml')
+    }
 }
 
 project(":desktop") {
@@ -55,5 +74,37 @@ project(":core") {
 
     dependencies {
         api "com.badlogicgames.gdx:gdx:$gdxVersion"
+    }
+}
+
+project(":tests") {
+    apply plugin: "java"
+
+    sourceSets.test.java.srcDirs = ["src/"]
+
+    test {
+        testLogging {
+            exceptionFormat "full"
+            events "skipped", "passed", "failed"
+            showStandardStreams true
+        }
+    }
+
+    dependencies {
+
+        implementation project(":core")
+
+        implementation "junit:junit:4.+"
+        implementation "org.mockito:mockito-core:4.+"
+
+        implementation "com.badlogicgames.gdx:gdx-backend-headless:$gdxVersion"
+        implementation "com.badlogicgames.gdx:gdx:$gdxVersion"
+
+        testImplementation 'junit:junit:4.+'
+        testImplementation "org.mockito:mockito-core:4.+"
+
+        testImplementation "com.badlogicgames.gdx:gdx-backend-headless:$gdxVersion"
+        testImplementation "com.badlogicgames.gdx:gdx:$gdxVersion"
+        testImplementation "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
     }
 }
