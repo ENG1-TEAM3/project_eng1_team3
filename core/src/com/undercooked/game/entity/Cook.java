@@ -67,6 +67,12 @@ public class Cook extends MoveableEntity {
 	}
 
 	@Override
+	public void load(TextureManager textureManager, String textureGroup) {
+		textureManager.load(textureGroup, "entities/cook_walk_" + cookno + ".png");
+		textureManager.load(textureGroup, "entities/cook_walk_hands_" + cookno + ".png");
+	}
+
+	@Override
 	public void postLoad(TextureManager textureManager) {
 		setWalkTexture("entities/cook_walk_" + cookno + ".png");
 	}

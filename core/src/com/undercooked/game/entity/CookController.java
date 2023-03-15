@@ -20,6 +20,8 @@ public class CookController {
 	int currentCook = 0;
     /** Manages the textures for the cooks. */
     TextureManager textureManager;
+    /** The number of cook textures */
+    static final int COOK_TEXTURES = 3;
 
     // =======================================CONSTRUCTOR======================================================
     public CookController(TextureManager textureManager) {
@@ -112,9 +114,25 @@ public class CookController {
 
     // =======================================TEXTURES======================================================
     public void load(String textureGroup) {
-        textureManager.load(textureGroup, "entities/cook_walk_1.png");
-        textureManager.load(textureGroup, "entities/cook_walk_2.png");
-        textureManager.load(textureGroup, "entities/cook_walk_3.png");
+        // Load all the cooks
+        for (Cook cook : cooks) {
+            cook.load(textureManager, textureGroup);
+        }
+    }
+
+    public void postLoad() {
+        // Load all the cooks' textures
+        for (Cook cook : cooks) {
+            cook.postLoad(textureManager);
+        }
+    }
+
+    public void loadAll(String textureGroup) {
+        // Load all the Cook textures
+        for (int i = 1 ; i <= COOK_TEXTURES ; i++) {
+            textureManager.load(textureGroup, "entities/cook_walk_" + i + ".png");
+            textureManager.load(textureGroup, "entities/cook_walk_hands_" + i + ".png");
+        }
     }
 
     /**
@@ -140,7 +158,7 @@ public class CookController {
             Vector2 cookPos = new Vector2(MapManager.gridToPos(cookData.getFloat("x")), MapManager.gridToPos(cookData.getFloat("y")));
             Cook newCook = new Cook(cookPos, cookNo, textureManager, map);
             cooks.add(newCook);
-            cookNo = Math.max(1, (cookNo+1) % 4);
+            cookNo = Math.max(1, (cookNo+1) % (COOK_TEXTURES+1));
         }
     }
 }

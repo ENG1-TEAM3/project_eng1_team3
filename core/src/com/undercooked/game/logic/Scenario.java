@@ -58,7 +58,7 @@ public class Scenario extends GameLogic {
 
     @Override
     public void preLoad() {
-        super.preLoad();
+
     }
 
     @Override
