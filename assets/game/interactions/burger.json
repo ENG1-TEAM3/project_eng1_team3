@@ -9,10 +9,6 @@
       "type": "set",
       "value": "burger"
     }],
-    "failure": [{
-      "type": "set",
-      "value": "void"
-    }],
     "sound": "<main>:frying.mp4"
   }]
 }

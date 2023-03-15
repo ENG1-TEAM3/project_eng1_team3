@@ -1,5 +1,6 @@
 package com.undercooked.game.logic;
 
+import com.badlogic.gdx.Gdx;
 import com.undercooked.game.Input.InputController;
 import com.undercooked.game.assets.TextureManager;
 import com.undercooked.game.entity.Cook;
