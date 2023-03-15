@@ -1,13 +1,40 @@
 {
-  "c_up": ["w"],
-  "c_left": ["a"],
-  "c_right": ["d"],
-  "c_down": ["s"],
+  "c_up": {
+    "keys": ["w"],
+    "interaction": false
+  },
+  "c_left": {
+    "keys": ["a"],
+    "interaction": false
+  },
+  "c_right": {
+    "keys": ["d"],
+    "interaction": false
+  },
+  "c_down": {
+    "keys": ["s"],
+    "interaction": false
+  },
 
-  "c_next": ["tab"],
-  "c_prev": ["enter"],
+  "c_next": {
+    "keys": ["tab"],
+    "interaction": false
+  },
+  "c_prev": {
+    "keys": ["enter"],
+    "interaction": false
+  },
 
-  "interact": ["enter"],
-  "take": ["tab"],
-  "drop": ["l"]
+  "interact": {
+    "keys": ["space"],
+    "interaction": true
+  },
+  "take": {
+    "keys": ["r"],
+    "interaction": true
+  },
+  "drop": {
+    "keys": ["v"],
+    "interaction": true
+  }
 }
