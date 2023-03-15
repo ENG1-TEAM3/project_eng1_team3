@@ -35,19 +35,10 @@ public class AudioControllerTests extends AudioController {
         assertTrue(Gdx.files.internal("./bin/main/audio/soundFX/testSoundFX.mp3").exists());
     }
     @Test
-    public void testGetMusic() {
-        Music testMusic = getMusic("testMusic.mp3");
-    }
-    @Test
-    public void testGetSoundfx() {
-        Sound testSoundfx = getSoundFX("testSoundFX.mp3");
-        
-    }
-    @Test
     public void testVolume() {
         setVolume("testMusic.mp3",6);
         float testVolume = getVolume("testMusic.mp3");
-        
+        assertEquals(testVolume, 6);
     }
 
 }
