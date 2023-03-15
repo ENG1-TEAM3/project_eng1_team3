@@ -31,7 +31,7 @@ public abstract class GameLogic implements Logic {
     GameRenderer gameRenderer;
     TextureManager textureManager;
     Map map;
-    long elapsedTime;
+    float elapsedTime;
 
     public GameLogic(GameScreen game, TextureManager textureManager) {
         this.gameScreen = game;
@@ -115,7 +115,7 @@ public abstract class GameLogic implements Logic {
         return cookController;
     }
 
-    public long getElapsedTime() {
+    public float getElapsedTime() {
         return elapsedTime;
     }
 

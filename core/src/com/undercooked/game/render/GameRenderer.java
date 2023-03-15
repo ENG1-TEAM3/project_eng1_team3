@@ -17,6 +17,7 @@ import com.undercooked.game.entity.Entity;
 import com.undercooked.game.logic.GameLogic;
 import com.undercooked.game.util.CameraController;
 import com.undercooked.game.util.Constants;
+import com.undercooked.game.util.StringUtil;
 
 import java.util.Comparator;
 
@@ -143,7 +144,7 @@ public class GameRenderer {
 
         batch.begin();
         font.getData().setScale(1F);
-        font.draw(batch, "Time in s: " + (logic.getElapsedTime() / 1000),
+        font.draw(batch, "Time in s: " + StringUtil.formatSeconds(logic.getElapsedTime()),
                 500, 500);
         batch.end();
     }
