@@ -7,14 +7,20 @@ import com.badlogic.gdx.utils.Array;
 public class InputKey {
     Array<Integer> keys;
     boolean keyPressed, keyJustPressed, keyReleased, keyJustReleased;
+    boolean interaction;
+
+    public InputKey(boolean interaction) {
+        this.keys = new Array<>();
+        this.interaction = interaction;
+    }
 
     public InputKey() {
-        keys = new Array<>();
+        this(false);
     }
 
     public InputKey(int key) {
         this();
-        keys.add(key);
+        this.keys.add(key);
     }
 
     public InputKey(Array<Integer> keys) {

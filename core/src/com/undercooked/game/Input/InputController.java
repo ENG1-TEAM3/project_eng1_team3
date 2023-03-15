@@ -33,10 +33,21 @@ public class InputController {
         // First check that the key actually exists in the inputs map
         if (!inputs.containsKey(keyID)) {
             // If it doesn't, add it.
+            // Defaults to interaction
             inputs.put(keyID,new InputKey());
         }
         // Add the key
         inputs.get(keyID).addKey(newKey);
+    }
+
+    public static void setInteraction(String keyID, boolean interaction) {
+        // First check that the key actually exists in the inputs map
+        if (!inputs.containsKey(keyID)) {
+            // If it doesn't, add it.
+            inputs.put(keyID,new InputKey());
+        }
+        // Set the interaction value
+        inputs.get(keyID).interaction = interaction;
     }
 
     public static void updateKeys() {
@@ -92,18 +103,23 @@ public class InputController {
         //// Load the controls into the inputs ObjectMap
         // First iterate through all keys
         for (JsonValue key : root.iterator()) {
+            // Make sure it has the "keys" array
+            if (!key.has("keys")) {
+                // If not, then continue to next
+                continue;
+            }
+            JsonValue keys = key.get("keys");
             // Check to make sure that the current key is an array
-            if (key.type() != JsonValue.ValueType.array) {
+            if (!keys.isArray()) {
                 // If not, then continue to next
                 continue;
             }
 
             String keyID = key.name();
-
             // If it is an array, then loop through the values inside
-            for (JsonValue keyName : key.iterator()) {
+            for (JsonValue keyName : keys.iterator()) {
                 // Check to make sure the name is a String
-                if (keyName.type() != JsonValue.ValueType.stringValue) {
+                if (!keyName.isString()) {
                     // If not, then continue to next
                     continue;
                 }
@@ -119,6 +135,15 @@ public class InputController {
 
                 // If it's valid, add it to the inputs map
                 addKey(keyID, keyVal);
+            }
+
+            // Check if interaction exists
+            if (key.has("interaction") && key.get("interaction").isBoolean()) {
+                // If it does, set it the key to that value
+                setInteraction(keyID, key.getBoolean("interaction"));
+            } else {
+                // If the conditional is false, just assume true
+                setInteraction(keyID, true);
             }
         }
     }
