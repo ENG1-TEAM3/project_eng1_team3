@@ -37,6 +37,10 @@ public class CookController {
 
     // =======================================LOGIC======================================================
     public void addCook(Cook cook) {
+        // If the cook isn't there already, add it
+        if (cooks.contains(cook, true)) {
+            return;
+        }
         cooks.add(cook);
     }
 
@@ -58,15 +62,15 @@ public class CookController {
             }
 		}
 
-		Control.interact = false;
-		Control.drop = false;
-		Control.flip = false;
-		Control.tab = false;
-		Control.shift = false;
-
-        // Check input for the current cook
+        // If there are cooks...
         if (cooks.size > 0) {
-            cooks.get(currentCook).checkInput(delta);
+            // Get the current cook,
+            Cook cCook = cooks.get(currentCook);
+            // and if it's not null
+            if (cCook != null) {
+                // then check inputs for it.
+                cCook.checkInput(delta);
+            }
         }
 
         // Update all the Cooks
