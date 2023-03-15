@@ -55,7 +55,7 @@ public class Cook extends MoveableEntity {
 		this.collision.y = pos.y;
 		this.cookno = cookNum;
 
-		collision.width = 32;
+		collision.width = 40;
 		offsetX = (64 - collision.getWidth())/2;
 		collision.height = 10;
 		offsetY = -collision.height/2;
