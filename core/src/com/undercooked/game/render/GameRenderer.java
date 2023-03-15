@@ -111,7 +111,7 @@ public class GameRenderer {
         }
         batch.end();
 
-        // Draw map debug
+        // Draw debug
         //shape.begin();
         //logic.getMap().drawDebug(shape);
 
@@ -132,16 +132,17 @@ public class GameRenderer {
                 shape.begin(ShapeRenderer.ShapeType.Line);
 
                 shape.setColor(Color.GREEN);
-                shape.rect(Constants.V_WIDTH - 128 * cookController.getCooks().size + i * 128,
+                shape.rect(Constants.V_WIDTH - (i+1) * 128,
                         Constants.V_HEIGHT - 128 - 8, 128, 128);
                 shape.end();
             }
             batch.begin();
-            cookController.getCooks().get(i).draw_top(batch, Constants.V_WIDTH-(64*i), Constants.V_HEIGHT-64);
+            cookController.getCooks().get(i).draw_top(batch, Constants.V_WIDTH-128*(i+1), Constants.V_HEIGHT-128);
             batch.end();
         }
 
         batch.begin();
+        font.getData().setScale(1F);
         font.draw(batch, "Time in s: " + (logic.getElapsedTime() / 1000),
                 500, 500);
         batch.end();

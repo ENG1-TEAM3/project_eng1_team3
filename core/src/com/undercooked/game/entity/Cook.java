@@ -221,7 +221,7 @@ public class Cook extends MoveableEntity {
 	 * @param y {@code float} : The {@code y} position to draw at.
 	 */
 	public void draw_top(SpriteBatch batch, int x, int y) {
-		TextureRegion chef_top = new TextureRegion(currentFrame, 0, 64, 64, 64);
+		TextureRegion chef_top = new TextureRegion(currentFrame, 0, 0, currentFrame.getRegionWidth(), currentFrame.getRegionHeight()/2);
 		batch.draw(chef_top, x, y, 128, 128);
 	}
 
