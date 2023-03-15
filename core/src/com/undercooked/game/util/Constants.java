@@ -40,8 +40,8 @@ public final class Constants {
             // Highscore variable set up
             JsonObject highscore = new JsonObject();
             highscore.addValue(new JsonString("name", null));
-            highscore.addValue(new JsonInt("value",-1)); // time in scenario, number of customers in endless.
-            JsonObjectArray highscores = new JsonObjectArray("highscores", highscore);
+            highscore.addValue(new JsonFloat("time",-1F)); // time in scenario, number of customers in endless.
+            JsonObjectArray highscores = new JsonObjectArray("scores", highscore);
 
             // Scenario scores
             JsonObject scenario = new JsonObject("scenario");
