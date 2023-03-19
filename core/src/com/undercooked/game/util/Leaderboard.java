@@ -1,5 +1,6 @@
 package com.undercooked.game.util;
 
+import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
 import com.undercooked.game.files.FileControl;
 
@@ -12,15 +13,33 @@ import com.undercooked.game.files.FileControl;
  * </p>
  */
 public final class Leaderboard {
+	private class LeaderboardEntry {
+		public String name;
+		public int time;
+
+		public LeaderboardEntry(String name, int time) {
+			this.name = name;
+			this.time = time;
+		}
+	}
+
 	public enum LeaderboardNames {
 		SCENARIO,
 		ENDLESS
 	};
 
-	JsonValue entries;
-	String leaderboardDir = "assets/defaults/";
-	String leaderboardFile = "leaderboard.json";
-	String leaderboardPath = leaderboardDir + leaderboardFile;
+	static Json json;
+	/** Root JsonValue of Leaderboard. Contains:
+	 * <ul>
+		* <li>"Example": "leaderboard",
+		* <li>"SCENARIO": [...],<br>
+		* <li>"ENDLESS": [...]
+	 * </ul>
+	 */
+	static JsonValue root;
+	static String leaderboardDir = "assets/defaults/";
+	static String leaderboardFile = "leaderboard.json";
+	static String leaderboardPath = leaderboardDir + leaderboardFile;
 
 	/**
 	 * The default leaderboard to use.
@@ -32,7 +51,7 @@ public final class Leaderboard {
 	 * instead specify the desired leaderboardName in each method in
 	 * this class.
 	 */
-	LeaderboardNames leaderboardName = null;
+	static LeaderboardNames leaderboardName = null;
 
 	/**
 	 * Initialise the leaderboard.
@@ -40,10 +59,11 @@ public final class Leaderboard {
 	 * This method MUST be called before any other method in this class.
 	 * </p>
 	 */
-	public void initLeaderboard() {
-		entries = FileControl.loadJsonData(leaderboardPath);
+	public static void initLeaderboard() {
+		json = new Json();
+		root = FileControl.loadJsonData(leaderboardPath);
 		// Create leaderboard.json if it doesn't exist
-		if (entries == null)
+		if (root == null)
 			FileControl.loadFile(leaderboardDir, leaderboardFile);
 			FileControl.saveData(leaderboardFile,
 			String.join("\n",
@@ -62,26 +82,31 @@ public final class Leaderboard {
 	/**
 	 * Set the default leaderboard to use. Saves you from having to
 	 * specify the leaderboardName in each method in this class.
-	 * @param leaderboardName The name of the default leaderboard to use.
+	 * @param leaderboardNameIn The name of the default leaderboard to use.
 	 */
-	public void setDefaultLeaderboard(LeaderboardNames leaderboardName) {
-		this.leaderboardName = leaderboardName;
+	public static void setDefaultLeaderboard(LeaderboardNames leaderboardNameIn) {
+		leaderboardName = leaderboardNameIn;
 	}
 
-	public void addEntry(LeaderboardNames lName, int score) {
-		JsonValue newEntry = new
-		entries.get(lName.toString()).get("scores");
+	public static void addEntry(LeaderboardNames lName, String name, int score) {
+		LeaderboardEntry entry = new LeaderboardEntry(name, score);
+		root.get(lName.toString()).get("scores").addChild(new JsonValue(json.toJson(entry)));
 	}
 
-	public void removeEntry(int index) {
-		// TODO: Remove entry from leaderboard
+	public static void removeEntry(LeaderboardNames lName, int index) {
+		root.get(lName.toString()).get("scores").remove(index);
 	}
 
-	public JsonValue getLeaderboard(LeaderboardNames lName) {
-		return entries.get(lName.toString()).get("scores");
+	public static JsonValue getLeaderboard(LeaderboardNames lName) {
+		return root.get(lName.toString()).get("scores");
 	}
 
-	public void saveLeaderboard() {
-		FileControl.saveJsonData(leaderboardPath, entries);
+	public static void saveLeaderboard() {
+		FileControl.saveJsonData(leaderboardPath, root);
+	}
+	public static void main(String[] args) {
+		Leaderboard.initLeaderboard();
+		Leaderboard.addEntry(LeaderboardNames.SCENARIO, "test", 100);
+		Leaderboard.saveLeaderboard();
 	}
 }
