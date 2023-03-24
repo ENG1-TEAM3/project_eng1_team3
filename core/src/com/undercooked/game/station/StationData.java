@@ -3,13 +3,15 @@ package com.undercooked.game.station;
 public class StationData {
     String path, texturePath, defaultBase;
     int width, height;
+    boolean hasCollision;
 
-    public StationData(String path, String texturePath, String defaultBase, int width, int height) {
+    public StationData(String path, String texturePath, String defaultBase, int width, int height, boolean hasCollision) {
         this.path = path;
         this.texturePath = texturePath;
         this.width = width;
         this.height = height;
         this.defaultBase = defaultBase;
+        this.hasCollision = hasCollision;
     }
 
     public StationData() { }
@@ -34,6 +36,10 @@ public class StationData {
         this.height = height;
     }
 
+    public void setCollidable(boolean hasCollision) {
+        this.hasCollision = hasCollision;
+    }
+
     public String getPath() {
         return path;
     }
@@ -48,5 +54,9 @@ public class StationData {
 
     public int getHeight() {
         return height;
+    }
+
+    public boolean isCollidable() {
+        return hasCollision;
     }
 }

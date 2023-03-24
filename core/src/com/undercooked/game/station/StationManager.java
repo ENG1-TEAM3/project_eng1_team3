@@ -225,10 +225,10 @@ public class StationManager {
 			} else {
 				// If it's not, ensure it's a json.
 				if (file.extension().equals("json")) {
-					System.out.println("File path: " + file.path());
-					System.out.println("curpath: " + path);
+					//System.out.println("File path: " + file.path());
+					//System.out.println("curpath: " + path);
 					// Read the file data
-					System.out.println(file.nameWithoutExtension());
+					//System.out.println(file.nameWithoutExtension());
 					JsonValue stationRoot = JsonFormat.formatJson(
 							FileControl.loadJsonAsset(pathPrefix + path + file.nameWithoutExtension(), "stations"),
 							Constants.DefaultJson.stationFormat());
@@ -241,6 +241,7 @@ public class StationManager {
 						data.setWidth(stationRoot.getInt("width"));
 						data.setHeight(stationRoot.getInt("height"));
 						data.setDefaultBase(stationRoot.getString("default_base"));
+						data.setCollidable(stationRoot.getBoolean("has_collision"));
 						// System.out.println("Width: " + data.getWidth() + ", Height: " + data.getHeight());
 						// Then add it to the stations list
 						stationData.put(pathPrefix + path + file.nameWithoutExtension(), data);
@@ -292,6 +293,7 @@ public class StationManager {
 			data.setTexturePath(stationRoot.getString("texture_path"));
 			data.setWidth(stationRoot.getInt("width"));
 			data.setHeight(stationRoot.getInt("height"));
+			data.setCollidable(stationRoot.getBoolean("has_collision"));
 			// Then add it to the stations list
 			stationData.put(stationPath, data);
 		}

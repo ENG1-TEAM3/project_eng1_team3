@@ -76,7 +76,6 @@ public class MapManager {
                     }
                     // If it's loaded, get the data for the Station
                     StationData data = stationManager.getStationData(stationID);
-                    System.out.println(data);
                     // If station root is null, then ignore.
                     // This will happen if the file wasn't found.
                     if (data != null) {
@@ -89,13 +88,23 @@ public class MapManager {
                             // If there is, then set the newStation to use it
                             newStation.setBasePath(basePath);
                         }
-
                         stationManager.addStation(newStation);
+
+                        boolean hasCollision;
+                        // Check if it has a custom has_collision tag
+                        if (stationData.has("has_collision")) {
+                            // If it does, then set the station to use it
+                            hasCollision = stationData.getBoolean("has_collision");
+                        } else {
+                            // If it doesn't, get it from the station data
+                            hasCollision = data.isCollidable();
+                        }
 
                         // Add it to the map
                         outputMap.addMapEntity(newStation,
                                                stationData.getInt("x"),
-                                               stationData.getInt("y"));
+                                               stationData.getInt("y"),
+                                               hasCollision);
                     }
                 }
             } catch (GdxRuntimeException e) {

@@ -173,26 +173,47 @@ public class Map {
     }
 
     protected void addFullMapEntity(MapEntity entity, int x, int y) {
+        addFullMapEntity(entity, x, y, false);
+    }
+
+    protected void addFullMapEntity(MapEntity entity, int x, int y, boolean hasCollision) {
+        Array<MapEntity> entitiesToRemove = new Array<>();
         // And now add the entity
         for (int i = x ; i < x + entity.getCellWidth() ; i++) {
             for (int j = y ; j < y + entity.getCellHeight() ; j++) {
-                MapCell newCell = new MapCell(false, true);
+                MapCell newCell = new MapCell(hasCollision, true);
                 newCell.mapEntity = entity;
                 // If it's a valid cell
                 if (validCellFull(i,j)) {
+                    boolean hadCollision = false;
                     // If there's already a station here, remove it completely.
                     if (getCellFull(i, j) != null) {
-                        removeEntity(getCellFull(i, j).mapEntity);
+                        hadCollision = getCellFull(i, j).collidable;
+                        // Only add it for removal if it hasn't been already
+                        MapEntity entityToRemove = getCellFull(i, j).mapEntity;
+                        if (entitiesToRemove.contains(entityToRemove, true)) {
+                            entitiesToRemove.add(entityToRemove);
+                        }
+                        setFullMapCell(i, j, null);
                     }
                     setFullMapCell(i,j,newCell);
                     // If there is a station above this...
                     if (validCellFull(i,j+1)) {
-                        if (getCellFull(i,j+1) != null) {
-                            // Then set this one to collidable
-                            newCell.collidable = true;
+                        MapCell aboveCell = getCellFull(i,j+1);
+                        if (aboveCell != null) {
+                            // And the previous cell had collision...
+                            if (hadCollision) {
+                                // Then set this one to collidable
+                                newCell.collidable = true;
+                            }
                         }
                     }
                 }
+            }
+
+            // Remove all entities that need to be removed.
+            for (MapEntity mapEntity : entitiesToRemove) {
+                removeEntity(mapEntity);
             }
 
             // Below it, if there isn't a MapCell already, place a cupboard
@@ -225,13 +246,17 @@ public class Map {
         entity.setY(MapManager.gridToPos(y));
     }
 
+    public void addMapEntity(MapEntity entity, int x, int y) {
+        addMapEntity(entity, x, y, false);
+    }
+
     /**
      * Adds an entity to the map at the specified grid coordinates x and y.
      * @param entity The {@link MapEntity} to add.
      * @param x The {@code x} position of the {@link MapEntity}.
      * @param y The {@code y} position of the {@link MapEntity}.
      */
-    public void addMapEntity(MapEntity entity, int x, int y) {
+    public void addMapEntity(MapEntity entity, int x, int y, boolean hasCollision) {
         // Make sure the range is valid
         // (x, x+entity.width, y, y+entity.height all in range)
         // Make sure that width and height are > 0
@@ -245,7 +270,7 @@ public class Map {
         }
 
         // Add it to the map
-        addFullMapEntity(entity, x+offsetX, y+offsetY);
+        addFullMapEntity(entity, x+offsetX, y+offsetY, hasCollision);
     }
 
     /**

@@ -165,7 +165,7 @@ public class JsonFormat {
         JsonValue jvalue = FileControl.loadJsonAsset("<main>:burger.json", "interactions");
         //System.out.println(FileControl.toPath("<main>:burger.json", "interactions"));
         System.out.println(jvalue);
-        formatJson(jvalue, Constants.DefaultJson.interactionFormat());
+        formatJson(jvalue, Constants.DefaultJson.stationFormat());
         // System.out.println(jvalue);
         // jvalue.get("scenarios").addChild("a", new JsonValue("a"));
         System.out.println(jvalue);

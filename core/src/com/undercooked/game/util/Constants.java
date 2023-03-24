@@ -68,6 +68,7 @@ public final class Constants {
             root.addValue(new JsonInt("width", 1)); // How many x tiles it takes up
             root.addValue(new JsonInt("height", 1)); // How many y tiles it takes up
             root.addValue(new JsonString("default_base", "<main>:station/blank.png"));
+            root.addValue(new JsonType("has_collision", JsonValue.ValueType.booleanValue));
             return root;
         }
         public static JsonObject mapFormat() {
