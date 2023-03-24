@@ -7,14 +7,18 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.undercooked.game.MainGameClass;
+import com.undercooked.game.entity.Cook;
 import com.undercooked.game.entity.CookController;
 import com.undercooked.game.entity.Entity;
 import com.undercooked.game.logic.GameLogic;
+import com.undercooked.game.map.MapCell;
+import com.undercooked.game.map.MapEntity;
 import com.undercooked.game.util.CameraController;
 import com.undercooked.game.util.Constants;
 import com.undercooked.game.util.StringUtil;
@@ -113,14 +117,34 @@ public class GameRenderer {
         batch.end();
 
         // Draw debug
-        //shape.begin();
+        shape.begin();
         //logic.getMap().drawDebug(shape);
 
         // Render all the entities' debug
-        /*for (Entity renderEntity : renderEntities) {
+        for (Entity renderEntity : renderEntities) {
             renderEntity.drawDebug(shape);
-        }*/
-        //shape.end();
+        }
+        shape.end();
+
+
+
+
+        // Draw the selected cook's interact target
+        // After Debug so that it can appear visually if using it.
+        shape.begin();
+        Cook currentCook = logic.getCookController().getCurrentCook();
+        if (currentCook != null) {
+            MapCell interactTarget = currentCook.getInteractTarget();
+            if (interactTarget != null) {
+                MapEntity interactEntity = interactTarget.getMapEntity();
+                shape.setColor(Color.PURPLE);
+                shape.rect(interactEntity.collision.x,
+                        interactEntity.collision.y,
+                        interactEntity.collision.width,
+                        interactEntity.collision.height);
+            }
+        }
+        shape.end();
 
         // Following that, render the UI
         shape.setProjectionMatrix(uiCamera.combined);

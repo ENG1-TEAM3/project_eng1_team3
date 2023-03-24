@@ -2,11 +2,15 @@ package com.undercooked.game.map;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import com.undercooked.game.assets.TextureManager;
 import com.undercooked.game.entity.Entity;
-import com.undercooked.game.station.Station;
+import com.undercooked.game.util.MathUtil;
+
+import java.awt.*;
+import java.util.Comparator;
 
 public class Map {
 
@@ -15,6 +19,7 @@ public class Map {
     private int height, fullHeight;
     private int offsetX;
     private int offsetY;
+    public final MapCell outOfBounds = new MapCell(true, false);
 
     public Map(int width, int height) {
         this(width,height,width,height);
@@ -68,9 +73,16 @@ public class Map {
     }
 
     protected MapCell getCellFull(int x, int y) {
+        return getCellFull(x, y, false);
+    }
+
+    protected MapCell getCellFull(int x, int y, boolean allowOutOfBounds) {
         // Make sure it's a valid cell position
         // If not, then return null
         if (!validCellFull(x,y)) {
+            if (allowOutOfBounds) {
+                return outOfBounds;
+            }
             return null;
         }
 
@@ -79,7 +91,11 @@ public class Map {
     }
 
     public MapCell getCell(int x, int y) {
-        return getCellFull(x+offsetX,y+offsetY);
+        return getCell(x, y, false);
+    }
+
+    public MapCell getCell(int x, int y, boolean allowOutOfBounds) {
+        return getCellFull(x+offsetX,y+offsetY, allowOutOfBounds);
         // Make sure it's a valid cell position
         // If not, then return null
         /*if (!validCell(x,y)) {
@@ -160,7 +176,7 @@ public class Map {
         // And now add the entity
         for (int i = x ; i < x + entity.getCellWidth() ; i++) {
             for (int j = y ; j < y + entity.getCellHeight() ; j++) {
-                MapCell newCell = new MapCell(false);
+                MapCell newCell = new MapCell(false, true);
                 newCell.mapEntity = entity;
                 // If it's a valid cell
                 if (validCellFull(i,j)) {
@@ -186,7 +202,7 @@ public class Map {
                 // If y-1 is valid, and basePath is not null
                 if (entity.basePath != null && validCellFull(i,y-1)) {
                     // Make a cupboard cell below and add it to the map
-                    MapCell newBelow = new MapCell(true);
+                    MapCell newBelow = new MapCell(true, false);
                     newBelow.mapEntity = new MapEntity();
                     newBelow.mapEntity.setTexture(entity.basePath);
                     newBelow.mapEntity.setWidth(1);
@@ -235,15 +251,32 @@ public class Map {
      * @param entity The {@link Entity} to check.
      * @return {@code True} if colliding, {@code False} if not.
      */
-    public boolean checkCollision(Entity entity) {
-        return checkCollision(entity.collision);
+    public MapCell getCollision(Entity entity) {
+        return getCollision(entity.collision);
     }
 
-    public boolean checkCollision(Entity entity, float x, float y) {
-        return checkCollision(new Rectangle(x, y, entity.collision.width, entity.collision.height));
+    public MapCell getCollision(Entity entity, float x, float y) {
+        return getCollision(new Rectangle(x, y, entity.collision.width, entity.collision.height));
     }
 
-    public boolean checkCollision(Rectangle collision) {
+    public MapCell getCollision(Rectangle collision) {
+        return getCollision(collision, CollisionType.COLLIDABLE);
+    }
+
+    public MapCell getCollision(Rectangle collision, boolean returnClosest) {
+        return getCollision(collision, returnClosest, CollisionType.COLLIDABLE);
+    }
+
+    public MapCell getCollision(Rectangle collision, CollisionType collisionType) {
+        return getCollision(collision, false, collisionType);
+    }
+
+    public enum CollisionType {
+        COLLIDABLE,
+        INTERACTABLE
+    }
+
+    public MapCell getCollision(Rectangle collision, boolean returnClosest, CollisionType collisionType) {
         // Get the range of cell X to cellY
         int cellX    = MapManager.posToGridFloor(collision.x);
         int cellXMax = MapManager.posToGridFloor(collision.x + collision.width);
@@ -254,13 +287,21 @@ public class Map {
         //System.out.println("cellX: " + cellX + ", cellXMax: " + cellXMax);
         //System.out.println("cellY: " + cellY + ", cellYMax: " + cellYMax);
 
+        Array<Point> validCells = null;
+        if (returnClosest) {
+            validCells = new Array();
+        }
+
         // Loop through all the cells in the range
         for (int x = cellX ; x <= cellXMax ; x++) {
             for (int y = cellY ; y <= cellYMax ; y++) {
                 // Check if it's a valid cell
                 if (!validCellFull(x, y)) {
                     // If it's not valid, return that it's colliding
-                    return true;
+                    if (!returnClosest) {
+                        return outOfBounds;
+                    }
+                    validCells.add(new Point(-width, -height));
                 }
 
                 // Get the cell.
@@ -269,18 +310,93 @@ public class Map {
                 if (cell == null) {
                     continue;
                 }
-                // If it's collidable, then skip
-                if (!cell.collidable) {
-                    continue;
+                switch (collisionType) {
+                    case COLLIDABLE:
+                        // If it's not a collidable, then skip
+                        if (!cell.isCollidable()) {
+                            continue;
+                        }
+                        break;
+                    case INTERACTABLE:
+                        // If it's not an interactable, then skip.
+                        if (!cell.isInteractable()) {
+                            continue;
+                        }
                 }
                 // Otherwise, if they're colliding, return true
                 if (cell.mapEntity.isColliding(collision)) {
-                    return true;
+                    if (!returnClosest) {
+                        return cell;
+                    }
+                    validCells.add(new Point(x,y));
                 }
             }
         }
+
+        // If requested to return the closest...
+        if (returnClosest) {
+            // If there are none found, then return null.
+            if (validCells.size == 0) {
+                return null;
+            }
+
+            // Go through the points in the array, and find the closest one.
+            Point firstPoint = validCells.get(0);
+            MapCell closestCell = getCellFull(firstPoint.x, firstPoint.y, true);
+            double closestDist = MathUtil.distanceBetweenRectangles(collision, closestCell.mapEntity.collision);
+            for (int i = 1 ; i < validCells.size ; i++) {
+                Point currentPoint = validCells.get(i);
+                MapCell currentCell = getCellFull(currentPoint.x, currentPoint.y, true);
+                double currentDist = MathUtil.distanceBetweenRectangles(collision, currentCell.mapEntity.collision);
+                if (currentDist < closestDist) {
+                    closestDist = currentDist;
+                    closestCell = currentCell;
+                }
+            }
+
+            // Return the cell at that location
+            return closestCell;
+        }
+
         // If none of the above returns, then return false as they're not colliding
-        return false;
+        return null;
+    }
+
+
+    public boolean checkCollision(Entity entity) {
+        return checkCollision(entity.collision);
+    }
+
+    public boolean checkCollision(Entity entity, float x, float y) {
+        return checkCollision(new Rectangle(x, y, entity.collision.width, entity.collision.height));
+    }
+
+    public boolean checkCollision(Rectangle collision) {
+        return checkCollision(collision, CollisionType.COLLIDABLE);
+    }
+
+    public boolean checkCollision(Rectangle collision, boolean returnClosest) {
+        return checkCollision(collision, returnClosest, CollisionType.COLLIDABLE);
+    }
+
+    public boolean checkCollision(Rectangle collision, CollisionType collisionType) {
+        return checkCollision(collision, false, collisionType);
+    }
+
+    public boolean checkCollision(Rectangle collision, boolean returnClosest, CollisionType collisionType) {
+        MapCell collidingCell = getCollision(collision, returnClosest, collisionType);
+
+        // If it's null, then return false
+        if (collidingCell == null) {
+            return false;
+        }
+
+        // Custom checks
+        if (collisionType != CollisionType.COLLIDABLE && collidingCell == outOfBounds) {
+            return false;
+        }
+        // Return true
+        return true;
     }
 
     public void drawDebug(ShapeRenderer shape) {

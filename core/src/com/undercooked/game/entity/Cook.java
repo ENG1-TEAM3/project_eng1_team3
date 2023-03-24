@@ -2,7 +2,6 @@ package com.undercooked.game.entity;
 
 import java.util.Stack;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
@@ -18,11 +17,8 @@ import com.undercooked.game.MainGameClass;
 import com.undercooked.game.assets.TextureManager;
 import com.undercooked.game.food.Ingredient;
 import com.undercooked.game.map.Map;
-import com.undercooked.game.map.MapEntity;
-import com.undercooked.game.map.MapManager;
+import com.undercooked.game.map.MapCell;
 import com.undercooked.game.util.CollisionTile;
-import com.undercooked.game.util.Control;
-import jdk.jfr.Description;
 
 public class Cook extends MoveableEntity {
 
@@ -31,13 +27,14 @@ public class Cook extends MoveableEntity {
 
 	private Vector2 direction;
 	private final int cookno;
-
 	private final TextureManager textureManager;
 	private Animation<TextureRegion> walkAnimation;
 	private TextureRegion[][] spriteSheet;
 	private TextureRegion currentFrame;
 	private float stateTime = 0;
 
+	private Rectangle interactCollision;
+	private MapCell interactTarget;
 	public boolean locked = false;
 	public boolean holding = false;
 	public Stack<Ingredient> heldItems = new Stack<>();
@@ -54,6 +51,9 @@ public class Cook extends MoveableEntity {
 		this.collision.x = pos.x;
 		this.collision.y = pos.y;
 		this.cookno = cookNum;
+
+		this.interactTarget = null;
+		this.interactCollision = new Rectangle(collision.x, collision.y, 16,16);
 
 		collision.width = 40;
 		offsetX = (64 - collision.getWidth())/2;
@@ -84,12 +84,12 @@ public class Cook extends MoveableEntity {
 		if (InputController.isKeyPressed(Keys.cook_down)) {
 			dirY -= 1;
 			setWalkFrames(0);
-			direction = new Vector2(0, 1);
+			direction = new Vector2(0, -1);
 		}
 		if (InputController.isKeyPressed(Keys.cook_up)) {
 			dirY += 1;
 			setWalkFrames(2);
-			direction = new Vector2(0, -1);
+			direction = new Vector2(0, 1);
 		}
 		if (InputController.isKeyPressed(Keys.cook_left)) {
 			dirX -= 1;
@@ -100,6 +100,11 @@ public class Cook extends MoveableEntity {
 			dirX += 1;
 			setWalkFrames(3);
 			direction = new Vector2(1, 0);
+		}
+
+		// Interact input check
+		if (interactTarget != null) {
+
 		}
 	}
 
@@ -136,6 +141,11 @@ public class Cook extends MoveableEntity {
 
 		// Move
 		move(delta);
+		interactCollision.x = collision.x + collision.width/2 + (direction.x * 32) - interactCollision.width/2;
+		interactCollision.y = 64 + collision.y + collision.height/2 + (direction.y * 32) - interactCollision.width/2;
+
+		// Update the cell that is currently being looked at
+		interactTarget = map.getCollision(interactCollision, true, Map.CollisionType.INTERACTABLE);
 
 		// Update animation
 		currentFrame = walkAnimation.getKeyFrame(stateTime, true);
@@ -218,6 +228,14 @@ public class Cook extends MoveableEntity {
 	public void draw(SpriteBatch batch) {
 		batch.draw(currentFrame, pos.x, pos.y, 64, 128);
 		drawHeldItems(batch);
+	}
+
+	@Override
+	public void drawDebug(ShapeRenderer shape) {
+		super.drawDebug(shape);
+		shape.setColor(Color.GREEN);
+		shape.rect(interactCollision.x,interactCollision.y,interactCollision.width,interactCollision.height);
+		shape.setColor(Color.WHITE);
 	}
 
 	/**
@@ -342,5 +360,9 @@ public class Cook extends MoveableEntity {
 
 	public int getCookNo() {
 		return cookno;
+	}
+
+	public MapCell getInteractTarget() {
+		return interactTarget;
 	}
 }

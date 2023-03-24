@@ -7,6 +7,7 @@ public class MapEntity extends Entity {
     protected int width;
     protected int height;
     String basePath;
+
     public void setWidth(int width) {
         this.collision.width = Math.max(MapManager.gridToPos(1),MapManager.gridToPos(width));
         this.width = Math.max(1,width);
