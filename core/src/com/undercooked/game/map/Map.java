@@ -212,8 +212,11 @@ public class Map {
                     setFullMapCell(i,y-1,newBelow);
                 }
             } else {
-                // If not, set the cell below to be collidable
-                cellBelow.collidable = true;
+                // If not, set the cell below to be collidable, but only
+                // if the base path isn't null
+                if (entity.basePath != null) {
+                    cellBelow.collidable = true;
+                }
             }
         }
 
