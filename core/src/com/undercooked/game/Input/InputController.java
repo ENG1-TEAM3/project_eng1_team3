@@ -2,9 +2,11 @@ package com.undercooked.game.Input;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.utils.JsonValue;
+import com.badlogic.gdx.utils.JsonWriter;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.undercooked.game.files.FileControl;
 import com.undercooked.game.util.StringUtil;
+import com.undercooked.game.util.json.*;
 
 public class InputController {
 
@@ -88,6 +90,7 @@ public class InputController {
     public static void loadControls() {
         // Try to load the external json file
         JsonValue root = FileControl.loadJsonData("controls.json");
+        JsonValue defaultRoot = FileControl.loadJsonFile("defaults", "controls.json", true);
         // If the json hasn't loaded...
         if (root == null) {
             System.out.println("No controls.json exists. It will be created from the default.");
@@ -98,6 +101,75 @@ public class InputController {
             }
             // Save it to the data path
             FileControl.saveJsonData("controls.json", root);
+        } else {
+            // File in Data folder already exists, so map any missing / incorrect values in
+            // the default over the root.
+            // If any keys are overwritten, save the current as a backup.
+            // In any case of modification, overwrite.
+            String backup = root.toJson(JsonWriter.OutputType.json);
+            boolean changed = false;
+            boolean needBackup = false;
+
+            JsonObject keyFormat = new JsonObject();
+            keyFormat.addValue(new JsonArray("keys", JsonValue.ValueType.stringValue));
+            keyFormat.addValue(new JsonType("interaction", JsonValue.ValueType.booleanValue));
+
+            // Loop through all the keys in the defaultRoot.
+            for (JsonValue currentKey : defaultRoot.iterator()) {
+                // Check if the save file already has it
+                if (root.has(currentKey.name())) {
+                    // If it has the key, then ensure that the value is valid. If not, overwrite and
+                    // set "needBackup" to true.
+                    JsonValue thisID = root.get(currentKey.name());
+                    // First, value must be a list
+                    if (!thisID.isObject()) {
+                        // If it's not, then overwrite
+                        root.remove(currentKey.name());
+                        root.addChild(currentKey);
+                        changed = true;
+                        needBackup = true;
+                        continue;
+                    }
+
+                    // Format it to make sure it's valid
+                    JsonFormat.formatJson(thisID, keyFormat);
+
+                    // Make sure it has the key
+                    JsonValue thisKeys = thisID.get("keys");
+                    // Make sure it's an array, otherwise overwrite
+                    if (thisKeys.isArray()) {
+                        // If it is, make sure all the "keys" children are strings
+                        // This doesn't need a backup, as they can just be ignored
+                        for (JsonValue keyVal : thisKeys.iterator()) {
+                            if (!keyVal.isString()) {
+                                thisKeys.remove(keyVal.name());
+                            }
+                        }
+
+                        // If there are no items left, then just copy over the default one, and save.
+                        if (thisKeys.size == 0 && currentKey.child().size != 0) {
+                            thisID.remove("keys");
+                            thisID.addChild(thisKeys);
+                            changed = true;
+                            needBackup = true;
+                        }
+                    }
+                    // Interaction can be ignored.
+                } else {
+                    // If it doesn't have the key, then add it.
+                    root.addChild(currentKey);
+                }
+            }
+
+            // Now overwrite or backup if needed
+            if (changed) {
+                FileControl.saveJsonData("controls.json", root);
+                // This can be in here as it should only need a backup if it has been changed.
+                if (needBackup) {
+                    FileControl.saveData("controls-backup.json", backup);
+                }
+            }
+
         }
 
         //// Load the controls into the inputs ObjectMap
