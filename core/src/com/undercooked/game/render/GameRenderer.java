@@ -92,7 +92,8 @@ public class GameRenderer {
                 worldCamera.position.x = cookController.getCurrentCook().collision.x;
                 worldCamera.position.y = cookController.getCurrentCook().collision.y;
             } else {
-                worldCamera.position.lerp(new Vector3(cookController.getCurrentCook().collision.x, cookController.getCurrentCook().collision.y, 0), .9f * delta);
+                Vector3 target = new Vector3(cookController.getCurrentCook().collision.x, cookController.getCurrentCook().collision.y, 0);
+                worldCamera.position.lerp(target, .9f * delta * 2);
             }
         }
     }
@@ -108,7 +109,6 @@ public class GameRenderer {
         MainGameClass.batch.setProjectionMatrix(worldCamera.combined);
 
         // Move the world camera
-        moveCamera(delta);
         worldCamera.update();
 
         // Render the floor of the map
