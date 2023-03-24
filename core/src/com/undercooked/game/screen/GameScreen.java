@@ -191,6 +191,7 @@ public class GameScreen extends Screen {
 
 		gameLogic.setTextureManager(textureManager);
 		gameLogic.loadMap("<main>:main.json");
+		gameRenderer.load(textureManager);
 		// System.out.println(map.getAllEntities());
 		// Add the map entities to the GameRenderer
 
@@ -210,6 +211,7 @@ public class GameScreen extends Screen {
 		stage2.dispose();
 
 		gameLogic.dispose();
+		gameRenderer.unload(textureManager);
 	}
 
 	/**
@@ -294,6 +296,9 @@ public class GameScreen extends Screen {
 
 		// GameLogic post load
 		gameLogic.postLoad();
+
+		// GameRenderer post load
+		gameRenderer.postLoad(textureManager);
 
 	}
 

@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
@@ -12,7 +13,9 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.sun.org.apache.bcel.internal.Const;
 import com.undercooked.game.MainGameClass;
+import com.undercooked.game.assets.TextureManager;
 import com.undercooked.game.entity.Cook;
 import com.undercooked.game.entity.CookController;
 import com.undercooked.game.entity.Entity;
@@ -35,6 +38,7 @@ public class GameRenderer {
     private OrthographicCamera worldCamera;
 
     private OrthographicCamera uiCamera;
+    private Sprite interactSprite;
     private Comparator<Entity> entityCompare = new Comparator<Entity>() {
         @Override
         public int compare(Entity o1, Entity o2) {
@@ -54,6 +58,7 @@ public class GameRenderer {
         this.shape = shape;
         this.font = font;
         this.renderEntities = renderEntities;
+        this.interactSprite = null;
 
         this.worldCamera = CameraController.getCamera(Constants.WORLD_CAMERA_ID);
         this.uiCamera = CameraController.getCamera(Constants.UI_CAMERA_ID);
@@ -108,43 +113,51 @@ public class GameRenderer {
 
         // Render the floor of the map
 
+
+
+
+        // Get the interaction target
+        Cook currentCook = logic.getCookController().getCurrentCook();
+        MapCell interactTarget = null;
+        if (currentCook != null) {
+            interactTarget = currentCook.getInteractTarget();
+        }
+
         // Render the entities in order, highest Y to lowest Y
         renderEntities.sort(entityCompare);
         batch.begin();
         for (Entity renderEntity : renderEntities) {
             renderEntity.draw(batch);
+
+            // Draw the selected cook's interact target. It draws on
+            // the same order as the station, so that the cooks can
+            // be rendered over it.
+            // Check if the current entity is the interactTarget
+            if (interactTarget != null && interactTarget.getMapEntity() == renderEntity) {
+                // If it is, then draw it.
+                MapEntity interactEntity = interactTarget.getMapEntity();
+                Rectangle interactBox = interactEntity.collision;
+                interactSprite.setSize(interactBox.width,interactBox.height);
+                interactSprite.setPosition(interactBox.x, interactBox.y);
+                interactSprite.draw(batch);
+            }
         }
         batch.end();
 
         // Draw debug
-        shape.begin();
+        //shape.begin();
         //logic.getMap().drawDebug(shape);
 
         // Render all the entities' debug
-        for (Entity renderEntity : renderEntities) {
+        /*for (Entity renderEntity : renderEntities) {
             renderEntity.drawDebug(shape);
-        }
-        shape.end();
+        }*/
+        //shape.end();
 
 
 
 
-        // Draw the selected cook's interact target
-        // After Debug so that it can appear visually if using it.
-        shape.begin();
-        Cook currentCook = logic.getCookController().getCurrentCook();
-        if (currentCook != null) {
-            MapCell interactTarget = currentCook.getInteractTarget();
-            if (interactTarget != null) {
-                MapEntity interactEntity = interactTarget.getMapEntity();
-                shape.setColor(Color.PURPLE);
-                shape.rect(interactEntity.collision.x,
-                        interactEntity.collision.y,
-                        interactEntity.collision.width,
-                        interactEntity.collision.height);
-            }
-        }
-        shape.end();
+
 
         // Following that, render the UI
         shape.setProjectionMatrix(uiCamera.combined);
@@ -171,6 +184,18 @@ public class GameRenderer {
         font.draw(batch, "Time in s: " + StringUtil.formatSeconds(logic.getElapsedTime()),
                 500, 500);
         batch.end();
+    }
+
+    public void load(TextureManager textureManager) {
+        textureManager.load("interactions/select_box.png");
+    }
+
+    public void postLoad(TextureManager textureManager) {
+        interactSprite = new Sprite(textureManager.get("interactions/select_box.png"));
+    }
+
+    public void unload(TextureManager textureManager) {
+        textureManager.unload("interactions/select_box.png");
     }
 
     public void addEntity(Entity entity) {
