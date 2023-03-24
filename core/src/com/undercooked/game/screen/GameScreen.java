@@ -181,6 +181,7 @@ public class GameScreen extends Screen {
 		textureManager.load(Constants.GAME_TEXTURE_ID, "entities/cust3b.png");
 		textureManager.load(Constants.GAME_TEXTURE_ID, "entities/cust3r.png");
 		textureManager.load(Constants.GAME_TEXTURE_ID, "entities/cust3l.png");
+		textureManager.load(Constants.GAME_TEXTURE_ID, "uielements/settings.png");
 
 		game.audioManager.loadMusic("audio/music/GameMusic.ogg", Constants.MUSIC_GROUP);
 		game.audioManager.loadMusic("audio/soundFX/cash-register-opening.mp3", Constants.GAME_GROUP);
