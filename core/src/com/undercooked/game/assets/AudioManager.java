@@ -181,6 +181,16 @@ public class AudioManager {
         return true;
     }
 
+    /**
+     * Post loading for the AudioManager.
+     */
+    public void postLoad() {
+        // Update the music volumes for all the audio groups
+        for (String audioGroup : volumes.keys()) {
+            updateMusicVolumes(audioGroup);
+        }
+    }
+
     public void updateMusicVolumes(String audioGroup) {
         // First check that the audioGroup exists
         if (!volumes.containsKey(audioGroup)) {

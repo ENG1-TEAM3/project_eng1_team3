@@ -131,6 +131,12 @@ public class MainScreen extends Screen {
 		stage.dispose();
 	}
 
+	@Override
+	public void postLoad() {
+		// AudioManager post load
+		game.audioManager.postLoad();
+	}
+
 	/**
 	 * What should be done when the screen is shown
 	 */

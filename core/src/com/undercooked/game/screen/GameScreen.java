@@ -284,6 +284,9 @@ public class GameScreen extends Screen {
 		// GameRenderer post load
 		gameRenderer.postLoad(textureManager);
 
+		// AudioManager post load
+		game.audioManager.postLoad();
+
 	}
 
 	AudioSliders audioSliders;
