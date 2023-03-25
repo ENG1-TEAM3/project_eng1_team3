@@ -67,6 +67,11 @@ public final class Constants {
             root.addValue(new JsonInt("texture_rotation", 0));
             root.addValue(new JsonInt("width", 1)); // How many x tiles it takes up
             root.addValue(new JsonInt("height", 1)); // How many y tiles it takes up
+            // -1 of the below two defaults the collision to automatically calculate based on width / height.
+            root.addValue(new JsonFloat("collision_width", -1F)); // The width of the collision box in pixels
+            root.addValue(new JsonFloat("collision_height", -1F)); // The height of the collision box in pixels
+            root.addValue(new JsonFloat("collision_offset_x", 0F)); // The z offset of the collision box in pixels
+            root.addValue(new JsonFloat("collision_offset_y", 0F)); // The y offset of the collision box in pixels
             root.addValue(new JsonString("default_base", "<main>:station/blank.png"));
             root.addValue(new JsonType("has_collision", JsonValue.ValueType.booleanValue));
             return root;

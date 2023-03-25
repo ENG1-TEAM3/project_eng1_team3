@@ -7,6 +7,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.undercooked.game.files.FileControl;
+import com.undercooked.game.map.MapManager;
 import com.undercooked.game.screen.GameScreen;
 import com.undercooked.game.util.Constants;
 import com.undercooked.game.util.json.JsonFormat;
@@ -230,27 +231,6 @@ public class StationManager {
 						newData.setPath(file.path());
 						stationData.put(pathPrefix + path + file.nameWithoutExtension(), newData);
 					}
-					//System.out.println("File path: " + file.path());
-					//System.out.println("curpath: " + path);
-					// Read the file data
-					//System.out.println(file.nameWithoutExtension());
-					/*JsonValue stationRoot = JsonFormat.formatJson(
-							FileControl.loadJsonAsset(pathPrefix + path + file.nameWithoutExtension(), "stations"),
-							Constants.DefaultJson.stationFormat());*/
-					// If it's not null...
-					/*if (stationRoot != null) {
-						// Load the data
-						StationData data = new StationData();
-						data.setPath(file.path());
-						data.setTexturePath(stationRoot.getString("texture_path"));
-						data.setWidth(stationRoot.getInt("width"));
-						data.setHeight(stationRoot.getInt("height"));
-						data.setDefaultBase(stationRoot.getString("default_base"));
-						data.setCollidable(stationRoot.getBoolean("has_collision"));
-						// System.out.println("Width: " + data.getWidth() + ", Height: " + data.getHeight());
-						// Then add it to the stations list
-						stationData.put(pathPrefix + path + file.nameWithoutExtension(), data);
-					}*/
 				}
 			}
 		}
@@ -300,6 +280,17 @@ public class StationManager {
 			data.setHeight(stationRoot.getInt("height"));
 			data.setDefaultBase(stationRoot.getString("default_base"));
 			data.setCollidable(stationRoot.getBoolean("has_collision"));
+
+			// For collision width and height, if they are <= 0, then default to
+			// grid size of the width and height
+			float stationWidth = stationRoot.getFloat("collision_width");
+			float stationHeight = stationRoot.getFloat("collision_height");
+
+			data.setCollisionWidth(stationWidth > 0 ? stationWidth : MapManager.gridToPos(data.getWidth()));
+			data.setCollisionHeight(stationHeight > 0 ? stationHeight : MapManager.gridToPos(data.getHeight()));
+
+			data.setCollisionOffsetX(stationRoot.getFloat("collision_offset_x"));
+			data.setCollisionOffsetY(stationRoot.getFloat("collision_offset_y"));
 			// System.out.println("Width: " + data.getWidth() + ", Height: " + data.getHeight());
 			// Then add it to the stations list
 			return data;

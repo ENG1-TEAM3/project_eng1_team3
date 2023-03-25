@@ -6,6 +6,11 @@ public class MathUtil {
 
     public static double distanceBetweenRectangles(Rectangle rect1, Rectangle rect2) {
 
+        // If either of the rectangles are null, return infinity
+        if (rect1 == null || rect2 == null) {
+            return Float.POSITIVE_INFINITY;
+        }
+
         float x1 = rect1.x + rect1.width/2,
                 y1 = rect1.y + rect1.height/2;
         float x2 = rect2.x + rect2.width/2,

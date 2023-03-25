@@ -4,5 +4,6 @@
   "width": 1,
   "height": 1,
   "default_base": null,
-  "has_collision": true
+  "has_collision": true,
+  "collision_height": 20
 }

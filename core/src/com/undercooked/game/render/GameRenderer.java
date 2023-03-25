@@ -136,7 +136,7 @@ public class GameRenderer {
             if (interactTarget != null && interactTarget.getMapEntity() == renderEntity) {
                 // If it is, then draw it.
                 MapEntity interactEntity = interactTarget.getMapEntity();
-                Rectangle interactBox = interactEntity.collision;
+                Rectangle interactBox = interactEntity.getInteractBox();
                 interactSprite.setSize(interactBox.width,interactBox.height);
                 interactSprite.setPosition(interactBox.x, interactBox.y);
                 interactSprite.draw(batch);
@@ -146,7 +146,7 @@ public class GameRenderer {
 
         // Draw debug
         //shape.begin();
-        //logic.getMap().drawDebug(shape);
+        // logic.getMap().drawDebug(shape);
 
         // Render all the entities' debug
         /*for (Entity renderEntity : renderEntities) {

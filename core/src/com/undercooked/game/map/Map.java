@@ -36,6 +36,7 @@ public class Map {
         this.height = height;
         this.fullWidth = fullWidth;
         this.fullHeight = fullHeight;// Then init the map (so that it's empty)
+        this.outOfBounds.mapEntity = new MapEntity();
         init();
     }
 
@@ -361,20 +362,26 @@ public class Map {
                         if (!cell.isCollidable()) {
                             continue;
                         }
+                        // If they're not colliding, then skip
+                        if (!cell.mapEntity.isColliding(collision)) {
+                            continue;
+                        }
                         break;
                     case INTERACTABLE:
                         // If it's not an interactable, then skip.
                         if (!cell.isInteractable()) {
                             continue;
                         }
+                        // If they're not interacting, then skip
+                        if (!cell.mapEntity.isInteracting(collision)) {
+                            continue;
+                        }
                 }
-                // Otherwise, if they're colliding, return true
-                if (cell.mapEntity.isColliding(collision)) {
-                    if (!returnClosest) {
-                        return cell;
-                    }
-                    validCells.add(new Point(x,y));
+                // Otherwise, if the above succeeds, return the MapCell
+                if (!returnClosest) {
+                    return cell;
                 }
+                validCells.add(new Point(x,y));
             }
         }
 
@@ -383,6 +390,10 @@ public class Map {
             // If there are none found, then return null.
             if (validCells.size == 0) {
                 return null;
+            }
+            // If there's only one, return that
+            if (validCells.size == 1) {
+                return getCellFull(validCells.get(0).x, validCells.get(0).y);
             }
 
             // Go through the points in the array, and find the closest one.

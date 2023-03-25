@@ -100,6 +100,15 @@ public class MapManager {
                             hasCollision = data.isCollidable();
                         }
 
+                        // If it does have collision
+                        if (hasCollision) {
+                            // Then set up the collision values
+                            newStation.collision.setWidth(data.getCollisionWidth());
+                            newStation.collision.setHeight(data.getCollisionHeight());
+                            newStation.offsetX = data.getCollisionOffsetX();
+                            newStation.offsetY = data.getCollisionOffsetY();
+                        }
+
                         // Add it to the map
                         outputMap.addMapEntity(newStation,
                                                stationData.getInt("x"),
