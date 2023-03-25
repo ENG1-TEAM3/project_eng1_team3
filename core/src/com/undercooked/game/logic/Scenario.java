@@ -1,11 +1,8 @@
 package com.undercooked.game.logic;
 
-import com.badlogic.gdx.Gdx;
 import com.undercooked.game.Input.InputController;
 import com.undercooked.game.assets.TextureManager;
-import com.undercooked.game.entity.Cook;
 import com.undercooked.game.screen.GameScreen;
-import com.undercooked.game.screen.GameScreen.STATE;
 
 public class Scenario extends GameLogic {
 
@@ -69,11 +66,11 @@ public class Scenario extends GameLogic {
 
     @Override
     public void unload() {
-        ingredients.unload(gameScreen.getTextureManager());
+        items.unload(gameScreen.getTextureManager());
     }
 
     public void addIngredient() {
-        ingredients.load(gameScreen.getTextureManager());
+        items.load(gameScreen.getTextureManager());
     }
 
     public void setCookCount(int cookCount) {

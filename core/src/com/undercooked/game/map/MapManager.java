@@ -60,7 +60,7 @@ public class MapManager {
         stationManager.clear();
 
         // Convert the Map Json into an actual map
-        Map outputMap = mapOfSize(root.getInt("width"), root.getInt("height"));
+        Map outputMap = mapOfSize(root.getInt("width"), root.getInt("height"), audioManager);
 
         // Loop through the stations
         for (JsonValue stationData : root.get("stations").iterator()) {
@@ -81,6 +81,7 @@ public class MapManager {
                     if (data != null) {
                         // Initialise the Station
                         Station newStation = new Station(data);
+                        newStation.makeInteractionController(audioManager);
 
                         // Check if there is a custom base
                         String basePath = stationData.getString("base_texture");
@@ -135,13 +136,14 @@ public class MapManager {
 
     }
 
-    public static UniqueStation newCounter() {
+    public static UniqueStation newCounter(AudioManager audioManager) {
         UniqueStation newCounter = new UniqueStation(StationManager.stationData.get("<main>:counter"));
+        newCounter.makeInteractionController(audioManager);
         return newCounter;
     }
 
     // Creates a map of size width and height.
-    public static Map mapOfSize(int width, int height) {
+    public static Map mapOfSize(int width, int height, AudioManager audioManager) {
         // The map size is the area that the players can run around in.
         // Therefore, height += 2, for top and bottom counters, and then
         // width has a few more added, primarily on the left.
@@ -153,13 +155,13 @@ public class MapManager {
         // Add the counter border
         // X entities
         for (int i = 0 ; i < width ; i++) {
-            returnMap.addMapEntity(newCounter(),i,0);
-            returnMap.addMapEntity(newCounter(),i,height-1);
+            returnMap.addMapEntity(newCounter(audioManager),i,0);
+            returnMap.addMapEntity(newCounter(audioManager),i,height-1);
         }
         // Y entities
         for (int j = 1 ; j < height-1 ; j++) {
-            returnMap.addMapEntity(newCounter(),0,j);
-            returnMap.addMapEntity(newCounter(),width-1,j);
+            returnMap.addMapEntity(newCounter(audioManager),0,j);
+            returnMap.addMapEntity(newCounter(audioManager),width-1,j);
         }
         return returnMap;
     }

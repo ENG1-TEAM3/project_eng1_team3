@@ -4,7 +4,10 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
+import com.undercooked.game.Input.InputType;
+import com.undercooked.game.entity.Cook;
 import com.undercooked.game.entity.Entity;
+import com.undercooked.game.food.interactions.InteractResult;
 
 public class MapEntity extends Entity {
 
@@ -73,5 +76,15 @@ public class MapEntity extends Entity {
 
     public Rectangle getInteractBox() {
         return interactBox;
+    }
+
+    /**
+     * Class to be Override by children
+     * @param keyID {@link String} : The key's ID.
+     * @param inputType {@link InputType} : The type of input of interaction.
+     * @return {@link InteractResult} : The result of the {@link com.undercooked.game.food.interactions.InteractionStep}.
+     */
+    public InteractResult interact(Cook cook, String keyID, InputType inputType) {
+        return InteractResult.NONE;
     }
 }

@@ -1,49 +1,53 @@
 package com.undercooked.game.food;
 
-import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.undercooked.game.assets.TextureManager;
 import com.undercooked.game.files.FileControl;
-import com.undercooked.game.screen.GameScreen;
 import com.undercooked.game.util.Constants;
+import com.undercooked.game.util.json.JsonFormat;
 
 /**
  * All available ingredient.
  */
-public class Ingredients {
+public class Items {
 
 	// An ObjectMap of ingredient ids to their textures.
-	ObjectMap<String, String> ingredients;
+	ObjectMap<String, Item> ingredients;
 
-	public void addIngredient(String ID, String texturePath) {
-		ingredients.put(ID, texturePath);
+	public void addIngredient(String ID, String name, String texturePath, int value) {
+		Item newItem = new Item(name, texturePath, value);
+		ingredients.put(ID, newItem);
 	}
 
 	public void addIngredient(String ID) {
-		addIngredient(ID, ID + ".png");
+		addIngredient(ID, ID, ID + ".png", 0);
 	}
 
 	public boolean addIngredientAsset(String assetPath) {
 		JsonValue ingredientRoot = FileControl.loadJsonAsset(assetPath, "items");
-		if (ingredientRoot != null) {
+		if (ingredientRoot == null) {
 			return false;
 		}
+		JsonFormat.formatJson(ingredientRoot, Constants.DefaultJson.itemFormat());
+		addIngredient(assetPath,
+				ingredientRoot.getString("name"),
+				ingredientRoot.getString("texture_path"),
+				ingredientRoot.getInt("value"));
 		return true;
 	}
 
 	public void load(TextureManager textureManager) {
 		// Loop through all ingredients and load their textures
-		for (String path : ingredients.values()) {
-			textureManager.load(Constants.GAME_TEXTURE_ID, path);
+		for (Item item : ingredients.values()) {
+			textureManager.load(Constants.GAME_TEXTURE_ID, item.getTexturePath());
 		}
 	}
 
 	public void unload(TextureManager textureManager) {
 		// Loop through all the ingredients and unload their textures
-		for (String path : ingredients.values()) {
-			textureManager.load(path);
+		for (Item item : ingredients.values()) {
+			textureManager.load(item.getTexturePath());
 		}
 		// Clear the ingredients map, as none of them are loaded now
 		ingredients.clear();

@@ -55,9 +55,9 @@ public final class Constants {
         }
         public static JsonObject itemFormat() {
             JsonObject root = new JsonObject();
-            root.addValue(new JsonString("id",null));
+            root.addValue(new JsonString("name",null));
             root.addValue(new JsonString("texture_path", null));
-            root.addValue(new JsonInt("value", null));
+            root.addValue(new JsonInt("value", 0));
             return root;
         }
         public static JsonObject stationFormat() {

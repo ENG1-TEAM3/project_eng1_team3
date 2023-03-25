@@ -52,6 +52,16 @@ public class InputController {
         inputs.get(keyID).interaction = interaction;
     }
 
+    public static boolean isInteraction(String keyID) {
+        // First check that the key actually exists in the inputs map
+        if (!inputs.containsKey(keyID)) {
+            // If it doesn't, return false.
+            return false;
+        }
+        // Return the interaction value
+        return inputs.get(keyID).interaction;
+    }
+
     public static void updateKeys() {
         for (InputKey key : inputs.values()) {
             key.update();
@@ -80,6 +90,21 @@ public class InputController {
         if (!keyExists(keyID)) return false;
 
         return inputs.get(keyID).isJustReleased();
+    }
+
+    public static boolean isKey(String keyID, InputType inputType) {
+        switch(inputType) {
+            case PRESSED:
+                return isKeyPressed(keyID);
+            case JUST_PRESSED:
+                return isKeyJustPressed(keyID);
+            case RELEASED:
+                return isKeyReleased(keyID);
+            case JUST_RELEASED:
+                return isKeyJustReleased(keyID);
+            default:
+                return false;
+        }
     }
 
     public static boolean keyExists(String keyID) {
@@ -231,5 +256,4 @@ public class InputController {
             }
         }
     }
-
 }

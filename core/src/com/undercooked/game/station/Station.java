@@ -1,19 +1,16 @@
 package com.undercooked.game.station;
 
-import java.util.Stack;
-
-import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
-import com.undercooked.game.MainGameClass;
+import com.undercooked.game.Input.InputType;
+import com.undercooked.game.assets.AudioManager;
 import com.undercooked.game.entity.Cook;
-import com.undercooked.game.food.Ingredient;
+import com.undercooked.game.food.interactions.InteractResult;
 import com.undercooked.game.food.interactions.StationInteractControl;
 import com.undercooked.game.map.MapEntity;
-import com.undercooked.game.map.MapManager;
 
 import static com.undercooked.game.MainGameClass.shapeRenderer;
 
@@ -36,11 +33,16 @@ public class Station extends MapEntity {
 	}
 
 	public void update(float delta) {
-
+		interactControl.update(delta);
 	}
 
-	public void interact() {
-
+	@Override
+	public InteractResult interact(Cook cook, String keyID, InputType inputType) {
+		if (interactControl == null) {
+			// If it doesn't have an interaction control, then stop.
+			return InteractResult.STOP;
+		}
+		return interactControl.interact(cook, keyID, inputType);
 	}
 
 	public void create() {
@@ -68,4 +70,7 @@ public class Station extends MapEntity {
 		batch.end();
 	}
 
+	public void makeInteractionController(AudioManager audioManager) {
+		this.interactControl = new StationInteractControl(audioManager);
+	}
 }

@@ -21,11 +21,6 @@ public class UniqueStation extends Station {
 		interactControl.update(delta);
 	}
 
-	@Override
-	public void interact() {
-
-	}
-
 	public void drawText(SpriteBatch batch, String text, Vector2 pos) {
 		batch.begin();
 		(new BitmapFont()).draw(batch, text, pos.x, pos.y);

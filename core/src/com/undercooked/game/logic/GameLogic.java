@@ -1,19 +1,13 @@
 package com.undercooked.game.logic;
 
-import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.utils.Array;
-import com.undercooked.game.MainGameClass;
 import com.undercooked.game.assets.TextureManager;
-import com.undercooked.game.entity.Cook;
 import com.undercooked.game.entity.CookController;
 import com.undercooked.game.entity.CustomerController;
 import com.undercooked.game.entity.Entity;
-import com.undercooked.game.files.FileControl;
-import com.undercooked.game.food.Ingredients;
+import com.undercooked.game.food.Items;
 import com.undercooked.game.map.Map;
 import com.undercooked.game.render.GameRenderer;
 import com.undercooked.game.screen.GameScreen;
-import com.undercooked.game.screen.ScreenController;
 import com.undercooked.game.station.StationManager;
 import com.undercooked.game.util.Constants;
 
@@ -24,7 +18,7 @@ import com.undercooked.game.util.Constants;
 public abstract class GameLogic implements Logic {
 
     GameScreen gameScreen;
-    Ingredients ingredients;
+    Items items;
     CookController cookController;
     CustomerController customerController;
     StationManager stationManager;
@@ -35,7 +29,7 @@ public abstract class GameLogic implements Logic {
 
     public GameLogic(GameScreen game, TextureManager textureManager) {
         this.gameScreen = game;
-        this.ingredients = new Ingredients();
+        this.items = new Items();
         this.elapsedTime = 0;
 
         this.cookController = new CookController(textureManager);

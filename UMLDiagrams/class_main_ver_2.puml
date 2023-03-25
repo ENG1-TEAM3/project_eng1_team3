@@ -52,8 +52,8 @@ GameScreen -> CollisionTile : Stores many instances of
 GameScreen -> CustomerController : Stores one instance of
 GameScreen -> StationManager : Stores one instance of
 GameScreen -> Cook : Stores max 3 instances
-Station -> Ingredient : Can require ingredients or give
-Cook -> Ingredient : Stores some ingredients
+Station -> Ingredient : Can require items or give
+Cook -> Ingredient : Stores some items
 Customer -> ServingStation : Check customer to serve
 
 class LeaderBoard{
@@ -262,7 +262,7 @@ CLass Recipe{
 +Map<Ingredient, String> ingredientInstructions
 +void displayRecipe(Vector2 pos)
 +boolean matches(Stack<Ingredient> givenIngredients)
--boolean contains(Ingredient checkIngredient, ArrayList<Ingredient> ingredients)
+-boolean contains(Ingredient checkIngredient, ArrayList<Ingredient> items)
 }
 Recipe -- Ingredient
 

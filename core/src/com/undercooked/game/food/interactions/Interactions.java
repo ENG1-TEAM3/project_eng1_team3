@@ -4,7 +4,9 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.undercooked.game.files.FileControl;
-import com.undercooked.game.food.Ingredients;
+import com.undercooked.game.food.Items;
+import com.undercooked.game.food.interactions.steps.JustPressedStep;
+import com.undercooked.game.food.interactions.steps.PressedStep;
 import com.undercooked.game.food.interactions.steps.SetStep;
 import com.undercooked.game.food.interactions.steps.WaitStep;
 import com.undercooked.game.util.Constants;
@@ -27,21 +29,21 @@ public class Interactions {
     /** A mapping of interactionID to the interactions + the ingredients needed */
     private ObjectMap<String, InteractionObject> interactions;
 
-    public void loadInteractionAsset(String assetPath, Ingredients ingredients) {
+    public void loadInteractionAsset(String assetPath, Items items) {
         JsonValue interactionRoot = FileControl.loadJsonAsset(assetPath, "interactions");
         // If it's not null...
         if (interactionRoot != null) {
             // load the interaction
-            loadInteraction(interactionRoot, ingredients);
+            loadInteraction(interactionRoot, items);
         }
     }
 
-    private Array<InteractionStep> addInteractions(JsonValue interactionRoot, Ingredients ingredients) {
+    private Array<InteractionStep> addInteractions(JsonValue interactionRoot, Items items) {
         Array<InteractionStep> steps = new Array<>();
         // Loop through the interactions
         for (JsonValue interaction : interactionRoot.iterator()) {
             // Add this interaction
-            InteractionStep thisStep = addInteraction(interactionRoot, ingredients);
+            InteractionStep thisStep = addInteraction(interaction, items);
             if (thisStep == null) {
                 return null;
             }
@@ -49,7 +51,7 @@ public class Interactions {
         return steps;
     }
 
-    private InteractionStep addInteraction(JsonValue interactionRoot, Ingredients ingredients) {
+    private InteractionStep addInteraction(JsonValue interactionRoot, Items items) {
         InteractionStep interactionStep = null;
         // Get the interaction step type
         String type = interactionRoot.getString("type");
@@ -57,25 +59,40 @@ public class Interactions {
         // Depending on the type, initialise interactionStep based on that
         // Depending on the instruction, it may also need to load an ingredient
         // If it can't load it, then return null
-        if (type == "wait") {
-            interactionStep = new WaitStep();
-        } else if (type == "set") {
-            interactionStep = new SetStep();
-            // If it fails to load, return null as it could mess up the
-            // whole interaction
-            if (!ingredients.addIngredientAsset(value)) {
+        switch (type) {
+            case "wait":
+                interactionStep = new WaitStep();
+                break;
+            case "set":
+                interactionStep = new SetStep();
+                // If it fails to load, return null as it could mess up the
+                // whole interaction
+                if (!items.addIngredientAsset(value)) {
+                    return null;
+                }
+                break;
+
+            // Inputs
+            case "pressed":
+                interactionStep = new PressedStep();
+                break;
+            case "just_pressed":
+                interactionStep = new JustPressedStep();
+                break;
+            default:
+                // If it is none of the above cases, then return null
+                // as the interaction has failed to load
                 return null;
-            }
         }
 
         // Set the values of the interactionStep
-        interactionStep.time = (float) interactionRoot.getDouble("time");
+        interactionStep.time = interactionRoot.getFloat("time");
         interactionStep.sound = interactionRoot.getString("sound");
-
+        interactionStep.value = interactionRoot.getString("value");
 
         // If there are success interactions, add those
         if (interactionRoot.get("success").size > 0) {
-            interactionStep.success = addInteractions(interactionRoot.get("success"), ingredients);
+            interactionStep.success = addInteractions(interactionRoot.get("success"), items);
             // If it returns null, return null.
             if (interactionStep.success == null) {
                 return null;
@@ -83,7 +100,7 @@ public class Interactions {
         }
         // Repeat for failure
         if (interactionRoot.get("failure").size > 0) {
-            interactionStep.failure = addInteractions(interactionRoot.get("failure"), ingredients);
+            interactionStep.failure = addInteractions(interactionRoot.get("failure"), items);
             // If it returns null, return null.
             if (interactionStep.failure == null) {
                 return null;
@@ -92,7 +109,7 @@ public class Interactions {
         return interactionStep;
     }
 
-    private void loadInteraction(JsonValue interactionRoot, Ingredients ingredients) {
+    private void loadInteraction(JsonValue interactionRoot, Items items) {
         // Make sure it's formatted correctly
         JsonFormat.formatJson(interactionRoot, Constants.DefaultJson.interactionFormat());
         // Check for ID
@@ -108,6 +125,12 @@ public class Interactions {
                     // If the id is not null, then add it to the ingredients array.
                     // Repeats are allowed, as recipes may need multiple of the same item.
                     neededIngredients.add(id);
+                    // Try to load this needed ingredient.
+                    if (!items.addIngredientAsset(id)) {
+                        // If it fails, then interaction can't work, so don't
+                        // save it.
+                        return;
+                    }
                 } else {
                     // If it fails to load, return as it could mess up the
                     // whole interaction

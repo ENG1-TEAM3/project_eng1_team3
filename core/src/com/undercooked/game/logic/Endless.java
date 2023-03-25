@@ -23,25 +23,25 @@ public class Endless extends GameLogic {
     @Override
     public void preLoad() {
         // Add all the game ingredients
-        ingredients.addIngredient("burger");
-        ingredients.addIngredient("burger_bun");
-        ingredients.addIngredient("burger_bun_burned");
-        ingredients.addIngredient("burger_bun_cooked");
-        ingredients.addIngredient("lettuce");
-        ingredients.addIngredient("lettuce_chopped");
-        ingredients.addIngredient("meat");
-        ingredients.addIngredient("meat_overcooked");
-        ingredients.addIngredient("meat_undercooked");
-        ingredients.addIngredient("onion");
-        ingredients.addIngredient("onion_chopped");
-        ingredients.addIngredient("patty");
-        ingredients.addIngredient("patty_burned");
-        ingredients.addIngredient("patty_cooked");
-        ingredients.addIngredient("salad");
-        ingredients.addIngredient("tomato");
-        ingredients.addIngredient("tomato_burned");
-        ingredients.addIngredient("tomato_cooked");
-        ingredients.addIngredient("unformed_patty");
+        items.addIngredient("burger");
+        items.addIngredient("burger_bun");
+        items.addIngredient("burger_bun_burned");
+        items.addIngredient("burger_bun_cooked");
+        items.addIngredient("lettuce");
+        items.addIngredient("lettuce_chopped");
+        items.addIngredient("meat");
+        items.addIngredient("meat_overcooked");
+        items.addIngredient("meat_undercooked");
+        items.addIngredient("onion");
+        items.addIngredient("onion_chopped");
+        items.addIngredient("patty");
+        items.addIngredient("patty_burned");
+        items.addIngredient("patty_cooked");
+        items.addIngredient("salad");
+        items.addIngredient("tomato");
+        items.addIngredient("tomato_burned");
+        items.addIngredient("tomato_cooked");
+        items.addIngredient("unformed_patty");
     }
 
     @Override
@@ -63,7 +63,7 @@ public class Endless extends GameLogic {
         }
 
         // Load all base ingredients
-        ingredients.load(textureManager);
+        items.load(textureManager);
     }
 
     @Override

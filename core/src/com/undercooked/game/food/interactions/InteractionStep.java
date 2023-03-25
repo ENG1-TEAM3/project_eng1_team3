@@ -1,28 +1,25 @@
 package com.undercooked.game.food.interactions;
 
-import com.badlogic.gdx.Audio;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.utils.Array;
-import com.undercooked.game.assets.AudioManager;
-import com.undercooked.game.assets.TextureManager;
-import com.undercooked.game.audio.AudioSettings;
+import com.undercooked.game.Input.InputType;
+import com.undercooked.game.entity.Cook;
 import com.undercooked.game.food.interactions.steps.IStep;
-import com.undercooked.game.util.Listener;
-import com.undercooked.game.util.ListenerController;
 import com.undercooked.game.station.Station;
 
-public abstract class InteractionStep implements IInteractionStep {
+public abstract class InteractionStep {
 
     /** The list of steps to take on success */
-    public Array<InteractionStep> success;
+    protected Array<InteractionStep> success;
     /** The list of steps to take on failure */
-    public Array<InteractionStep> failure;
+    protected Array<InteractionStep> failure;
     /** Items required for the Interaction */
-    public Array<String> items;
+    protected Array<String> items;
     /** The time required for the Interaction */
-    public String sound;
+    protected String sound;
     /** The ID of the sound as it's playing */
-    public float time;
+    protected float time;
+    /** The value of the Interaction */
+    protected String value;
 
     public void updateTime(IStep instance, float delta) {
         instance.elapsedTime += delta;
@@ -42,7 +39,25 @@ public abstract class InteractionStep implements IInteractionStep {
         instance.successListener.tell(success);
     }
 
+    /**
+     * Function to update the station.
+     * @param instance
+     * @param delta
+     */
+    public abstract void update(IStep instance, float delta);
+
     /** Function to override that is called when the task is done. */
-    public void updateStation(Station station) { }
+    public void updateCookTarget(Cook cook) { }
+
+    /**
+     * Interaction betweek a {@link Cook} and the {@link InteractionStep}.
+     * @param cook {@link Cook} : The Cook that interacted.
+     * @param keyID {@link String} : The ID of the Key used.
+     * @param inputType {@link InputType} : The type of input used.
+     * @return {@link InteractResult} : The result of the {@link InteractionStep}.
+     */
+    public InteractResult interact(IStep instance, Cook cook, String keyID, InputType inputType) {
+        return InteractResult.NONE;
+    }
 
 }

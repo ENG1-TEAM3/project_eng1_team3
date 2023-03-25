@@ -11,11 +11,14 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.ObjectMap;
 import com.undercooked.game.Input.InputController;
+import com.undercooked.game.Input.InputType;
 import com.undercooked.game.Input.Keys;
 import com.undercooked.game.MainGameClass;
 import com.undercooked.game.assets.TextureManager;
 import com.undercooked.game.food.Ingredient;
+import com.undercooked.game.food.interactions.InteractResult;
 import com.undercooked.game.map.Map;
 import com.undercooked.game.map.MapCell;
 import com.undercooked.game.util.CollisionTile;
@@ -103,8 +106,41 @@ public class Cook extends MoveableEntity {
 		}
 
 		// Interact input check
-		if (interactTarget != null) {
+		interactInputCheck();
+	}
 
+	private void interactInputCheck() {
+		if (interactTarget == null) {
+			return;
+		}
+		// Check for every input
+		for (Object curKey : InputController.getInputs().keys().iterator()) {
+			String keyID = (String) curKey;
+			// If it's not an interaction key, then ignore and skip
+			if (!InputController.isInteraction(keyID)) {
+				continue;
+			}
+			InteractResult interactResult = InteractResult.NONE;
+			// Loop through the InputTypes
+			for (InputType inputType : InputType.values()) {
+				if (InputController.isKey(keyID, inputType)) {
+					interactResult = interactTarget.getMapEntity().interact(this, keyID, inputType);
+					// If it's repeat, then repeat the check
+					if (interactResult == InteractResult.RESTART) {
+						// Start the check over again
+						interactInputCheck();
+						// And then stop this check
+						interactResult = InteractResult.STOP;
+					}
+					if (interactResult == InteractResult.STOP) {
+						break;
+					}
+				}
+			}
+			// If it's not null for interaction result, then just ignore other keys.
+			if (interactResult != InteractResult.STOP) {
+				break;
+			}
 		}
 	}
 

@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * All recipes. See {@link Ingredients} if your recipe requires a new ingredient
+ * All recipes. See {@link Items} if your recipe requires a new ingredient
  * or an existing with different state.
  * 
  */

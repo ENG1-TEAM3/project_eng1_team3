@@ -4,7 +4,9 @@ import com.badlogic.gdx.Audio;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.utils.Array;
+import com.undercooked.game.Input.InputType;
 import com.undercooked.game.assets.AudioManager;
+import com.undercooked.game.entity.Cook;
 import com.undercooked.game.food.interactions.steps.IStep;
 import com.undercooked.game.util.Listener;
 
@@ -16,6 +18,7 @@ public class StationInteractControl {
     InteractionStep currentInteraction;
     Array<InteractionStep> stepsToFollow;
     AudioManager audioManager;
+    float lastDeltaCheck;
 
     public StationInteractControl(AudioManager audioManager) {
         this.audioManager = audioManager;
@@ -31,18 +34,21 @@ public class StationInteractControl {
                 } else {
                     addFollowingInteractions(currentInteraction.failure);
                 }
-                float time = currentInteraction.time;
                 // Then move to the next Interaction
                 nextInteraction();
-                // If the time <= 0, then immediately update the next interaction.
-                update(Gdx.graphics.getDeltaTime());
+                float curDelta = Gdx.graphics.getDeltaTime();
+                // Update the next instruction
+                update(curDelta - lastDeltaCheck);
+                lastDeltaCheck = curDelta;
             }
         };
+        this.lastDeltaCheck = 0;
     }
 
     public void update(float delta) {
         // Only update if there's an interaction currently
         if (currentInteraction != null) {
+            lastDeltaCheck = delta;
             currentInteraction.playSound(interactionInstance);
             currentInteraction.update(interactionInstance, delta);
         }
@@ -79,7 +85,13 @@ public class StationInteractControl {
     public void clear() {
         currentInteraction = null;
         stepsToFollow.clear();
+        completeSteps.clear();
     }
 
-
+    public InteractResult interact(Cook cook, String keyID, InputType inputType) {
+        if (currentInteraction != null) {
+            return currentInteraction.interact(interactionInstance, cook, keyID, inputType);
+        }
+        return InteractResult.NONE;
+    }
 }
