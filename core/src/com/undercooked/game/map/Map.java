@@ -19,7 +19,7 @@ public class Map {
     private int height, fullHeight;
     private int offsetX;
     private int offsetY;
-    public final MapCell outOfBounds = new MapCell(true, false);
+    public final MapCell outOfBounds = new MapCell(true, false, false);
 
     public Map(int width, int height) {
         this(width,height,width,height);
@@ -133,7 +133,7 @@ public class Map {
                     // Check if the entity in this cell == entity.
                     // If it does, then set that cell to null
                     if (thisCell.mapEntity == entity){
-                        map.get(x).set(y, null);
+                        setFullMapCell(x, y, null);
                     }
                 }
             }
@@ -154,10 +154,10 @@ public class Map {
         // Loop through all cells, left to right, bottom to top
         for (int x = 0 ; x < width ; x++) {
             for (int y = 0 ; y < height ; y++) {
-                // Check if the entity in this cell == entity.
+                // Check if the MapCell == the MapCell at this location
                 // If it does, then set that cell to null
                 if (getCell(x,y) == mapCell) {
-                    map.get(x).set(y, null);
+                    setMapCell(x, y, null);
                 }
             }
         }
@@ -181,7 +181,7 @@ public class Map {
         // And now add the entity
         for (int i = x ; i < x + entity.getCellWidth() ; i++) {
             for (int j = y ; j < y + entity.getCellHeight() ; j++) {
-                MapCell newCell = new MapCell(hasCollision, true);
+                MapCell newCell = new MapCell(hasCollision, true, false);
                 newCell.mapEntity = entity;
                 // If it's a valid cell
                 if (validCellFull(i,j)) {
@@ -223,7 +223,7 @@ public class Map {
                 // If y-1 is valid, and basePath is not null
                 if (entity.basePath != null && validCellFull(i,y-1)) {
                     // Make a cupboard cell below and add it to the map
-                    MapCell newBelow = new MapCell(true, false);
+                    MapCell newBelow = new MapCell(true, false, true);
                     newBelow.mapEntity = new MapEntity();
                     newBelow.mapEntity.setTexture(entity.basePath);
                     newBelow.mapEntity.setWidth(1);
@@ -233,10 +233,27 @@ public class Map {
                     setFullMapCell(i,y-1,newBelow);
                 }
             } else {
-                // If not, set the cell below to be collidable, but only
-                // if the base path isn't null
-                if (entity.basePath != null) {
-                    cellBelow.collidable = true;
+
+                // If not...
+                // Update the cell below, if it is a base
+                if (cellBelow.isBase()) {
+                    // If the entity has a base path, then replace it
+                    if (entity.basePath != null) {
+                        cellBelow.mapEntity.setTexture(entity.basePath);
+                    } else {
+                        // If it doesn't have a base path, remove the base
+                        removeEntity(cellBelow);
+                    }
+                } else {
+                    // If it's not a base below, then set if it has collision
+                    // depending on if it has a base or not
+
+                    // TODO: Fix below problem
+                    // Note that this has a problem when a station with collision has a station placed above it
+                    // that does not have a base, as it will remove the collision of the station below.
+                    // E.g: Placing a bin directly above another bin.
+                    cellBelow.setCollidable(entity.basePath != null);
+
                 }
             }
         }
