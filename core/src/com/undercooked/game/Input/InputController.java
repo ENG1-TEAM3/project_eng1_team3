@@ -70,6 +70,18 @@ public class InputController {
         return inputs.get(keyID).isJustPressed();
     }
 
+    public static boolean isKeyReleased(String keyID) {
+        if (!keyExists(keyID)) return false;
+
+        return inputs.get(keyID).isReleased();
+    }
+
+    public static boolean isKeyJustReleased(String keyID) {
+        if (!keyExists(keyID)) return false;
+
+        return inputs.get(keyID).isJustReleased();
+    }
+
     public static boolean keyExists(String keyID) {
         return inputs.containsKey(keyID);
     }
