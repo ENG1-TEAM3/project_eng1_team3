@@ -225,15 +225,20 @@ public class StationManager {
 			} else {
 				// If it's not, ensure it's a json.
 				if (file.extension().equals("json")) {
+					StationData newData = loadStationPath(pathPrefix + path + file.nameWithoutExtension());
+					if (newData != null) {
+						newData.setPath(file.path());
+						stationData.put(pathPrefix + path + file.nameWithoutExtension(), newData);
+					}
 					//System.out.println("File path: " + file.path());
 					//System.out.println("curpath: " + path);
 					// Read the file data
 					//System.out.println(file.nameWithoutExtension());
-					JsonValue stationRoot = JsonFormat.formatJson(
+					/*JsonValue stationRoot = JsonFormat.formatJson(
 							FileControl.loadJsonAsset(pathPrefix + path + file.nameWithoutExtension(), "stations"),
-							Constants.DefaultJson.stationFormat());
+							Constants.DefaultJson.stationFormat());*/
 					// If it's not null...
-					if (stationRoot != null) {
+					/*if (stationRoot != null) {
 						// Load the data
 						StationData data = new StationData();
 						data.setPath(file.path());
@@ -245,7 +250,7 @@ public class StationManager {
 						// System.out.println("Width: " + data.getWidth() + ", Height: " + data.getHeight());
 						// Then add it to the stations list
 						stationData.put(pathPrefix + path + file.nameWithoutExtension(), data);
-					}
+					}*/
 				}
 			}
 		}
@@ -277,7 +282,7 @@ public class StationManager {
 		// System.out.println(stationData);
 	}
 
-	public void loadStationPath(String stationPath) {
+	public StationData loadStationPath(String stationPath) {
 		// Try to load this single station path
 		// Read the file data
 		JsonValue stationRoot = JsonFormat.formatJson(
@@ -289,14 +294,17 @@ public class StationManager {
 		if (stationRoot != null) {
 			// Load the data
 			StationData data = new StationData();
-			data.setPath(stationPath);
+			// data.setPath(file.path());
 			data.setTexturePath(stationRoot.getString("texture_path"));
 			data.setWidth(stationRoot.getInt("width"));
 			data.setHeight(stationRoot.getInt("height"));
+			data.setDefaultBase(stationRoot.getString("default_base"));
 			data.setCollidable(stationRoot.getBoolean("has_collision"));
+			// System.out.println("Width: " + data.getWidth() + ", Height: " + data.getHeight());
 			// Then add it to the stations list
-			stationData.put(stationPath, data);
+			return data;
 		}
+		return null;
 	}
 
 	public StationData getStationData(String stationID) {
