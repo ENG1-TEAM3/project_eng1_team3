@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.team3gdx.game.screen.DiffictuiltyScreen;
 import com.team3gdx.game.screen.GameScreen;
 import com.team3gdx.game.screen.LeaderBoard;
 import com.team3gdx.game.screen.MainScreen;
@@ -22,6 +23,7 @@ public class MainGameClass extends Game {
 	private MainScreen mainScreen1;
 	private GameScreen gameScreen1;
 	private LeaderBoard leaderBoardScreen1;
+	private DiffictuiltyScreen diffictuiltyScreen1;
 	public AudioController sounds;
 	public ShapeRenderer shapeRenderer;
 
@@ -47,6 +49,7 @@ public class MainGameClass extends Game {
 		mainScreen1 = new MainScreen(this);
 		gameScreen1 = new GameScreen(this, mainScreen1);
 		leaderBoardScreen1 = new LeaderBoard(this, mainScreen1);
+		diffictuiltyScreen1 = new DiffictuiltyScreen(this, mainScreen1);
 		this.setScreen(mainScreen1);
 		// ==============================================================================================================
 	}
@@ -61,6 +64,10 @@ public class MainGameClass extends Game {
 
 	public LeaderBoard getLeaderBoardScreen() {
 		return leaderBoardScreen1;
+	}
+
+	public DiffictuiltyScreen getDiffictuiltyScreen() {
+		return diffictuiltyScreen1;
 	}
 
 	public void resetGameScreen() {

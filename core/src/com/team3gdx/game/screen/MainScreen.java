@@ -208,7 +208,7 @@ public class MainScreen implements Screen {
 	public void changeScreen(STATE state) {
 		if (state == STATE.new_game) {
 			game.mainScreenMusic.dispose();
-			game.setScreen(game.getGameScreen());
+			game.setScreen(game.getDiffictuiltyScreen());
 		}
 		if (state == STATE.leaderboard) {
 			game.mainScreenMusic.dispose();
