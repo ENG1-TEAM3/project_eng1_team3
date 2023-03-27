@@ -1,12 +1,16 @@
 package com.undercooked.game.map;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import com.undercooked.game.assets.TextureManager;
 import com.undercooked.game.entity.Entity;
+import com.undercooked.game.util.Constants;
 import com.undercooked.game.util.MathUtil;
 
 import java.awt.*;
@@ -19,6 +23,7 @@ public class Map {
     private int height, fullHeight;
     private int offsetX;
     private int offsetY;
+    private Sprite floorSprite;
     public final MapCell outOfBounds = new MapCell(true, false, false);
 
     public Map(int width, int height) {
@@ -37,6 +42,7 @@ public class Map {
         this.fullWidth = fullWidth;
         this.fullHeight = fullHeight;// Then init the map (so that it's empty)
         this.outOfBounds.mapEntity = new MapEntity();
+        this.floorSprite = new Sprite();
         init();
     }
 
@@ -341,6 +347,7 @@ public class Map {
         return offsetY;
     }
 
+
     public enum CollisionType {
         COLLIDABLE,
         INTERACTABLE
@@ -479,6 +486,16 @@ public class Map {
         return true;
     }
 
+    public void drawGround (SpriteBatch batch) {
+        // Draw a tile for every cell of the map.
+        for (int x = 0 ; x < fullWidth ; x++) {
+            for (int y = 0 ; y < fullHeight ; y++) {
+                batch.draw(floorSprite, MapManager.gridToPos(x), MapManager.gridToPos(y),
+                        64, 64);
+            }
+        }
+    }
+
     public void drawDebug(ShapeRenderer shape) {
         for (int x = 0 ; x < fullWidth ; x++) {
             for (int y = 0 ; y < fullHeight ; y++) {
@@ -506,6 +523,14 @@ public class Map {
                 }
             }
         }
+    }
+
+    public void load(TextureManager textureManager) {
+        textureManager.loadAsset(Constants.GAME_TEXTURE_ID, "<main>:floor_tile.png", "textures");
+    }
+
+    public void postLoad(TextureManager textureManager) {
+        this.floorSprite = new Sprite(textureManager.getAsset("<main>:floor_tile.png"));
     }
 
     // Draw function
@@ -549,7 +574,8 @@ public class Map {
                 MapCell thisCell = getCell(x,y);
                 // Make sure it's not nothing
                 if (thisCell != null) {
-
+                    // If it's not nothing, then unload
+                    // thisCell.dispose();
                 }
             }
         }

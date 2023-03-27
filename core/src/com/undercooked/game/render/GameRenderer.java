@@ -112,7 +112,9 @@ public class GameRenderer {
         worldCamera.update();
 
         // Render the floor of the map
-
+        batch.begin();
+        logic.getMap().drawGround(batch);
+        batch.end();
 
 
 

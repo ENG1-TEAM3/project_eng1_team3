@@ -74,6 +74,9 @@ public class ScenarioLogic extends GameLogic {
         // Load all the items
 
         // Add listener to CustomerController to remove 1 from count
+
+        // Load the map's floor sprite
+        map.load(textureManager);
     }
 
     @Override

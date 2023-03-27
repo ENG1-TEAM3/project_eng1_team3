@@ -120,6 +120,8 @@ public abstract class GameLogic {
         }
         // Post load all the items.
         items.postLoad(textureManager);
+        // Post load the map
+        map.postLoad(textureManager);
     }
 
     /**

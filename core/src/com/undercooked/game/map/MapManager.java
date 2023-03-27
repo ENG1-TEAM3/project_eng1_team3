@@ -151,8 +151,8 @@ public class MapManager {
         // The map size is the area that the players can run around in.
         // Therefore, height += 2, for top and bottom counters, and then
         // width has a few more added, primarily on the left.
-        Map returnMap = new Map(width, height, width+5, height+2);
-        int offsetX = 3, offsetY = 1;
+        Map returnMap = new Map(width, height, width+4, height+1);
+        int offsetX = 4, offsetY = 1;
         returnMap.setOffsetX(offsetX);
         returnMap.setOffsetY(offsetY);
 

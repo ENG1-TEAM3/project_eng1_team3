@@ -176,6 +176,7 @@ public class GameScreen extends Screen {
 
 		gameLogic.setTextureManager(textureManager);
 		((ScenarioLogic) gameLogic).loadScenario("<main>:main");
+		gameLogic.load();
 		gameRenderer.load(textureManager);
 		// System.out.println(map.getAllEntities());
 		// Add the map entities to the GameRenderer
