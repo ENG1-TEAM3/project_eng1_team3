@@ -151,7 +151,9 @@ public class MapManager {
         // The map size is the area that the players can run around in.
         // Therefore, height += 2, for top and bottom counters, and then
         // width has a few more added, primarily on the left.
-        Map returnMap = new Map(width, height, width+4, height+1);
+        int fullWidth = width + 4,
+            fullHeight = height + 1;
+        Map returnMap = new Map(width, height, fullWidth, fullHeight);
         int offsetX = 4, offsetY = 1;
         returnMap.setOffsetX(offsetX);
         returnMap.setOffsetY(offsetY);
@@ -167,6 +169,17 @@ public class MapManager {
             returnMap.addMapEntity(newCounter(audioManager, interactions, gameItems),0,j);
             returnMap.addMapEntity(newCounter(audioManager, interactions, gameItems),width-1,j);
         }
+
+        // Leftmost wall
+        for (int j = 1 ; j < fullHeight ; j++) {
+            returnMap.addFullMapEntity(newCounter(audioManager, interactions, gameItems),0,j);
+        }
+
+        // Add 2 at the top at x=1, x=2
+        returnMap.addFullMapEntity(newCounter(audioManager, interactions, gameItems), 1, fullHeight-1);
+        returnMap.addFullMapEntity(newCounter(audioManager, interactions, gameItems), 2, fullHeight-1);
+        returnMap.addFullMapEntity(newCounter(audioManager, interactions, gameItems), 3, fullHeight-1);
+
         return returnMap;
     }
 
