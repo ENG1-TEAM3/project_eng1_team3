@@ -7,7 +7,7 @@ import com.undercooked.game.interactions.IStep;
 import com.undercooked.game.interactions.InteractResult;
 import com.undercooked.game.interactions.InteractionStep;
 
-public class ReleasedJustStep extends InteractionStep {
+public class JustReleasedStep extends InteractionStep {
     @Override
     public InteractResult interact(IStep instance, Cook cook, String keyID, InputType inputType) {
         // If it uses the key set in value
