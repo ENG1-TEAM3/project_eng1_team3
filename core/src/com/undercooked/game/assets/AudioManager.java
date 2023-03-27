@@ -147,6 +147,9 @@ public class AudioManager {
     public Sound getSound(String path) {
         // Try to get the music
         try {
+            if (path == null) {
+                throw new GdxRuntimeException("");
+            }
             return assetManager.get(path);
         } catch (GdxRuntimeException e) {
             // If sound is not loaded, then load the missing music

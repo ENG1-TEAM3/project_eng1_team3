@@ -1,7 +1,6 @@
 {
-  "id": "burger_make",
-  "station_id": "counter",
-  "items": ["<main>:burger_bun_cooked","<main>:meat_cooked"],
+  "station_id": "<main>:counter",
+  "items": ["<main>:burger","<main>:burger_bun"],
   "steps": [{
     "type": "wait",
     "time": 10,

@@ -2,16 +2,19 @@ package com.undercooked.game.station;
 
 public class StationData {
     String path, texturePath, defaultBase;
+    public final String id;
     int width, height;
     float collisionWidth, collisionHeight,
           collisionOffsetX, collisionOffsetY;
     boolean hasCollision;
 
     public StationData(String path, String texturePath, String defaultBase,
+                       String id,
                        int width, int height,
                        float collisionWidth, float collisionHeight,
                        float collisionOffsetX, float collisionOffsetY,
                        boolean hasCollision) {
+        this(id);
         this.path = path;
         this.texturePath = texturePath;
         this.width = width;
@@ -24,7 +27,9 @@ public class StationData {
         this.hasCollision = hasCollision;
     }
 
-    public StationData() { }
+    public StationData(String id) {
+        this.id = id;
+    }
 
     public void setPath(String path) {
         this.path = path;

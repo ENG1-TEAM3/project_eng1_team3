@@ -4,7 +4,7 @@ import com.undercooked.game.assets.TextureManager;
 import com.undercooked.game.screen.GameScreen;
 import com.undercooked.game.util.Constants;
 
-public class Endless extends GameLogic {
+public class Endless extends ScenarioLogic {
 
     public Endless(GameScreen game, TextureManager textureManager) {
         super(game, textureManager);
@@ -23,25 +23,25 @@ public class Endless extends GameLogic {
     @Override
     public void preLoad() {
         // Add all the game ingredients
-        items.addIngredient("burger");
-        items.addIngredient("burger_bun");
-        items.addIngredient("burger_bun_burned");
-        items.addIngredient("burger_bun_cooked");
-        items.addIngredient("lettuce");
-        items.addIngredient("lettuce_chopped");
-        items.addIngredient("meat");
-        items.addIngredient("meat_overcooked");
-        items.addIngredient("meat_undercooked");
-        items.addIngredient("onion");
-        items.addIngredient("onion_chopped");
-        items.addIngredient("patty");
-        items.addIngredient("patty_burned");
-        items.addIngredient("patty_cooked");
-        items.addIngredient("salad");
-        items.addIngredient("tomato");
-        items.addIngredient("tomato_burned");
-        items.addIngredient("tomato_cooked");
-        items.addIngredient("unformed_patty");
+        items.addItem("burger");
+        items.addItem("burger_bun");
+        items.addItem("burger_bun_burned");
+        items.addItem("burger_bun_cooked");
+        items.addItem("lettuce");
+        items.addItem("lettuce_chopped");
+        items.addItem("meat");
+        items.addItem("meat_overcooked");
+        items.addItem("meat_undercooked");
+        items.addItem("onion");
+        items.addItem("onion_chopped");
+        items.addItem("patty");
+        items.addItem("patty_burned");
+        items.addItem("patty_cooked");
+        items.addItem("salad");
+        items.addItem("tomato");
+        items.addItem("tomato_burned");
+        items.addItem("tomato_cooked");
+        items.addItem("unformed_patty");
     }
 
     @Override

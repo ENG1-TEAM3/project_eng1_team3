@@ -1,18 +1,33 @@
 package com.undercooked.game.food;
 
-public class Item {
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.undercooked.game.MainGameClass;
+import com.undercooked.game.assets.TextureManager;
+import jdk.tools.jmod.Main;
 
+public class Item {
+    private String itemID;
     public String name;
     public String texturePath;
     private int value;
+    public Sprite sprite;
 
-    public Item(String name, String texturePath, int value) {
+    public Item(String itemID, String name, String texturePath, int value) {
+        this(itemID);
         this.name = name;
         this.texturePath = texturePath;
+        this.sprite = new Sprite();
         setValue(value);
     }
 
-    public Item() {}
+    public Item(String itemID) {
+        this.itemID = itemID;
+    }
+
+    public void updateSprite(Texture texture) {
+        this.sprite = new Sprite(texture);
+    }
 
     public void setName(String name) {
         this.name = name;
@@ -24,6 +39,10 @@ public class Item {
 
     public void setValue(int value) {
         this.value = Math.max(0, value);
+    }
+
+    public String getID() {
+        return itemID;
     }
 
     public String getName() {

@@ -317,6 +317,30 @@ public class Map {
         return getCollision(collision, false, collisionType);
     }
 
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public float getFullWidth() {
+        return fullWidth;
+    }
+
+    public float getFullHeight() {
+        return fullHeight;
+    }
+
+    public float getOffsetX() {
+        return offsetX;
+    }
+
+    public int getOffsetY() {
+        return offsetY;
+    }
+
     public enum CollisionType {
         COLLIDABLE,
         INTERACTABLE

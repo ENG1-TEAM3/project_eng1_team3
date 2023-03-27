@@ -1,4 +1,4 @@
-package com.undercooked.game.food.interactions;
+package com.undercooked.game.interactions;
 
 /**
  * The possible results of the {@link InteractionStep}s.

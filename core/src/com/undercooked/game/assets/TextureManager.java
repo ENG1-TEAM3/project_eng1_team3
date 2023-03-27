@@ -43,6 +43,7 @@ public class TextureManager {
     }
 
     public Texture get(String path) {
+        System.out.println("Getting Texture: " + path);
         if (assetManager.isLoaded(path)) {
             return assetManager.get(path, Texture.class);
         } else {
@@ -59,21 +60,11 @@ public class TextureManager {
 
     public Texture getAsset(String path) {
         path = "game/" + FileControl.toPath(path, "textures");
-        if (assetManager.isLoaded(path)) {
-            return assetManager.get(path, Texture.class);
-        } else {
-            System.out.println(path + " not loaded.");
-            // If the Texture isn't loaded, then return the default texture.
-            // If it's not loaded, then just return null.
-            if (!assetManager.isLoaded(Constants.DEFAULT_TEXTURE)) {
-                System.out.println("Default path not loaded.");
-                return null;
-            }
-            return assetManager.get(Constants.DEFAULT_TEXTURE, Texture.class);
-        }
+        return get(path);
     }
 
     public boolean load(String textureGroup, String path) {
+        System.out.println("Loading Texture: " + path);
         try {
             // Try to load the Texture
             assetManager.load(path, Texture.class);

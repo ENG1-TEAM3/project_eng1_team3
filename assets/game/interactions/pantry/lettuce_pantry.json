@@ -1,12 +1,12 @@
 {
-  "id": "tomato_take",
-  "station_id": "<main>:pantry/tomato_pantry",
+  "station_id": "<main>:pantry/lettuce_pantry",
   "steps": [{
     "type": "just_pressed",
     "value": "take",
     "success": [{
       "type": "give",
-      "value": "<main>:tomato"
+      "value": "<main>:lettuce",
+      "time": 1
     }]
   }]
 }

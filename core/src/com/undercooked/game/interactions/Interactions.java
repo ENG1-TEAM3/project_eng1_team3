@@ -1,40 +1,32 @@
-package com.undercooked.game.food.interactions;
+package com.undercooked.game.interactions;
 
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.undercooked.game.files.FileControl;
 import com.undercooked.game.food.Items;
-import com.undercooked.game.food.interactions.steps.JustPressedStep;
-import com.undercooked.game.food.interactions.steps.PressedStep;
-import com.undercooked.game.food.interactions.steps.SetStep;
-import com.undercooked.game.food.interactions.steps.WaitStep;
+import com.undercooked.game.interactions.steps.*;
 import com.undercooked.game.util.Constants;
 import com.undercooked.game.util.json.JsonFormat;
 
 public class Interactions {
-
-    private class InteractionObject {
-        Array<String> ingredients;
-        Array<InteractionStep> steps;
-
-        public InteractionObject(Array<InteractionStep> steps, Array<String> ingredients) {
-            this.steps = steps;
-            this.ingredients = ingredients;
-        }
-    }
 
     /** A mapping of stationID to the interactionIDs */
     private ObjectMap<String, Array<String>> stationInteractions;
     /** A mapping of interactionID to the interactions + the ingredients needed */
     private ObjectMap<String, InteractionObject> interactions;
 
+    public Interactions() {
+        this.stationInteractions = new ObjectMap<>();
+        this.interactions = new ObjectMap<>();
+    }
+
     public void loadInteractionAsset(String assetPath, Items items) {
         JsonValue interactionRoot = FileControl.loadJsonAsset(assetPath, "interactions");
         // If it's not null...
         if (interactionRoot != null) {
             // load the interaction
-            loadInteraction(interactionRoot, items);
+            loadInteraction(assetPath, interactionRoot, items);
         }
     }
 
@@ -45,8 +37,10 @@ public class Interactions {
             // Add this interaction
             InteractionStep thisStep = addInteraction(interaction, items);
             if (thisStep == null) {
+                System.out.println("Failed on step: " + interaction.getString("type"));
                 return null;
             }
+            steps.add(thisStep);
         }
         return steps;
     }
@@ -67,7 +61,17 @@ public class Interactions {
                 interactionStep = new SetStep();
                 // If it fails to load, return null as it could mess up the
                 // whole interaction
-                if (!items.addIngredientAsset(value)) {
+                if (items.addItemAsset(value) == null) {
+                    System.out.println("Set failed to load: " + value + " does not exist.");
+                    return null;
+                }
+                break;
+            case "give":
+                interactionStep = new GiveStep();
+                // If it fails to load, return null as it could mess up
+                // the whole interaction
+                if (items.addItemAsset(value) == null) {
+                    System.out.println("Give failed to load: " + value + " does not exist.");
                     return null;
                 }
                 break;
@@ -79,6 +83,8 @@ public class Interactions {
             case "just_pressed":
                 interactionStep = new JustPressedStep();
                 break;
+            case "released":
+                interactionStep = new ReleasedStep();
             default:
                 // If it is none of the above cases, then return null
                 // as the interaction has failed to load
@@ -94,26 +100,19 @@ public class Interactions {
         if (interactionRoot.get("success").size > 0) {
             interactionStep.success = addInteractions(interactionRoot.get("success"), items);
             // If it returns null, return null.
-            if (interactionStep.success == null) {
-                return null;
-            }
         }
         // Repeat for failure
         if (interactionRoot.get("failure").size > 0) {
             interactionStep.failure = addInteractions(interactionRoot.get("failure"), items);
             // If it returns null, return null.
-            if (interactionStep.failure == null) {
-                return null;
-            }
         }
         return interactionStep;
     }
 
-    private void loadInteraction(JsonValue interactionRoot, Items items) {
+    private void loadInteraction(String interactionID, JsonValue interactionRoot, Items items) {
         // Make sure it's formatted correctly
         JsonFormat.formatJson(interactionRoot, Constants.DefaultJson.interactionFormat());
         // Check for ID
-        String interactionID = interactionRoot.getString("id");
         Array<InteractionStep> out;
         Array<String> neededIngredients;
         if (interactionID != null) {
@@ -126,7 +125,7 @@ public class Interactions {
                     // Repeats are allowed, as recipes may need multiple of the same item.
                     neededIngredients.add(id);
                     // Try to load this needed ingredient.
-                    if (!items.addIngredientAsset(id)) {
+                    if (items.addItemAsset(id) == null) {
                         // If it fails, then interaction can't work, so don't
                         // save it.
                         return;
@@ -140,20 +139,41 @@ public class Interactions {
 
             // Then, Make sure that there's at least one step.
             // Loop through all the Interactions recursively in order to get them all stored in the array
-            out = addInteractions(interactionRoot.get("interactions"), null);
+            out = addInteractions(interactionRoot.get("steps"), items);
         } else {
             return;
         }
+        // If out is null, then return
+        if (out == null) {
+            return;
+        }
+        String stationID = interactionRoot.getString("station_id");
         // Finally, if it all loaded well, add it to the ObjectMap(s).
         // If the station map doesn't exist yet, add it
-        if (!stationInteractions.containsKey(interactionID)) {
-            stationInteractions.put(interactionID, new Array<String>());
+        if (!stationInteractions.containsKey(stationID)) {
+            stationInteractions.put(stationID, new Array<String>());
         }
         // Add the id
-        stationInteractions.get(interactionID).add(interactionID);
+        stationInteractions.get(stationID).add(interactionID);
 
         // Then do the same for the interaction itself
         interactions.put(interactionID, new InteractionObject(out, neededIngredients));
+
+        /*System.out.println(interactions);
+        for (ObjectMap.Entry<String, Array<String>> interaction : stationInteractions) {
+            System.out.println(interaction.key);
+            System.out.println(interaction.value);
+        }*/
+    }
+
+    /**
+     * Unloads all the loaded interactions
+     */
+    public void unload() {
+        stationInteractions.clear();
+        for (InteractionObject intObj : interactions.values()) {
+            intObj.unload();
+        }
     }
 
     public Array<String> getStationInteractions(String stationID) {

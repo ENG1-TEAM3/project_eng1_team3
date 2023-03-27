@@ -1,8 +1,12 @@
 {
-  "id": "main",
   "map_id": "main",
   "interactions": [
-    "<main>:burger"
+    "<main>:burger",
+    "<main>:pantry/tomato_pantry",
+    "<main>:pantry/onion_pantry",
+    "<main>:pantry/lettuce_pantry",
+    "<main>:pantry/bun_pantry",
+    "<main>:pantry/meat_pantry"
   ],
   "requests": [
     {

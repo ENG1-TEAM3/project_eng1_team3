@@ -1,0 +1,12 @@
+{
+  "station_id": "<main>:pantry/onion_pantry",
+  "steps": [{
+    "type": "just_pressed",
+    "value": "take",
+    "success": [{
+      "type": "give",
+      "value": "<main>:onion",
+      "time": 1
+    }]
+  }]
+}

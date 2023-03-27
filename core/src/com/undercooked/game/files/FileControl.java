@@ -192,7 +192,7 @@ public class FileControl {
         // uses the AppData path or internal path.
         if (assetPath.startsWith("<main>")) {
             // Remove the "<main>:"
-            System.out.println(dirAndName("game/", path));
+            // System.out.println(dirAndName("game/", path));
             return loadJsonFile("game/", path, true);
         } else {
             return loadJsonFile(getDataPath() + "game/", path, false);

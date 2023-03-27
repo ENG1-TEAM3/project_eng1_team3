@@ -97,7 +97,7 @@ public class PauseScreen extends Screen {
         unpause.addListener(new ClickListener() {
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                System.out.println("TEST");
+                // System.out.println("TEST");
                 previous();
             }
         });
@@ -105,7 +105,7 @@ public class PauseScreen extends Screen {
         menu.addListener(new ClickListener() {
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                System.out.println("TEST");
+                // System.out.println("TEST");
                 // Go to the main menu
                 game.screenController.setScreen(Constants.MAIN_SCREEN_ID);
             }

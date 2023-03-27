@@ -13,44 +13,68 @@ import com.undercooked.game.util.json.JsonFormat;
 public class Items {
 
 	// An ObjectMap of ingredient ids to their textures.
-	ObjectMap<String, Item> ingredients;
+	ObjectMap<String, Item> items;
 
-	public void addIngredient(String ID, String name, String texturePath, int value) {
-		Item newItem = new Item(name, texturePath, value);
-		ingredients.put(ID, newItem);
+	public Items() {
+		this.items = new ObjectMap<>();
 	}
 
-	public void addIngredient(String ID) {
-		addIngredient(ID, ID, ID + ".png", 0);
+	public Item addItem(String ID, String name, String texturePath, int value) {
+		// If the item already exists, return that
+		if (items.containsKey(ID)) {
+			return items.get(ID);
+		}
+		Item newItem = new Item(ID, name, texturePath, value);
+		System.out.println(String.format("New Item (%s, %s) with texturePath '%s' and value '%d'",
+				name, ID, texturePath, value));
+		items.put(ID, newItem);
+		return newItem;
 	}
 
-	public boolean addIngredientAsset(String assetPath) {
+	public Item addItem(String ID) {
+		return addItem(ID, ID, ID + ".png", 0);
+	}
+
+	public Item addItemAsset(String assetPath) {
 		JsonValue ingredientRoot = FileControl.loadJsonAsset(assetPath, "items");
 		if (ingredientRoot == null) {
-			return false;
+			return null;
 		}
 		JsonFormat.formatJson(ingredientRoot, Constants.DefaultJson.itemFormat());
-		addIngredient(assetPath,
+		return addItem(assetPath,
 				ingredientRoot.getString("name"),
 				ingredientRoot.getString("texture_path"),
 				ingredientRoot.getInt("value"));
-		return true;
+	}
+
+	public Item getItem(String itemID) {
+		return items.get(itemID);
 	}
 
 	public void load(TextureManager textureManager) {
 		// Loop through all ingredients and load their textures
-		for (Item item : ingredients.values()) {
-			textureManager.load(Constants.GAME_TEXTURE_ID, item.getTexturePath());
+		for (Item item : items.values()) {
+			System.out.println(String.format("Loading texture %s for item %s.", item.getTexturePath(), item.name));
+			textureManager.loadAsset(Constants.GAME_TEXTURE_ID, item.getTexturePath(), "textures");
+		}
+	}
+
+	public void postLoad(TextureManager textureManager) {
+		// Loop through all ingredients and set their textures
+		for (Item item : items.values()) {
+			System.out.println(String.format("Giving texture %s to item %s", item.getTexturePath(), item.name));
+			item.updateSprite(textureManager.getAsset(item.getTexturePath()));
+			// item.updateSprite(textureManager.getAsset("<main>:station/blank.png"));
 		}
 	}
 
 	public void unload(TextureManager textureManager) {
 		// Loop through all the ingredients and unload their textures
-		for (Item item : ingredients.values()) {
-			textureManager.load(item.getTexturePath());
+		for (Item item : items.values()) {
+			textureManager.unloadTexture(item.getTexturePath());
 		}
 		// Clear the ingredients map, as none of them are loaded now
-		ingredients.clear();
+		items.clear();
 	}
 
 	/** TEMP. Final will use the functions above. */

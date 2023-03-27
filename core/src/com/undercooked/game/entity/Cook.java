@@ -11,14 +11,15 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.utils.ObjectMap;
 import com.undercooked.game.Input.InputController;
 import com.undercooked.game.Input.InputType;
 import com.undercooked.game.Input.Keys;
 import com.undercooked.game.MainGameClass;
 import com.undercooked.game.assets.TextureManager;
 import com.undercooked.game.food.Ingredient;
-import com.undercooked.game.food.interactions.InteractResult;
+import com.undercooked.game.food.Item;
+import com.undercooked.game.food.ItemStack;
+import com.undercooked.game.interactions.InteractResult;
 import com.undercooked.game.map.Map;
 import com.undercooked.game.map.MapCell;
 import com.undercooked.game.util.CollisionTile;
@@ -40,7 +41,7 @@ public class Cook extends MoveableEntity {
 	private MapCell interactTarget;
 	public boolean locked = false;
 	public boolean holding = false;
-	public Stack<Ingredient> heldItems = new Stack<>();
+	public ItemStack heldItems;
 	Map map;
 
 	/**
@@ -54,6 +55,8 @@ public class Cook extends MoveableEntity {
 		this.collision.x = pos.x;
 		this.collision.y = pos.y;
 		this.cookno = cookNum;
+
+		this.heldItems = new ItemStack();
 
 		this.interactTarget = null;
 		this.interactCollision = new Rectangle(collision.x, collision.y, 16,16);
@@ -77,7 +80,8 @@ public class Cook extends MoveableEntity {
 
 	@Override
 	public void postLoad(TextureManager textureManager) {
-		setWalkTexture("entities/cook_walk_" + cookno + ".png");
+		updateTexture();
+		// setWalkTexture("entities/cook_walk_" + cookno + ".png");
 	}
 
 	public void checkInput(float delta) {
@@ -138,7 +142,7 @@ public class Cook extends MoveableEntity {
 				}
 			}
 			// If it's not null for interaction result, then just ignore other keys.
-			if (interactResult != InteractResult.STOP) {
+			if (interactResult == InteractResult.STOP) {
 				break;
 			}
 		}
@@ -194,20 +198,6 @@ public class Cook extends MoveableEntity {
 		// Reset move speed
 		dirX = 0;
 		dirY = 0;
-	}
-
-	/**
-	 * Pick up an item
-	 * @param item - item to pick up
-	 */
-	public void pickUpItem(Ingredient item) {
-		if (!holding) {
-			holding = true;
-			setWalkTexture("entities/cook_walk_hands_" + cookno + ".png");
-		}
-
-		if (!full())
-			heldItems.push(item);
 	}
 
 	/**
@@ -287,11 +277,11 @@ public class Cook extends MoveableEntity {
 
 	public void drawHeldItems(SpriteBatch batch) {
 		int itemIndex = 0;
-		for (Entity ingredient : heldItems) {
-			ingredient.pos.x = pos.x + 16;
-			ingredient.pos.y = pos.y + 112 + itemIndex * 8;
-			ingredient.draw(MainGameClass.batch);
+		for (Item item : heldItems) {
+			//if (ingredient.sprite.getTexture() != null) {
+			batch.draw(item.sprite, pos.x + 16, pos.y + 112 + itemIndex * 8, 32, 32);
 			itemIndex++;
+			//}
 		}
 	}
 
@@ -400,5 +390,24 @@ public class Cook extends MoveableEntity {
 
 	public MapCell getInteractTarget() {
 		return interactTarget;
+	}
+
+	public void addItem(Item item) {
+		heldItems.add(item);
+		updateTexture();
+	}
+
+	public Item takeItem(Item item) {
+		Item poppedItem = heldItems.pop();
+		updateTexture();
+		return poppedItem;
+	}
+
+	public void updateTexture() {
+		if (heldItems.size() > 0) {
+			setWalkTexture("entities/cook_walk_hands_" + cookno + ".png");
+		} else {
+			setWalkTexture("entities/cook_walk_" + cookno + ".png");
+		}
 	}
 }

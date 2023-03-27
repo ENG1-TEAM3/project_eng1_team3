@@ -24,6 +24,7 @@ import com.undercooked.game.entity.CookController;
 import com.undercooked.game.entity.Customer;
 import com.undercooked.game.entity.CustomerController;
 import com.undercooked.game.logic.GameLogic;
+import com.undercooked.game.logic.ScenarioLogic;
 import com.undercooked.game.map.Map;
 import com.undercooked.game.render.GameRenderer;
 import com.undercooked.game.util.CameraController;
@@ -174,7 +175,7 @@ public class GameScreen extends Screen {
 		game.audioManager.loadMusic("audio/soundFX/timer-bell-ring.mp3", Constants.GAME_GROUP);
 
 		gameLogic.setTextureManager(textureManager);
-		gameLogic.loadMap("<main>:main.json");
+		((ScenarioLogic) gameLogic).loadScenario("<main>:main");
 		gameRenderer.load(textureManager);
 		// System.out.println(map.getAllEntities());
 		// Add the map entities to the GameRenderer

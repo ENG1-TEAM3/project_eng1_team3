@@ -6,6 +6,8 @@ import com.undercooked.game.assets.AudioManager;
 import com.undercooked.game.assets.TextureManager;
 import com.undercooked.game.entity.CookController;
 import com.undercooked.game.files.FileControl;
+import com.undercooked.game.food.Items;
+import com.undercooked.game.interactions.Interactions;
 import com.undercooked.game.station.UniqueStation;
 import com.undercooked.game.station.Station;
 import com.undercooked.game.station.StationData;
@@ -43,14 +45,14 @@ public class MapManager {
         }
     }*/
 
-    public Map load(String path, StationManager stationManager, CookController cookController) {
+    public Map load(String path, StationManager stationManager, CookController cookController, Interactions interactions, Items gameItems) {
         // Try loading the Json
         JsonValue root = JsonFormat.formatJson(FileControl.loadJsonAsset(path, "maps"), Constants.DefaultJson.mapFormat());
         // If it's null, then just load the default map and return that.
         if (root == null) {
             // Make sure this isn't the Default Map, to avoid an infinite loop.
             if (path != Constants.DEFAULT_MAP){
-                return load(Constants.DEFAULT_MAP, stationManager, cookController);
+                return load(Constants.DEFAULT_MAP, stationManager, cookController, interactions, gameItems);
             } else {
                 return null;
             }
@@ -60,7 +62,7 @@ public class MapManager {
         stationManager.clear();
 
         // Convert the Map Json into an actual map
-        Map outputMap = mapOfSize(root.getInt("width"), root.getInt("height"), audioManager);
+        Map outputMap = mapOfSize(root.getInt("width"), root.getInt("height"), audioManager, interactions, gameItems);
 
         // Loop through the stations
         for (JsonValue stationData : root.get("stations").iterator()) {
@@ -81,7 +83,8 @@ public class MapManager {
                     if (data != null) {
                         // Initialise the Station
                         Station newStation = new Station(data);
-                        newStation.makeInteractionController(audioManager);
+                        newStation.makeInteractionController(audioManager, gameItems);
+                        newStation.setInteractions(interactions);
 
                         // Check if there is a custom base
                         String basePath = stationData.getString("base_texture");
@@ -136,14 +139,15 @@ public class MapManager {
 
     }
 
-    public static UniqueStation newCounter(AudioManager audioManager) {
+    public static UniqueStation newCounter(AudioManager audioManager, Interactions interactions, Items gameItems) {
         UniqueStation newCounter = new UniqueStation(StationManager.stationData.get("<main>:counter"));
-        newCounter.makeInteractionController(audioManager);
+        newCounter.makeInteractionController(audioManager, gameItems);
+        newCounter.setInteractions(interactions);
         return newCounter;
     }
 
     // Creates a map of size width and height.
-    public static Map mapOfSize(int width, int height, AudioManager audioManager) {
+    public static Map mapOfSize(int width, int height, AudioManager audioManager, Interactions interactions, Items gameItems) {
         // The map size is the area that the players can run around in.
         // Therefore, height += 2, for top and bottom counters, and then
         // width has a few more added, primarily on the left.
@@ -155,13 +159,13 @@ public class MapManager {
         // Add the counter border
         // X entities
         for (int i = 0 ; i < width ; i++) {
-            returnMap.addMapEntity(newCounter(audioManager),i,0);
-            returnMap.addMapEntity(newCounter(audioManager),i,height-1);
+            returnMap.addMapEntity(newCounter(audioManager, interactions, gameItems),i,0);
+            returnMap.addMapEntity(newCounter(audioManager, interactions, gameItems),i,height-1);
         }
         // Y entities
         for (int j = 1 ; j < height-1 ; j++) {
-            returnMap.addMapEntity(newCounter(audioManager),0,j);
-            returnMap.addMapEntity(newCounter(audioManager),width-1,j);
+            returnMap.addMapEntity(newCounter(audioManager, interactions, gameItems),0,j);
+            returnMap.addMapEntity(newCounter(audioManager, interactions, gameItems),width-1,j);
         }
         return returnMap;
     }

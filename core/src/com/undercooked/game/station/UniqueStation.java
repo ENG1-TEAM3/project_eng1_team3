@@ -3,8 +3,7 @@ package com.undercooked.game.station;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
-import com.undercooked.game.assets.AudioManager;
-import com.undercooked.game.food.interactions.StationInteractControl;
+import com.undercooked.game.interactions.StationInteractControl;
 
 /**
  * Represents a station.

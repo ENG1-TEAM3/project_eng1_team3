@@ -74,6 +74,13 @@ public final class Constants {
             root.addValue(new JsonFloat("collision_offset_y", 0F)); // The y offset of the collision box in pixels
             root.addValue(new JsonString("default_base", "<main>:station/blank.png"));
             root.addValue(new JsonType("has_collision", JsonValue.ValueType.booleanValue));
+
+            /*JsonObject interactions = new JsonObject();
+
+            interactions.addValue(new JsonString("id", null));
+            interactions.addValue(new JsonString("child_id", null)); // Used by the "call_interaction"
+
+            root.addValue(new JsonObjectArray("interactions", interactions));*/
             return root;
         }
         public static JsonObject mapFormat() {
@@ -97,10 +104,8 @@ public final class Constants {
         }
         public static JsonObject scenarioFormat() {
             JsonObject root = new JsonObject();
-            // Map ID
-            root.addValue(new JsonString("id",null));
 
-            // Map ID (The map to use)
+            // Map ID of the map to use
             root.addValue((new JsonString("map_id", null)));
 
             // Where the Cooks should be placed (at the start)
@@ -112,13 +117,24 @@ public final class Constants {
             root.addValue(new JsonObjectArray("cooks", cook));
 
             // The interactions (these will automatically be sorted through to find the ingredient IDs)
-            root.addValue(new JsonType("interactions", JsonValue.ValueType.array));
+            root.addValue(new JsonArray("interactions", JsonValue.ValueType.stringValue));
 
             // Requests (What the customers could possibly request)
             // It is an array of arrays of strings, with the strings being item IDs.
-            root.addValue(new JsonType("requests", JsonValue.ValueType.array));
+            root.addValue(new JsonObjectArray("requests", requestFormat()));
 
-            // Other variables
+            return root;
+        }
+        public static JsonObject requestFormat() {
+            JsonObject root = new JsonObject();
+
+            root.addValue(new JsonString("item_id",null));
+            root.addValue(new JsonInt("value", -1)); // Value of the request. If < 0, then uses item's default value.
+
+            root.addValue(new JsonFloat("time_min", -1F)); // The lowest time that the request must be provided by.
+            root.addValue(new JsonFloat("time_max", -1F)); // The highest time that the request must be provided by.
+
+            root.addValue(new JsonInt("number", 1)); // The number of times that the request can be made.
 
             return root;
         }
@@ -151,7 +167,7 @@ public final class Constants {
             /** NOTE: THE BELOW LIKELY, CURRENTLY, CAUSES AN INFINITE LOOP. CAN'T TEST AS THERE ARE CODE ERRORS. */
             interactionStep.addValue(new JsonObjectArray("success", interactionStep)); // Step path to take if the interaction is a success
             interactionStep.addValue(new JsonObjectArray("failure", interactionStep)); // Step path to take if the interaction is a failure (won't be needed for all interaction types)
-            interactionStep.addValue(new JsonFloat("time", null)); // The time (in seconds) that this step takes.
+            interactionStep.addValue(new JsonFloat("time", -1F)); // The time (in seconds) that this step takes.
             interactionStep.addValue(new JsonString("sound", null)); // The sound this step makes.
             /* An example format would be
             {
@@ -243,7 +259,7 @@ public final class Constants {
     // Defaults
     public static final float DEFAULT_MUSIC_VOLUME = 0.5F;
     public static final float DEFAULT_SOUND_VOLUME = 0.5F;
-    public static final String DEFAULT_MAP = "<main>:art_map/customertest.tmx";
+    public static final String DEFAULT_MAP = "<main>:main";
     public static final String DEFAULT_TEXTURE = "items/missing.png";
     public static final String DEFAULT_MUSIC = "audio/music/GameMusic.mp3";
     public static final String DEFAULT_SOUND = "uielements/testsound.mp3";

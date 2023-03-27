@@ -5,6 +5,8 @@ import com.undercooked.game.entity.CookController;
 import com.undercooked.game.entity.CustomerController;
 import com.undercooked.game.entity.Entity;
 import com.undercooked.game.food.Items;
+import com.undercooked.game.interactions.Interactions;
+import com.undercooked.game.load.LoadResult;
 import com.undercooked.game.map.Map;
 import com.undercooked.game.render.GameRenderer;
 import com.undercooked.game.screen.GameScreen;
@@ -15,7 +17,7 @@ import com.undercooked.game.util.Constants;
  * A class to extend from that indicates the logic of the
  * {@link GameScreen}.
  */
-public abstract class GameLogic implements Logic {
+public abstract class GameLogic {
 
     GameScreen gameScreen;
     Items items;
@@ -24,6 +26,7 @@ public abstract class GameLogic implements Logic {
     StationManager stationManager;
     GameRenderer gameRenderer;
     TextureManager textureManager;
+    Interactions interactions;
     Map map;
     float elapsedTime;
 
@@ -34,6 +37,8 @@ public abstract class GameLogic implements Logic {
 
         this.cookController = new CookController(textureManager);
         this.customerController = new CustomerController(textureManager);
+        this.interactions = new Interactions();
+
         this.textureManager = textureManager;
     }
 
@@ -53,12 +58,17 @@ public abstract class GameLogic implements Logic {
     }
 
     /**
-     * Loads a map from the path provided
+     * Loads a {@link Map} from the path provided
      *
      * @param path {@link String} of the path.
      */
-    public final void loadMap(String path) {
-        map = gameScreen.getMapManager().load(path, stationManager, cookController);
+    public final LoadResult loadMap(String path) {
+        map = gameScreen.getMapManager().load(path, stationManager, cookController, interactions, items);
+        // If the map fails to load, then return that
+        if (map == null) {
+            return LoadResult.FAILURE;
+        }
+
         // Load the map into the renderer
         for (Entity mapEntity : map.getAllEntities()) {
             gameRenderer.addEntity(mapEntity);
@@ -71,7 +81,27 @@ public abstract class GameLogic implements Logic {
             gameRenderer.addEntity(cook);
             // cook.load(textureManager);
         }
+        return LoadResult.SUCCESS;
     }
+
+    /**
+     * Update the {@link GameLogic}. Move {@link com.undercooked.game.entity.Cook}s,
+     * update {@link com.undercooked.game.station.Station}s,
+     * spawn {@link com.undercooked.game.entity.Customer}s, etc.
+     */
+    public abstract void update(float delta);
+
+    /**
+     * The GameLogic should load the game assets in this function.
+     * For example, a {@link ScenarioLogic} would only need to load the {@link Items} that
+     * will be available, while {@link Endless} mode should load all the game's food {@link Items}.
+     */
+    public abstract void load();
+
+    /**
+     * Should unload everything that was loaded in load.
+     */
+    public abstract void unload();
 
     /**
      * Called before the game has loaded.
@@ -88,6 +118,8 @@ public abstract class GameLogic implements Logic {
         for (Entity entity : gameRenderer.getEntities()) {
             entity.postLoad(textureManager);
         }
+        // Post load all the items.
+        items.postLoad(textureManager);
     }
 
     /**

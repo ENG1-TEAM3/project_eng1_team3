@@ -1,7 +1,8 @@
-package com.undercooked.game.food.interactions.steps;
+package com.undercooked.game.interactions.steps;
 
-import com.undercooked.game.assets.AudioManager;
-import com.undercooked.game.food.interactions.InteractionStep;
+import com.undercooked.game.entity.Cook;
+import com.undercooked.game.interactions.IStep;
+import com.undercooked.game.interactions.InteractionStep;
 
 public class WaitStep extends InteractionStep {
     @Override

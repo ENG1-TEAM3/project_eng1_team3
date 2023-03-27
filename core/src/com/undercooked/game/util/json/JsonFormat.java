@@ -162,10 +162,10 @@ public class JsonFormat {
 
     // TESTING
     public static void main(String[] args) {
-        JsonValue jvalue = FileControl.loadJsonAsset("<main>:burger.json", "interactions");
+        JsonValue jvalue = FileControl.loadJsonAsset("<main>:pantry/tomato_pantry.json", "interactions");
         //System.out.println(FileControl.toPath("<main>:burger.json", "interactions"));
         System.out.println(jvalue);
-        formatJson(jvalue, Constants.DefaultJson.stationFormat());
+        formatJson(jvalue, Constants.DefaultJson.interactionFormat());
         // System.out.println(jvalue);
         // jvalue.get("scenarios").addChild("a", new JsonValue("a"));
         System.out.println(jvalue);

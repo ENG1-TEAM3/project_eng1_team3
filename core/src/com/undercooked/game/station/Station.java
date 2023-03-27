@@ -1,15 +1,19 @@
 package com.undercooked.game.station;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.undercooked.game.Input.InputType;
+import com.undercooked.game.MainGameClass;
 import com.undercooked.game.assets.AudioManager;
 import com.undercooked.game.entity.Cook;
-import com.undercooked.game.food.interactions.InteractResult;
-import com.undercooked.game.food.interactions.StationInteractControl;
+import com.undercooked.game.food.Item;
+import com.undercooked.game.food.ItemStack;
+import com.undercooked.game.food.Items;
+import com.undercooked.game.interactions.InteractResult;
+import com.undercooked.game.interactions.Interactions;
+import com.undercooked.game.interactions.StationInteractControl;
 import com.undercooked.game.map.MapEntity;
 
 import static com.undercooked.game.MainGameClass.shapeRenderer;
@@ -22,11 +26,13 @@ public class Station extends MapEntity {
 
 	StationInteractControl interactControl;
 	StationData stationData;
+	public ItemStack items;
 
 	public Station(StationData stationData) {
 		super();
 		this.stationData = stationData;
 		this.texturePath = stationData.getTexturePath();
+		this.items = new ItemStack();
 		this.setBasePath(stationData.defaultBase);
 		setWidth(stationData.getWidth());
 		setHeight(stationData.getHeight());
@@ -38,6 +44,7 @@ public class Station extends MapEntity {
 
 	@Override
 	public InteractResult interact(Cook cook, String keyID, InputType inputType) {
+		// System.out.println(keyID + ": " + inputType.toString());
 		if (interactControl == null) {
 			// If it doesn't have an interaction control, then stop.
 			return InteractResult.STOP;
@@ -66,11 +73,94 @@ public class Station extends MapEntity {
 	 */
 	public void drawText(SpriteBatch batch, String text, Vector2 pos) {
 		batch.begin();
-		(new BitmapFont()).draw(batch, text, pos.x, pos.y);
+		MainGameClass.font.draw(batch, text, pos.x, pos.y);
 		batch.end();
 	}
 
-	public void makeInteractionController(AudioManager audioManager) {
-		this.interactControl = new StationInteractControl(audioManager);
+	public void makeInteractionController(AudioManager audioManager, Items gameItems) {
+		this.interactControl = new StationInteractControl(this, audioManager, gameItems);
+		updateStationInteractions();
+	}
+
+
+	/**
+	 * Returns whether the {@link Station} has a specific {@link Item}
+	 * (or any {@link Item}) a number of times.
+	 * @param itemID {@link String} : The itemID to check for.
+	 * @param number {@code int} : The number of {@link Item}s needed.
+	 * @return {@code boolean} : {@code true} if it does,
+	 * 							 {@code false} if it does not.
+	 */
+	public boolean hasItem(String itemID, int number) {
+		// If itemID is null, just compare the size and number
+		if (itemID == null) {
+			return items.size() >= number;
+		}
+		// If it's <= 0, then return true
+		if (number <= 0) {
+			return true;
+		}
+		// Otherwise, if itemID is not null then check the number
+		// of times that itemID occurs.
+		// Check all items
+		int numFound = 0;
+		for (Item item : items) {
+			// If item's ID and itemID match...
+			if (item.getID() == itemID) {
+				// Increase numFound
+				numFound += 1;
+			}
+		}
+		// Return comparison of numFound and number
+		return numFound >= number;
+	}
+
+	public void addItem(Item item) {
+		// Add the item
+		items.add(item);
+		// Update Station Interactions.
+		updateStationInteractions();
+	}
+
+	public Item takeItem() {
+		// Return the item that was popped.
+		Item returnItem = items.pop();
+		// Update Station Interactions.
+		updateStationInteractions();
+		// Return the item that was taken.
+		return returnItem;
+	}
+
+	public void updateStationInteractions() {
+		interactControl.setCurrentInteraction(interactControl.findValidInteraction(items));
+	}
+
+	/**
+	 * Returns {@code true} or {@code false} depending on if the
+	 * {@link Station} has that number of items or not.
+	 * @param number {@code int} : The number of {@link Item}s.
+	 * @return {@code boolean} : {@code true} if it has that many {@link Item}s,
+	 * 							 {@code false} if it does not.
+	 */
+	public boolean hasItem(int number) {
+		return hasItem(null, number);
+	}
+
+	/**
+	 * Returns a {@code boolean} on whether the {@link Station}
+	 * has an item or not.
+	 * @return {@code boolean} : {@code true} if it has an {@link Item},
+	 * 	 * 					     {@code false} if it does not.
+	 */
+	public boolean hasItem() {
+		return hasItem(null, 1);
+	}
+
+	public void updateInteractions() {
+		this.interactControl.updatePossibleInteractions(stationData.id);
+	}
+
+	public void setInteractions(Interactions interactions) {
+		this.interactControl.setInteractions(interactions);
 	}
 }
