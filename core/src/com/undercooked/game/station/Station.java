@@ -66,6 +66,44 @@ public class Station extends MapEntity {
 		shapeRenderer.end();
 	}
 
+	public Vector2 itemPos(int num) {
+		// Make sure num is in range
+		num = Math.abs(num);
+		num %= 8;
+		switch (num) {
+			case 0:
+				return new Vector2(-16, -16);
+			case 1:
+				return new Vector2(16, -16);
+			case 2:
+				return new Vector2(-16, 16);
+			case 3:
+				return new Vector2(16, 16);
+			case 4:
+				return new Vector2(0, -16);
+			case 5:
+				return new Vector2(-16, 0);
+			case 6:
+				return new Vector2(16, 0);
+			case 7:
+				return new Vector2(0, 16);
+			default:
+				return new Vector2(0, 0);
+		}
+	}
+
+	@Override
+	public void draw(SpriteBatch batch) {
+		// Draw the Sprite
+		super.draw(batch);
+		// Then draw the items on top of the station
+		for (int i = 0 ; i < items.size() ; i++) {
+			Vector2 itemPos = itemPos(i);
+			batch.draw(items.get(i).sprite, pos.x + sprite.getWidth()/4 + itemPos.x, pos.y + sprite.getHeight()/4 + itemPos.y,
+					32, 32);
+		}
+	}
+
 	/**
 	 *
 	 * @param text Text to be drawn.

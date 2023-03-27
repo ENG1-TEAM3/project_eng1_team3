@@ -22,6 +22,7 @@ import com.undercooked.game.food.ItemStack;
 import com.undercooked.game.interactions.InteractResult;
 import com.undercooked.game.map.Map;
 import com.undercooked.game.map.MapCell;
+import com.undercooked.game.station.Station;
 import com.undercooked.game.util.CollisionTile;
 
 public class Cook extends MoveableEntity {
@@ -39,6 +40,7 @@ public class Cook extends MoveableEntity {
 
 	private Rectangle interactCollision;
 	private MapCell interactTarget;
+	private Station stationTarget;
 	public boolean locked = false;
 	public boolean holding = false;
 	public ItemStack heldItems;
@@ -59,6 +61,7 @@ public class Cook extends MoveableEntity {
 		this.heldItems = new ItemStack();
 
 		this.interactTarget = null;
+		this.stationTarget = null;
 		this.interactCollision = new Rectangle(collision.x, collision.y, 16,16);
 
 		collision.width = 40;
@@ -117,6 +120,27 @@ public class Cook extends MoveableEntity {
 		if (interactTarget == null) {
 			return;
 		}
+		// Check for custom interactions
+		if (InputController.isKeyJustPressed("take")) {
+			// If the station has an item, take it
+			if (stationTarget.items.size() > 0) {
+				addItem(stationTarget.takeItem());
+				// If it succeeds, stop here
+				return;
+			}
+		}
+
+
+		if (InputController.isKeyJustPressed("drop")) {
+			// If the cook has an item, drop it
+			if (heldItems.size() > 0) {
+				stationTarget.addItem(takeItem());
+				// If it succeeds, stop here
+				return;
+			}
+		}
+
+
 		// Check for every input
 		for (Object curKey : InputController.getInputs().keys().iterator()) {
 			String keyID = (String) curKey;
@@ -186,6 +210,9 @@ public class Cook extends MoveableEntity {
 
 		// Update the cell that is currently being looked at
 		interactTarget = map.getCollision(interactCollision, true, Map.CollisionType.INTERACTABLE);
+		if (interactTarget != null) {
+			stationTarget = (Station) interactTarget.getMapEntity();
+		}
 
 		// Update animation
 		currentFrame = walkAnimation.getKeyFrame(stateTime, true);
@@ -397,7 +424,7 @@ public class Cook extends MoveableEntity {
 		updateTexture();
 	}
 
-	public Item takeItem(Item item) {
+	public Item takeItem() {
 		Item poppedItem = heldItems.pop();
 		updateTexture();
 		return poppedItem;

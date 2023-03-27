@@ -23,6 +23,10 @@ public class ItemStack implements Iterable<Item> {
         return items.pop();
     }
 
+    public void clear() {
+        items.clear();
+    }
+
     public void add(Item item) {
         items.add(item);
     }
