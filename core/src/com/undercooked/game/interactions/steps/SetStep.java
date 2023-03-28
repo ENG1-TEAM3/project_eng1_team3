@@ -27,10 +27,4 @@ public class SetStep extends InteractionStep {
     public void update(IStep instance, Cook cook, float delta) {
         finishedLast(instance, cook, null, null);
     }
-
-    @Override
-    public void updateCookTarget(Cook cook) {
-        // Set the items on the stack.
-
-    }
 }
