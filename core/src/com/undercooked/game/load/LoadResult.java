@@ -1,5 +1,8 @@
 package com.undercooked.game.load;
 
+/**
+ * Enum of the different results of a load
+ */
 public enum LoadResult {
     /** Returns if the load was a success. */
     SUCCESS,
