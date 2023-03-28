@@ -25,13 +25,11 @@ public class StationInteractControl {
     InteractionStep currentInteraction;
     Array<InteractionStep> stepsToFollow;
     AudioManager audioManager;
-    float lastDeltaCheck;
 
     public StationInteractControl(Station station, AudioManager audioManager, Items items) {
         this.station = station;
         this.audioManager = audioManager;
         this.interactionInstance = new IStep(station, this, audioManager, items);
-        this.lastDeltaCheck = 0;
 
         this.possibleInteractions = new Array<>();
         this.completeSteps = new Array<>();
@@ -41,9 +39,9 @@ public class StationInteractControl {
     public void update(Cook cook, float delta) {
         // Only update if there's an interaction currently
         if (currentInteraction != null) {
-            lastDeltaCheck = delta;
+            interactionInstance.updateDelta();
             currentInteraction.playSound(interactionInstance);
-            currentInteraction.update(interactionInstance, cook, delta);
+            currentInteraction.update(interactionInstance, cook, interactionInstance.getDelta());
         }
     }
 
@@ -115,8 +113,7 @@ public class StationInteractControl {
         }
         // Then move to the next Interaction
         nextInteraction();
-        float curDelta = Gdx.graphics.getDeltaTime();
-        lastDeltaCheck = curDelta;
+        interactionInstance.updateDelta();
         // If currentInteraction is null, update.
         if (currentInteraction == null) {
             station.updateStationInteractions();
@@ -209,6 +206,8 @@ public class StationInteractControl {
         if (interaction != null) {
             // Move to the new interactions
             setInteractions(interaction.steps);
+            // Update last delta check
+            interactionInstance.updateDelta();
             currentInteraction.output();
             System.out.println("INTERACTION VALID: " + interaction.steps);
             return;

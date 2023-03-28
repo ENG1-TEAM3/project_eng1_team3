@@ -16,8 +16,7 @@
             "type": "set",
             "value": "<main>:formed_patty"
           }
-        ],
-        "sound": "<main>:frying.mp3"
+        ]
       },
       {
         "type": "unlock_cook"

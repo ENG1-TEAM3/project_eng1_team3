@@ -1,5 +1,6 @@
 package com.undercooked.game.interactions;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 import com.undercooked.game.assets.AudioManager;
 import com.undercooked.game.assets.TextureManager;
@@ -31,6 +32,8 @@ public class IStep {
     /** The {@link AudioManager} to use to play the sound */
 
     private AudioManager audioManager;
+    /** The result of the last delta check, the time since the last frame. */
+    private float lastDeltaCheck;
 
     public IStep(Station station, StationInteractControl interactControl, AudioManager audioManager, Items gameItems) {
         this.station = station;
@@ -38,6 +41,7 @@ public class IStep {
         this.interactControl = interactControl;
         this.audioManager = audioManager;
         this.elapsedTime = 0;
+        this.lastDeltaCheck = 0;
     }
 
     public void setSuccessListener(Listener listener) {
@@ -74,5 +78,13 @@ public class IStep {
     public void reset() {
         elapsedTime = 0;
         soundID = -1;
+    }
+
+    public void updateDelta() {
+        this.lastDeltaCheck = Gdx.graphics.getDeltaTime();
+    }
+
+    public float getDelta() {
+        return this.lastDeltaCheck;
     }
 }
