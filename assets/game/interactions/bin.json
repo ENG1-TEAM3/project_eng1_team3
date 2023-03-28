@@ -4,7 +4,7 @@
     "type": "just_pressed",
     "value": "drop",
     "success": [{
-      "type": "cook_take"
+      "type": "cook_remove"
     }]
   }]
 }

@@ -8,10 +8,7 @@ import com.undercooked.game.entity.Cook;
 import com.undercooked.game.files.FileControl;
 import com.undercooked.game.food.Items;
 import com.undercooked.game.interactions.steps.*;
-import com.undercooked.game.interactions.steps.cook.CookTakeStep;
-import com.undercooked.game.interactions.steps.cook.GiveStep;
-import com.undercooked.game.interactions.steps.cook.LockCookStep;
-import com.undercooked.game.interactions.steps.cook.UnlockCookStep;
+import com.undercooked.game.interactions.steps.cook.*;
 import com.undercooked.game.interactions.steps.cook.input.JustPressedStep;
 import com.undercooked.game.interactions.steps.cook.input.PressedStep;
 import com.undercooked.game.interactions.steps.cook.input.ReleasedStep;
@@ -93,6 +90,14 @@ public class Interactions {
                 break;
             case "cook_take":
                 interactionStep = new CookTakeStep();
+                break;
+            case "cook_remove":
+                interactionStep = new CookRemoveStep();
+                break;
+
+            // Station Interactions
+            case "remove":
+                interactionStep = new RemoveStep();
                 break;
 
 
