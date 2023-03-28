@@ -104,7 +104,6 @@ public class GameScreen extends Screen {
 	
 	public static CookController cookController;
 	public static CustomerController customerController;
-	InputMultiplexer multi;
 
 	/**
 	 * Constructor to initialise game screen;
@@ -205,7 +204,7 @@ public class GameScreen extends Screen {
 	@Override
 	public void show() {
 		// When this screen is shown, reset the input processor
-		Gdx.input.setInputProcessor(multi);
+		Gdx.input.setInputProcessor(stage);
 	}
 
 	/**
