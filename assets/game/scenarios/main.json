@@ -1,17 +1,19 @@
 {
   "map_id": "main",
   "interactions": [
-    "<main>:form_patty",
+    "<main>:preparation/form_patty",
+    "<main>:preparation/make_burger",
+    "<main>:preparation/make_salad",
     "<main>:pantry/tomato_pantry",
     "<main>:pantry/onion_pantry",
     "<main>:pantry/lettuce_pantry",
     "<main>:pantry/bun_pantry",
     "<main>:pantry/meat_pantry",
-    "<main>:lettuce_chop",
-    "<main>:tomato_chop",
-    "<main>:onion_chop",
-    "<main>:cook_bun",
-    "<main>:cook_patty",
+    "<main>:cutting/lettuce_chop",
+    "<main>:cutting/tomato_chop",
+    "<main>:cutting/onion_chop",
+    "<main>:grill/cook_bun",
+    "<main>:oven/cook_patty",
     "<main>:bin"
   ],
   "requests": [

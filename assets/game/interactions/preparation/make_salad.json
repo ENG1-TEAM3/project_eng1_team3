@@ -1,0 +1,25 @@
+{
+  "station_id": "<main>:preparation",
+  "items": ["<main>:tomato_chopped","<main>:lettuce_chopped","<main>:onion_chopped"],
+  "steps": [{
+    "type": "just_pressed",
+    "value": "interact",
+    "success": [
+      {
+        "type": "lock_cook"
+      },
+      {
+        "type": "wait",
+        "time": 5,
+        "success": [
+          {
+            "type": "set",
+            "value": "<main>:salad"
+          }
+        ]
+      },
+      {
+        "type": "unlock_cook"
+      }]
+  }]
+}

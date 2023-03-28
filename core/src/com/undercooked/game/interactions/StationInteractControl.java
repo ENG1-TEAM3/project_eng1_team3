@@ -180,8 +180,8 @@ public class StationInteractControl {
             for (String itemID : possibleInt.items) {
                 // Check for if the checkArray has the ID.
                 int itemInd = -1;
-                for (int i = 0 ; i < items.size() ; i++) {
-                    Item item = items.get(i);
+                for (int i = 0 ; i < checkArray.size ; i++) {
+                    Item item = checkArray.get(i);
                     if (item.getID().equals(itemID)) {
                         itemInd = i;
                         break;
