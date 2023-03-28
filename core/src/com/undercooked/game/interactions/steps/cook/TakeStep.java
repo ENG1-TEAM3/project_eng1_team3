@@ -1,4 +1,4 @@
-package com.undercooked.game.interactions.steps;
+package com.undercooked.game.interactions.steps.cook;
 
 import com.undercooked.game.Input.InputType;
 import com.undercooked.game.entity.Cook;
