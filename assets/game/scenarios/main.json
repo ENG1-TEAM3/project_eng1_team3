@@ -11,7 +11,8 @@
     "<main>:tomato_chop",
     "<main>:onion_chop",
     "<main>:cook_bun",
-    "<main>:cook_patty"
+    "<main>:cook_patty",
+    "<main>:bin"
   ],
   "requests": [
     {
