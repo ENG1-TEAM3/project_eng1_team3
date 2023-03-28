@@ -1,8 +1,10 @@
 package com.undercooked.game.interactions;
 
+import com.badlogic.gdx.Audio;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.ObjectMap;
+import com.undercooked.game.assets.AudioManager;
 import com.undercooked.game.files.FileControl;
 import com.undercooked.game.food.Items;
 import com.undercooked.game.interactions.steps.*;
@@ -21,21 +23,21 @@ public class Interactions {
         this.interactions = new ObjectMap<>();
     }
 
-    public void loadInteractionAsset(String assetPath, Items items) {
+    public void loadInteractionAsset(String assetPath, AudioManager audioManager, Items items) {
         JsonValue interactionRoot = FileControl.loadJsonAsset(assetPath, "interactions");
         // If it's not null...
         if (interactionRoot != null) {
             // load the interaction
-            loadInteraction(assetPath, interactionRoot, items);
+            loadInteraction(assetPath, interactionRoot, audioManager, items);
         }
     }
 
-    private Array<InteractionStep> addInteractions(JsonValue interactionRoot, Items items) {
+    private Array<InteractionStep> addInteractions(JsonValue interactionRoot, AudioManager audioManager, Items items) {
         Array<InteractionStep> steps = new Array<>();
         // Loop through the interactions
         for (JsonValue interaction : interactionRoot.iterator()) {
             // Add this interaction
-            InteractionStep thisStep = addInteraction(interaction, items);
+            InteractionStep thisStep = addInteraction(interaction, audioManager, items);
             if (thisStep == null) {
                 System.out.println("Failed on step: " + interaction.getString("type"));
                 return null;
@@ -45,7 +47,7 @@ public class Interactions {
         return steps;
     }
 
-    private InteractionStep addInteraction(JsonValue interactionRoot, Items items) {
+    private InteractionStep addInteraction(JsonValue interactionRoot, AudioManager audioManager, Items items) {
         InteractionStep interactionStep = null;
         // Get the interaction step type
         String type = interactionRoot.getString("type");
@@ -54,8 +56,10 @@ public class Interactions {
         // Depending on the instruction, it may also need to load an ingredient
         // If it can't load it, then return null
         switch (type) {
+            // Cook Interactions
             case "wait":
                 interactionStep = new WaitStep();
+                System.out.println("WAIT STEP");
                 break;
             case "set":
                 interactionStep = new SetStep();
@@ -75,6 +79,13 @@ public class Interactions {
                     return null;
                 }
                 break;
+            case "lock_cook":
+                interactionStep = new LockCookStep();
+                break;
+            case "unlock_cook":
+                interactionStep = new UnlockCookStep();
+                break;
+
 
             // Inputs
             case "pressed":
@@ -94,22 +105,25 @@ public class Interactions {
         // Set the values of the interactionStep
         interactionStep.time = interactionRoot.getFloat("time");
         interactionStep.sound = interactionRoot.getString("sound");
+        if (interactionStep.sound != null) {
+            audioManager.loadMusicAsset(interactionStep.sound, Constants.GAME_SOUND_GROUP);
+        }
         interactionStep.value = interactionRoot.getString("value");
 
         // If there are success interactions, add those
         if (interactionRoot.get("success").size > 0) {
-            interactionStep.success = addInteractions(interactionRoot.get("success"), items);
+            interactionStep.success = addInteractions(interactionRoot.get("success"), audioManager, items);
             // If it returns null, return null.
         }
         // Repeat for failure
         if (interactionRoot.get("failure").size > 0) {
-            interactionStep.failure = addInteractions(interactionRoot.get("failure"), items);
+            interactionStep.failure = addInteractions(interactionRoot.get("failure"), audioManager, items);
             // If it returns null, return null.
         }
         return interactionStep;
     }
 
-    private void loadInteraction(String interactionID, JsonValue interactionRoot, Items items) {
+    private void loadInteraction(String interactionID, JsonValue interactionRoot, AudioManager audioManager, Items items) {
         // Make sure it's formatted correctly
         JsonFormat.formatJson(interactionRoot, Constants.DefaultJson.interactionFormat());
         // Check for ID
@@ -139,7 +153,7 @@ public class Interactions {
 
             // Then, Make sure that there's at least one step.
             // Loop through all the Interactions recursively in order to get them all stored in the array
-            out = addInteractions(interactionRoot.get("steps"), items);
+            out = addInteractions(interactionRoot.get("steps"), audioManager, items);
         } else {
             return;
         }

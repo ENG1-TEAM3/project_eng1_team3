@@ -41,7 +41,7 @@ public class Cook extends MoveableEntity {
 	private Rectangle interactCollision;
 	private MapCell interactTarget;
 	private Station stationTarget;
-	public boolean locked = false;
+	public Station lockedTo = null;
 	public boolean holding = false;
 	public ItemStack heldItems;
 	Map map;
@@ -91,6 +91,16 @@ public class Cook extends MoveableEntity {
 		// Check inputs, and change things based on the result
 		dirX = 0;
 		dirY = 0;
+		// Only check movement if not locked to a station
+		if (lockedTo == null) {
+			movementCheck();
+		}
+
+		// Interact input check
+		interactInputCheck();
+	}
+
+	private void movementCheck() {
 		if (InputController.isKeyPressed(Keys.cook_down)) {
 			dirY -= 1;
 			setWalkFrames(0);
@@ -111,9 +121,6 @@ public class Cook extends MoveableEntity {
 			setWalkFrames(3);
 			direction = new Vector2(1, 0);
 		}
-
-		// Interact input check
-		interactInputCheck();
 	}
 
 	private void interactInputCheck() {
@@ -428,6 +435,29 @@ public class Cook extends MoveableEntity {
 		Item poppedItem = heldItems.pop();
 		updateTexture();
 		return poppedItem;
+	}
+
+	public void lockToStation(Station station) {
+		// If not already locked to a Station
+		if (lockedTo != null) {
+			return;
+		}
+		// Then lock to a station.
+		lockedTo = station;
+		// And tell the Station to lock this Cook
+		station.lockCook(this);
+	}
+
+	public void unlock() {
+		// If lockedTo is null, then just return
+		if (lockedTo == null) {
+			return;
+		}
+		// Save the station temporarily, as it needs to be forgotten to prevent a loop
+		Station stationTemp = lockedTo;
+		lockedTo = null;
+		// If locked to a station, then unlock
+		stationTemp.unlockCook(this);
 	}
 
 	public void updateTexture() {

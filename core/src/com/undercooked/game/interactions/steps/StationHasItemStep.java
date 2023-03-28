@@ -6,8 +6,8 @@ import com.undercooked.game.interactions.InteractionStep;
 
 public class StationHasItemStep extends InteractionStep {
     @Override
-    public void update(IStep instance, float delta) {
+    public void update(IStep instance, Cook cook, float delta) {
         // Continue if the station has an item.
-        finished(instance, null, instance.station.hasItem(value, (int) time));
+        finished(instance, cook, instance.station.hasItem(value, (int) time));
     }
 }

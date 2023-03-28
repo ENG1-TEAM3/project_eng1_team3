@@ -4,6 +4,8 @@ import com.badlogic.gdx.utils.Array;
 import com.undercooked.game.Input.InputType;
 import com.undercooked.game.entity.Cook;
 
+import java.util.Collections;
+
 public abstract class InteractionStep {
 
     /** The list of steps to take on success */
@@ -51,16 +53,25 @@ public abstract class InteractionStep {
         return finished(instance, null, null, null, success);
     }
 
+    public void stop(IStep instance) {
+        // First unlock the Cooks
+        instance.station.unlockCooks();
+        // Then stop playing the sound
+        instance.stopSound(sound);
+    }
+
     public final void updateInteractions(IStep instance) {
         instance.updateInteractions();
     }
 
     /**
      * Function to update the station.
-     * @param instance
-     * @param delta
+     * @param instance {@link IStep} : The interaction instance for a {@link com.undercooked.game.station.Station}.
+     * @param cook {@link Cook} : The {@link Cook} locked to the {@link com.undercooked.game.station.Station},
+     *                            or {@code null}.
+     * @param delta {@link float} : The time since the last frame.
      */
-    public void update(IStep instance, float delta) { }
+    public void update(IStep instance, Cook cook, float delta) { }
 
     /** Function to override that is called when the task is done. */
     public void updateCookTarget(Cook cook) { }
@@ -81,4 +92,24 @@ public abstract class InteractionStep {
         return InteractResult.NONE;
     }
 
+    private void outputStep(InteractionStep cStep, int tabs) {
+        String tabStr = String.join("", Collections.nCopies(tabs, "\t"));
+        System.out.println(tabStr + cStep.getClass().getSimpleName());
+        if (cStep.success != null) {
+            System.out.println(tabStr + "\t" + "success:");
+            for (InteractionStep nStep : cStep.success) {
+                outputStep(nStep, tabs + 2);
+            }
+        }
+        if (cStep.failure != null) {
+            System.out.println(tabStr + "\t" + "failure:");
+            for (InteractionStep nStep : cStep.failure) {
+                outputStep(nStep, tabs+2);
+            }
+        }
+    }
+
+    public void output() {
+        outputStep(this, 0);
+    }
 }

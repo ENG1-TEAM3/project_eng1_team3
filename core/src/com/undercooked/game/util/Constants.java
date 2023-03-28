@@ -251,6 +251,7 @@ public final class Constants {
     // Sounds
     public static final String MUSIC_GROUP = "music";
     public static final String GAME_GROUP = "game";
+    public static final String GAME_SOUND_GROUP = "game_sound";
 
     // Textures
     public static final int NUM_COOK_TEXTURES = 3;

@@ -3,6 +3,7 @@ package com.undercooked.game.audio;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.undercooked.game.MainGameClass;
+import com.undercooked.game.util.Constants;
 import com.undercooked.game.util.Listener;
 
 /**
@@ -32,7 +33,7 @@ public class AudioSettings {
         public void tell(Float value) {
             gameVolume = value;
             setMusicVolume(value,"game");
-            setSoundVolume(value, "game");
+            setSoundVolume(value, Constants.GAME_SOUND_GROUP);
         }
     };
     public static final Listener SoundVolListener = new Listener<Float>() {

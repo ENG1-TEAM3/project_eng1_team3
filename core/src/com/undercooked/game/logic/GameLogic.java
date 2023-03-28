@@ -1,5 +1,6 @@
 package com.undercooked.game.logic;
 
+import com.undercooked.game.assets.AudioManager;
 import com.undercooked.game.assets.TextureManager;
 import com.undercooked.game.entity.CookController;
 import com.undercooked.game.entity.CustomerController;
@@ -26,11 +27,12 @@ public abstract class GameLogic {
     StationManager stationManager;
     GameRenderer gameRenderer;
     TextureManager textureManager;
+    AudioManager audioManager;
     Interactions interactions;
     Map map;
     float elapsedTime;
 
-    public GameLogic(GameScreen game, TextureManager textureManager) {
+    public GameLogic(GameScreen game, TextureManager textureManager, AudioManager audioManager) {
         this.gameScreen = game;
         this.items = new Items();
         this.elapsedTime = 0;
@@ -40,14 +42,15 @@ public abstract class GameLogic {
         this.interactions = new Interactions();
 
         this.textureManager = textureManager;
+        this.audioManager = audioManager;
     }
 
     public GameLogic(GameScreen game) {
-        this(game, null);
+        this(game, null, null);
     }
 
     public GameLogic() {
-        this(null, null);
+        this(null, null, null);
     }
 
     /**
@@ -161,6 +164,10 @@ public abstract class GameLogic {
 
     public void setGameRenderer(GameRenderer gameRenderer) {
         this.gameRenderer = gameRenderer;
+    }
+
+    public void setAudioManager(AudioManager audioManager) {
+        this.audioManager = audioManager;
     }
 
     public void dispose() {

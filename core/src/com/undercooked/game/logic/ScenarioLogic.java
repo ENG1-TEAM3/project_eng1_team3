@@ -3,6 +3,7 @@ package com.undercooked.game.logic;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonValue;
 import com.undercooked.game.Input.InputController;
+import com.undercooked.game.assets.AudioManager;
 import com.undercooked.game.assets.TextureManager;
 import com.undercooked.game.files.FileControl;
 import com.undercooked.game.food.Item;
@@ -24,10 +25,14 @@ public class ScenarioLogic extends GameLogic {
     public int currentWave = 0;
     private Array<Request> requests;
 
-    public ScenarioLogic(GameScreen game, TextureManager textureManager) {
-        super(game, textureManager);
+    public ScenarioLogic(GameScreen game, TextureManager textureManager, AudioManager audioManager) {
+        super(game, textureManager, audioManager);
         cookCount = 1;
         requests = new Array<>();
+    }
+
+    public ScenarioLogic() {
+        this(null, null, null);
     }
 
     public void checkGameOver() {
@@ -43,10 +48,6 @@ public class ScenarioLogic extends GameLogic {
         currentWave = 0;
     }
 
-    public ScenarioLogic() {
-        this(null, null);
-    }
-
     @Override
     public void update(float delta) {
 
@@ -55,6 +56,9 @@ public class ScenarioLogic extends GameLogic {
         elapsedTime += delta;
 
         // Check if game is over.
+
+        // Update the Stations
+        stationManager.update(delta);
 
         // Update cooks.
         cookController.update(delta);
@@ -122,7 +126,7 @@ public class ScenarioLogic extends GameLogic {
         // Load all the Interactions
         for (JsonValue interaction : scenarioData.get("interactions")) {
             System.out.println(interaction);
-            interactions.loadInteractionAsset(interaction.asString(), items);
+            interactions.loadInteractionAsset(interaction.asString(), audioManager, items);
         }
 
         // Update all the stations to use the interactions

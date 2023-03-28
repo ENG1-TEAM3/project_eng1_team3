@@ -1,7 +1,7 @@
 {
   "map_id": "main",
   "interactions": [
-    "<main>:burger",
+    "<main>:form_patty",
     "<main>:pantry/tomato_pantry",
     "<main>:pantry/onion_pantry",
     "<main>:pantry/lettuce_pantry",

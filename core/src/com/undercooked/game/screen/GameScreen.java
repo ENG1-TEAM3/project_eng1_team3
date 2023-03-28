@@ -175,6 +175,7 @@ public class GameScreen extends Screen {
 		game.audioManager.loadMusic("audio/soundFX/timer-bell-ring.mp3", Constants.GAME_GROUP);
 
 		gameLogic.setTextureManager(textureManager);
+		gameLogic.setAudioManager(getAudioManager());
 		((ScenarioLogic) gameLogic).loadScenario("<main>:main");
 		gameLogic.load();
 		gameRenderer.load(textureManager);
@@ -193,6 +194,7 @@ public class GameScreen extends Screen {
 
 		game.audioManager.unload(Constants.GAME_GROUP);
 		game.audioManager.unload(Constants.MUSIC_GROUP);
+		game.audioManager.unload(Constants.GAME_SOUND_GROUP);
 		stage.dispose();
 		stage2.dispose();
 

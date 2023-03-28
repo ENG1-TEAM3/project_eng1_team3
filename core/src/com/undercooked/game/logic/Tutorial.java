@@ -1,16 +1,17 @@
 package com.undercooked.game.logic;
 
+import com.undercooked.game.assets.AudioManager;
 import com.undercooked.game.assets.TextureManager;
 import com.undercooked.game.screen.GameScreen;
 
 public class Tutorial extends GameLogic {
 
-    public Tutorial(GameScreen game, TextureManager textureManager) {
-        super(game, textureManager);
+    public Tutorial(GameScreen game, TextureManager textureManager, AudioManager audioManager) {
+        super(game, textureManager, audioManager);
     }
 
     public Tutorial() {
-        this(null, null);
+        this(null, null, null);
     }
 
     @Override

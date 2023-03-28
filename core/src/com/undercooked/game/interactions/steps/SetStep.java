@@ -24,8 +24,8 @@ public class SetStep extends InteractionStep {
     }
 
     @Override
-    public void update(IStep instance, float delta) {
-        finishedLast(instance, null, null, null);
+    public void update(IStep instance, Cook cook, float delta) {
+        finishedLast(instance, cook, null, null);
     }
 
     @Override

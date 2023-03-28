@@ -52,7 +52,6 @@ public class CookController {
     public void update(float delta) {
         // Change between cooks if needed
 		if (InputController.isKeyJustPressed(Keys.cook_next)) {
-			getCurrentCook().locked = false;
             currentCook = (currentCook + 1) % cooks.size;
             currentCook = Math.max(currentCook, 0);
 		}

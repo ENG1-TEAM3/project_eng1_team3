@@ -192,7 +192,7 @@ public class MainScreen extends Screen {
 				super.touchUp(event, x, y, pointer, button);
 				// TEMP - Using default Scenario
 				GameScreen gameScreen = (GameScreen) game.screenController.getScreen(Constants.GAME_SCREEN_ID);
-				gameScreen.setGameLogic(new ScenarioLogic(gameScreen, textureManager));
+				gameScreen.setGameLogic(new ScenarioLogic(gameScreen, textureManager, getAudioManager()));
 				gameScreen.setGameRenderer(new GameRenderer());
 
 				// Move to the game screen

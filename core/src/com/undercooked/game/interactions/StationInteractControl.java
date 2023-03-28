@@ -38,12 +38,12 @@ public class StationInteractControl {
         this.stepsToFollow = new Array<>();
     }
 
-    public void update(float delta) {
+    public void update(Cook cook, float delta) {
         // Only update if there's an interaction currently
         if (currentInteraction != null) {
             lastDeltaCheck = delta;
             currentInteraction.playSound(interactionInstance);
-            currentInteraction.update(interactionInstance, delta);
+            currentInteraction.update(interactionInstance, cook, delta);
         }
     }
 
@@ -164,7 +164,7 @@ public class StationInteractControl {
             if (possibleInt.items.size != items.size()) {
                 // System.out.println(String.format("%d vs. %d", possibleInt.items.size, items.size()));
                 // If they aren't, then it's invalid
-                break;
+                continue;
             }
 
             // Check if, for every item in the ItemStack, that there is matching item
@@ -201,10 +201,19 @@ public class StationInteractControl {
     }
 
     public void setCurrentInteraction(InteractionObject interaction) {
-        // Set the interaction, if it's not null
-        if (interaction != null) {
-            setInteractions(interaction.steps);
-            System.out.println("INTERACTION VALID: " + interaction.items);
+        // First stop the current interaction (if there is one)
+        if (currentInteraction != null) {
+            currentInteraction.stop(interactionInstance);
         }
+        // Then set the new interaction, if it's not null
+        if (interaction != null) {
+            // Move to the new interactions
+            setInteractions(interaction.steps);
+            currentInteraction.output();
+            System.out.println("INTERACTION VALID: " + interaction.steps);
+            return;
+        }
+        // If it's null, then just clear
+        clear();
     }
 }

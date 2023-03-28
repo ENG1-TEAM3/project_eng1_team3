@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
 import com.undercooked.game.Input.InputType;
 import com.undercooked.game.MainGameClass;
 import com.undercooked.game.assets.AudioManager;
@@ -27,19 +28,25 @@ public class Station extends MapEntity {
 	StationInteractControl interactControl;
 	StationData stationData;
 	public ItemStack items;
+	private Array<Cook> lockedCooks;
 
 	public Station(StationData stationData) {
 		super();
 		this.stationData = stationData;
 		this.texturePath = stationData.getTexturePath();
 		this.items = new ItemStack();
+		this.lockedCooks = new Array<>();
 		this.setBasePath(stationData.defaultBase);
 		setWidth(stationData.getWidth());
 		setHeight(stationData.getHeight());
 	}
 
 	public void update(float delta) {
-		interactControl.update(delta);
+		if (lockedCooks.size == 0) {
+			interactControl.update(null, delta);
+			return;
+		}
+		interactControl.update(lockedCooks.get(0), delta);
 	}
 
 	@Override
@@ -163,6 +170,10 @@ public class Station extends MapEntity {
 	public Item takeItem() {
 		// Return the item that was popped.
 		Item returnItem = items.pop();
+		// If a Cook is locked, then unlock them
+		if (hasCookLocked()) {
+			unlockCooks();
+		}
 		// Update Station Interactions.
 		updateStationInteractions();
 		// Return the item that was taken.
@@ -171,6 +182,7 @@ public class Station extends MapEntity {
 
 	public void updateStationInteractions() {
 		interactControl.setCurrentInteraction(interactControl.findValidInteraction(items));
+		System.out.println(interactControl);
 	}
 
 	/**
@@ -200,5 +212,41 @@ public class Station extends MapEntity {
 
 	public void setInteractions(Interactions interactions) {
 		this.interactControl.setInteractions(interactions);
+	}
+
+	public boolean hasCookLocked() {
+		return this.lockedCooks.size > 0;
+	}
+
+	public boolean hasCookLocked(Cook cook) {
+		return this.lockedCooks.contains(cook, true);
+	}
+
+	public void lockCook(Cook cook) {
+		// If the cook isn't already locked...
+		if (hasCookLocked(cook)) {
+			return;
+		}
+		// Then add the cook.
+		this.lockedCooks.add(cook);
+		// Then tell the cook to lock
+		cook.lockToStation(this);
+	}
+
+	public void unlockCook(Cook cook) {
+		// If the cook is locked...
+		if (!hasCookLocked(cook)) {
+			return;
+		}
+		// Remove the Cook
+		this.lockedCooks.removeValue(cook, true);
+		// And then tell the cook to remove its lock
+		cook.unlock();
+	}
+
+	public void unlockCooks() {
+		for (int i = lockedCooks.size-1 ; i >= 0 ; i--) {
+			unlockCook(lockedCooks.get(i));
+		}
 	}
 }

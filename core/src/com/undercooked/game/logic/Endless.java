@@ -1,17 +1,18 @@
 package com.undercooked.game.logic;
 
+import com.undercooked.game.assets.AudioManager;
 import com.undercooked.game.assets.TextureManager;
 import com.undercooked.game.screen.GameScreen;
 import com.undercooked.game.util.Constants;
 
 public class Endless extends ScenarioLogic {
 
-    public Endless(GameScreen game, TextureManager textureManager) {
-        super(game, textureManager);
+    public Endless(GameScreen game, TextureManager textureManager, AudioManager audioManager) {
+        super(game, textureManager, audioManager);
     }
 
     public Endless() {
-        this(null, null);
+        this(null, null, null);
     }
 
 

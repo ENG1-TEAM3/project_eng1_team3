@@ -23,16 +23,16 @@ import java.util.Scanner;
 public class FileControl {
 
     public static String getDataPath() {
-        return getDataPath("\\");
+        return getDataPath("/");
     }
 
     public static String getDataPath(String endsWith) {
         if (System.getProperty("os.name").equals("Linux")){
-            return "\\data\\" + Constants.DATA_FILE + endsWith;
+            return "/data/" + Constants.DATA_FILE + endsWith;
         } else if (System.getProperty("os.name").startsWith("Windows")) {
-            return System.getenv("APPDATA") + "\\" + Constants.DATA_FILE + endsWith;
+            return System.getenv("APPDATA") + "/" + Constants.DATA_FILE + endsWith;
         }
-        return "\\data\\" + Constants.DATA_FILE + endsWith;
+        return "/data/" + Constants.DATA_FILE + endsWith;
     }
 
     public static String formatDir(String dir) {

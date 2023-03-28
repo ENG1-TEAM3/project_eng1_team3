@@ -6,12 +6,13 @@ import com.undercooked.game.interactions.InteractionStep;
 
 public class WaitStep extends InteractionStep {
     @Override
-    public void update(IStep instance, float delta) {
+    public void update(IStep instance, Cook cook, float delta) {
         updateTime(instance, delta);
         // Check if elapsed time is >= time
+        // System.out.println(instance.elapsedTime);
         if (instance.elapsedTime >= time) {
             // If it is, then the wait is finished.
-            finished(instance, true);
+            finished(instance, cook, null, null, true);
         }
     }
 }

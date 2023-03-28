@@ -1,5 +1,6 @@
 package com.undercooked.game.interactions;
 
+import com.badlogic.gdx.audio.Sound;
 import com.undercooked.game.assets.AudioManager;
 import com.undercooked.game.assets.TextureManager;
 import com.undercooked.game.audio.AudioSettings;
@@ -53,13 +54,21 @@ public class IStep {
     }
 
     public void playSound(String soundPath) {
-        if (!audioManager.soundIsPlaying(soundID)) {
-            soundID = audioManager.getSound(soundPath).play(AudioSettings.getGameVolume());
+        if (soundPath != null) {
+            //if (!audioManager.musicIsPlaying(soundID)) {
+            audioManager.getMusicAsset(soundPath).play();
+                // Sound test = audioManager.getSoundAsset(soundPath);
+                // test.setLooping(soundID, true);
+
+                // System.out.println("Playing sound: " + soundPath + " to id " + soundID);
+            //} else {
+                // System.out.println("Sound playing: " + soundPath + " using id " + soundID);
+            //}
         }
     }
 
     public void stopSound(String soundPath) {
-        audioManager.getSound(soundPath).stop(soundID);
+        audioManager.getMusicAsset(soundPath).stop();
     }
 
     public void reset() {
