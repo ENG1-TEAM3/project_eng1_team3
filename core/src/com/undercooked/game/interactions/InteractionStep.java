@@ -131,7 +131,7 @@ public abstract class InteractionStep {
      * @param instance {@link IStep} : The interaction instance for a {@link com.undercooked.game.station.Station}.
      * @param cook {@link Cook} : The {@link Cook} locked to the {@link com.undercooked.game.station.Station},
      *                            from a previous {@link InteractionStep} or {@code null}.
-     * @param delta {@link float} : The time since the last frame.
+     * @param delta {@code float} : The time since the last frame.
      */
     public void update(IStep instance, Cook cook, float delta) { }
 
