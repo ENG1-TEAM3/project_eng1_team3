@@ -151,6 +151,15 @@ public class StationInteractControl {
             // System.out.println("POSSIBLE INTERACTION!!!");
             possibleInteractions.add(interactions.getInteractionSteps(stationInteraction));
         }
+
+        // System.out.println(String.format("%s possible interactions:", stationID));
+        /*for (int i = 0 ; i < possibleInteractions.size ; i++) {
+            System.out.println("\t" + i + ":");
+            InteractionObject cStep = possibleInteractions.get(i);
+            for (int j = 0 ; j < cStep.items.size ; j++) {
+                cStep.steps.get(j).output(2);
+            }
+        }*/
     }
 
     public InteractionObject findValidInteraction(ItemStack items) {
@@ -159,7 +168,6 @@ public class StationInteractControl {
         for (InteractionObject possibleInt : possibleInteractions) {
             // First make sure the stack sizes are the same
             if (possibleInt.items.size != items.size()) {
-                // System.out.println(String.format("%d vs. %d", possibleInt.items.size, items.size()));
                 // If they aren't, then it's invalid
                 continue;
             }
@@ -174,7 +182,7 @@ public class StationInteractControl {
                 int itemInd = -1;
                 for (int i = 0 ; i < items.size() ; i++) {
                     Item item = items.get(i);
-                    if (item.getID() == itemID) {
+                    if (item.getID().equals(itemID)) {
                         itemInd = i;
                         break;
                     }

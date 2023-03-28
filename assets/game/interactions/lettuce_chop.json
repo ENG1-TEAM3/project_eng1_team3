@@ -1,14 +1,26 @@
 {
-  "id": "lettuce_chop",
   "station_id": "<main>:cutting",
   "items": ["<main>:lettuce"],
   "steps": [{
-    "id": "wait",
-    "time": 10,
-    "success": [{
-      "id": "set",
-      "value": "<main>:lettuce_chopped"
-    }],
-    "sound": "<main>:cutting.mp3"
+    "type": "just_pressed",
+    "value": "interact",
+    "success": [
+      {
+        "type": "lock_cook"
+      },
+      {
+        "type": "wait",
+        "time": 5,
+        "success": [
+          {
+            "type": "set",
+            "value": "<main>:lettuce_chopped"
+          }
+        ],
+        "sound": "<main>:chopping.mp3"
+      },
+      {
+        "type": "unlock_cook"
+      }]
   }]
 }

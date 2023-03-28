@@ -164,30 +164,28 @@ public final class Constants {
                 - Colour : Colours the bar the colour provided in value. Ignores time and moves to next step.
              */
             interactionStep.addValue(new JsonString("value", null)); // Can be anything, relying on the type.
-            /** NOTE: THE BELOW LIKELY, CURRENTLY, CAUSES AN INFINITE LOOP. CAN'T TEST AS THERE ARE CODE ERRORS. */
             interactionStep.addValue(new JsonObjectArray("success", interactionStep)); // Step path to take if the interaction is a success
             interactionStep.addValue(new JsonObjectArray("failure", interactionStep)); // Step path to take if the interaction is a failure (won't be needed for all interaction types)
             interactionStep.addValue(new JsonFloat("time", -1F)); // The time (in seconds) that this step takes.
             interactionStep.addValue(new JsonString("sound", null)); // The sound this step makes.
             /* An example format would be
             {
-                "id": "lettuce_chop",
-                "station_id": "chopping",
-                "items": ["lettuce"],
+                "station_id": "<main>:cutting",
+                "items": ["<main>:lettuce"],
                 "steps": [{
                     "type": "wait",
                     "value": null,
                     "success": null,
                     "failure": null,
                     "time": 3.0,
-                    "sound": "chopping.mp3"
+                    "sound": "<main>:chopping.mp3"
                 },
                 {
                     "type": "input",
                     "value": "interact",
                     "success": [{
                         "type": "set",
-                        "value": ["chopped_lettuce"],
+                        "value": ["<main>:chopped_lettuce"],
                         "success": null,
                         "failure": null,
                         "time": 0,
@@ -195,14 +193,14 @@ public final class Constants {
                     }],
                     "failure": [{
                         "type": "set",
-                        "value": ["bad_chopped_lettuce"],
+                        "value": ["<main>:bad_chopped_lettuce"],
                         "success": null,
                         "failure": null,
                         "time": 0,
-                        "sound": "buzz.mp3"
+                        "sound": "<main>:buzz.mp3"
                     }],
                     "time": 4.0,
-                    "sound": "heavy_chopping.mp3"
+                    "sound": "<main>:heavy_chopping.mp3"
                 }, ...
                 *something here would happen after EITHER both success or failure.
                 For example, cooking meat successfully, but not taking it off quick enough
@@ -214,17 +212,16 @@ public final class Constants {
             /*
             Pantries will also be created using this. E.g:
             {
-                "ID": "take_tomato",
-                "station_ID": "tomato_pantry",
-                "items": [], // When it sets itself to a tomato again, it will no longer apply to this.
-                "steps": [{
-                    "type": "set",
-                    "value": "tomato",
-                    "success": null,
-                    "failure": null,
-                    "time": 0,
-                    "sound": null
+              "station_id": "<main>:pantry/tomato_pantry",
+              "steps": [{
+                "type": "just_pressed",
+                "value": "take",
+                "success": [{
+                  "type": "give",
+                  "value": "<main>:tomato",
+                  "time": 1 // The number of 'time's to give
                 }]
+              }]
             }
              */
 

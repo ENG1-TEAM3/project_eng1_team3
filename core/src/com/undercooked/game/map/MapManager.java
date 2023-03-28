@@ -128,7 +128,7 @@ public class MapManager {
         // Give the map to the CookController so that it can load the cooks
         cookController.loadCooksIntoMap(root, outputMap, textureManager);
 
-        System.out.println(outputMap);
+        // System.out.println(outputMap);
         return outputMap;
     }
 

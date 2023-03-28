@@ -182,7 +182,6 @@ public class Station extends MapEntity {
 
 	public void updateStationInteractions() {
 		interactControl.setCurrentInteraction(interactControl.findValidInteraction(items));
-		System.out.println(interactControl);
 	}
 
 	/**

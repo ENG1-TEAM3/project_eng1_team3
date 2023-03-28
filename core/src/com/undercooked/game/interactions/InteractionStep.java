@@ -112,4 +112,8 @@ public abstract class InteractionStep {
     public void output() {
         outputStep(this, 0);
     }
+
+    public void output(int tabs) {
+        outputStep(this, tabs);
+    }
 }

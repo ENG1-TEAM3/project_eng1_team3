@@ -6,7 +6,8 @@
     "<main>:pantry/onion_pantry",
     "<main>:pantry/lettuce_pantry",
     "<main>:pantry/bun_pantry",
-    "<main>:pantry/meat_pantry"
+    "<main>:pantry/meat_pantry",
+    "<main>:lettuce_chop"
   ],
   "requests": [
     {

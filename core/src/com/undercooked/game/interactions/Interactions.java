@@ -59,7 +59,6 @@ public class Interactions {
             // Cook Interactions
             case "wait":
                 interactionStep = new WaitStep();
-                System.out.println("WAIT STEP");
                 break;
             case "set":
                 interactionStep = new SetStep();
@@ -96,6 +95,7 @@ public class Interactions {
                 break;
             case "released":
                 interactionStep = new ReleasedStep();
+                break;
             default:
                 // If it is none of the above cases, then return null
                 // as the interaction has failed to load

@@ -125,7 +125,7 @@ public class ScenarioLogic extends GameLogic {
 
         // Load all the Interactions
         for (JsonValue interaction : scenarioData.get("interactions")) {
-            System.out.println(interaction);
+            // System.out.println(interaction);
             interactions.loadInteractionAsset(interaction.asString(), audioManager, items);
         }
 
@@ -152,7 +152,7 @@ public class ScenarioLogic extends GameLogic {
         // Load the requests within the request data
         // Loop through all the requests
         for (JsonValue request : requestData) {
-            System.out.println(request);
+            // System.out.println(request);
             // Add the item
             // If the addition wasn't successful, then skip
             if (items.addItemAsset(request.getString("item_id")) == null) {
