@@ -7,27 +7,43 @@ import com.undercooked.game.util.json.*;
 public final class Constants {
 
     // Camera
+    /** The ID of the World {@link com.badlogic.gdx.graphics.OrthographicCamera}. */
     public static final String WORLD_CAMERA_ID = "WORLD";
+    /** The ID of the User Interface {@link com.badlogic.gdx.graphics.OrthographicCamera}. */
     public static final String UI_CAMERA_ID = "UI";
 
     // Window
+    /** The width of the window video. */
     public static final int V_WIDTH = 1920;
+    /** The height of the window video. */
     public static final int V_HEIGHT = 1080;
 
     // Screens
+    /** The ID for the {@link com.undercooked.game.screen.MainScreen}. */
     public static final String MAIN_SCREEN_ID = "main";
+    /** The ID for the {@link com.undercooked.game.screen.GameScreen}. */
     public static final String GAME_SCREEN_ID = "game";
+    /** The ID for the {@link com.undercooked.game.screen.LeaderBoard}. */
     public static final String LEADERBOARD_SCREEN_ID = "leaderboard";
+    /** The ID for the {@link com.undercooked.game.screen.PauseScreen}. */
     public static final String PAUSE_SCREEN_ID = "pause";
+    /** The ID for the SettingsScreen. */
     public static final String SETTINGS_SCREEN_ID = "settings";
 
     // Files
+    /** The folder to store the external data of the game into. */
     public static final String DATA_FILE = "PiazzaPanic_UnderCooked";
+    /** The ID for the Menu's song. */
     public static final String MENU_SONG_ID = "musicSong";
+    /** The ID for the Game's song. */
     public static final String GAME_SONG_ID = "gameSong";
+    /** The texture ID for the textures on the {@link com.undercooked.game.screen.MainScreen} */
     public static final String MENU_TEXTURE_ID = "main";
+    /** The texture ID for the textures on the {@link com.undercooked.game.screen.GameScreen} */
     public static final String GAME_TEXTURE_ID = "game";
+    /** The texture ID for the textures on the {@link com.undercooked.game.screen.PauseScreen} */
     public static final String PAUSE_TEXTURE_ID = "pause";
+    /** The texture ID for the textures on the {@link com.undercooked.game.screen.LeaderBoard} */
     public static final String LEADERBOARD_TEXTURE_ID = "leaderboard";
 
     // GameInfo, such as file names for maps, ingredients, stations, recipes
@@ -35,6 +51,12 @@ public final class Constants {
     public static final class DefaultJson {
         // It creates these as to avoid creating them in memory and storing them
         // at all times
+
+        /**
+         * The formatting for a {@link com.undercooked.game.screen.LeaderBoard}'s score
+         * {@link JsonValue}.
+         * @return {@link JsonObject} : The Json formatting to use in {@link JsonFormat#formatJson(JsonValue, JsonObject)}.
+         */
         public static JsonObject scoreFormat() {
             JsonObject root = new JsonObject();
             // Highscore variable set up
@@ -53,6 +75,12 @@ public final class Constants {
             root.addValue(new JsonObjectArray("endless", highscore));
             return root;
         }
+
+        /**
+         * The formatting for the {@link com.undercooked.game.food.Item}'s
+         * {@link JsonValue}.
+         * @return {@link JsonObject} : The Json formatting to use in {@link JsonFormat#formatJson(JsonValue, JsonObject)}.
+         */
         public static JsonObject itemFormat() {
             JsonObject root = new JsonObject();
             root.addValue(new JsonString("name",null));
@@ -60,6 +88,12 @@ public final class Constants {
             root.addValue(new JsonInt("value", 0));
             return root;
         }
+
+        /**
+         * The formatting for the {@link com.undercooked.game.station.StationData}'s
+         * {@link JsonValue}.
+         * @return {@link JsonObject} : The Json formatting to use in {@link JsonFormat#formatJson(JsonValue, JsonObject)}.
+         */
         public static JsonObject stationFormat() {
             JsonObject root = new JsonObject();
             root.addValue(new JsonString("id",null));
@@ -84,6 +118,12 @@ public final class Constants {
             root.addValue(new JsonObjectArray("interactions", interactions));*/
             return root;
         }
+
+        /**
+         * The formatting for the {@link com.undercooked.game.map.Map}'s
+         * {@link JsonValue}.
+         * @return {@link JsonObject} : The Json formatting to use in {@link JsonFormat#formatJson(JsonValue, JsonObject)}.
+         */
         public static JsonObject mapFormat() {
             JsonObject root = new JsonObject();
             // Map ID
@@ -103,6 +143,12 @@ public final class Constants {
             root.addValue(new JsonInt("height", 16)); // The height of the Cook's area
             return root;
         }
+
+        /**
+         * The formatting for the {@link com.undercooked.game.logic.ScenarioLogic}'s
+         * {@link JsonValue}.
+         * @return {@link JsonObject} : The Json formatting to use in {@link JsonFormat#formatJson(JsonValue, JsonObject)}.
+         */
         public static JsonObject scenarioFormat() {
             JsonObject root = new JsonObject();
 
@@ -126,6 +172,11 @@ public final class Constants {
 
             return root;
         }
+
+        /**
+         * The formatting for the requests {@link JsonValue}.
+         * @return {@link JsonObject} : The Json formatting to use in {@link JsonFormat#formatJson(JsonValue, JsonObject)}.
+         */
         public static JsonObject requestFormat() {
             JsonObject root = new JsonObject();
 
@@ -139,6 +190,12 @@ public final class Constants {
 
             return root;
         }
+
+        /**
+         * The formatting for the {@link com.undercooked.game.interactions.InteractionObject}'s
+         * {@link JsonValue}.
+         * @return {@link JsonObject} : The Json formatting to use in {@link JsonFormat#formatJson(JsonValue, JsonObject)}.
+         */
         public static JsonObject interactionFormat() {
             JsonObject root = new JsonObject();
             // Interaction ID
@@ -236,31 +293,38 @@ public final class Constants {
         // public static JsonValue
     }
 
-    // Preferences
-    public static final class Preferences {
-        // Preference IDs
-        public static final String SETTINGS = "SETTINGS";
-
-        // Preferences names
-        public static final String MUSIC_VOLUME = "music_vol";
-        public static final String GAME_VOLUME = "game_vol";
-    }
-
     // Sounds
+    /** {@link com.undercooked.game.assets.AudioManager} group for the game's Music. */
     public static final String MUSIC_GROUP = "music";
+    /** {@link com.undercooked.game.assets.AudioManager} group for the game's music audio. */
     public static final String GAME_GROUP = "game";
+    /** {@link com.undercooked.game.assets.AudioManager} group for the game's sound audio. */
     public static final String GAME_SOUND_GROUP = "game_sound";
 
     // Textures
+    /**
+     * The number of {@link com.undercooked.game.entity.Cook} {@link com.badlogic.gdx.graphics.Texture}s
+     * in the asset folder.
+     */
     public static final int NUM_COOK_TEXTURES = 3;
+    /**
+     * The number of {@link com.undercooked.game.entity.Customer} {@link com.badlogic.gdx.graphics.Texture}s
+     * in the asset folder.
+     */
     public static int NUM_CUSTOMER_TEXTURES = 5;
 
     // Defaults
+    /** The default texture for the Music. */
     public static final float DEFAULT_MUSIC_VOLUME = 0.5F;
+    /** The default volume for the Sound. */
     public static final float DEFAULT_SOUND_VOLUME = 0.5F;
+    /** The default {@link com.undercooked.game.map.Map} to load if one fails to load. */
     public static final String DEFAULT_MAP = "<main>:main";
+    /** The default {@link com.badlogic.gdx.graphics.Texture} to load if one fails to load. */
     public static final String DEFAULT_TEXTURE = "items/missing.png";
+    /** The default {@link com.badlogic.gdx.audio.Music} to load if one fails to load. */
     public static final String DEFAULT_MUSIC = "audio/music/GameMusic.mp3";
+    /** The default {@link com.badlogic.gdx.audio.Sound} to load if one fails to load. */
     public static final String DEFAULT_SOUND = "uielements/testsound.mp3";
 
     // public static final ... DEFAULT_CONTROLS = ...;
