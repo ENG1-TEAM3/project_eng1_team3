@@ -7,6 +7,15 @@ import com.undercooked.game.interactions.IStep;
 import com.undercooked.game.interactions.InteractResult;
 import com.undercooked.game.interactions.InteractionStep;
 
+/**
+ * Interaction step that deletes all items currently on
+ * the {@link com.undercooked.game.station.Station}, and
+ * then sets to the value provided, ignoring if the
+ * {@link com.undercooked.game.station.Station} can hold
+ * it or not.
+ *
+ * <br>Does not fail.
+ */
 public class SetStep extends InteractionStep {
 
     @Override

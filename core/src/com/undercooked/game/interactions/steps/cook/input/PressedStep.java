@@ -7,6 +7,14 @@ import com.undercooked.game.interactions.IStep;
 import com.undercooked.game.interactions.InteractResult;
 import com.undercooked.game.interactions.InteractionStep;
 
+/**
+ * Interaction step for taking an input from the {@link Cook}
+ * and checking if it matches the key specified in {@link #value},
+ * and that it's pressed.
+ *
+ * <br>Cannot fail, but will not continue from this step until the
+ * input is given.
+ */
 public class PressedStep extends InteractionStep {
     @Override
     public InteractResult interact(IStep instance, Cook cook, String keyID, InputType inputType) {
