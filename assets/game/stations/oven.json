@@ -1,5 +1,6 @@
 {
   "id": "oven",
   "texture_path": "<main>:station/ovtopcln.png",
-  "default_base": "<main>:station/oven.png"
+  "default_base": "<main>:station/oven.png",
+  "holds": 1
 }

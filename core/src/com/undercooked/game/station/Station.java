@@ -36,7 +36,7 @@ public class Station extends MapEntity {
 		this.texturePath = stationData.getTexturePath();
 		this.items = new ItemStack();
 		this.lockedCooks = new Array<>();
-		this.setBasePath(stationData.defaultBase);
+		this.setBasePath(stationData.getDefaultBase());
 		setWidth(stationData.getWidth());
 		setHeight(stationData.getHeight());
 	}
@@ -160,14 +160,35 @@ public class Station extends MapEntity {
 		return numFound >= number;
 	}
 
-	public void addItem(Item item) {
+	public boolean canHoldItems(int number) {
+		if (number <= 0) {
+			return true;
+		}
+		// Return whether adding it goes above the limit or not
+		return !(items.size() + number > stationData.getHoldCount());
+	}
+
+	public boolean canHoldItem() {
+		return canHoldItems(1);
+	}
+
+	public boolean addItem(Item item) {
+		// Only continue if it CAN add an item
+		if (!canHoldItem()) {
+			return false;
+		}
 		// Add the item
 		items.add(item);
 		// Update Station Interactions.
 		updateStationInteractions();
+		return true;
 	}
 
 	public Item takeItem() {
+		// Only continue if it has an item
+		if (items.size() <= 0) {
+			return null;
+		}
 		// Return the item that was popped.
 		Item returnItem = items.pop();
 		// If a Cook is locked, then unlock them
@@ -206,7 +227,7 @@ public class Station extends MapEntity {
 	}
 
 	public void updateInteractions() {
-		this.interactControl.updatePossibleInteractions(stationData.id);
+		this.interactControl.updatePossibleInteractions(stationData.getID());
 	}
 
 	public void setInteractions(Interactions interactions) {

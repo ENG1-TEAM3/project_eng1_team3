@@ -1,7 +1,5 @@
 package com.undercooked.game.entity;
 
-import java.util.Stack;
-
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
@@ -14,9 +12,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.undercooked.game.Input.InputController;
 import com.undercooked.game.Input.InputType;
 import com.undercooked.game.Input.Keys;
-import com.undercooked.game.MainGameClass;
 import com.undercooked.game.assets.TextureManager;
-import com.undercooked.game.food.Ingredient;
 import com.undercooked.game.food.Item;
 import com.undercooked.game.food.ItemStack;
 import com.undercooked.game.interactions.InteractResult;
@@ -41,6 +37,7 @@ public class Cook extends MoveableEntity {
 	private Rectangle interactCollision;
 	private MapCell interactTarget;
 	private Station stationTarget;
+	private int holdLimit;
 	public Station lockedTo = null;
 	public boolean holding = false;
 	public ItemStack heldItems;
@@ -59,6 +56,7 @@ public class Cook extends MoveableEntity {
 		this.cookno = cookNum;
 
 		this.heldItems = new ItemStack();
+		this.holdLimit = 5;
 
 		this.interactTarget = null;
 		this.stationTarget = null;
@@ -131,9 +129,13 @@ public class Cook extends MoveableEntity {
 		if (InputController.isKeyJustPressed("take")) {
 			// If the station has an item, take it
 			if (stationTarget.items.size() > 0) {
-				addItem(stationTarget.takeItem());
-				// If it succeeds, stop here
-				return;
+				// If the Cook can also take it...
+				if (canAddItem()) {
+					// Then take the top item on the Station's stack
+					addItem(stationTarget.takeItem());
+					// If it succeeds, stop here
+					return;
+				}
 			}
 		}
 
@@ -141,9 +143,13 @@ public class Cook extends MoveableEntity {
 		if (InputController.isKeyJustPressed("drop")) {
 			// If the cook has an item, drop it
 			if (heldItems.size() > 0) {
-				stationTarget.addItem(takeItem());
-				// If it succeeds, stop here
-				return;
+				// If the station can hold it...
+				if (stationTarget.canHoldItem()) {
+					// Then add it
+					stationTarget.addItem(takeItem());
+					// If it succeeds, stop here
+					return;
+				}
 			}
 		}
 
@@ -426,12 +432,35 @@ public class Cook extends MoveableEntity {
 		return interactTarget;
 	}
 
-	public void addItem(Item item) {
+	public boolean canAddItems(int number) {
+		if (number <= 0) {
+			return true;
+		}
+		// Return whether adding it goes above the limit or not
+		return !(heldItems.size() + number > holdLimit);
+	}
+
+	public boolean canAddItem() {
+		return canAddItems(1);
+	}
+
+	public boolean addItem(Item item) {
+		// Continue only if it can add it
+		if (!canAddItem()) {
+			return false;
+		}
+		// Add the item
 		heldItems.add(item);
 		updateTexture();
+		return true;
 	}
 
 	public Item takeItem() {
+		// Continue only if the Cook has an item to remove
+		if (heldItems.size() <= 0) {
+			return null;
+		}
+		// Pop the item and return it
 		Item poppedItem = heldItems.pop();
 		updateTexture();
 		return poppedItem;

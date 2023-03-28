@@ -74,6 +74,7 @@ public final class Constants {
             root.addValue(new JsonFloat("collision_offset_y", 0F)); // The y offset of the collision box in pixels
             root.addValue(new JsonString("default_base", "<main>:station/blank.png"));
             root.addValue(new JsonType("has_collision", JsonValue.ValueType.booleanValue));
+            root.addValue(new JsonInt("holds", 0)); // How many items the station holds.
 
             /*JsonObject interactions = new JsonObject();
 

@@ -127,6 +127,8 @@ public class StationManager {
 			data.setCollisionOffsetX(stationRoot.getFloat("collision_offset_x"));
 			data.setCollisionOffsetY(stationRoot.getFloat("collision_offset_y"));
 			// System.out.println("Width: " + data.getWidth() + ", Height: " + data.getHeight());
+
+			data.setHoldCount(stationRoot.getInt("holds"));
 			// Then add it to the stations list
 			return data;
 		}

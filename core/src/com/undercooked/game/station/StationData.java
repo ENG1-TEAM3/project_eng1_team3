@@ -1,12 +1,13 @@
 package com.undercooked.game.station;
 
 public class StationData {
-    String path, texturePath, defaultBase;
-    public final String id;
-    int width, height;
-    float collisionWidth, collisionHeight,
+    private String path, texturePath, defaultBase;
+    private final String id;
+    private int width, height;
+    private int holds;
+    private float collisionWidth, collisionHeight,
           collisionOffsetX, collisionOffsetY;
-    boolean hasCollision;
+    private boolean hasCollision;
 
     public StationData(String path, String texturePath, String defaultBase,
                        String id,
@@ -71,12 +72,20 @@ public class StationData {
         this.hasCollision = hasCollision;
     }
 
+    public void setHoldCount(int holds) {
+        this.holds = Math.max(0,holds);
+    }
+
     public String getPath() {
         return path;
     }
 
     public String getTexturePath() {
         return texturePath;
+    }
+
+    public String getDefaultBase() {
+        return defaultBase;
     }
 
     public int getWidth() {
@@ -105,5 +114,13 @@ public class StationData {
 
     public boolean isCollidable() {
         return hasCollision;
+    }
+
+    public int getHoldCount() {
+        return holds;
+    }
+
+    public String getID() {
+        return id;
     }
 }
