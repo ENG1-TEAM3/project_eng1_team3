@@ -8,7 +8,6 @@ import com.undercooked.game.Input.Keys;
 import com.undercooked.game.assets.TextureManager;
 import com.undercooked.game.map.Map;
 import com.undercooked.game.map.MapManager;
-import com.undercooked.game.util.Control;
 
 /**
  * Responsible for all functions that affect cook adding,

@@ -36,7 +36,6 @@ public class MainGameClass extends Game {
 	public final TextureManager textureManager;
 	public final MapManager mapManager;
 	public final StationManager stationManager;
-	private Preferences settingPref;
 	public static SpriteBatch batch;
 	public static BitmapFont font;
 	public static ShapeRenderer shapeRenderer;
@@ -72,8 +71,6 @@ public class MainGameClass extends Game {
 		// Load the game
 		load();
 
-		settingPref = Gdx.app.getPreferences(Constants.Preferences.SETTINGS);
-
 		// Load the default assets
 		assetManager.finishLoading();
 
@@ -84,8 +81,8 @@ public class MainGameClass extends Game {
 		shapeRenderer.setAutoShapeType(true);
 
 		// =============MUSIC=INITIALISATION===========================
-		musicVolumeScale = settingPref.getFloat(Constants.Preferences.MUSIC_VOLUME, Constants.DEFAULT_MUSIC_VOLUME);;
-		gameVolumeScale = settingPref.getFloat(Constants.Preferences.MUSIC_VOLUME, Constants.DEFAULT_SOUND_VOLUME);;
+		musicVolumeScale = 0.5F;
+		gameVolumeScale = 0.5F;
 		AudioSettings.setMusicVolume(Constants.DEFAULT_MUSIC_VOLUME, Constants.MUSIC_GROUP);
 		AudioSettings.setMusicVolume(Constants.DEFAULT_SOUND_VOLUME, Constants.GAME_GROUP);
 
@@ -152,7 +149,5 @@ public class MainGameClass extends Game {
 		assetManager.dispose();
 		batch.dispose();
 		shapeRenderer.dispose();
-
-		settingPref.flush();
 	}
 }

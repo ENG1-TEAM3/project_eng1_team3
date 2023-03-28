@@ -30,7 +30,6 @@ import com.undercooked.game.render.GameRenderer;
 import com.undercooked.game.util.CameraController;
 import com.undercooked.game.util.CollisionTile;
 import com.undercooked.game.util.Constants;
-import com.undercooked.game.util.Control;
 
 /**
  * Responsible for handling all the rendering related tasks.
@@ -100,7 +99,6 @@ public class GameScreen extends Screen {
 	long startTime;
 	long timeOnStartup;
 	long tempTime, tempThenTime;
-	public static Control control;
 	public Map map;
 	public static int currentCookIndex = 0;
 	
@@ -116,7 +114,6 @@ public class GameScreen extends Screen {
 	public GameScreen(MainGameClass game) {
 		super(game);
 		this.calculateBoxMaths();
-		control = new Control();
 	}
 
 	/**
@@ -242,8 +239,6 @@ public class GameScreen extends Screen {
 		// ======================================START=STAGES============================================================
 		stage = new Stage(uiViewport);
 		stage2 = new Stage(uiViewport);
-		// ======================================CREATE=INPUTMULTIPLEXER=================================================
-		multi = new InputMultiplexer(stage, control);
 		// ======================================LOAD=TEXTURES===========================================================
 		TextureManager textureManager = game.getTextureManager();
 		MENU = textureManager.get("uielements/settings.png");
