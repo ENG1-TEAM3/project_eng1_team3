@@ -1,6 +1,6 @@
 {
-  "station_id": "<main>:preparation",
-  "items": ["<main>:patty_unformed"],
+  "station_id": "<main>:oven",
+  "items": ["<main>:patty_formed"],
   "steps": [{
     "type": "just_pressed",
     "value": "interact",
@@ -14,9 +14,10 @@
         "success": [
           {
             "type": "set",
-            "value": "<main>:patty_formed"
+            "value": "<main>:patty_cooked"
           }
-        ]
+        ],
+        "sound": "<main>:frying.mp3"
       },
       {
         "type": "unlock_cook"

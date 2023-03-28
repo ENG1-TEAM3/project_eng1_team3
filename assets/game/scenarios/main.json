@@ -9,7 +9,9 @@
     "<main>:pantry/meat_pantry",
     "<main>:lettuce_chop",
     "<main>:tomato_chop",
-    "<main>:onion_chop"
+    "<main>:onion_chop",
+    "<main>:cook_bun",
+    "<main>:cook_patty"
   ],
   "requests": [
     {

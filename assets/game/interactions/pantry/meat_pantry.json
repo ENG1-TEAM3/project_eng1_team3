@@ -5,7 +5,7 @@
     "value": "take",
     "success": [{
       "type": "give",
-      "value": "<main>:unformed_patty",
+      "value": "<main>:patty_unformed",
       "time": 1
     }]
   }]
