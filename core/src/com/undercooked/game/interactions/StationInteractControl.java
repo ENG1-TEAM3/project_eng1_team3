@@ -1,6 +1,5 @@
 package com.undercooked.game.interactions;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Array;
 import com.undercooked.game.Input.InputType;
 import com.undercooked.game.assets.AudioManager;
@@ -9,7 +8,6 @@ import com.undercooked.game.food.Item;
 import com.undercooked.game.food.ItemStack;
 import com.undercooked.game.food.Items;
 import com.undercooked.game.station.Station;
-import com.undercooked.game.util.Listener;
 
 public class StationInteractControl {
 
@@ -36,7 +34,7 @@ public class StationInteractControl {
         this.stepsToFollow = new Array<>();
     }
 
-    public void update(Cook cook, float delta) {
+    public void update(Cook cook) {
         // Only update if there's an interaction currently
         if (currentInteraction != null) {
             interactionInstance.updateDelta();

@@ -15,28 +15,42 @@ import com.undercooked.game.util.json.JsonFormat;
 import java.awt.datatransfer.StringSelection;
 
 /**
- * Deals with all the stations and cook interactions. To create a new station,
- * extend from {@link Station}, check tile in
- * {@link this#checkInteractedTile(String, Vector2)}, and update station's
- * ingredients in {@link this#handleStations(SpriteBatch)} if necessary.
- *
+ * Deals with the loading and storage of all {@link Station}s
+ * and their {@link StationData} within the game.
  */
 public class StationManager {
 
 	/**
-	 * A Map representing every station and its (x, y) coordinates.
+	 * An {@link Array} of the {@link Station}s that are in the
+	 * game.
 	 */
 	public static Array<Station> stations = new Array<>();
+	/**
+	 * An {@link ObjectMap<String, StationData>} that links a
+	 * {@link Station}'s id to the {@link StationData} that it
+	 * has loaded.
+	 */
 	public static ObjectMap<String, StationData> stationData;
 
 	SpriteBatch batch;
 	GameScreen game;
 
+	/**
+	 * Constructor for the {@link StationManager}.
+	 * This sets up the {@link Array<Station>} for {@link #stations}
+	 * and the {@link ObjectMap<String, StationData>} for {@link #stationData}.
+	 */
 	public StationManager() {
 		this.stations = new Array<>();
 		this.stationData = new ObjectMap<>();
 	}
 
+	/**
+	 * A function that calls the {@link Station#update(float)} function
+	 * for all {@link Station}s that are stored by the {@link #stations}
+	 * {@link Array}.
+	 * @param delta
+	 */
 	public void update(float delta) {
 		// Update all the stations.
 		for (Station station : stations) {
@@ -44,6 +58,13 @@ public class StationManager {
 		}
 	}
 
+	/**
+	 * Calls the {@link Station#updateInteractions()} and
+	 * {@link Station#updateStationInteractions()} functions for
+	 * all of the {@link Station}s stored in the {@link #stations}
+	 * {@link Array}.
+	 * <br>This sets up their interactions.
+	 */
 	public void updateStationInteractions() {
 		// Update all interactions for the stations.
 		for (Station station : stations) {
@@ -52,6 +73,13 @@ public class StationManager {
 		}
 	}
 
+	/**
+	 * Loads all of the {@link StationData} for each {@link Station} ID
+	 * into the {@link #stationData} {@link ObjectMap}
+	 * @param path {@link String} : The asset path to the {@link StationData} JSON.
+	 * @param internal
+	 * @param pathPrefix
+	 */
 	private void loadStationsFromPath(String path, boolean internal, String pathPrefix) {
 		FileHandle stations = FileControl.getFileHandle("game/stations/" + path, internal);
 		for (FileHandle file : stations.list()) {

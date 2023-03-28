@@ -34,8 +34,9 @@ public class Customer {
 	 * Constructor for customer class
 	 * @param x - x starting pixel coordinate
 	 * @param y - y starting pixel coordinate
-	 * @param tg - target y cell coordinate - not in pixels
 	 * @param custno - customer number - changes texture
+	 * @param textureManager The {@link TextureManager} to use
+	 *                       to load and get {@link Texture}s from.
 	 */
 	public Customer(int x, int y, int custno, TextureManager textureManager) {
 		TextureManager assetManager = textureManager;

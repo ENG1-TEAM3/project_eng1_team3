@@ -43,10 +43,10 @@ public class Station extends MapEntity {
 
 	public void update(float delta) {
 		if (lockedCooks.size == 0) {
-			interactControl.update(null, delta);
+			interactControl.update(null);
 			return;
 		}
-		interactControl.update(lockedCooks.get(0), delta);
+		interactControl.update(lockedCooks.get(0));
 	}
 
 	@Override

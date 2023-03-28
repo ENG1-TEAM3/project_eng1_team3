@@ -2,9 +2,6 @@ package com.undercooked.game.food;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.undercooked.game.MainGameClass;
-import com.undercooked.game.assets.TextureManager;
-import jdk.tools.jmod.Main;
 
 public class Item {
     private String itemID;

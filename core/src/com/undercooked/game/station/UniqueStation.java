@@ -17,7 +17,7 @@ public class UniqueStation extends Station {
 	}
 
 	public void update(float delta) {
-		interactControl.update(null, delta);
+		interactControl.update(null);
 	}
 
 	public void drawText(SpriteBatch batch, String text, Vector2 pos) {
