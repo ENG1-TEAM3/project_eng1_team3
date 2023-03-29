@@ -1,11 +1,9 @@
 package com.undercooked.game.map;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import com.undercooked.game.assets.TextureManager;
@@ -14,23 +12,22 @@ import com.undercooked.game.util.Constants;
 import com.undercooked.game.util.MathUtil;
 
 import java.awt.*;
-import java.util.Comparator;
 
 public class Map {
 
     Array<Array<MapCell>> map;
+    private TextureManager textureManager;
     private int width, fullWidth;
     private int height, fullHeight;
     private int offsetX;
     private int offsetY;
-    private Sprite floorSprite;
     public final MapCell outOfBounds = new MapCell(true, false, false);
 
-    public Map(int width, int height) {
-        this(width,height,width,height);
+    public Map(int width, int height, TextureManager textureManager) {
+        this(width,height,width,height, textureManager);
     }
 
-    public Map(int width, int height, int fullWidth, int fullHeight) {
+    public Map(int width, int height, int fullWidth, int fullHeight, TextureManager textureManager) {
         // Initialise the columns
         map = new Array<>();
         // Then initialise the rows
@@ -41,8 +38,9 @@ public class Map {
         this.height = height;
         this.fullWidth = fullWidth;
         this.fullHeight = fullHeight;// Then init the map (so that it's empty)
-        this.outOfBounds.mapEntity = new MapEntity();
-        this.floorSprite = new Sprite();
+        this.textureManager = textureManager;
+        this.outOfBounds.setX(-fullWidth);
+        this.outOfBounds.setY(-fullHeight);
         init();
     }
 
@@ -54,9 +52,28 @@ public class Map {
             Array thisCol = new Array<MapCell>();
             map.add(thisCol);
             for (int y = 0; y < fullHeight; y++) {
-                thisCol.add(null);
+                MapCell newCell = new MapCell();
+                thisCol.add(newCell);
+                resetCell(newCell);
+                newCell.setX(x);
+                newCell.setY(y);
             }
         }
+    }
+
+    public void resetCell(int x, int y) {
+        MapCell cell = getCellFull(x,y);
+        if (cell != null) {
+            resetCell(cell);
+        }
+    }
+
+    public void resetCell(MapCell cell) {
+        cell.setInteractable(false);
+        cell.setCollidable(false);
+        cell.setBase(false);
+        cell.setMapEntity(null);
+        cell.setBelowTile(Constants.DEFAULT_FLOOR_TILE);
     }
 
     protected boolean validCellFull(int x, int y) {
@@ -80,7 +97,7 @@ public class Map {
     }
 
     protected MapCell getCellFull(int x, int y) {
-        return getCellFull(x, y, false);
+        return getCellFull(x, y, true);
     }
 
     protected MapCell getCellFull(int x, int y, boolean allowOutOfBounds) {
@@ -98,7 +115,7 @@ public class Map {
     }
 
     public MapCell getCell(int x, int y) {
-        return getCell(x, y, false);
+        return getCell(x, y, true);
     }
 
     public MapCell getCell(int x, int y, boolean allowOutOfBounds) {
@@ -140,31 +157,8 @@ public class Map {
                     // Check if the entity in this cell == entity.
                     // If it does, then set that cell to null
                     if (thisCell.mapEntity == entity){
-                        setFullMapCell(x, y, null);
+                        resetCell(x, y);
                     }
-                }
-            }
-        }
-        return found;
-    }
-
-    /**
-     * Removes all instances of a {@link MapCell} from
-     * the {@link Map}.
-     * @param mapCell The {@link MapCell} to remove.
-     * @return {@code boolean}: {@code True} if the entity was on the map,
-     *                          {@code False} if it was not.
-     */
-    private boolean removeEntity(MapCell mapCell) {
-        boolean found = false;
-        MapCell cornerCell = null;
-        // Loop through all cells, left to right, bottom to top
-        for (int x = 0 ; x < width ; x++) {
-            for (int y = 0 ; y < height ; y++) {
-                // Check if the MapCell == the MapCell at this location
-                // If it does, then set that cell to null
-                if (getCell(x,y) == mapCell) {
-                    setMapCell(x, y, null);
                 }
             }
         }
@@ -179,99 +173,99 @@ public class Map {
         setFullMapCell(x+offsetX, y+offsetY, cell);
     }
 
-    protected void addFullMapEntity(MapEntity entity, int x, int y) {
-        addFullMapEntity(entity, x, y, false);
+    protected void addFullMapEntity(MapEntity entity, int x, int y, String floorTile) {
+        addFullMapEntity(entity, x, y, floorTile, false);
     }
 
-    protected void addFullMapEntity(MapEntity entity, int x, int y, boolean hasCollision) {
+    protected void addFullMapEntity(MapEntity entity, int x, int y, String floorTile, boolean hasCollision) {
         Array<MapEntity> entitiesToRemove = new Array<>();
+        System.out.println(String.format("Placing tile at %d, %d", x, y));
         // And now add the entity
-        for (int i = x ; i < x + entity.getCellWidth() ; i++) {
-            for (int j = y ; j < y + entity.getCellHeight() ; j++) {
-                MapCell newCell = new MapCell(hasCollision, true, false);
-                newCell.mapEntity = entity;
+        for (int i = x + entity.getCellWidth()-1 ; i >= x ; i--) {
+            for (int j = y + entity.getCellHeight()-1 ; j >= y ; j--) {
                 // If it's a valid cell
                 if (validCellFull(i,j)) {
-                    boolean hadCollision = false;
+                    MapCell cellToReplace = getCellFull(i, j, false);
                     // If there's already a station here, remove it completely.
-                    if (getCellFull(i, j) != null) {
-                        hadCollision = getCellFull(i, j).collidable;
+                    boolean hadCollision = getCellFull(i, j).collidable;
+                    if (cellToReplace.mapEntity != null) {
                         // Only add it for removal if it hasn't been already
                         MapEntity entityToRemove = getCellFull(i, j).mapEntity;
-                        if (entitiesToRemove.contains(entityToRemove, true)) {
+                        if (!entitiesToRemove.contains(entityToRemove, true)) {
                             entitiesToRemove.add(entityToRemove);
                         }
-                        setFullMapCell(i, j, null);
                     }
-                    setFullMapCell(i,j,newCell);
+                    cellToReplace.setCollidable(hasCollision);
+                    cellToReplace.setInteractable(true);
+                    cellToReplace.setMapEntity(entity);
+                    cellToReplace.setBelowTile(floorTile);
                     // If there is a station above this...
                     if (validCellFull(i,j+1)) {
-                        MapCell aboveCell = getCellFull(i,j+1);
+                        MapCell aboveCell = getCellFull(i,j+1, false);
                         if (aboveCell != null) {
                             // And the previous cell had collision...
                             if (hadCollision) {
                                 // Then set this one to collidable
-                                newCell.collidable = true;
+                                cellToReplace.collidable = true;
                             }
                         }
                     }
                 }
             }
 
-            // Remove all entities that need to be removed.
-            for (MapEntity mapEntity : entitiesToRemove) {
-                removeEntity(mapEntity);
-            }
-
             // Below it, if there isn't a MapCell already, place a cupboard
             // It is not in the loop above, as only the lowest y needs it below
-            MapCell cellBelow = getCellFull(i, y-1);
-            if (cellBelow == null) {
-                // If y-1 is valid, and basePath is not null
-                if (entity.basePath != null && validCellFull(i,y-1)) {
-                    // Make a cupboard cell below and add it to the map
-                    MapCell newBelow = new MapCell(true, false, true);
-                    newBelow.mapEntity = new MapEntity();
-                    newBelow.mapEntity.setTexture(entity.basePath);
-                    newBelow.mapEntity.setWidth(1);
-                    newBelow.mapEntity.setHeight(1);
-                    newBelow.mapEntity.setX(MapManager.gridToPos(i));
-                    newBelow.mapEntity.setY(MapManager.gridToPos(y-1));
-                    setFullMapCell(i,y-1,newBelow);
-                }
-            } else {
-
-                // If not...
-                // Update the cell below, if it is a base
-                if (cellBelow.isBase()) {
-                    // If the entity has a base path, then replace it
-                    if (entity.basePath != null) {
+            MapCell cellBelow = getCellFull(i, y-1, false);
+            if (cellBelow != null) {
+                if (cellBelow.mapEntity == null) {
+                    // If y-1 is valid, and basePath is not null
+                    if (entity.basePath != null && validCellFull(i, y - 1)) {
+                        // Make a cupboard cell below and add it to the map
+                        cellBelow.setCollidable(true);
+                        cellBelow.setInteractable(false);
+                        cellBelow.setBase(true);
+                        cellBelow.mapEntity = new MapEntity();
                         cellBelow.mapEntity.setTexture(entity.basePath);
-                    } else {
-                        // If it doesn't have a base path, remove the base
-                        removeEntity(cellBelow);
+                        cellBelow.setBelowTile(null);
+                        cellBelow.setWidth(1);
+                        cellBelow.setHeight(1);
+                        cellBelow.setX(MapManager.gridToPos(i));
+                        cellBelow.setY(MapManager.gridToPos(y - 1));
                     }
                 } else {
-                    // If it's not a base below, then set if it has collision
-                    // depending on if it has a base or not
 
-                    // TODO: Fix below problem
-                    // Note that this has a problem when a station with collision has a station placed above it
-                    // that does not have a base, as it will remove the collision of the station below.
-                    // E.g: Placing a bin directly above another bin.
-                    cellBelow.setCollidable(entity.basePath != null);
+                    // If not...
+                    // Update the cell below, if it is a base
+                    if (cellBelow.isBase()) {
+                        // If the entity has a base path, then replace it
+                        if (entity.basePath != null) {
+                            cellBelow.mapEntity.setTexture(entity.basePath);
+                        } else {
+                            // If it doesn't have a base path, remove the base
+                            resetCell(cellBelow);
+                        }
+                    } else {
+                        // If it's not a base below, then set if it has collision
+                        // depending on if it has a base or not
 
+                        // TODO: Fix below problem
+                        // Note that this has a problem when a station with collision has a station placed above it
+                        // that does not have a base, as it will remove the collision of the station below.
+                        // E.g: Placing a bin directly above another bin.
+                        cellBelow.setCollidable(entity.basePath != null);
+                    }
                 }
             }
         }
 
-        // Set the entity's position
-        entity.setX(MapManager.gridToPos(x));
-        entity.setY(MapManager.gridToPos(y));
+        // Remove all entities that need to be removed.
+        for (MapEntity mapEntity : entitiesToRemove) {
+            removeEntity(mapEntity);
+        }
     }
 
-    public void addMapEntity(MapEntity entity, int x, int y) {
-        addMapEntity(entity, x, y, false);
+    public void addMapEntity(MapEntity entity, int x, int y, String floorTile) {
+        addMapEntity(entity, x, y, floorTile, false);
     }
 
     /**
@@ -280,7 +274,7 @@ public class Map {
      * @param x The {@code x} position of the {@link MapEntity}.
      * @param y The {@code y} position of the {@link MapEntity}.
      */
-    public void addMapEntity(MapEntity entity, int x, int y, boolean hasCollision) {
+    public void addMapEntity(MapEntity entity, int x, int y, String floorTile, boolean hasCollision) {
         // Make sure the range is valid
         // (x, x+entity.width, y, y+entity.height all in range)
         // Make sure that width and height are > 0
@@ -294,7 +288,7 @@ public class Map {
         }
 
         // Add it to the map
-        addFullMapEntity(entity, x+offsetX, y+offsetY, hasCollision);
+        addFullMapEntity(entity, x+offsetX, y+offsetY, floorTile, hasCollision);
     }
 
     /**
@@ -383,8 +377,11 @@ public class Map {
 
                 // Get the cell.
                 MapCell cell = getCellFull(x, y);
-                // If there isn't a cell here, skip
                 if (cell == null) {
+                    continue;
+                }
+                // Make sure it has a map entity
+                if (cell.mapEntity == null) {
                     continue;
                 }
                 switch (collisionType) {
@@ -430,11 +427,11 @@ public class Map {
             // Go through the points in the array, and find the closest one.
             Point firstPoint = validCells.get(0);
             MapCell closestCell = getCellFull(firstPoint.x, firstPoint.y, true);
-            double closestDist = MathUtil.distanceBetweenRectangles(collision, closestCell.mapEntity.collision);
+            double closestDist = MathUtil.distanceBetweenRectangles(collision, closestCell.getCollision());
             for (int i = 1 ; i < validCells.size ; i++) {
                 Point currentPoint = validCells.get(i);
                 MapCell currentCell = getCellFull(currentPoint.x, currentPoint.y, true);
-                double currentDist = MathUtil.distanceBetweenRectangles(collision, currentCell.mapEntity.collision);
+                double currentDist = MathUtil.distanceBetweenRectangles(collision, currentCell.getCollision());
                 if (currentDist < closestDist) {
                     closestDist = currentDist;
                     closestCell = currentCell;
@@ -490,8 +487,7 @@ public class Map {
         // Draw a tile for every cell of the map.
         for (int x = 0 ; x < fullWidth ; x++) {
             for (int y = 0 ; y < fullHeight ; y++) {
-                batch.draw(floorSprite, MapManager.gridToPos(x), MapManager.gridToPos(y),
-                        64, 64);
+                getCellFull(x,y).drawBelow(batch);
             }
         }
     }
@@ -500,8 +496,8 @@ public class Map {
         for (int x = 0 ; x < fullWidth ; x++) {
             for (int y = 0 ; y < fullHeight ; y++) {
                 shape.setColor(Color.SKY);
-                if ((x > offsetX && x < width + offsetX) &&
-                        (y > offsetY && y < height + offsetY)) {
+                if ((x >= offsetX && x < width + offsetX) &&
+                        (y >= offsetY && y < height + offsetY)) {
                     shape.setColor(Color.GREEN);
                 }
                 shape.rect(MapManager.gridToPos(x), MapManager.gridToPos(y), 64, 64);
@@ -519,18 +515,42 @@ public class Map {
             for (int y = 0 ; y < height ; y++) {
                 MapCell thisCell = getCell(x,y);
                 if (thisCell != null) {
-                    thisCell.mapEntity.load(textureManager, textureID);
+                    thisCell.load(textureManager, textureID);
                 }
             }
         }
     }
 
-    public void load(TextureManager textureManager) {
-        textureManager.loadAsset(Constants.GAME_TEXTURE_ID, "<main>:floor_tile.png", "textures");
+    /**
+     * Loads just the floor tiles of the MapCells
+     * @param textureManager {@link TextureManager} : The {@link TextureManager}
+     *                                                to use.
+     */
+    public void loadFloor(TextureManager textureManager, String textureID) {
+        for (int x = 0 ; x < width ; x++) {
+            for (int y = 0 ; y < height ; y++) {
+                MapCell thisCell = getCell(x,y);
+                if (thisCell != null) {
+                    thisCell.loadFloor(textureManager, textureID);
+                }
+            }
+        }
     }
 
+    /**
+     * Update the floor sprites of all the {@link MapCell}s.
+     * @param textureManager {@link TextureManager} : The {@link TextureManager}
+     *                                                to use.
+     */
     public void postLoad(TextureManager textureManager) {
-        this.floorSprite = new Sprite(textureManager.getAsset("<main>:floor_tile.png"));
+        for (int x = 0 ; x < width ; x++) {
+            for (int y = 0 ; y < height ; y++) {
+                MapCell thisCell = getCell(x,y);
+                if (thisCell != null) {
+                    thisCell.updateBelowTile(textureManager);
+                }
+            }
+        }
     }
 
     // Draw function

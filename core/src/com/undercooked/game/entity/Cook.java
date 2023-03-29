@@ -122,7 +122,7 @@ public class Cook extends MoveableEntity {
 	}
 
 	private void interactInputCheck() {
-		if (interactTarget == null) {
+		if (interactTarget == null || stationTarget == null) {
 			return;
 		}
 		// Check for custom interactions
@@ -224,7 +224,9 @@ public class Cook extends MoveableEntity {
 		// Update the cell that is currently being looked at
 		interactTarget = map.getCollision(interactCollision, true, Map.CollisionType.INTERACTABLE);
 		if (interactTarget != null) {
-			stationTarget = (Station) interactTarget.getMapEntity();
+			if (interactTarget.getMapEntity() != null) {
+				stationTarget = (Station) interactTarget.getMapEntity();
+			}
 		}
 
 		// Update animation

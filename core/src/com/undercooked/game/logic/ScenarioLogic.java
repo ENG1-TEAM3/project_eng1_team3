@@ -6,7 +6,6 @@ import com.undercooked.game.Input.InputController;
 import com.undercooked.game.assets.AudioManager;
 import com.undercooked.game.assets.TextureManager;
 import com.undercooked.game.files.FileControl;
-import com.undercooked.game.food.Item;
 import com.undercooked.game.food.Request;
 import com.undercooked.game.load.LoadResult;
 import com.undercooked.game.screen.GameScreen;
@@ -79,8 +78,8 @@ public class ScenarioLogic extends GameLogic {
 
         // Add listener to CustomerController to remove 1 from count
 
-        // Load the map's floor sprite
-        map.load(textureManager);
+        // Load the map's floor sprites
+        map.loadFloor(textureManager, Constants.GAME_TEXTURE_ID);
     }
 
     @Override

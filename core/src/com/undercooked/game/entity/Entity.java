@@ -98,4 +98,8 @@ public class Entity {
 		shape.rect(collision.x,collision.y,collision.width,collision.height);
 		shape.setColor(Color.WHITE);
 	}
+
+    public Sprite getSprite() {
+		return sprite;
+    }
 }

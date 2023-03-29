@@ -59,6 +59,10 @@ public class TextureManager {
     }
 
     public Texture getAsset(String path) {
+        // Only try if it's not null
+        if (path == null) {
+            return get(null);
+        }
         path = "game/" + FileControl.toPath(path, "textures");
         return get(path);
     }
@@ -85,6 +89,10 @@ public class TextureManager {
     }
 
     public boolean loadAsset(String textureGroup, String path, String assetFolder) {
+        // Only try if it's not null
+        if (path == null) {
+            return false;
+        }
         return load(textureGroup, "game/" + FileControl.toPath(path, assetFolder));
     }
 
@@ -146,7 +154,4 @@ public class TextureManager {
             }
         }
     }
-
-
-
 }

@@ -62,7 +62,7 @@ public class MapManager {
         stationManager.clear();
 
         // Convert the Map Json into an actual map
-        Map outputMap = mapOfSize(root.getInt("width"), root.getInt("height"), audioManager, interactions, gameItems);
+        Map outputMap = mapOfSize(root.getInt("width"), root.getInt("height"), textureManager, audioManager, interactions, gameItems);
 
         // Loop through the stations
         for (JsonValue stationData : root.get("stations").iterator()) {
@@ -117,6 +117,7 @@ public class MapManager {
                         outputMap.addMapEntity(newStation,
                                                stationData.getInt("x"),
                                                stationData.getInt("y"),
+                                               data.getFloorTile(),
                                                hasCollision);
                     }
                 }
@@ -139,21 +140,21 @@ public class MapManager {
 
     }
 
-    public static UniqueStation newCounter(AudioManager audioManager, Interactions interactions, Items gameItems) {
-        UniqueStation newCounter = new UniqueStation(StationManager.stationData.get("<main>:counter"));
+    public static Station newCounter(AudioManager audioManager, Interactions interactions, Items gameItems) {
+        Station newCounter = new Station(StationManager.stationData.get("<main>:counter"));
         newCounter.makeInteractionController(audioManager, gameItems);
         newCounter.setInteractions(interactions);
         return newCounter;
     }
 
     // Creates a map of size width and height.
-    public static Map mapOfSize(int width, int height, AudioManager audioManager, Interactions interactions, Items gameItems) {
+    public static Map mapOfSize(int width, int height, TextureManager textureManager, AudioManager audioManager, Interactions interactions, Items gameItems) {
         // The map size is the area that the players can run around in.
         // Therefore, height += 2, for top and bottom counters, and then
         // width has a few more added, primarily on the left.
         int fullWidth = width + 4,
             fullHeight = height + 1;
-        Map returnMap = new Map(width, height, fullWidth, fullHeight);
+        Map returnMap = new Map(width, height, fullWidth, fullHeight, textureManager);
         int offsetX = 4, offsetY = 1;
         returnMap.setOffsetX(offsetX);
         returnMap.setOffsetY(offsetY);
@@ -161,24 +162,24 @@ public class MapManager {
         // Add the counter border
         // X entities
         for (int i = 0 ; i < width ; i++) {
-            returnMap.addMapEntity(newCounter(audioManager, interactions, gameItems),i,0);
-            returnMap.addMapEntity(newCounter(audioManager, interactions, gameItems),i,height-1);
+            returnMap.addMapEntity(newCounter(audioManager, interactions, gameItems),i,0,null);
+            returnMap.addMapEntity(newCounter(audioManager, interactions, gameItems),i,height-1,null);
         }
         // Y entities
         for (int j = 1 ; j < height-1 ; j++) {
-            returnMap.addMapEntity(newCounter(audioManager, interactions, gameItems),0,j);
-            returnMap.addMapEntity(newCounter(audioManager, interactions, gameItems),width-1,j);
+            returnMap.addMapEntity(newCounter(audioManager, interactions, gameItems),0,j,null);
+            returnMap.addMapEntity(newCounter(audioManager, interactions, gameItems),width-1,j,null);
         }
 
         // Leftmost wall
         for (int j = 1 ; j < fullHeight ; j++) {
-            returnMap.addFullMapEntity(newCounter(audioManager, interactions, gameItems),0,j);
+            returnMap.addFullMapEntity(newCounter(audioManager, interactions, gameItems),0,j,null);
         }
 
         // Add 2 at the top at x=1, x=2
-        returnMap.addFullMapEntity(newCounter(audioManager, interactions, gameItems), 1, fullHeight-1);
-        returnMap.addFullMapEntity(newCounter(audioManager, interactions, gameItems), 2, fullHeight-1);
-        returnMap.addFullMapEntity(newCounter(audioManager, interactions, gameItems), 3, fullHeight-1);
+        returnMap.addFullMapEntity(newCounter(audioManager, interactions, gameItems), 1, fullHeight-1,null);
+        returnMap.addFullMapEntity(newCounter(audioManager, interactions, gameItems), 2, fullHeight-1,null);
+        returnMap.addFullMapEntity(newCounter(audioManager, interactions, gameItems), 3, fullHeight-1,null);
 
         return returnMap;
     }

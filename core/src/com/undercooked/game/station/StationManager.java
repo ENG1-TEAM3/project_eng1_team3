@@ -142,6 +142,7 @@ public class StationManager {
 			data.setWidth(stationRoot.getInt("width"));
 			data.setHeight(stationRoot.getInt("height"));
 			data.setDefaultBase(stationRoot.getString("default_base"));
+			data.setFloorTile(stationRoot.getString("floor_tile"));
 			data.setCollidable(stationRoot.getBoolean("has_collision"));
 
 			// For collision width and height, if they are <= 0, then default to

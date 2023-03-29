@@ -145,14 +145,14 @@ public class GameRenderer {
         batch.end();
 
         // Draw debug
-        //shape.begin();
-        // logic.getMap().drawDebug(shape);
+        shape.begin();
+        logic.getMap().drawDebug(shape);
 
         // Render all the entities' debug
-        /*for (Entity renderEntity : renderEntities) {
+        for (Entity renderEntity : renderEntities) {
             renderEntity.drawDebug(shape);
-        }*/
-        //shape.end();
+        }
+        shape.end();
 
 
 

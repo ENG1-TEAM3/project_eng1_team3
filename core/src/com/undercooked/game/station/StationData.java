@@ -1,7 +1,8 @@
 package com.undercooked.game.station;
 
 public class StationData {
-    private String path, texturePath, defaultBase;
+    private String path, texturePath,
+            defaultBase, floorTile;
     private final String id;
     private int width, height;
     private int holds;
@@ -42,6 +43,10 @@ public class StationData {
 
     public void setDefaultBase(String defaultBase) {
         this.defaultBase = defaultBase;
+    }
+
+    public void setFloorTile(String floorTile) {
+        this.floorTile = floorTile;
     }
 
     public void setWidth(int width) {
@@ -86,6 +91,10 @@ public class StationData {
 
     public String getDefaultBase() {
         return defaultBase;
+    }
+
+    public String getFloorTile() {
+        return floorTile;
     }
 
     public int getWidth() {

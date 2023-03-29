@@ -70,9 +70,9 @@ public class MapEntity extends Entity {
     @Override
     public void drawDebug(ShapeRenderer shape) {
         super.drawDebug(shape);
-        shape.setColor(Color.BLUE);
+        /*shape.setColor(Color.YELLOW);
         shape.rect(interactBox.x,interactBox.y,interactBox.width,interactBox.height);
-        shape.setColor(Color.WHITE);
+        shape.setColor(Color.WHITE);*/
     }
 
     public Rectangle getInteractBox() {

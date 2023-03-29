@@ -107,6 +107,7 @@ public final class Constants {
             root.addValue(new JsonFloat("collision_offset_x", 0F)); // The z offset of the collision box in pixels
             root.addValue(new JsonFloat("collision_offset_y", 0F)); // The y offset of the collision box in pixels
             root.addValue(new JsonString("default_base", "<main>:station/blank.png"));
+            root.addValue(new JsonString("floor_tile", null));
             root.addValue(new JsonType("has_collision", JsonValue.ValueType.booleanValue));
             root.addValue(new JsonInt("holds", 0)); // How many items the station holds.
 
@@ -322,10 +323,11 @@ public final class Constants {
     public static final String DEFAULT_MAP = "<main>:main";
     /** The default {@link com.badlogic.gdx.graphics.Texture} to load if one fails to load. */
     public static final String DEFAULT_TEXTURE = "items/missing.png";
+    public static final String DEFAULT_FLOOR_TILE = "<main>:floor/floor_tile.png";
     /** The default {@link com.badlogic.gdx.audio.Music} to load if one fails to load. */
     public static final String DEFAULT_MUSIC = "game/sounds/frying.mp3";
     /** The default {@link com.badlogic.gdx.audio.Sound} to load if one fails to load. */
-    public static final String DEFAULT_SOUND = "game/sounds/cutting.mp3";
+    public static final String DEFAULT_SOUND = "game/sounds/chopping.mp3";
 
     // public static final ... DEFAULT_CONTROLS = ...;
 
