@@ -227,7 +227,7 @@ public class Cook extends MoveableEntity {
 			if (interactTarget.getMapEntity() != null) {
 				Station asStation = (Station) interactTarget.getMapEntity();
 				// Only set stationTarget if another cook isn't locked to it
-				if (!asStation.hasCookLocked()) {
+				if (!asStation.hasCookLocked() || asStation.hasCookLocked(this)) {
 					// If it doesn't have a cook, then it's the target.
 					stationTarget = asStation;
 				} else {
@@ -441,6 +441,10 @@ public class Cook extends MoveableEntity {
 
 	public MapCell getInteractTarget() {
 		return interactTarget;
+	}
+
+	public Station getStationTarget() {
+		return stationTarget;
 	}
 
 	public boolean canAddItems(int number) {

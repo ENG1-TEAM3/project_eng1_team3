@@ -137,6 +137,13 @@ public class GameRenderer {
                 // If it is, then draw it.
                 MapEntity interactEntity = interactTarget.getMapEntity();
                 Rectangle interactBox = interactEntity.getInteractBox();
+                // If the station target is null, then draw it red.
+                // Otherwise, draw it yellow.
+                if (currentCook.getStationTarget() == null) {
+                    interactSprite.setColor(Color.RED);
+                } else {
+                    interactSprite.setColor(Color.YELLOW);
+                }
                 interactSprite.setSize(interactBox.width,interactBox.height);
                 interactSprite.setPosition(interactBox.x, interactBox.y);
                 interactSprite.draw(batch);
