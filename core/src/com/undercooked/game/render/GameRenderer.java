@@ -145,14 +145,7 @@ public class GameRenderer {
         batch.end();
 
         // Draw debug
-        shape.begin();
-        logic.getMap().drawDebug(shape);
-
-        // Render all the entities' debug
-        for (Entity renderEntity : renderEntities) {
-            renderEntity.drawDebug(shape);
-        }
-        shape.end();
+        // renderDebug(delta);
 
 
 
@@ -184,6 +177,17 @@ public class GameRenderer {
         font.draw(batch, "Time in s: " + StringUtil.formatSeconds(logic.getElapsedTime()),
                 500, 500);
         batch.end();
+    }
+
+    public void renderDebug(float delta) {
+        shape.begin();
+        logic.getMap().drawDebug(shape);
+
+        // Render all the entities' debug
+        for (Entity renderEntity : renderEntities) {
+            renderEntity.drawDebug(shape);
+        }
+        shape.end();
     }
 
     public void load(TextureManager textureManager) {
