@@ -72,6 +72,8 @@ public abstract class GameLogic {
             return LoadResult.FAILURE;
         }
 
+        customerController.setMap(map);
+
         // Load the map into the renderer
         for (Entity mapEntity : map.getAllEntities()) {
             gameRenderer.addEntity(mapEntity);

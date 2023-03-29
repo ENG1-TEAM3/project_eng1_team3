@@ -1,16 +1,18 @@
 package com.undercooked.game.entity;
 
-import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.undercooked.game.MainGameClass;
 import com.undercooked.game.assets.TextureManager;
+import com.undercooked.game.food.Item;
+import com.undercooked.game.map.MapManager;
+import com.undercooked.game.util.Listener;
 
-public class Customer {
+public class Customer extends Entity {
 	int targetsquare;
-	public int posx;
-	public int posy;
+	public float posx;
+	public float posy;
 	Texture textf;
 	Texture textb;
 	Texture textr;
@@ -21,14 +23,22 @@ public class Customer {
 	TextureRegion[][] custpartsr;
 	TextureRegion[][] custpartsl;
 	TextureRegion[][] currentcustparts;
-	int startposx;
+	float startposx;
 	int targetpixel;
 	public boolean locked;
-	public boolean readyfordeletion;
+	public boolean leaving;
 
 	private long arrivalTime;
 
+	private float visibility;
+	private int reputationThreat;
+	Listener<Integer> servedListener;
+	Listener<Integer> failedListener;
+	CustomerController customerController;
+
 	public String order = "";
+	public float waitTimer;
+	public boolean waiting;
 
 	/**
 	 * Constructor for customer class
@@ -38,7 +48,7 @@ public class Customer {
 	 * @param textureManager The {@link TextureManager} to use
 	 *                       to load and get {@link Texture}s from.
 	 */
-	public Customer(int x, int y, int custno, TextureManager textureManager) {
+	public Customer(int x, int y, int custno, CustomerController customerController, TextureManager textureManager) {
 		TextureManager assetManager = textureManager;
 		textf = assetManager.get("entities/cust" + custno + "f.png");
 		textb = assetManager.get("entities/cust" + custno + "b.png");
@@ -52,10 +62,67 @@ public class Customer {
 
 		currentcustparts = custpartsb;
 
-		posx = x * 64;
-		posy = y * 64;
+		posx = MapManager.gridToPos(x);
+		posy = MapManager.gridToPos(y);
 		startposx = posx;
 		locked = false;
+		this.visibility = 1F;
+		this.waiting = true;
+		this.customerController = customerController;
+	}
+
+	public void update(float delta) {
+		// If leaving, and y <= 0, then make invisible before deleting
+		if (leaving) {
+			posy -= 2;
+			if (posy <= 0) {
+				visibility -= 0.1F;
+				if (visibility <= 0) {
+					// Delete this customer
+					customerController.deleteCustomer(this);
+				}
+			}
+			return;
+		}
+		// If this customer is one that waits...
+		if (waiting) {
+			// Then decrease the wait timer
+			waitTimer -= delta;
+			// If waitTimer reaches 0, and the customer hasn't been served,
+			// then tell the listener
+			if (waitTimer <= 0) {
+				failedListener.tell(reputationThreat);
+				leave();
+			}
+			return;
+		}
+
+		// Finally, if it gets to here then the Customer is moving up
+		// to a register
+	}
+
+	@Override
+	public void draw(SpriteBatch batch) {
+		batch.setColor(1,1,1,visibility);
+		super.draw(batch);
+	}
+
+	public void serve(Item item) {
+		if (item.getID() == this.order) {
+			// Get the money for it
+			servedListener.tell(item.getValue());
+			// Then leave
+			leave();
+		}
+	}
+
+	protected void leave() {
+		// Set the Customer to leave
+		leaving = true;
+		// If the Customer is at a register, then tell the
+		// CustomerController that.
+
+		// Move to the left path
 	}
 
 	/**
@@ -114,7 +181,7 @@ public class Customer {
 				locked = true;
 				currentcustparts = custpartsr;
 			} else {
-				readyfordeletion = true;
+				leaving = true;
 			}
 		}
 	}

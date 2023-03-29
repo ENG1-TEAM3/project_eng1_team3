@@ -91,7 +91,7 @@ public class StationManager {
 				if (file.extension().equals("json")) {
 					StationData newData = loadStationPath(pathPrefix + path + file.nameWithoutExtension());
 					if (newData != null) {
-						newData.setPath(file.path());
+						newData.setPath(pathPrefix + path + file.nameWithoutExtension());
 						stationData.put(pathPrefix + path + file.nameWithoutExtension(), newData);
 					}
 				}

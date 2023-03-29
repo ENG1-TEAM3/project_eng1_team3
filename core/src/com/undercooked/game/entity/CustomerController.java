@@ -18,7 +18,9 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.undercooked.game.MainGameClass;
 import com.undercooked.game.assets.TextureManager;
+import com.undercooked.game.map.Map;
 import com.undercooked.game.util.Constants;
+import com.undercooked.game.util.Listener;
 
 public class CustomerController {
 	int lockout;
@@ -26,15 +28,36 @@ public class CustomerController {
 	ArrayList<ArrayList<Integer>> customerCells;
 	TextureManager textureManager;
 	Array<Customer> customers;
+	Map map;
 	int top;
 	int bottom;
 	int xCoordinate;
 
-	public CustomerController(TextureManager textureManager) {
+	Listener<Integer> getMoney;
+	Listener<Integer> loseReputation;
+	Listener<Customer> customerDelete;
+
+	public CustomerController(TextureManager textureManager, Map map) {
 		this.textureManager = textureManager;
+		this.map = map;
 		// computeCustomerZone(gameMap);
 		amountActiveCustomers = 0;
 		lockout = 0;
+
+		this.customerDelete = new Listener<Customer>() {
+			@Override
+			public void tell(Customer value) {
+				deleteCustomer(value);
+			}
+		};
+	}
+
+	public CustomerController(TextureManager textureManager) {
+		this(textureManager, null);
+	}
+
+	public void setMap(Map map) {
+		this.map = map;
 	}
 
 	public void load(String textureGroup) {
@@ -50,6 +73,35 @@ public class CustomerController {
 	}
 
 	public void update(float delta) {
+		// Update the Customers
+		for (Customer customer : customers) {
+			customer.update(delta);
+		}
+	}
+
+	public void spawnCustomer() {
+		Customer newCustomer = new Customer(this.xCoordinate, this.bottom, 3, this, textureManager);
+		customers.add(newCustomer);
+
+		newCustomer.servedListener = getMoney;
+		newCustomer.failedListener = loseReputation;
+		amountActiveCustomers += 1;
+	}
+
+	protected void deleteCustomer(Customer customer) {
+		customers.removeValue(customer, true);
+	}
+
+	public void setReputationListener(Listener<Integer> reputationListener) {
+		this.loseReputation = reputationListener;
+	}
+
+	public void setServedListener(Listener<Integer> servedListener) {
+		this.getMoney = servedListener;
+	}
+
+	public void findRegisters() {
+
 	}
 
 	/**
@@ -129,12 +181,6 @@ public class CustomerController {
 		this.top = ymax;
 		this.bottom = 0;
 		this.xCoordinate = xvalues[0]; // We can do this because the search scans left to right, 0th value will be left
-	}
-
-	public void spawnCustomer() {
-		customers.add(new Customer(this.xCoordinate, this.bottom, 3, textureManager));
-		amountActiveCustomers += 1;
-
 	}
 
 	/*public void delCustomer(int num) {
