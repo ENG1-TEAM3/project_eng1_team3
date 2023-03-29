@@ -511,9 +511,9 @@ public class Map {
      * @param textureManager The {@link TextureManager} to load using.
      */
     public void loadAll(TextureManager textureManager, String textureID) {
-        for (int x = 0 ; x < width ; x++) {
-            for (int y = 0 ; y < height ; y++) {
-                MapCell thisCell = getCell(x,y);
+        for (int x = 0 ; x < fullWidth ; x++) {
+            for (int y = 0 ; y < fullHeight ; y++) {
+                MapCell thisCell = getCellFull(x,y);
                 if (thisCell != null) {
                     thisCell.load(textureManager, textureID);
                 }
@@ -527,9 +527,9 @@ public class Map {
      *                                                to use.
      */
     public void loadFloor(TextureManager textureManager, String textureID) {
-        for (int x = 0 ; x < width ; x++) {
-            for (int y = 0 ; y < height ; y++) {
-                MapCell thisCell = getCell(x,y);
+        for (int x = 0 ; x < fullWidth ; x++) {
+            for (int y = 0 ; y < fullHeight ; y++) {
+                MapCell thisCell = getCellFull(x,y);
                 if (thisCell != null) {
                     thisCell.loadFloor(textureManager, textureID);
                 }
@@ -543,9 +543,9 @@ public class Map {
      *                                                to use.
      */
     public void postLoad(TextureManager textureManager) {
-        for (int x = 0 ; x < width ; x++) {
-            for (int y = 0 ; y < height ; y++) {
-                MapCell thisCell = getCell(x,y);
+        for (int x = 0 ; x < fullWidth ; x++) {
+            for (int y = 0 ; y < fullHeight ; y++) {
+                MapCell thisCell = getCellFull(x,y);
                 if (thisCell != null) {
                     thisCell.updateBelowTile(textureManager);
                 }

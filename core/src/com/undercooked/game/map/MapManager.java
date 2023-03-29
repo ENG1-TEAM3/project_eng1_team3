@@ -181,6 +181,16 @@ public class MapManager {
         returnMap.addFullMapEntity(newCounter(audioManager, interactions, gameItems), 2, fullHeight-1,null);
         returnMap.addFullMapEntity(newCounter(audioManager, interactions, gameItems), 3, fullHeight-1,null);
 
+        // Add the customer floor tiles
+        for (int i = 2 ; i <= 3 ; i++) {
+            for (int j = 0 ; j < fullHeight-2; j++) {
+                MapCell thisCell = returnMap.getCellFull(i, j);
+                if (j == 0) thisCell.setBelowTile("<main>:floor/customer_tile_bot.png");
+                else if (j == fullHeight-3) thisCell.setBelowTile("<main>:floor/customer_tile_top.png");
+                else thisCell.setBelowTile("<main>:floor/customer_tile_mid.png");
+            }
+        }
+
         return returnMap;
     }
 
