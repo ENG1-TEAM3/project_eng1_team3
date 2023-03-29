@@ -323,9 +323,9 @@ public final class Constants {
     /** The default {@link com.badlogic.gdx.graphics.Texture} to load if one fails to load. */
     public static final String DEFAULT_TEXTURE = "items/missing.png";
     /** The default {@link com.badlogic.gdx.audio.Music} to load if one fails to load. */
-    public static final String DEFAULT_MUSIC = "audio/music/GameMusic.mp3";
+    public static final String DEFAULT_MUSIC = "game/sounds/frying.mp3";
     /** The default {@link com.badlogic.gdx.audio.Sound} to load if one fails to load. */
-    public static final String DEFAULT_SOUND = "uielements/testsound.mp3";
+    public static final String DEFAULT_SOUND = "game/sounds/cutting.mp3";
 
     // public static final ... DEFAULT_CONTROLS = ...;
 
