@@ -225,7 +225,16 @@ public class Cook extends MoveableEntity {
 		interactTarget = map.getCollision(interactCollision, true, Map.CollisionType.INTERACTABLE);
 		if (interactTarget != null) {
 			if (interactTarget.getMapEntity() != null) {
-				stationTarget = (Station) interactTarget.getMapEntity();
+				Station asStation = (Station) interactTarget.getMapEntity();
+				// Only set stationTarget if another cook isn't locked to it
+				if (!asStation.hasCookLocked()) {
+					// If it doesn't have a cook, then it's the target.
+					stationTarget = asStation;
+				} else {
+					// Otherwise, it can't be the target, as it's already
+					// the target of another cook.
+					stationTarget = null;
+				}
 			}
 		}
 
