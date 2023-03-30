@@ -15,40 +15,64 @@ on:
     branches: [ "master" ]
 
 jobs:
-  releases:
+  build:
     strategy:
       matrix:
         os: [ubuntu-22.04, windows-2022]
     runs-on: ${{ matrix.os }}
-    if: startsWith(github.ref, 'refs/tags/')
+    
     permissions:
-      contents: write
-
+      contents: read
+      
     steps:
     - uses: actions/checkout@v3
     
     - name: Set up JDK 11
       uses: actions/setup-java@v3
       with:
-        java-version: 11
+        java-version: '11'
         distribution: 'temurin'
+      
+    - name: Build Executable
+      uses: gradle/gradle-build-action@v2.4.0
+      with:
+        arguments: desktop:dist
         
+    - name: Upload Executable
+      uses: actions/upload-artifact@v3.1.2
+      with:
+        name: piazzapanic-${{ matrix.os }}.jar
+        path: ./desktop/build/libs/desktop-1.0.jar
+
+  releases:
+    strategy:
+      matrix:
+        os: [ubuntu-22.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    needs: [ "build" ]
+    if: startsWith(github.ref, 'refs/tags/')
+    permissions:
+      contents: write
+
+    steps:        
     - name: Download a Ubuntu Build Artifact
       uses: actions/download-artifact@v3.0.1
       with:
         name: piazzapanic-ubuntu-22.04.jar
         
-    - name: Release Ubuntu
-      uses: softprops/action-gh-release@v1
-      with:
-        files: piazzapanic-ubuntu-22.04.jar
-        
+    - name: Rename Ubuntu Build Artifact
+      run: mv piazzapanic-ubuntu-22.04.jar lib-ubuntu.jar
+    
     - name: Download a Windows Build Artifact
       uses: actions/download-artifact@v3.0.1
       with:
         name: piazzapanic-windows-2022.jar
         
-    - name: Release Ubuntu
+    - name: Rename Ubuntu Build Artifact
+      run: mv piazzapanic-windows-2022.jar lib-windows.jar
+        
+    - name: Release
       uses: softprops/action-gh-release@v1
       with:
-        files: piazzapanic-windows-2022.jar
+        files: lib*.jar
+        
