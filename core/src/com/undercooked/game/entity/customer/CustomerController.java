@@ -1,10 +1,13 @@
 package com.undercooked.game.entity.customer;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Array;
 import com.undercooked.game.assets.TextureManager;
+import com.undercooked.game.food.Item;
+import com.undercooked.game.food.Request;
 import com.undercooked.game.map.*;
 import com.undercooked.game.util.Constants;
 import com.undercooked.game.util.Listener;
@@ -14,19 +17,26 @@ public class CustomerController {
 	int amountActiveCustomers;
 	ArrayList<ArrayList<Integer>> customerCells;
 	TextureManager textureManager;
+	/** An array of all {@link Customer}s, sorted in the order they are spawned. */
 	Array<Customer> customers;
+	/** The {@link #customers} array, but it is sorted based on Y level. */
+	Array<Customer> drawCustomers;
+	Array<Customer> toSpawn;
 	Array<Register> registers;
 
 	Map map;
 	float spawnX, spawnY;
 
-	Listener<Integer> getMoney;
-	Listener<Integer> loseReputation;
+	Listener<Request> getMoney;
+	Listener<Request> loseReputation;
+	Comparator<Customer> customerDrawComparator;
 
 	public CustomerController(TextureManager textureManager, Map map) {
 		this.textureManager = textureManager;
 		this.map = map;
 		this.customers = new Array<>();
+		this.drawCustomers = new Array<>();
+		this.toSpawn = new Array<>();
 		this.registers = new Array<>();
 		// computeCustomerZone(gameMap);
 		amountActiveCustomers = 0;
@@ -34,6 +44,18 @@ public class CustomerController {
 
 		this.spawnX = 3;
 		this.spawnY = -1;
+
+		this.customerDrawComparator = new Comparator<Customer>() {
+			@Override
+			public int compare(Customer o1, Customer o2) {
+				if (o1.getY() > o2.getY()) {
+					return -1;
+				} else if (o2.getY() > o1.getY()) {
+					return 1;
+				}
+				return 0;
+			}
+		};
 	}
 
 	public CustomerController(TextureManager textureManager) {
@@ -74,11 +96,21 @@ public class CustomerController {
 		for (int index = 0 ; index < customers.size ; index++) {
 			customers.get(index).update(delta);
 		}
+		// If there are customers to spawn...
+		if (toSpawn.size > 0) {
+			// And one can be spawned...
+			if (canSpawn()) {
+				// then move it over to the customers array
+				customers.add(toSpawn.removeIndex(0));
+			}
+		}
 	}
 
 	public void draw(SpriteBatch batch) {
+		// First sort the draw array
+		drawCustomers.sort(customerDrawComparator);
 		// Draw all the Customers
-		for (Customer customer : customers) {
+		for (Customer customer : drawCustomers) {
 			customer.draw(batch);
 		}
 	}
@@ -95,20 +127,25 @@ public class CustomerController {
 		return null;
 	}
 
-	public void spawnCustomer(String request) {
-		// Only spawn a customer if there isn't one in the
-		// spawn position, or directly above.
-		if (customerInSquareGrid(spawnX, spawnY)) {
-			return;
-		}
-		if (customerInSquareGrid(spawnX, spawnY+1)) {
-			return;
-		}
-		Customer newCustomer = new Customer(3, this, textureManager);
-		customers.add(newCustomer);
+	public boolean canSpawn() {
+		return !(customerInSquareGrid(spawnX, spawnY) || customerInSquareGrid(spawnX, spawnY+1));
+	}
 
-		newCustomer.posx = MapManager.gridToPos(spawnX);
-		newCustomer.posy = MapManager.gridToPos(spawnY);
+	public void spawnCustomer(Request request) {
+		Customer newCustomer = new Customer(3, this, textureManager);
+		// Add the customer if it's valid. If not, add to the "to spawn" array
+		// If toSpawn already has something in it, then add it to the end
+		// of that, as it can't be added before.
+		if (!(toSpawn.size > 0) && canSpawn()) {
+			customers.add(newCustomer);
+		} else {
+			toSpawn.add(newCustomer);
+		}
+		// Either way, add it to the draw array
+		drawCustomers.add(newCustomer);
+
+		newCustomer.x = MapManager.gridToPos(spawnX);
+		newCustomer.y = MapManager.gridToPos(spawnY);
 
 		newCustomer.servedListener = getMoney;
 		newCustomer.failedListener = loseReputation;
@@ -130,16 +167,6 @@ public class CustomerController {
 		return null;
 	}
 
-	public boolean isRegister(MapCell cell) {
-		// Loop through the registers and check
-		for (Register register : registers) {
-			if (register.registerCell == cell) {
-				return true;
-			}
-		}
-		return false;
-	}
-
 	public boolean customerInSquareGrid(float x, float y, Customer ignoredCustomer) {
 		x = (int) x;
 		y = (int) y;
@@ -148,8 +175,8 @@ public class CustomerController {
 			if (customer == ignoredCustomer) {
 				continue;
 			}
-			int cX = MapManager.posToGridFloor(customer.posx);
-			int cY = MapManager.posToGridFloor(customer.posy);
+			int cX = MapManager.posToGridFloor(customer.x);
+			int cY = MapManager.posToGridFloor(customer.y);
 			if (x == cX & y == cY) {
 				return true;
 			}
@@ -202,14 +229,17 @@ public class CustomerController {
 
 	protected void deleteCustomer(Customer customer) {
 		customers.removeValue(customer, true);
+		toSpawn.removeValue(customer, true);
+		drawCustomers.removeValue(customer, true);
 		amountActiveCustomers -= 1;
+		
 	}
 
-	public void setReputationListener(Listener<Integer> reputationListener) {
+	public void setReputationListener(Listener<Request> reputationListener) {
 		this.loseReputation = reputationListener;
 	}
 
-	public void setServedListener(Listener<Integer> servedListener) {
+	public void setServedListener(Listener<Request> servedListener) {
 		this.getMoney = servedListener;
 	}
 
@@ -236,6 +266,42 @@ public class CustomerController {
 			registers.add(new Register(thisCell));
 		}
 		System.out.println(registers);
+	}
+
+	public boolean serve(MapCell registerCell, Item item) {
+		// Make sure that the target is a valid register
+		// by getting the register, and making sure the
+		// result isn't null.
+		Register register = getRegister(registerCell);
+		if (register == null) return false;
+
+		// Then get the customer of that register
+		Customer customer = register.customer;
+		// If it's null, then return false
+		if (customer == null) return false;
+
+		// Otherwise, check if the order and item matches
+		return customer.serve(item);
+	}
+
+	public boolean isRegister(MapCell cell) {
+		// Loop through the registers and check
+		for (Register register : registers) {
+			if (register.registerCell == cell) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private Register getRegister(MapCell cell) {
+		// Loop through the registers and check
+		for (Register register : registers) {
+			if (register.registerCell == cell) {
+				return register;
+			}
+		}
+		return null;
 	}
 
 	/**

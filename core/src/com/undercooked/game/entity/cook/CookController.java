@@ -8,6 +8,7 @@ import com.undercooked.game.Input.Keys;
 import com.undercooked.game.assets.TextureManager;
 import com.undercooked.game.map.Map;
 import com.undercooked.game.map.MapManager;
+import com.undercooked.game.util.Listener;
 
 /**
  * Responsible for all functions that affect cook adding,
@@ -24,7 +25,8 @@ public class CookController {
     TextureManager textureManager;
     /** The number of cook textures */
     static final int COOK_TEXTURES = 3;
-
+    /** The served listener to call when a {@link Cook} serves at a register. */
+    Listener<Cook> serveListener;
 
     /**
      * The constructor for the {@link CookController}.
@@ -48,6 +50,7 @@ public class CookController {
             return;
         }
         cooks.add(cook);
+        cook.serveListener = serveListener;
     }
 
     /**
@@ -193,6 +196,24 @@ public class CookController {
             Cook newCook = new Cook(cookPos, cookNo, textureManager, map);
             addCook(newCook);
             cookNo = Math.max(1, (cookNo+1) % (COOK_TEXTURES+1));
+        }
+    }
+
+    /**
+     * Update the serve {@link Listener} which is called
+     * when a {@link Cook} tries to place down an
+     * {@link com.undercooked.game.food.Item} onto a
+     * {@link com.undercooked.game.station.Station} that
+     * is a register.
+     *
+     * @param serveListener {@link Listener<Cook>} : The {@link Listener}
+     *                                            to use.
+     */
+    public void setServeListener(Listener<Cook> serveListener) {
+        this.serveListener = serveListener;
+        // Make sure to update it for all cooks
+        for (Cook cook : cooks) {
+            cook.serveListener = serveListener;
         }
     }
 }

@@ -21,6 +21,10 @@ import com.undercooked.game.map.Map;
 import com.undercooked.game.map.MapCell;
 import com.undercooked.game.station.Station;
 import com.undercooked.game.util.CollisionTile;
+import com.undercooked.game.util.Constants;
+import com.undercooked.game.util.Listener;
+
+import java.util.concurrent.ConcurrentSkipListMap;
 
 public class Cook extends MoveableEntity {
 
@@ -43,6 +47,7 @@ public class Cook extends MoveableEntity {
 	public boolean holding = false;
 	public ItemStack heldItems;
 	Map map;
+	Listener<Cook> serveListener;
 
 	/**
 	 * Cook entity constructor
@@ -144,6 +149,14 @@ public class Cook extends MoveableEntity {
 		if (InputController.isKeyJustPressed("drop")) {
 			// If the cook has an item, drop it
 			if (heldItems.size() > 0) {
+				// If it's a register, call the serve listener (if it's not null)
+				if (serveListener != null) {
+					if (stationTarget.getID().equals(Constants.REGISTER_ID)) {
+						serveListener.tell(this);
+						return;
+					}
+				}
+
 				// If the station can hold it...
 				if (stationTarget.canHoldItem()) {
 					// Then add it

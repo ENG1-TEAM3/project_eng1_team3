@@ -5,10 +5,14 @@ import com.badlogic.gdx.utils.JsonValue;
 import com.undercooked.game.Input.InputController;
 import com.undercooked.game.assets.AudioManager;
 import com.undercooked.game.assets.TextureManager;
+import com.undercooked.game.entity.cook.Cook;
 import com.undercooked.game.entity.customer.Customer;
 import com.undercooked.game.files.FileControl;
+import com.undercooked.game.food.Item;
 import com.undercooked.game.food.Request;
 import com.undercooked.game.load.LoadResult;
+import com.undercooked.game.map.MapCell;
+import com.undercooked.game.map.MapEntity;
 import com.undercooked.game.screen.GameScreen;
 import com.undercooked.game.util.Constants;
 import com.undercooked.game.util.Listener;
@@ -19,11 +23,11 @@ public class ScenarioLogic extends GameLogic {
     /** The number of cooks in-game. */
     int cookCount;
 
-    /** The number of customers to serve. */
-    public final int NUMBER_OF_WAVES = 5;
+    /** The number of requests to serve. */
+    private int requestTarget = 5;
 
-    /** The number of customers that have been served. */
-    public int currentWave = 0;
+    /** The number of requests that have been served correctly. */
+    private int requestsComplete = 0;
     /** How much reputation the player has. */
     public int reputation;
     private String scenario;
@@ -34,8 +38,46 @@ public class ScenarioLogic extends GameLogic {
         cookCount = 1;
         requests = new Array<>();
         // Set the listeners for the CustomerController
-        customerController.setServedListener(new Listener<Integer>() {
+        customerController.setServedListener(new Listener<Request>() {
+            @Override
+            public void tell(Request value) {
+                customerServed(value);
+            }
+        });
 
+        customerController.setReputationListener(new Listener<Request>() {
+            @Override
+            public void tell(Request value) {
+                customerFailed(value);
+            }
+        });
+
+        // Set listener for CookController
+        cookController.setServeListener(new Listener<Cook>() {
+            @Override
+            public void tell(Cook cook) {
+                // Only if Cook is not null
+                if (cook == null) return;
+
+                // Get the top item
+                Item cookItemTop = cook.heldItems.peek();
+                // If it's not null, continue
+                if (cookItemTop == null) return;
+
+                // Then get the interactTarget of the Cook
+                MapCell target = cook.getInteractTarget();
+                // Make sure that the target is not null
+                if (target == null) return;
+                // And that it's also a register
+                MapEntity targetEntity = target.getMapEntity();
+                if (targetEntity == null || !targetEntity.getID().equals(Constants.REGISTER_ID)) return;
+
+                // If all of that is valid, then send the item and cell to the CustomerController
+                if (customerController.serve(target, cookItemTop)) {
+                    // If it was successful, then remove the item from the cook
+                    cook.takeItem();
+                }
+            }
         });
 
         this.reputation = 0;
@@ -46,16 +88,11 @@ public class ScenarioLogic extends GameLogic {
     }
 
     public void checkGameOver() {
-        if (currentWave == NUMBER_OF_WAVES + 1) {
+        if (requestsComplete == requestTarget + 1) {
             // game.getLeaderBoardScreen().addLeaderBoardData("PLAYER1",
             // (int) Math.floor((startTime - timeOnStartup) / 1000f));
             // game.resetGameScreen();
-            this.resetStatic();
         }
-    }
-
-    public void resetStatic() {
-        currentWave = 0;
     }
 
     @Override
@@ -77,6 +114,11 @@ public class ScenarioLogic extends GameLogic {
         // Update Customers.
         customerController.update(delta);
 
+        // Spawn Customers
+        if (requests.size > 0) {
+            customerController.spawnCustomer(requests.get(0));
+            requests.removeIndex(0);
+        }
     }
 
     public void setScenario(String scenario) {
@@ -92,11 +134,11 @@ public class ScenarioLogic extends GameLogic {
     public void load() {
         // Load the Scenario
         loadScenario(scenario);
+        // Set the request target to the number of requests loaded
+        requestTarget = requests.size;
         // Load all the items
-
-        // Add listener to CustomerController to remove 1 from count
-
-        // Load the map's floor sprites
+        items.load(textureManager);
+        // Load the map's floor textures
         map.loadFloor(textureManager, Constants.GAME_TEXTURE_ID);
         // Find the registers on the map for the Customers
         customerController.findRegisters();
@@ -159,9 +201,6 @@ public class ScenarioLogic extends GameLogic {
         // Load all the requests
         loadRequests(scenarioData.get("requests"));
 
-        // Load the items
-        items.load(textureManager);
-
         // Set the reputation
         reputation = scenarioData.getInt("reputation");
 
@@ -186,17 +225,22 @@ public class ScenarioLogic extends GameLogic {
                 continue;
             }
             // If it was successfully added, then add it to the array
-            Request newRequest = new Request();
-            newRequest.itemID = request.getString("item_id");
+            Request newRequest = new Request(request.getString("item_id"));
             newRequest.setValue(request.getInt("value"));
+
+            requests.add(newRequest);
         }
     }
 
-    public void customerServed(int value) {
-
+    public void customerServed(Request request) {
+        // Set number completed += 1
+        requestsComplete += 1;
     }
 
-    public void customerFailed(int reputationCost) {
-
+    public void customerFailed(Request request) {
+        // Just add it to the list of requests again
+        requests.add(request);
+        // And remove the reputation threat from the player's reputation
+        reputation -= request.getReputationThreat();
     }
 }

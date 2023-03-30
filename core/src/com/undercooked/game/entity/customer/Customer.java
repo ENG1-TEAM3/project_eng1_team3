@@ -1,20 +1,18 @@
 package com.undercooked.game.entity.customer;
 
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.undercooked.game.assets.TextureManager;
-import com.undercooked.game.entity.Entity;
 import com.undercooked.game.food.Item;
+import com.undercooked.game.food.Request;
 import com.undercooked.game.map.MapManager;
 import com.undercooked.game.map.Register;
 import com.undercooked.game.util.Listener;
 
-public class Customer extends Entity {
-	int targetsquare;
-	public float posx;
-	public float posy;
+public class Customer {
+	public float x;
+	public float y;
 	Texture textf;
 	Texture textb;
 	Texture textr;
@@ -25,22 +23,16 @@ public class Customer extends Entity {
 	TextureRegion[][] custpartsr;
 	TextureRegion[][] custpartsl;
 	TextureRegion[][] currentcustparts;
-	float startposx;
-	int targetpixel;
 	float moveSpeed;
-	public boolean locked;
 	public boolean leaving;
 
-	private long arrivalTime;
-
 	private float visibility;
-	private int reputationThreat;
 	private Register register;
-	Listener<Integer> servedListener;
-	Listener<Integer> failedListener;
+	Listener<Request> servedListener;
+	Listener<Request> failedListener;
 	CustomerController customerController;
 
-	public String order = "";
+	public Request order;
 	public float waitTimer;
 	public boolean waiting;
 
@@ -68,8 +60,6 @@ public class Customer extends Entity {
 
 		// posx = MapManager.gridToPos(x);
 		// posy = MapManager.gridToPos(y);
-		startposx = posx;
-		locked = false;
 		this.visibility = 0F;
 		this.waiting = false;
 		this.customerController = customerController;
@@ -80,8 +70,8 @@ public class Customer extends Entity {
 	public void update(float delta) {
 		// If leaving, and y <= 0, then make invisible before deleting
 		if (leaving) {
-			posy -= moveSpeed;
-			if (posy <= 0) {
+			y -= moveSpeed;
+			if (y <= 0) {
 				visibility -= 0.1F;
 				if (visibility <= 0) {
 					// Delete this customer
@@ -102,7 +92,7 @@ public class Customer extends Entity {
 				// then tell the listener
 				if (waitTimer <= 0) {
 					if (failedListener != null) {
-						failedListener.tell(reputationThreat);
+						failedListener.tell(order);
 					}
 					leave();
 				}
@@ -116,36 +106,39 @@ public class Customer extends Entity {
 		// If it has a register to go to...
 		if (register != null) {
 			// Then just move until it reaches the register
-			posy += moveSpeed;
+			y += moveSpeed;
 			// If posy >= registerCell's y, + 0.5, then wait
 			float targetY = register.registerCell.getDisplayY() - MapManager.gridToPos(0.3F);
-			if (posy >= targetY) {
+			if (y >= targetY) {
 				waiting = true;
-				posy = targetY;
+				y = targetY;
 			}
 			return;
 		}
 
 		// If it doesn't have a register, then just move up if there's no other customer above.
-		if (!customerController.customerInSquarePos(posx,posy+MapManager.gridToPos(0.5F), this)) {
-			posy += moveSpeed;
+		if (!customerController.customerInSquarePos(x, y +MapManager.gridToPos(0.5F), this)) {
+			y += moveSpeed;
 		}
 	}
 
-	@Override
 	public void draw(SpriteBatch batch) {
 		batch.setColor(1,1,1,visibility);
-		batch.draw(textf, posx, posy, 64, 128);
+		batch.draw(textf, x, y, 64, 128);
 		batch.setColor(1, 1, 1, 1);
 	}
 
-	public void serve(Item item) {
-		if (item.getID() == this.order) {
+	public boolean serve(Item item) {
+		if (item.getID().equals(this.order.itemID)) {
 			// Get the money for it
-			servedListener.tell(item.getValue());
+			servedListener.tell(this.order);
+			// Remove this customer from the register
+			customerController.customerOffRegister(register);
 			// Then leave
 			leave();
+			return true;
 		}
+		return false;
 	}
 
 	protected void leave() {
@@ -155,71 +148,10 @@ public class Customer extends Entity {
 		// CustomerController that.
 		customerController.customerOffRegister(register);
 		// Move to the left path
-		this.posx -= MapManager.gridToPos(1);
+		this.x -= MapManager.gridToPos(1);
 	}
 
-	/**
-	 * Set arrival time as cook has arrived
-	 */
-	public void arrived() {
-		arrivalTime = System.currentTimeMillis();
-	}
-
-	/**
-	 * Check amount of time waited in ms
-	 * @return amount of time waited in ms
-	 */
-	public long waitTime() {
-		return System.currentTimeMillis() - arrivalTime;
-	}
-
-	/**
-	 * Render top of customer
-	 * @param b - spritebatch to render with
-	 */
-	public void renderCustomersTop(Batch b) {
-		b.draw(currentcustparts[0][0], posx, posy + 64, 64, 64);
-	}
-
-	/**
-	 * Render bottom of customer
-	 * @param b - spritebatch to render with
-	 */
-	public void renderCustomersBot(Batch b) {
-		b.draw(currentcustparts[1][0], posx, posy, 64, 64);
-	}
-
-	/**
-	 * Set target square location
-	 * @param tg - tile y coordinate of target square
-	 */
-	public void setTargetsquare(int tg) {
-		targetsquare = tg;
-	}
-
-	/**
-	 * Move towards customer target tile
-	 */
-	public void stepTarget() {
-		targetpixel = 32 + (targetsquare * 64);
-		if (posy < targetpixel) {
-			posy++;
-		} else if (posy > targetpixel) {
-			posy--;
-			currentcustparts = custpartsf;
-		}
-		if (posy == targetpixel) {
-			if (targetpixel > 0) {
-				posx = startposx + 64;
-				locked = true;
-				currentcustparts = custpartsr;
-			} else {
-				leaving = true;
-			}
-		}
-	}
-
-	public void setRequest(String request) {
+	public void setRequest(Request request) {
 		this.order = request;
 	}
 
@@ -227,7 +159,15 @@ public class Customer extends Entity {
 		this.register = register;
 	}
 
-	public String getRequest() {
+	public float getX() {
+		return x;
+	}
+
+	public float getY() {
+		return y;
+	}
+
+	public Request getRequest() {
 		return order;
 	}
 
