@@ -13,12 +13,14 @@ on:
     tags: [ "v[0-9]+.[0-9]+.[0-9]+" ]
   pull_request:
     branches: [ "master" ]
+  workflow_run:
+    workflows: ["Build Executable .jar", "CI Tests and Reports"]
 
 permissions:
   contents: read
 
 jobs:
-  build:
+  releases:
     strategy:
       matrix:
         os: [ubuntu-22.04, windows-2022]
