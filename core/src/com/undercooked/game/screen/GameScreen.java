@@ -1,7 +1,6 @@
 package com.undercooked.game.screen;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.maps.MapProperties;
@@ -20,9 +19,9 @@ import com.undercooked.game.assets.TextureManager;
 import com.undercooked.game.audio.AudioSettings;
 import com.undercooked.game.audio.AudioSliders;
 import com.undercooked.game.audio.Slider;
-import com.undercooked.game.entity.CookController;
-import com.undercooked.game.entity.Customer;
-import com.undercooked.game.entity.CustomerController;
+import com.undercooked.game.entity.cook.CookController;
+import com.undercooked.game.entity.customer.Customer;
+import com.undercooked.game.entity.customer.CustomerController;
 import com.undercooked.game.logic.GameLogic;
 import com.undercooked.game.logic.ScenarioLogic;
 import com.undercooked.game.map.Map;
@@ -172,7 +171,7 @@ public class GameScreen extends Screen {
 
 		gameLogic.setTextureManager(textureManager);
 		gameLogic.setAudioManager(getAudioManager());
-		((ScenarioLogic) gameLogic).loadScenario("<main>:main");
+		((ScenarioLogic) gameLogic).setScenario("<main>:main");
 		gameLogic.load();
 		gameRenderer.load(textureManager);
 		// System.out.println(map.getAllEntities());

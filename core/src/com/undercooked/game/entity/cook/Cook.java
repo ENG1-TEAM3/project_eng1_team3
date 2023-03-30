@@ -1,4 +1,4 @@
-package com.undercooked.game.entity;
+package com.undercooked.game.entity.cook;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
@@ -13,6 +13,7 @@ import com.undercooked.game.Input.InputController;
 import com.undercooked.game.Input.InputType;
 import com.undercooked.game.Input.Keys;
 import com.undercooked.game.assets.TextureManager;
+import com.undercooked.game.entity.MoveableEntity;
 import com.undercooked.game.food.Item;
 import com.undercooked.game.food.ItemStack;
 import com.undercooked.game.interactions.InteractResult;
@@ -165,6 +166,9 @@ public class Cook extends MoveableEntity {
 			// Loop through the InputTypes
 			for (InputType inputType : InputType.values()) {
 				if (InputController.isKey(keyID, inputType)) {
+					if (interactTarget.getMapEntity() == null) {
+						return;
+					}
 					interactResult = interactTarget.getMapEntity().interact(this, keyID, inputType);
 					// If it's repeat, then repeat the check
 					if (interactResult == InteractResult.RESTART) {
@@ -235,7 +239,11 @@ public class Cook extends MoveableEntity {
 					// the target of another cook.
 					stationTarget = null;
 				}
+			} else {
+				stationTarget = null;
 			}
+		} else {
+			stationTarget = null;
 		}
 
 		// Update animation

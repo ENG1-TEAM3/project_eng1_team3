@@ -1,6 +1,8 @@
 package com.undercooked.game.util;
 
 import com.badlogic.gdx.utils.JsonValue;
+import com.undercooked.game.entity.cook.Cook;
+import com.undercooked.game.entity.customer.Customer;
 import com.undercooked.game.util.json.*;
 
 /** A class filled with public static final variables so that they can be accessed from anywhere. */
@@ -45,9 +47,17 @@ public final class Constants {
     public static final String PAUSE_TEXTURE_ID = "pause";
     /** The texture ID for the textures on the {@link com.undercooked.game.screen.LeaderBoard} */
     public static final String LEADERBOARD_TEXTURE_ID = "leaderboard";
+    /** The register id, used for finding where {@link Customer}s need to wait. */
+    public static final String REGISTER_ID = "<main>:register";
 
     // GameInfo, such as file names for maps, ingredients, stations, recipes
     // and other things.
+    /**
+     * The JSON formatting for the different JSON files to be
+     * loaded into the game.
+     * <br>Use these as the second argument in
+     * JsonFormat.formatJson(JsonValue, JsonObject);
+     */
     public static final class DefaultJson {
         // It creates these as to avoid creating them in memory and storing them
         // at all times
@@ -170,6 +180,9 @@ public final class Constants {
             // Requests (What the customers could possibly request)
             // It is an array of arrays of strings, with the strings being item IDs.
             root.addValue(new JsonObjectArray("requests", requestFormat()));
+
+            // The amount of reputation that the player starts with
+            root.addValue(new JsonInt("reputation", 3));
 
             return root;
         }
@@ -304,12 +317,12 @@ public final class Constants {
 
     // Textures
     /**
-     * The number of {@link com.undercooked.game.entity.Cook} {@link com.badlogic.gdx.graphics.Texture}s
+     * The number of {@link Cook} {@link com.badlogic.gdx.graphics.Texture}s
      * in the asset folder.
      */
     public static final int NUM_COOK_TEXTURES = 3;
     /**
-     * The number of {@link com.undercooked.game.entity.Customer} {@link com.badlogic.gdx.graphics.Texture}s
+     * The number of {@link Customer} {@link com.badlogic.gdx.graphics.Texture}s
      * in the asset folder.
      */
     public static int NUM_CUSTOMER_TEXTURES = 5;

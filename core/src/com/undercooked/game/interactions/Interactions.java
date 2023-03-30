@@ -4,7 +4,6 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.undercooked.game.assets.AudioManager;
-import com.undercooked.game.entity.Cook;
 import com.undercooked.game.files.FileControl;
 import com.undercooked.game.food.Items;
 import com.undercooked.game.interactions.steps.*;

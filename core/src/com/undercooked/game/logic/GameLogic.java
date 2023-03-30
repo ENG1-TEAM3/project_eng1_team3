@@ -2,13 +2,16 @@ package com.undercooked.game.logic;
 
 import com.undercooked.game.assets.AudioManager;
 import com.undercooked.game.assets.TextureManager;
-import com.undercooked.game.entity.CookController;
-import com.undercooked.game.entity.CustomerController;
+import com.undercooked.game.entity.cook.CookController;
+import com.undercooked.game.entity.customer.CustomerController;
 import com.undercooked.game.entity.Entity;
+import com.undercooked.game.entity.cook.Cook;
+import com.undercooked.game.entity.customer.Customer;
 import com.undercooked.game.food.Items;
 import com.undercooked.game.interactions.Interactions;
 import com.undercooked.game.load.LoadResult;
 import com.undercooked.game.map.Map;
+import com.undercooked.game.map.MapCell;
 import com.undercooked.game.render.GameRenderer;
 import com.undercooked.game.screen.GameScreen;
 import com.undercooked.game.station.StationManager;
@@ -90,9 +93,9 @@ public abstract class GameLogic {
     }
 
     /**
-     * Update the {@link GameLogic}. Move {@link com.undercooked.game.entity.Cook}s,
+     * Update the {@link GameLogic}. Move {@link Cook}s,
      * update {@link com.undercooked.game.station.Station}s,
-     * spawn {@link com.undercooked.game.entity.Customer}s, etc.
+     * spawn {@link Customer}s, etc.
      */
     public abstract void update(float delta);
 
@@ -178,5 +181,9 @@ public abstract class GameLogic {
 
     public Map getMap() {
         return map;
+    }
+
+    public CustomerController getCustomerController() {
+        return customerController;
     }
 }

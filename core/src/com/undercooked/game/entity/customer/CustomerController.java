@@ -1,24 +1,11 @@
-package com.undercooked.game.entity;
+package com.undercooked.game.entity.customer;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
 
-import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.maps.MapProperties;
-import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.maps.tiled.TiledMapTile;
-import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
-import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
-import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Array;
-import com.undercooked.game.MainGameClass;
 import com.undercooked.game.assets.TextureManager;
-import com.undercooked.game.map.Map;
+import com.undercooked.game.map.*;
 import com.undercooked.game.util.Constants;
 import com.undercooked.game.util.Listener;
 
@@ -28,28 +15,25 @@ public class CustomerController {
 	ArrayList<ArrayList<Integer>> customerCells;
 	TextureManager textureManager;
 	Array<Customer> customers;
+	Array<Register> registers;
+
 	Map map;
-	int top;
-	int bottom;
-	int xCoordinate;
+	float spawnX, spawnY;
 
 	Listener<Integer> getMoney;
 	Listener<Integer> loseReputation;
-	Listener<Customer> customerDelete;
 
 	public CustomerController(TextureManager textureManager, Map map) {
 		this.textureManager = textureManager;
 		this.map = map;
+		this.customers = new Array<>();
+		this.registers = new Array<>();
 		// computeCustomerZone(gameMap);
 		amountActiveCustomers = 0;
 		lockout = 0;
 
-		this.customerDelete = new Listener<Customer>() {
-			@Override
-			public void tell(Customer value) {
-				deleteCustomer(value);
-			}
-		};
+		this.spawnX = 3;
+		this.spawnY = -1;
 	}
 
 	public CustomerController(TextureManager textureManager) {
@@ -61,35 +45,164 @@ public class CustomerController {
 	}
 
 	public void load(String textureGroup) {
-		// Load all the customer sprites
+		// Load all the customer textures
 		textureManager.load(textureGroup, "entities/cust3f.png");
 		textureManager.load(textureGroup, "entities/cust3b.png");
 		textureManager.load(textureGroup, "entities/cust3r.png");
 		textureManager.load(textureGroup, "entities/cust3l.png");
 	}
 
-	public void unload(String textureGroup) {
-
+	public void unload() {
+		// Unload the texture
+		textureManager.unloadTexture("entities/cust3f.png");
+		textureManager.unloadTexture("entities/cust3b.png");
+		textureManager.unloadTexture("entities/cust3r.png");
+		textureManager.unloadTexture("entities/cust3l.png");
 	}
 
 	public void update(float delta) {
+		// Check if there is a Customer waiting for
+		// an open space
+		Customer waitingCustomer = customerWaiting();
+		if (waitingCustomer != null) {
+			// If there is, then set them to use the first
+			// available register.
+			// This will be null if there is none open.
+			customerOnRegister(waitingCustomer, firstOpenRegister());
+		}
 		// Update the Customers
-		for (Customer customer : customers) {
-			customer.update(delta);
+		for (int index = 0 ; index < customers.size ; index++) {
+			customers.get(index).update(delta);
 		}
 	}
 
-	public void spawnCustomer() {
-		Customer newCustomer = new Customer(this.xCoordinate, this.bottom, 3, this, textureManager);
+	public void draw(SpriteBatch batch) {
+		// Draw all the Customers
+		for (Customer customer : customers) {
+			customer.draw(batch);
+		}
+	}
+
+	public Customer customerWaiting() {
+		// Check through the customers, and if there is one
+		// that doesn't have a register set, then that means
+		// that they're waiting.
+		for (Customer customer : customers) {
+			if (customer.getRegister() == null) {
+				return customer;
+			}
+		}
+		return null;
+	}
+
+	public void spawnCustomer(String request) {
+		// Only spawn a customer if there isn't one in the
+		// spawn position, or directly above.
+		if (customerInSquareGrid(spawnX, spawnY)) {
+			return;
+		}
+		if (customerInSquareGrid(spawnX, spawnY+1)) {
+			return;
+		}
+		Customer newCustomer = new Customer(3, this, textureManager);
 		customers.add(newCustomer);
+
+		newCustomer.posx = MapManager.gridToPos(spawnX);
+		newCustomer.posy = MapManager.gridToPos(spawnY);
 
 		newCustomer.servedListener = getMoney;
 		newCustomer.failedListener = loseReputation;
+		newCustomer.setRequest(request);
+		// Try to put the customer on a register
+		customerOnRegister(newCustomer, firstOpenRegister());
 		amountActiveCustomers += 1;
+	}
+
+	public Register firstOpenRegister() {
+		// Loop through the registers
+		for (Register register : registers) {
+			// Return it if the Customer is null
+			if (register.customer == null) {
+				return register;
+			}
+		}
+		// If it doesn't find one, return null.
+		return null;
+	}
+
+	public boolean isRegister(MapCell cell) {
+		// Loop through the registers and check
+		for (Register register : registers) {
+			if (register.registerCell == cell) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public boolean customerInSquareGrid(float x, float y, Customer ignoredCustomer) {
+		x = (int) x;
+		y = (int) y;
+		// Check for all customers
+		for (Customer customer : customers) {
+			if (customer == ignoredCustomer) {
+				continue;
+			}
+			int cX = MapManager.posToGridFloor(customer.posx);
+			int cY = MapManager.posToGridFloor(customer.posy);
+			if (x == cX & y == cY) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public boolean customerInSquareGrid(float x, float y) {
+		return customerInSquareGrid(x, y, null);
+	}
+
+	public boolean customerInSquarePos(float x, float y) {
+		return customerInSquareGrid(MapManager.posToGrid(x), MapManager.posToGrid(y), null);
+	}
+
+	public boolean customerInSquarePos(float x, float y, Customer ignoredCustomer) {
+		return customerInSquareGrid(MapManager.posToGrid(x), MapManager.posToGrid(y), ignoredCustomer);
+	}
+
+	public void customerOnRegister(Customer customer, Register register) {
+		// Make sure the register is not null
+		if (register == null) {
+			return;
+		}
+		// Make sure this Register doesn't have a customer
+		if (register.hasCustomer()) {
+			return;
+		}
+		// Make sure the Customer is not null
+		if (customer == null) {
+			return;
+		}
+		// Add the customer to the register
+		register.customer = customer;
+		customer.setRegister(register);
+	}
+
+	public void customerOffRegister(Register register) {
+		// Make sure the register is not null
+		if (register == null) {
+			return;
+		}
+		// Make sure this Register has a customer
+		if (!register.hasCustomer()) {
+			return;
+		}
+		// Remove the Customer from the register
+		register.customer = null;
 	}
 
 	protected void deleteCustomer(Customer customer) {
 		customers.removeValue(customer, true);
+		amountActiveCustomers -= 1;
 	}
 
 	public void setReputationListener(Listener<Integer> reputationListener) {
@@ -101,7 +214,28 @@ public class CustomerController {
 	}
 
 	public void findRegisters() {
+		// Clear the register array
+		registers.clear();
+		// Loop through all the map cells on the left wall.
+		// All valid registers have to be placed there.
+		// Loop from top to bottom, so that they are ordered
+		// top to bottom.
+		for (int y = map.getHeight()-1 ; y >= 0 ; y--) {
+			MapCell thisCell = map.getCell(0, y);
+			// Make sure it's not null
+			if (thisCell == null) continue;
+			// Then get the MapEntity.
+			MapEntity thisEntity = thisCell.getMapEntity();
+			// Make sure it's not null
+			if (thisEntity == null) continue;
 
+			// If it gets here, make sure it's the register
+			if (!thisEntity.getID().equals(Constants.REGISTER_ID)) continue;
+
+			// If it's a register, then add the MapCell to the array
+			registers.add(new Register(thisCell));
+		}
+		System.out.println(registers);
 	}
 
 	/**
@@ -110,7 +244,7 @@ public class CustomerController {
 	 * 
 	 * @param gameMap - The game tilemap
 	 */
-	private void computeCustomerZone(TiledMap gameMap) {
+	/*private void computeCustomerZone(TiledMap gameMap) {
 		// ==============================================================================================================
 		TiledMapTileLayer botlayer = (TiledMapTileLayer) gameMap.getLayers().get(0);
 		customerCells = new ArrayList<>();
@@ -181,7 +315,7 @@ public class CustomerController {
 		this.top = ymax;
 		this.bottom = 0;
 		this.xCoordinate = xvalues[0]; // We can do this because the search scans left to right, 0th value will be left
-	}
+	}*/
 
 	/*public void delCustomer(int num) {
 		if (this.customers[num].locked) {

@@ -8,7 +8,7 @@ import com.badlogic.gdx.utils.Array;
 import com.undercooked.game.Input.InputType;
 import com.undercooked.game.MainGameClass;
 import com.undercooked.game.assets.AudioManager;
-import com.undercooked.game.entity.Cook;
+import com.undercooked.game.entity.cook.Cook;
 import com.undercooked.game.food.Item;
 import com.undercooked.game.food.ItemStack;
 import com.undercooked.game.food.Items;
@@ -26,19 +26,24 @@ import static com.undercooked.game.MainGameClass.shapeRenderer;
 public class Station extends MapEntity {
 
 	StationInteractControl interactControl;
-	StationData stationData;
+	private StationData stationData;
 	public ItemStack items;
 	private Array<Cook> lockedCooks;
 
 	public Station(StationData stationData) {
 		super();
-		this.stationData = stationData;
+		setStationData(stationData);
 		this.texturePath = stationData.getTexturePath();
 		this.items = new ItemStack();
 		this.lockedCooks = new Array<>();
 		this.setBasePath(stationData.getDefaultBase());
 		setWidth(stationData.getWidth());
 		setHeight(stationData.getHeight());
+	}
+
+	public void setStationData(StationData stationData) {
+		this.stationData = stationData;
+		this.id = stationData.getID();
 	}
 
 	public void update(float delta) {

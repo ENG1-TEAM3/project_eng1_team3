@@ -96,11 +96,11 @@ public class Map {
         return true;
     }
 
-    protected MapCell getCellFull(int x, int y) {
+    public MapCell getCellFull(int x, int y) {
         return getCellFull(x, y, true);
     }
 
-    protected MapCell getCellFull(int x, int y, boolean allowOutOfBounds) {
+    public MapCell getCellFull(int x, int y, boolean allowOutOfBounds) {
         // Make sure it's a valid cell position
         // If not, then return null
         if (!validCellFull(x,y)) {
@@ -224,13 +224,11 @@ public class Map {
                         cellBelow.setCollidable(true);
                         cellBelow.setInteractable(false);
                         cellBelow.setBase(true);
-                        cellBelow.mapEntity = new MapEntity();
+                        cellBelow.setMapEntity(new MapEntity());
                         cellBelow.mapEntity.setTexture(entity.basePath);
                         cellBelow.setBelowTile(null);
                         cellBelow.setWidth(1);
                         cellBelow.setHeight(1);
-                        cellBelow.setX(MapManager.gridToPos(i));
-                        cellBelow.setY(MapManager.gridToPos(y - 1));
                     }
                 } else {
 

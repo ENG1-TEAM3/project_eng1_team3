@@ -1,11 +1,10 @@
 package com.undercooked.game.map;
 
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.undercooked.game.Input.InputType;
-import com.undercooked.game.entity.Cook;
+import com.undercooked.game.entity.cook.Cook;
 import com.undercooked.game.entity.Entity;
 import com.undercooked.game.interactions.InteractResult;
 import com.undercooked.game.interactions.InteractionStep;
@@ -16,6 +15,7 @@ public class MapEntity extends Entity {
     private int height;
     Rectangle interactBox;
     String basePath;
+    protected String id;
 
     public MapEntity() {
         this.interactBox = new Rectangle();
@@ -40,10 +40,6 @@ public class MapEntity extends Entity {
         // this.sprite.setSize(width*MapManager.gridToPos(height), this.sprite.getHeight());
     }
 
-    public int getCellWidth() {
-        return this.width;
-    }
-
     public void setHeight(int height) {
         this.height = Math.max(1,height);
         this.interactBox.height = Math.max(MapManager.gridToPos(1),MapManager.gridToPos(height));
@@ -51,16 +47,28 @@ public class MapEntity extends Entity {
         // this.sprite.setSize(this.sprite.getWidth(), height*MapManager.gridToPos(height));
     }
 
-    public int getCellHeight() {
-        return this.height;
-    }
-
     public void setBasePath(String basePath) {
         this.basePath = basePath;
     }
 
+    public int getCellWidth() {
+        return this.width;
+    }
+
+    public int getCellHeight() {
+        return this.height;
+    }
+
+    public String getID() {
+        return id;
+    }
+
     public boolean isInteracting(Rectangle rect) {
         return interactBox.overlaps(rect);
+    }
+
+    public Rectangle getInteractBox() {
+        return interactBox;
     }
 
     public void draw(SpriteBatch batch) {
@@ -73,10 +81,6 @@ public class MapEntity extends Entity {
         /*shape.setColor(Color.YELLOW);
         shape.rect(interactBox.x,interactBox.y,interactBox.width,interactBox.height);
         shape.setColor(Color.WHITE);*/
-    }
-
-    public Rectangle getInteractBox() {
-        return interactBox;
     }
 
     /**

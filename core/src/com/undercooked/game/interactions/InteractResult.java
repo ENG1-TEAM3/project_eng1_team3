@@ -1,8 +1,10 @@
 package com.undercooked.game.interactions;
 
+import com.undercooked.game.entity.cook.Cook;
+
 /**
  * The possible results of the {@link InteractionStep}s.
- * Used by the {@link com.undercooked.game.entity.Cook} to
+ * Used by the {@link Cook} to
  * know what to do after sending an input to the interaction.
  */
 public enum InteractResult {

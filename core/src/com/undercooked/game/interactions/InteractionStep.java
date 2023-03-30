@@ -2,7 +2,7 @@ package com.undercooked.game.interactions;
 
 import com.badlogic.gdx.utils.Array;
 import com.undercooked.game.Input.InputType;
-import com.undercooked.game.entity.Cook;
+import com.undercooked.game.entity.cook.Cook;
 
 import java.util.Collections;
 

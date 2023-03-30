@@ -5,11 +5,13 @@ import com.badlogic.gdx.utils.JsonValue;
 import com.undercooked.game.Input.InputController;
 import com.undercooked.game.assets.AudioManager;
 import com.undercooked.game.assets.TextureManager;
+import com.undercooked.game.entity.customer.Customer;
 import com.undercooked.game.files.FileControl;
 import com.undercooked.game.food.Request;
 import com.undercooked.game.load.LoadResult;
 import com.undercooked.game.screen.GameScreen;
 import com.undercooked.game.util.Constants;
+import com.undercooked.game.util.Listener;
 import com.undercooked.game.util.json.JsonFormat;
 
 public class ScenarioLogic extends GameLogic {
@@ -22,12 +24,21 @@ public class ScenarioLogic extends GameLogic {
 
     /** The number of customers that have been served. */
     public int currentWave = 0;
+    /** How much reputation the player has. */
+    public int reputation;
+    private String scenario;
     private Array<Request> requests;
 
     public ScenarioLogic(GameScreen game, TextureManager textureManager, AudioManager audioManager) {
         super(game, textureManager, audioManager);
         cookCount = 1;
         requests = new Array<>();
+        // Set the listeners for the CustomerController
+        customerController.setServedListener(new Listener<Integer>() {
+
+        });
+
+        this.reputation = 0;
     }
 
     public ScenarioLogic() {
@@ -50,6 +61,7 @@ public class ScenarioLogic extends GameLogic {
     @Override
     public void update(float delta) {
 
+        // Update inputs
         InputController.updateKeys();
 
         elapsedTime += delta;
@@ -67,6 +79,10 @@ public class ScenarioLogic extends GameLogic {
 
     }
 
+    public void setScenario(String scenario) {
+        this.scenario = scenario;
+    }
+
     @Override
     public void preLoad() {
 
@@ -74,12 +90,21 @@ public class ScenarioLogic extends GameLogic {
 
     @Override
     public void load() {
+        // Load the Scenario
+        loadScenario(scenario);
         // Load all the items
 
         // Add listener to CustomerController to remove 1 from count
 
         // Load the map's floor sprites
         map.loadFloor(textureManager, Constants.GAME_TEXTURE_ID);
+        // Find the registers on the map for the Customers
+        customerController.findRegisters();
+    }
+
+    @Override
+    public void postLoad() {
+        super.postLoad();
     }
 
     @Override
@@ -91,7 +116,7 @@ public class ScenarioLogic extends GameLogic {
             map = null;
         }
         if (cookController != null) cookController.unload();
-        if (customerController != null) customerController.unload(Constants.GAME_TEXTURE_ID);
+        if (customerController != null) customerController.unload();
         if (requests != null) requests.clear();
     }
 
@@ -103,7 +128,7 @@ public class ScenarioLogic extends GameLogic {
         this.cookCount = cookCount;
     }
 
-    public LoadResult loadScenario(String scenarioAsset) {
+    private LoadResult loadScenario(String scenarioAsset) {
         JsonValue scenarioData = FileControl.loadJsonAsset(scenarioAsset, "scenarios");
         if (scenarioData == null) {
             // It didn't load the scenario, so it's a failure.
@@ -137,12 +162,15 @@ public class ScenarioLogic extends GameLogic {
         // Load the items
         items.load(textureManager);
 
+        // Set the reputation
+        reputation = scenarioData.getInt("reputation");
+
         return LoadResult.SUCCESS;
     }
 
     /**
      * Loads the requests of the {@link ScenarioLogic}, which the
-     * {@link com.undercooked.game.entity.Customer}s will request
+     * {@link Customer}s will request
      * from. Each request will have a limited number of times it can
      * be requested.
      * @param requestData
@@ -162,5 +190,13 @@ public class ScenarioLogic extends GameLogic {
             newRequest.itemID = request.getString("item_id");
             newRequest.setValue(request.getInt("value"));
         }
+    }
+
+    public void customerServed(int value) {
+
+    }
+
+    public void customerFailed(int reputationCost) {
+
     }
 }

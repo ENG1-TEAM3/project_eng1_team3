@@ -1,4 +1,4 @@
-package com.undercooked.game.entity;
+package com.undercooked.game.entity.cook;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;

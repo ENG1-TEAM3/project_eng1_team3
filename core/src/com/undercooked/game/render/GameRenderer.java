@@ -14,8 +14,8 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.undercooked.game.MainGameClass;
 import com.undercooked.game.assets.TextureManager;
-import com.undercooked.game.entity.Cook;
-import com.undercooked.game.entity.CookController;
+import com.undercooked.game.entity.cook.Cook;
+import com.undercooked.game.entity.cook.CookController;
 import com.undercooked.game.entity.Entity;
 import com.undercooked.game.logic.GameLogic;
 import com.undercooked.game.map.MapCell;
@@ -149,6 +149,9 @@ public class GameRenderer {
                 interactSprite.draw(batch);
             }
         }
+
+        // Render the Customers
+        logic.getCustomerController().draw(batch);
         batch.end();
 
         // Draw debug

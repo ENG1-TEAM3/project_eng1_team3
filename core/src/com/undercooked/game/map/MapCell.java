@@ -1,17 +1,15 @@
 package com.undercooked.game.map;
 
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.undercooked.game.assets.TextureManager;
-import com.undercooked.game.util.Constants;
 
 public class MapCell {
     boolean collidable;
     boolean interactable;
-    float x;
-    float y;
+    private int x, y;
+    private float displayX, displayY;
     float width;
     float height;
     boolean base;
@@ -50,33 +48,35 @@ public class MapCell {
     public void setMapEntity(MapEntity mapEntity) {
         this.mapEntity = mapEntity;
         if (mapEntity != null) {
-            mapEntity.setX(this.x);
-            mapEntity.setY(this.y);
+            mapEntity.setX(this.displayX);
+            mapEntity.setY(this.displayY);
             mapEntity.setWidth(this.width);
             mapEntity.setHeight(this.height);
         }
     }
 
     public void setX(int x) {
-        setX(MapManager.gridToPos(x));
+        this.x = x;
+        setDisplayX(MapManager.gridToPos(x));
     }
 
-    public void setX(float x) {
+    protected void setDisplayX(float x) {
         if (this.mapEntity != null) {
             mapEntity.setX(x);
         }
-        this.x = x;
+        this.displayX = x;
     }
 
     public void setY(int y) {
-        setY(MapManager.gridToPos(y));
+        this.y = y;
+        setDisplayY(MapManager.gridToPos(y));
     }
 
-    public void setY(float y) {
+    protected void setDisplayY(float y) {
         if (this.mapEntity != null) {
             mapEntity.setY(y);
         }
-        this.y = y;
+        this.displayY = y;
     }
 
     public void setWidth(int width) {
@@ -93,6 +93,22 @@ public class MapCell {
             mapEntity.setHeight(height);
         }
         this.height = newHeight;
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    public float getDisplayX() {
+        return displayX;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    public float getDisplayY() {
+        return displayY;
     }
 
     public void updateBelowTile(TextureManager textureManager) {
@@ -143,7 +159,7 @@ public class MapCell {
 
     public void drawBelow(SpriteBatch batch) {
         if (belowTile != null) {
-            batch.draw(belowTile, x, y, width, height);
+            batch.draw(belowTile, displayX, displayY, width, height);
         }
     }
 
