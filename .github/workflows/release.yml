@@ -61,7 +61,7 @@ jobs:
         name: piazzapanic-ubuntu-22.04.jar
         
     - name: Rename Ubuntu Build Artifact
-      run: mv piazzapanic-ubuntu-22.04.jar lib-ubuntu.jar
+      run: mv desktop-1.0.jar lib-ubuntu.jar
     
     - name: Download a Windows Build Artifact
       uses: actions/download-artifact@v3.0.1
@@ -69,7 +69,7 @@ jobs:
         name: piazzapanic-windows-2022.jar
         
     - name: Rename Ubuntu Build Artifact
-      run: mv piazzapanic-windows-2022.jar lib-windows.jar
+      run: mv desktop-1.0.jar lib-windows.jar
         
     - name: Release
       uses: softprops/action-gh-release@v1
