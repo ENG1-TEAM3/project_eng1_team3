@@ -28,11 +28,22 @@ jobs:
       contents: write
 
     steps:
-    - name: Download a Build Artifact
+    - name: Download a Ubuntu Build Artifact
       uses: actions/download-artifact@v3.0.1
       with:
-        name: lib.jar
-    - name: Release
-      uses: softprops/action-gh-release@67421db6bd0bf253fb4bd25b31ebb98943c375e1
+        name: piazzapanic-ubuntu-22.04.jar
+        
+    - name: Release Ubuntu
+      uses: softprops/action-gh-release@v1
       with:
-        files: lib.jar
+        files: piazzapanic-ubuntu-22.04.jar
+        
+    - name: Download a Windows Build Artifact
+      uses: actions/download-artifact@v3.0.1
+      with:
+        name: piazzapanic-windows-2022.jar
+        
+    - name: Release Ubuntu
+      uses: softprops/action-gh-release@v1
+      with:
+        files: piazzapanic-windows-2022.jar
