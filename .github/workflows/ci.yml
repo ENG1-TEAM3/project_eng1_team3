@@ -7,7 +7,7 @@ on:
     branches: ["master"]
     
 jobs:
-  run-tests:
+  build:
     strategy:
       matrix:
         os: [ubuntu-22.04, windows-2022]
