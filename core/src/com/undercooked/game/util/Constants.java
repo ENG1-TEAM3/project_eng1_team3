@@ -1,9 +1,11 @@
 package com.undercooked.game.util;
 
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonValue;
 import com.undercooked.game.entity.cook.Cook;
 import com.undercooked.game.entity.customer.Customer;
 import com.undercooked.game.util.json.*;
+import sun.jvm.hotspot.runtime.BasicObjectLock;
 
 /** A class filled with public static final variables so that they can be accessed from anywhere. */
 public final class Constants {
@@ -194,13 +196,21 @@ public final class Constants {
         public static JsonObject requestFormat() {
             JsonObject root = new JsonObject();
 
-            root.addValue(new JsonString("item_id",null));
-            root.addValue(new JsonInt("value", -1)); // Value of the request. If < 0, then uses item's default value.
+            JsonString asString = new JsonString(null,null);
 
-            root.addValue(new JsonFloat("time_min", -1F)); // The lowest time that the request must be provided by.
-            root.addValue(new JsonFloat("time_max", -1F)); // The highest time that the request must be provided by.
+            JsonObject asObject = new JsonObject();
 
-            root.addValue(new JsonInt("number", 1)); // The number of times that the request can be made.
+            asObject.addValue(new JsonString("item_id",null));
+            asObject.addValue(new JsonInt("value", -1)); // Value of the request. If < 0, then uses item's default value.
+
+            asObject.addValue(new JsonFloat("time_min", -1F)); // The lowest time that the request must be provided by.
+            asObject.addValue(new JsonFloat("time_max", -1F)); // The highest time that the request must be provided by.
+
+            asObject.addValue(new JsonInt("number", 1)); // The number of times that the request can be made.
+
+
+
+            root.addValue(new JsonOr(null, new JsonVal[] {asString, asObject}));
 
             return root;
         }
