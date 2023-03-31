@@ -6,6 +6,9 @@ public abstract class JsonVal<T> {
     protected String ID;
     protected T value;
     public JsonVal(String ID, T value) {
+        if (ID == null) {
+            ID = "";
+        }
         this.ID = ID;
         this.value = value;
     }
