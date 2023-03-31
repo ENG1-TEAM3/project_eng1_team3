@@ -17,6 +17,8 @@ import com.undercooked.game.screen.GameScreen;
 import com.undercooked.game.util.Constants;
 import com.undercooked.game.util.Listener;
 import com.undercooked.game.util.json.JsonFormat;
+import com.undercooked.game.util.json.JsonObject;
+import com.undercooked.game.util.json.JsonVal;
 
 public class ScenarioLogic extends GameLogic {
 
@@ -217,16 +219,33 @@ public class ScenarioLogic extends GameLogic {
     protected void loadRequests(JsonValue requestData) {
         // Load the requests within the request data
         // Loop through all the requests
+        JsonObject requestFormat = Constants.DefaultJson.requestFormat();
         for (JsonValue request : requestData) {
-            // System.out.println(request);
-            // Add the item
+            // First check if it's a String or an Object.
+            // If it's a string, it's a path to a request, otherwise
+            // it's a request
+            JsonValue rData;
+            if (request.isString()) {
+                // If it's a String, try to load the request data from
+                // the folders
+                rData = FileControl.loadJsonAsset(request.asString(), "requests");
+                // If it's null, skip
+                if (rData == null) {
+                    continue;
+                }
+                // Otherwise, make sure it's formatted correctly
+                JsonFormat.formatJson(rData, requestFormat);
+            } else {
+                // Otherwise it's just the request
+                rData = request;
+            }
             // If the addition wasn't successful, then skip
-            if (items.addItemAsset(request.getString("item_id")) == null) {
+            if (items.addItemAsset(rData.getString("item_id")) == null) {
                 continue;
             }
             // If it was successfully added, then add it to the array
-            Request newRequest = new Request(request.getString("item_id"));
-            newRequest.setValue(request.getInt("value"));
+            Request newRequest = new Request(rData.getString("item_id"));
+            newRequest.setValue(rData.getInt("value"));
 
             requests.add(newRequest);
         }
