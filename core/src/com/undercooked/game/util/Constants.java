@@ -211,6 +211,8 @@ public final class Constants {
 
             asObject.addValue(new JsonInt("number", 1)); // The number of times that the request can be made.
 
+            asObject.addValue(new JsonInt("reputation_threat", 1)); // How much reputation is taken if the player fails to complete the request
+
             // The directions for how to make the item
             JsonObject recipe = new JsonObject("instruction");
             recipe.addValue(new JsonString("texture_path", "<main>:missing.png"));
