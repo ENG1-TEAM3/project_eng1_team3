@@ -31,6 +31,8 @@ public final class Constants {
     public static final String LEADERBOARD_SCREEN_ID = "leaderboard";
     /** The ID for the {@link com.undercooked.game.screen.PauseScreen}. */
     public static final String PAUSE_SCREEN_ID = "pause";
+    public static final String WIN_SCREEN_ID = "win";
+    public static final String LOSS_SCREEN_ID = "loss";
     /** The ID for the SettingsScreen. */
     public static final String SETTINGS_SCREEN_ID = "settings";
 

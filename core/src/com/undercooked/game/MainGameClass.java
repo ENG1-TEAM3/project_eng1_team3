@@ -105,6 +105,8 @@ public class MainGameClass extends Game {
 		screenController.addScreen(new GameScreen(this), Constants.GAME_SCREEN_ID);
 		screenController.addScreen(new LeaderBoard(this), Constants.LEADERBOARD_SCREEN_ID);
 		screenController.addScreen(new PauseScreen(this), Constants.PAUSE_SCREEN_ID);
+		screenController.addScreen(new WinScreen(this), Constants.WIN_SCREEN_ID);
+		screenController.addScreen(new LossScreen(this), Constants.LOSS_SCREEN_ID);
 
 		screenController.nextScreen(Constants.MAIN_SCREEN_ID);
 
