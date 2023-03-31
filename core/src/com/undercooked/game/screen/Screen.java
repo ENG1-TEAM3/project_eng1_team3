@@ -5,7 +5,7 @@ import com.undercooked.game.assets.AudioManager;
 import com.undercooked.game.map.MapManager;
 import com.undercooked.game.assets.TextureManager;
 
-public abstract class Screen implements IScreen {
+public abstract class Screen implements com.badlogic.gdx.Screen {
 
     /**
      * Using an int, the screen can avoid being unloaded if it's opened
@@ -67,4 +67,7 @@ public abstract class Screen implements IScreen {
     public final MapManager getMapManager() {
         return game.mapManager;
     }
+
+    public abstract void load();
+    public abstract void unload();
 }
