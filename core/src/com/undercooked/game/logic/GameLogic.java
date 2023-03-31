@@ -34,6 +34,10 @@ public abstract class GameLogic {
     Interactions interactions;
     Map map;
     float elapsedTime;
+    /** How much reputation the player has. */
+    public int reputation;
+    /** How much money the player has. */
+    public int money;
 
     protected Customer displayCustomer;
 
@@ -41,6 +45,8 @@ public abstract class GameLogic {
         this.gameScreen = game;
         this.items = new Items();
         this.elapsedTime = 0;
+        this.money = 0;
+        this.reputation = 0;
 
         this.cookController = new CookController(textureManager);
         this.customerController = new CustomerController(textureManager);

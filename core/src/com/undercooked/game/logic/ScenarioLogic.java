@@ -32,8 +32,6 @@ public class ScenarioLogic extends GameLogic {
 
     /** The number of requests that have been served correctly. */
     private int requestsComplete = 0;
-    /** How much reputation the player has. */
-    public int reputation;
     private String scenario;
     private Array<Request> requests;
 
@@ -109,20 +107,28 @@ public class ScenarioLogic extends GameLogic {
                 displayCustomer = targetRegister.getCustomer();
             }
         });
-
-        this.reputation = 0;
     }
 
     public ScenarioLogic() {
         this(null, null, null);
     }
 
-    public void checkGameOver() {
-        if (requestsComplete == requestTarget + 1) {
-            // game.getLeaderBoardScreen().addLeaderBoardData("PLAYER1",
-            // (int) Math.floor((startTime - timeOnStartup) / 1000f));
-            // game.resetGameScreen();
+    public boolean checkGameOver() {
+        // First check for win condition
+        if (requestsComplete == requestTarget) {
+            // If won, go to win screen
+            gameScreen.getScreenController().setScreen(Constants.WIN_SCREEN_ID);
+            return true;
         }
+
+        // Then check for loss condition
+        if (reputation <= 0) {
+            // If lost, go to loss screen
+            gameScreen.getScreenController().setScreen(Constants.LOSS_SCREEN_ID);
+            return true;
+        }
+
+        return false;
     }
 
     @Override
@@ -132,8 +138,6 @@ public class ScenarioLogic extends GameLogic {
         InputController.updateKeys();
 
         elapsedTime += delta;
-
-        // Check if game is over.
 
         // Update the Stations
         stationManager.update(delta);
@@ -149,6 +153,9 @@ public class ScenarioLogic extends GameLogic {
             customerController.spawnCustomer(requests.get(0));
             requests.removeIndex(0);
         }
+
+        // Check if game is over.
+        checkGameOver();
     }
 
     public void setScenario(String scenario) {
@@ -311,6 +318,8 @@ public class ScenarioLogic extends GameLogic {
                 // As it's going, load the textures for the requests too.
                 newInstruction.load(textureManager, Constants.GAME_TEXTURE_ID);
             }
+
+            newRequest.setReputationThreat(rData.getInt("reputation_threat"));
 
             requests.add(newRequest);
         }
