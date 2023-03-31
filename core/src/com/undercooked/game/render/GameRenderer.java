@@ -5,10 +5,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
@@ -41,6 +38,7 @@ public class GameRenderer {
     private OrthographicCamera worldCamera;
 
     private OrthographicCamera uiCamera;
+    private GlyphLayout text;
     private Sprite interactSprite;
     private Comparator<Entity> entityCompare = new Comparator<Entity>() {
         @Override
@@ -202,34 +200,47 @@ public class GameRenderer {
 
             // Draw a box underneath the request, to make it more obvious that
             // it's not a part of the request.
+            text.setText(font, requestItem.name);
             shape.begin(ShapeRenderer.ShapeType.Filled);
             shape.setColor(Color.DARK_GRAY);
-            shape.rect(0, startY, 64 + 18 * requestItem.name.length(), 64);
+            shape.rect(0, startY, 84 + text.width, 64);
             shape.end();
 
             // Draw the request
             batch.begin();
-            drawInstruction(requestItem.sprite.getTexture(), requestItem.name, startY, size);
+            drawInstruction(requestItem.sprite.getTexture(), text, startY, size);
 
             // Then display the instructions underneath.
             for (int i = 0 ; i < instructions.size ; i++) {
                 Instruction instruction = instructions.get(i);
-                drawInstruction(instruction.getTexture(), instruction.text, startY-size*(i+1), size);
+                text.setText(font, instruction.text);
+                drawInstruction(instruction.getTexture(), text, startY-size*(i+1), size);
             }
 
             batch.end();
         }
 
-        batch.begin();
+        String timerText = "Time: " + StringUtil.formatSeconds(logic.getElapsedTime());
         font.getData().setScale(1F);
-        font.draw(batch, "Time in s: " + StringUtil.formatSeconds(logic.getElapsedTime()),
-                500, 500);
+        text.setText(font, timerText);
+        float timerX = Constants.V_WIDTH/2;
+        float textStart = timerX - text.width/2;
+
+        shape.setColor(Color.DARK_GRAY);
+        shape.begin(ShapeRenderer.ShapeType.Filled);
+        shape.rect(textStart-10,Constants.V_HEIGHT-60, text.width+20,60);
+        shape.end();
+
+        batch.begin();
+
+        font.draw(batch, text,
+                textStart, Constants.V_HEIGHT-20);
         batch.end();
     }
 
-    public void drawInstruction(Texture texture, String text, float y, float size) {
+    public void drawInstruction(Texture texture, GlyphLayout text, float y, float size) {
         font.getData().setScale(0.8F);
-        font.draw(batch, text, size + 15, y + 42);
+        font.draw(batch, text, size + 16, y + 42);
         if (texture != null) {
             batch.draw(texture, 8, y, size, size);
         }
@@ -252,6 +263,7 @@ public class GameRenderer {
 
     public void postLoad(TextureManager textureManager) {
         interactSprite = new Sprite(textureManager.get("interactions/select_box.png"));
+        text = new GlyphLayout();
     }
 
     public void unload(TextureManager textureManager) {
