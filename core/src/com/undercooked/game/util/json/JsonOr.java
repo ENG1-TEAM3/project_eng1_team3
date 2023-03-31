@@ -55,7 +55,6 @@ public class JsonOr extends JsonVal<JsonVal[]> {
 
     @Override
     public void checkChild(JsonValue child, boolean existsBefore) {
-        System.out.println("TEST 3");
         // Check if this has at least one or
         if (this.value.length == 0) {
             // If it doesn't, just set it
@@ -75,13 +74,11 @@ public class JsonOr extends JsonVal<JsonVal[]> {
                 break;
             }
         }
-        System.out.println("TEST 1");
         // If it's invalid, just set it to check the first child
         if (valid < 0) {
             this.value[0].checkChild(child, existsBefore);
             return;
         }
-        System.out.println("TEST 2");
         System.out.println(this.value[valid]);
         // Otherwise, if it's valid, then use the valid child to set the value
         this.value[valid].checkChild(child, existsBefore);

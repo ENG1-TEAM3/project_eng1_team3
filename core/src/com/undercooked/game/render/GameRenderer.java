@@ -4,9 +4,11 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
@@ -17,6 +19,9 @@ import com.undercooked.game.assets.TextureManager;
 import com.undercooked.game.entity.cook.Cook;
 import com.undercooked.game.entity.cook.CookController;
 import com.undercooked.game.entity.Entity;
+import com.undercooked.game.food.Instruction;
+import com.undercooked.game.food.Item;
+import com.undercooked.game.food.Request;
 import com.undercooked.game.logic.GameLogic;
 import com.undercooked.game.map.MapCell;
 import com.undercooked.game.map.MapEntity;
@@ -166,6 +171,7 @@ public class GameRenderer {
         shape.setProjectionMatrix(uiCamera.combined);
         batch.setProjectionMatrix(uiCamera.combined);
 
+        // Render the Cook's heads in the top right of the screen
         CookController cookController = logic.getCookController();
         for (int i = 0; i < cookController.getCooks().size; i++) {
             if (i == cookController.getCurrentCookIndex()) {
@@ -182,11 +188,51 @@ public class GameRenderer {
             batch.end();
         }
 
+        //// Render the recipe instructions in the bottom left.
+        if (logic.getDisplayCustomer() != null) {
+            Request request = logic.getDisplayCustomer().getRequest();
+            Array<Instruction> instructions = request.getInstructions();
+
+
+            float size = 64;
+            float startY = size * instructions.size;
+
+            // First, display the request item at the top of them all
+            Item requestItem = logic.getItems().getItem(request.itemID);
+
+            // Draw a box underneath the request, to make it more obvious that
+            // it's not a part of the request.
+            shape.begin(ShapeRenderer.ShapeType.Filled);
+            shape.setColor(Color.DARK_GRAY);
+            shape.rect(0, startY, 64 + 18 * requestItem.name.length(), 64);
+            shape.end();
+
+            // Draw the request
+            batch.begin();
+            drawInstruction(requestItem.sprite.getTexture(), requestItem.name, startY, size);
+
+            // Then display the instructions underneath.
+            for (int i = 0 ; i < instructions.size ; i++) {
+                Instruction instruction = instructions.get(i);
+                drawInstruction(instruction.getTexture(), instruction.text, startY-size*(i+1), size);
+            }
+
+            batch.end();
+        }
+
         batch.begin();
         font.getData().setScale(1F);
         font.draw(batch, "Time in s: " + StringUtil.formatSeconds(logic.getElapsedTime()),
                 500, 500);
         batch.end();
+    }
+
+    public void drawInstruction(Texture texture, String text, float y, float size) {
+        font.getData().setScale(0.8F);
+        font.draw(batch, text, size + 15, y + 42);
+        if (texture != null) {
+            batch.draw(texture, 8, y, size, size);
+        }
     }
 
     public void renderDebug(float delta) {

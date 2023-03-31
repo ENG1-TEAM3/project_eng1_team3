@@ -35,6 +35,8 @@ public abstract class GameLogic {
     Map map;
     float elapsedTime;
 
+    protected Customer displayCustomer;
+
     public GameLogic(GameScreen game, TextureManager textureManager, AudioManager audioManager) {
         this.gameScreen = game;
         this.items = new Items();
@@ -185,5 +187,13 @@ public abstract class GameLogic {
 
     public CustomerController getCustomerController() {
         return customerController;
+    }
+
+    public Customer getDisplayCustomer() {
+        return displayCustomer;
+    }
+
+    public Items getItems() {
+        return items;
     }
 }

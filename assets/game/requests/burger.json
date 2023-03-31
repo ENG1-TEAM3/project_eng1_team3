@@ -5,27 +5,27 @@
   "time_max": 40,
   "instructions": [
     {
-      "texture_path": "<main>:patty_unformed",
+      "texture_path": "<main>:item/patty_unformed.png",
       "text": "Grab Patty"
     },
     {
-      "texture_path": "<main>:prepare",
+      "texture_path": "<main>:item/patty.png",
       "text": "Form Patty at Preparation Station"
     },
     {
-      "texture_path": "<main>:fire",
+      "texture_path": "<main>:station/ovtopcln.png",
       "text": "Cook the Formed Patty"
     },
     {
-      "texture_path": "<main>:bun_uncooked",
+      "texture_path": "<main>:item/burger_bun.png",
       "text": "Grab Burger bun"
     },
     {
-      "texture_path": "<main>:grill",
+      "texture_path": "<main>:station/grill.png",
       "text": "Grill the Bun"
     },
     {
-      "texture_path": "<main>:burger",
+      "texture_path": "<main>:item/burger.png",
       "text": "Combine at Preparation Station"
     }
   ]

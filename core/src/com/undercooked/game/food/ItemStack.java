@@ -16,6 +16,9 @@ public class ItemStack implements Iterable<Item> {
     }
 
     public Item peek() {
+        if (items.size == 0) {
+            return null;
+        }
         return items.peek();
     }
 

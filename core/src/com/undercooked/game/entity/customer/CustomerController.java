@@ -27,8 +27,8 @@ public class CustomerController {
 	Map map;
 	float spawnX, spawnY;
 
-	Listener<Request> getMoney;
-	Listener<Request> loseReputation;
+	Listener<Customer> getMoney;
+	Listener<Customer> loseReputation;
 	Comparator<Customer> customerDrawComparator;
 
 	public CustomerController(TextureManager textureManager, Map map) {
@@ -159,7 +159,7 @@ public class CustomerController {
 		// Loop through the registers
 		for (Register register : registers) {
 			// Return it if the Customer is null
-			if (register.customer == null) {
+			if (register.getCustomer() == null) {
 				return register;
 			}
 		}
@@ -210,7 +210,7 @@ public class CustomerController {
 			return;
 		}
 		// Add the customer to the register
-		register.customer = customer;
+		register.setCustomer(customer);
 		customer.setRegister(register);
 	}
 
@@ -224,7 +224,7 @@ public class CustomerController {
 			return;
 		}
 		// Remove the Customer from the register
-		register.customer = null;
+		register.setCustomer(null);
 	}
 
 	protected void deleteCustomer(Customer customer) {
@@ -235,11 +235,11 @@ public class CustomerController {
 		
 	}
 
-	public void setReputationListener(Listener<Request> reputationListener) {
+	public void setReputationListener(Listener<Customer> reputationListener) {
 		this.loseReputation = reputationListener;
 	}
 
-	public void setServedListener(Listener<Request> servedListener) {
+	public void setServedListener(Listener<Customer> servedListener) {
 		this.getMoney = servedListener;
 	}
 
@@ -276,7 +276,7 @@ public class CustomerController {
 		if (register == null) return false;
 
 		// Then get the customer of that register
-		Customer customer = register.customer;
+		Customer customer = register.getCustomer();
 		// If it's null, then return false
 		if (customer == null) return false;
 
@@ -287,7 +287,7 @@ public class CustomerController {
 	public boolean isRegister(MapCell cell) {
 		// Loop through the registers and check
 		for (Register register : registers) {
-			if (register.registerCell == cell) {
+			if (register.getRegisterCell() == cell) {
 				return true;
 			}
 		}
@@ -297,10 +297,22 @@ public class CustomerController {
 	private Register getRegister(MapCell cell) {
 		// Loop through the registers and check
 		for (Register register : registers) {
-			if (register.registerCell == cell) {
+			if (register.getRegisterCell() == cell) {
 				return register;
 			}
 		}
+		return null;
+	}
+
+	public Register getRegisterFromCell(MapCell mapCell) {
+		// Check through all registers
+		for (Register register : registers) {
+			// If the Cell matches, return the register
+			if (register.getRegisterCell() == mapCell) {
+				return register;
+			}
+		}
+		// If none found, return null
 		return null;
 	}
 

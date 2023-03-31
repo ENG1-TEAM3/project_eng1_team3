@@ -45,7 +45,7 @@ public class MainGameClass extends Game {
 	public MainGameClass(SoundStateChecker soundChecker) {
 		AudioSettings.game = this;
 		assetManager = new AssetManager();
-		assetManager.setLoader(TiledMap.class, new TmxMapLoader(new InternalFileHandleResolver()));
+		// assetManager.setLoader(TiledMap.class, new TmxMapLoader(new InternalFileHandleResolver()));
 		audioManager = new AudioManager(assetManager, soundChecker);
 		textureManager = new TextureManager(assetManager);
 		mapManager = new MapManager(textureManager,audioManager);

@@ -31,7 +31,7 @@ public class Cook extends MoveableEntity {
 	private static final int MAX_STACK_SIZE = 5;
 	private static final int FRAME_COLS = 5, FRAME_ROWS = 4;
 
-	private Vector2 direction;
+    private Vector2 direction;
 	private final int cookno;
 	private final TextureManager textureManager;
 	private Animation<TextureRegion> walkAnimation;
@@ -47,7 +47,8 @@ public class Cook extends MoveableEntity {
 	public boolean holding = false;
 	public ItemStack heldItems;
 	Map map;
-	Listener<Cook> serveListener;
+	protected Listener<Cook> serveListener;
+	protected Listener<MapCell> interactRegisterListener;
 
 	/**
 	 * Cook entity constructor
@@ -131,6 +132,33 @@ public class Cook extends MoveableEntity {
 		if (interactTarget == null || stationTarget == null) {
 			return;
 		}
+		// If it's a Register...
+		if (stationTarget.getID().equals(Constants.REGISTER_ID)) {
+			// Then do a few custom checks
+			// If they're trying to interact, call the Interact listener
+			// if it exists
+			if (InputController.isKeyJustPressed("interact")) {
+				if (interactRegisterListener != null) {
+					interactRegisterListener.tell(interactTarget);
+				}
+				return;
+			}
+
+			// If the above doesn't apply, then check if they're trying to
+			// put down their item
+			if (InputController.isKeyJustPressed("drop")) {
+				// If they are, check if the serve listener exists
+				if (serveListener != null) {
+					// If it does, then tell it that the Cook is trying to serve
+					serveListener.tell(this);
+				}
+				return;
+			}
+
+			// Registers can not have any other interactions.
+			return;
+		}
+
 		// Check for custom interactions
 		if (InputController.isKeyJustPressed("take")) {
 			// If the station has an item, take it
@@ -145,18 +173,9 @@ public class Cook extends MoveableEntity {
 			}
 		}
 
-
 		if (InputController.isKeyJustPressed("drop")) {
 			// If the cook has an item, drop it
 			if (heldItems.size() > 0) {
-				// If it's a register, call the serve listener (if it's not null)
-				if (serveListener != null) {
-					if (stationTarget.getID().equals(Constants.REGISTER_ID)) {
-						serveListener.tell(this);
-						return;
-					}
-				}
-
 				// If the station can hold it...
 				if (stationTarget.canHoldItem()) {
 					// Then add it
@@ -167,6 +186,15 @@ public class Cook extends MoveableEntity {
 			}
 		}
 
+		interactionsCheck();
+
+	}
+
+	private void interactionsCheck() {
+		// Make sure the target is still valid
+		if (interactTarget == null || stationTarget == null) {
+			return;
+		}
 
 		// Check for every input
 		for (Object curKey : InputController.getInputs().keys().iterator()) {
@@ -186,7 +214,7 @@ public class Cook extends MoveableEntity {
 					// If it's repeat, then repeat the check
 					if (interactResult == InteractResult.RESTART) {
 						// Start the check over again
-						interactInputCheck();
+						interactionsCheck();
 						// And then stop this check
 						interactResult = InteractResult.STOP;
 					}

@@ -9,17 +9,18 @@ import com.undercooked.game.assets.TextureManager;
 import com.undercooked.game.entity.cook.Cook;
 import com.undercooked.game.entity.customer.Customer;
 import com.undercooked.game.files.FileControl;
+import com.undercooked.game.food.Instruction;
 import com.undercooked.game.food.Item;
 import com.undercooked.game.food.Request;
 import com.undercooked.game.load.LoadResult;
 import com.undercooked.game.map.MapCell;
 import com.undercooked.game.map.MapEntity;
+import com.undercooked.game.map.Register;
 import com.undercooked.game.screen.GameScreen;
 import com.undercooked.game.util.Constants;
 import com.undercooked.game.util.Listener;
 import com.undercooked.game.util.json.JsonFormat;
 import com.undercooked.game.util.json.JsonObject;
-import com.undercooked.game.util.json.JsonVal;
 
 public class ScenarioLogic extends GameLogic {
 
@@ -41,17 +42,17 @@ public class ScenarioLogic extends GameLogic {
         cookCount = 1;
         requests = new Array<>();
         // Set the listeners for the CustomerController
-        customerController.setServedListener(new Listener<Request>() {
+        customerController.setServedListener(new Listener<Customer>() {
             @Override
-            public void tell(Request value) {
-                customerServed(value);
+            public void tell(Customer customer) {
+                customerServed(customer);
             }
         });
 
-        customerController.setReputationListener(new Listener<Request>() {
+        customerController.setReputationListener(new Listener<Customer>() {
             @Override
-            public void tell(Request value) {
-                customerFailed(value);
+            public void tell(Customer customer) {
+                customerFailed(customer);
             }
         });
 
@@ -80,6 +81,32 @@ public class ScenarioLogic extends GameLogic {
                     // If it was successful, then remove the item from the cook
                     cook.takeItem();
                 }
+            }
+        });
+
+        cookController.setInteractRegisterListener(new Listener<MapCell>() {
+            @Override
+            public void tell(MapCell value) {
+                // Ask the CustomerController if there is a Customer on this Register
+                Register targetRegister = customerController.getRegisterFromCell(value);
+
+                // Make sure it's a valid register
+                if (targetRegister == null) {
+                    return;
+                }
+
+                // If it's valid, then check if it has a customer
+                if (!targetRegister.hasCustomer()) {
+                    return;
+                }
+
+                // Finally, make sure the customer is waiting
+                if (!targetRegister.getCustomer().isWaiting()) {
+                    return;
+                }
+
+                // If all of the above apply, then set the display customer to that customer
+                displayCustomer = targetRegister.getCustomer();
             }
         });
 
@@ -150,6 +177,11 @@ public class ScenarioLogic extends GameLogic {
     @Override
     public void postLoad() {
         super.postLoad();
+
+        // Load the instructions textures
+        for (Request request : requests) {
+            request.postLoad(textureManager);
+        }
     }
 
     @Override
@@ -274,25 +306,36 @@ public class ScenarioLogic extends GameLogic {
             // Loop through the instructions
             for (JsonValue instruction : instructions) {
                 // Add them to the Request's instructions
-
+                Instruction newInstruction = newRequest.addInstruction(instruction.getString("texture_path"),
+                        instruction.getString("text"));
                 // As it's going, load the textures for the requests too.
-                textureManager.loadAsset(Constants.GAME_TEXTURE_ID,
-                        instruction.getString("texture_path"), "textures");
+                newInstruction.load(textureManager, Constants.GAME_TEXTURE_ID);
             }
 
             requests.add(newRequest);
         }
     }
 
-    public void customerServed(Request request) {
+    public void customerServed(Customer customer) {
         // Set number completed += 1
         requestsComplete += 1;
+        // And call customerGone
+        customerGone(customer);
     }
 
-    public void customerFailed(Request request) {
+    public void customerFailed(Customer customer) {
+        Request request = customer.getRequest();
         // Just add it to the list of requests again
         requests.add(request);
         // And remove the reputation threat from the player's reputation
         reputation -= request.getReputationThreat();
+        // And call customerGone
+        customerGone(customer);
+    }
+
+    public void customerGone(Customer customer) {
+        if (customer == displayCustomer) {
+            displayCustomer = null;
+        }
     }
 }

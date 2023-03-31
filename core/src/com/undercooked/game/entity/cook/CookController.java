@@ -7,6 +7,7 @@ import com.undercooked.game.Input.InputController;
 import com.undercooked.game.Input.Keys;
 import com.undercooked.game.assets.TextureManager;
 import com.undercooked.game.map.Map;
+import com.undercooked.game.map.MapCell;
 import com.undercooked.game.map.MapManager;
 import com.undercooked.game.util.Listener;
 
@@ -27,6 +28,7 @@ public class CookController {
     static final int COOK_TEXTURES = 3;
     /** The served listener to call when a {@link Cook} serves at a register. */
     Listener<Cook> serveListener;
+    Listener<MapCell> interactRegister;
 
     /**
      * The constructor for the {@link CookController}.
@@ -51,6 +53,7 @@ public class CookController {
         }
         cooks.add(cook);
         cook.serveListener = serveListener;
+        cook.interactRegisterListener = interactRegister;
     }
 
     /**
@@ -214,6 +217,14 @@ public class CookController {
         // Make sure to update it for all cooks
         for (Cook cook : cooks) {
             cook.serveListener = serveListener;
+        }
+    }
+
+    public void setInteractRegisterListener(Listener<MapCell> mapCellListener) {
+        this.interactRegister = mapCellListener;
+        // Make sure to update it for all cooks
+        for (Cook cook : cooks) {
+            cook.interactRegisterListener = mapCellListener;
         }
     }
 }

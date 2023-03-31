@@ -28,8 +28,8 @@ public class Customer {
 
 	private float visibility;
 	private Register register;
-	Listener<Request> servedListener;
-	Listener<Request> failedListener;
+	Listener<Customer> servedListener;
+	Listener<Customer> failedListener;
 	CustomerController customerController;
 
 	public Request order;
@@ -92,7 +92,7 @@ public class Customer {
 				// then tell the listener
 				if (waitTimer <= 0) {
 					if (failedListener != null) {
-						failedListener.tell(order);
+						failedListener.tell(this);
 					}
 					leave();
 				}
@@ -108,7 +108,7 @@ public class Customer {
 			// Then just move until it reaches the register
 			y += moveSpeed;
 			// If posy >= registerCell's y, + 0.5, then wait
-			float targetY = register.registerCell.getDisplayY() - MapManager.gridToPos(0.3F);
+			float targetY = register.getRegisterCell().getDisplayY() - MapManager.gridToPos(0.3F);
 			if (y >= targetY) {
 				waiting = true;
 				y = targetY;
@@ -131,7 +131,7 @@ public class Customer {
 	public boolean serve(Item item) {
 		if (item.getID().equals(this.order.itemID)) {
 			// Get the money for it
-			servedListener.tell(this.order);
+			servedListener.tell(this);
 			// Remove this customer from the register
 			customerController.customerOffRegister(register);
 			// Then leave
@@ -173,5 +173,9 @@ public class Customer {
 
 	public Register getRegister() {
 		return register;
+	}
+
+	public boolean isWaiting() {
+		return waiting;
 	}
 }
