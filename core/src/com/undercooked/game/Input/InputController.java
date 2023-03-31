@@ -148,7 +148,7 @@ public class InputController {
             boolean needBackup = false;
 
             JsonObject keyFormat = new JsonObject();
-            keyFormat.addValue(new JsonArray("keys", JsonValue.ValueType.stringValue));
+            keyFormat.addValue(new JsonArray("keys", new JsonString(null, null)));
             keyFormat.addValue(new JsonType("interaction", JsonValue.ValueType.booleanValue));
 
             // Loop through all the keys in the defaultRoot.

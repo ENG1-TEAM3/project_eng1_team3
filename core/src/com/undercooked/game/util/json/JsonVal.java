@@ -15,4 +15,18 @@ public abstract class JsonVal<T> {
     public T getValue() {
         return value;
     }
+
+    public abstract boolean isValue(JsonValue value);
+    public void format(JsonValue value, boolean existsBefore) {
+
+    }
+    public abstract void setValue(JsonValue value, boolean existsBefore);
+    public void setValue(JsonValue value) {
+        setValue(value, true);
+    }
+    public void setType(JsonValue value) {
+        System.out.println("Set type:" + getType());
+        value.setType(getType());
+    }
+    public abstract JsonValue.ValueType getType();
 }

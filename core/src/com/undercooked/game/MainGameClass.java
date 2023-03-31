@@ -71,6 +71,8 @@ public class MainGameClass extends Game {
 		// Load the game
 		load();
 
+		JsonFormat.main(new String[] {});
+
 		// Load the default assets
 		assetManager.finishLoading();
 

@@ -175,7 +175,7 @@ public final class Constants {
             root.addValue(new JsonObjectArray("cooks", cook));
 
             // The interactions (these will automatically be sorted through to find the ingredient IDs)
-            root.addValue(new JsonArray("interactions", JsonValue.ValueType.stringValue));
+            root.addValue(new JsonArray("interactions", new JsonString(null,null)));
 
             // Requests (What the customers could possibly request)
             // It is an array of arrays of strings, with the strings being item IDs.
@@ -218,7 +218,7 @@ public final class Constants {
             // The interactions (these will automatically be sorted through to find the ingredient IDs)
             JsonObject interaction = new JsonObject();
             root.addValue(new JsonString("station_id", null)); // The station ID for the interaction
-            root.addValue(new JsonArray("items", JsonValue.ValueType.stringValue)); // An array of item IDs. The exact same number are needed for the interaction to take place,
+            root.addValue(new JsonArray("items", new JsonString(null,null))); // An array of item IDs. The exact same number are needed for the interaction to take place,
             // the interaction only starting once a valid interaction is found.
 
             // A step in the interaction
