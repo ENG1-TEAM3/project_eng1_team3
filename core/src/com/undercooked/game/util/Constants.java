@@ -75,16 +75,16 @@ public final class Constants {
             JsonObject highscore = new JsonObject();
             highscore.addValue(new JsonString("name", null));
             highscore.addValue(new JsonFloat("time",-1F)); // time in scenario, number of customers in endless.
-            JsonObjectArray highscores = new JsonObjectArray("scores", highscore);
+            JsonArray highscores = new JsonArray("scores", highscore);
 
             // Scenario scores
             JsonObject scenario = new JsonObject("scenario");
             scenario.addValue(new JsonString("id", null));
             scenario.addValue(highscores);
-            root.addValue(new JsonObjectArray("scenarios", scenario));
+            root.addValue(new JsonArray("scenarios", scenario));
 
             // Endless scores
-            root.addValue(new JsonObjectArray("endless", highscore));
+            root.addValue(new JsonArray("endless", highscore));
             return root;
         }
 
@@ -149,7 +149,7 @@ public final class Constants {
             station.addValue(new JsonInt("y", -1));
             station.addValue(new JsonString("base_texture", null));
 
-            root.addValue(new JsonObjectArray("stations", station));
+            root.addValue(new JsonArray("stations", station));
 
             // Other map variables
             root.addValue(new JsonInt("width", 16)); // The width of the Cook's area
@@ -174,14 +174,14 @@ public final class Constants {
             cook.addValue(new JsonInt("y", -1));
             cook.addValue(new JsonInt("num", -1)); // The cook texture number, -1 being random.
 
-            root.addValue(new JsonObjectArray("cooks", cook));
+            root.addValue(new JsonArray("cooks", cook));
 
             // The interactions (these will automatically be sorted through to find the ingredient IDs)
             root.addValue(new JsonArray("interactions", new JsonString(null,null)));
 
             // Requests (What the customers could possibly request)
             // It is an array of arrays of strings, with the strings being item IDs.
-            root.addValue(new JsonObjectArray("requests", requestFormat()));
+            root.addValue(new JsonArray("requests", requestFormat(true)));
 
             // The amount of reputation that the player starts with
             root.addValue(new JsonInt("reputation", 3));
@@ -191,15 +191,16 @@ public final class Constants {
 
         /**
          * The formatting for the requests {@link JsonValue}.
+         * @param asOr {@code boolean} : Whether it should return as a {@link JsonOr},
+         *                               allow a {@link JsonString} OR {@link JsonObject}
+         *                               or if it should only allow the {@link JsonObject}.
          * @return {@link JsonObject} : The Json formatting to use in {@link JsonFormat#formatJson(JsonValue, JsonObject)}.
          */
-        public static JsonObject requestFormat() {
-            JsonObject root = new JsonObject();
-
-            JsonString asString = new JsonString(null,null);
+        public static JsonVal requestFormat(boolean asOr) {
 
             JsonObject asObject = new JsonObject();
 
+            // The recipe information
             asObject.addValue(new JsonString("item_id",null));
             asObject.addValue(new JsonInt("value", -1)); // Value of the request. If < 0, then uses item's default value.
 
@@ -208,11 +209,23 @@ public final class Constants {
 
             asObject.addValue(new JsonInt("number", 1)); // The number of times that the request can be made.
 
+            // The directions for how to make the item
+            JsonObject recipe = new JsonObject("instruction");
+            recipe.addValue(new JsonString("texture_path", "<main>:missing.png"));
+            recipe.addValue(new JsonString("text", "missing"));
 
+            JsonArray instructions = new JsonArray("instructions", recipe);
 
-            root.addValue(new JsonOr(null, new JsonVal[] {asString, asObject}));
+            asObject.addValue(instructions);
 
-            return root;
+            // If it's as an Or, set it to use that
+            if (asOr) {
+                JsonString asString = new JsonString(null,null);
+
+                return new JsonOr(null, new JsonVal[] {asString, asObject});
+            }
+            // Otherwise, just use the Object.
+            return asObject;
         }
 
         /**
@@ -246,8 +259,8 @@ public final class Constants {
                 - Colour : Colours the bar the colour provided in value. Ignores time and moves to next step.
              */
             interactionStep.addValue(new JsonString("value", null)); // Can be anything, relying on the type.
-            interactionStep.addValue(new JsonObjectArray("success", interactionStep)); // Step path to take if the interaction is a success
-            interactionStep.addValue(new JsonObjectArray("failure", interactionStep)); // Step path to take if the interaction is a failure (won't be needed for all interaction types)
+            interactionStep.addValue(new JsonArray("success", interactionStep)); // Step path to take if the interaction is a success
+            interactionStep.addValue(new JsonArray("failure", interactionStep)); // Step path to take if the interaction is a failure (won't be needed for all interaction types)
             interactionStep.addValue(new JsonFloat("time", -1F)); // The time (in seconds) that this step takes.
             interactionStep.addValue(new JsonString("sound", null)); // The sound this step makes.
             /* An example format would be
@@ -308,7 +321,7 @@ public final class Constants {
              */
 
             // interaction.addValue(new JsonObjectArray("steps_arr", interactionStep));
-            root.addValue(new JsonObjectArray("steps", interactionStep));
+            root.addValue(new JsonArray("steps", interactionStep));
 
             // Other variables
 

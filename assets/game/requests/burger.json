@@ -1,6 +1,32 @@
 {
-  "item_id": "<main>:tomato",
+  "item_id": "<main>:burger",
   "value": 5,
   "time_min": 30,
-  "time_max": 40
+  "time_max": 40,
+  "instructions": [
+    {
+      "texture_path": "<main>:patty_unformed",
+      "text": "Grab Patty"
+    },
+    {
+      "texture_path": "<main>:prepare",
+      "text": "Form Patty at Preparation Station"
+    },
+    {
+      "texture_path": "<main>:fire",
+      "text": "Cook the Formed Patty"
+    },
+    {
+      "texture_path": "<main>:bun_uncooked",
+      "text": "Grab Burger bun"
+    },
+    {
+      "texture_path": "<main>:grill",
+      "text": "Grill the Bun"
+    },
+    {
+      "texture_path": "<main>:burger",
+      "text": "Combine at Preparation Station"
+    }
+  ]
 }

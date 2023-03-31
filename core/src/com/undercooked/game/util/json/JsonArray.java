@@ -15,15 +15,20 @@ public class JsonArray extends JsonVal<JsonVal> {
 
     @Override
     public void setValue(JsonValue value, boolean existsBefore) {
-        // Format all the values within
-        for (int i = value.size-1 ; i >= 0 ; i--) {
-            JsonValue val = value.get(i);
+        value.setType(getType());
+    }
+
+    @Override
+    public void checkChild(JsonValue child, boolean existsBefore) {
+        // For all of them, check child
+        for (int i = child.size-1 ; i >= 0 ; i--) {
+            JsonValue val = child.get(i);
             if (!this.value.isValue(val)) {
                 // If it's not valid, remove it
-                value.remove(i);
+                overrideValue(child.get(i));
             } else {
-                // If the value is valid, format it
-                this.value.format(val, true);
+                // Otherwise, if it's valid, check the child
+                this.value.checkChild(child.get(i), existsBefore);
             }
         }
     }

@@ -2,6 +2,7 @@ package com.undercooked.game.logic;
 
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonValue;
+import com.badlogic.gdx.utils.ObjectMap;
 import com.undercooked.game.Input.InputController;
 import com.undercooked.game.assets.AudioManager;
 import com.undercooked.game.assets.TextureManager;
@@ -217,17 +218,32 @@ public class ScenarioLogic extends GameLogic {
      * @param requestData
      */
     protected void loadRequests(JsonValue requestData) {
-        // Load the requests within the request data
+        // Load the request format in case it's needed.
+        // However, the format should only allow the object.
+        JsonObject requestFormat = (JsonObject) Constants.DefaultJson.requestFormat(false);
+
+        // This is for requests that have been loaded using the asset system, so that
+        // they don't have to be loaded multiple times.
+        ObjectMap<String, Request> loadedRequests = new ObjectMap<>();
+
         // Loop through all the requests
-        JsonObject requestFormat = Constants.DefaultJson.requestFormat();
         for (JsonValue request : requestData) {
             // First check if it's a String or an Object.
             // If it's a string, it's a path to a request, otherwise
             // it's a request
             JsonValue rData;
+            boolean storeRequest = false;
             if (request.isString()) {
-                // If it's a String, try to load the request data from
-                // the folders
+                // If it's a String, it needs to be loaded from the requests
+                // folder
+
+                // But if it's loaded already, just add it to the list
+                if (loadedRequests.containsKey(request.asString())) {
+                    requests.add(loadedRequests.get(request.asString()));
+                    // And then the following can be skipped
+                    continue;
+                }
+                // If it's not loaded yet, load it.
                 rData = FileControl.loadJsonAsset(request.asString(), "requests");
                 // If it's null, skip
                 if (rData == null) {
@@ -235,6 +251,8 @@ public class ScenarioLogic extends GameLogic {
                 }
                 // Otherwise, make sure it's formatted correctly
                 JsonFormat.formatJson(rData, requestFormat);
+                // And store the request
+                storeRequest = true;
             } else {
                 // Otherwise it's just the request
                 rData = request;
@@ -246,6 +264,21 @@ public class ScenarioLogic extends GameLogic {
             // If it was successfully added, then add it to the array
             Request newRequest = new Request(rData.getString("item_id"));
             newRequest.setValue(rData.getInt("value"));
+
+            if (storeRequest) {
+                loadedRequests.put(request.asString(), newRequest);
+            }
+
+            // Get the instructions
+            JsonValue instructions = rData.get("instructions");
+            // Loop through the instructions
+            for (JsonValue instruction : instructions) {
+                // Add them to the Request's instructions
+
+                // As it's going, load the textures for the requests too.
+                textureManager.loadAsset(Constants.GAME_TEXTURE_ID,
+                        instruction.getString("texture_path"), "textures");
+            }
 
             requests.add(newRequest);
         }

@@ -17,36 +17,16 @@
     "<main>:bin"
   ],
   "requests": [
-    {
-      "item_id": "<main>:burger",
-      "value": 5,
-      "time_min": 30,
-      "time_max": 40
-    },
-    {
-      "item_id": "<main>:burger",
-      "value": 5,
-      "time_min": 30,
-      "time_max": 40
-    },
+    "<main>:burger",
+    "<main>:burger",
     {
       "item_id": "<main>:salad",
       "value": 5,
       "time_min": 30,
       "time_max": 40
     },
-    {
-      "item_id": "<main>:burger",
-      "value": 5,
-      "time_min": 30,
-      "time_max": 40
-    },
-    {
-      "item_id": "<main>:burger",
-      "value": 5,
-      "time_min": 30,
-      "time_max": 40
-    },
+    "<main>:burger",
+    "<main>:burger",
     {
       "item_id": "<main>:salad",
       "value": 5,

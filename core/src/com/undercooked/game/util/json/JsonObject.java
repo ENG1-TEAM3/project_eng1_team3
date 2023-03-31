@@ -47,7 +47,7 @@ public class JsonObject extends JsonVal<Array<JsonVal>> {
     @Override
     public void format(JsonValue value, boolean existsBefore) {
         // Only continue if it existed before
-        if (!existsBefore) {
+        if (existsBefore) {
             // Try to format
             setValue(value, true);
         }

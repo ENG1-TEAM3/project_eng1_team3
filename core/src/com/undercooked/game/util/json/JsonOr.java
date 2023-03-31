@@ -13,10 +13,12 @@ public class JsonOr extends JsonVal<JsonVal[]> {
     public boolean isValue(JsonValue value) {
         // Make sure at least one value matches
         for (JsonVal jsonVal : this.value) {
+            System.out.println("TYPE: " + jsonVal.getType() + " VS: " + value.type());
             if (jsonVal.isValue(value)) {
                 return true;
             }
         }
+        System.out.println("NO MATCH");
         // Otherwise return false.
         return false;
     }
@@ -29,8 +31,8 @@ public class JsonOr extends JsonVal<JsonVal[]> {
 
     @Override
     public JsonValue.ValueType getType() {
-        // If no child, return null
-        if (this.value.length <= 0) {
+        // If no or, return null
+        if (this.value.length == 0) {
             return JsonValue.ValueType.nullValue;
         }
         // Otherwise, return the type of the first or
@@ -39,8 +41,8 @@ public class JsonOr extends JsonVal<JsonVal[]> {
 
     @Override
     public void addChild(JsonValue root) {
-        // If no child, add a null value
-        if (this.value.length <= 0) {
+        // If no or, add a null value
+        if (this.value.length == 0) {
             // Create the value
             JsonValue jValue = new JsonValue(JsonValue.ValueType.nullValue);
             // And then add it
@@ -53,6 +55,7 @@ public class JsonOr extends JsonVal<JsonVal[]> {
 
     @Override
     public void checkChild(JsonValue child, boolean existsBefore) {
+        System.out.println("TEST 3");
         // Check if this has at least one or
         if (this.value.length == 0) {
             // If it doesn't, just set it
@@ -72,11 +75,14 @@ public class JsonOr extends JsonVal<JsonVal[]> {
                 break;
             }
         }
+        System.out.println("TEST 1");
         // If it's invalid, just set it to check the first child
         if (valid < 0) {
             this.value[0].checkChild(child, existsBefore);
             return;
         }
+        System.out.println("TEST 2");
+        System.out.println(this.value[valid]);
         // Otherwise, if it's valid, then use the valid child to set the value
         this.value[valid].checkChild(child, existsBefore);
     }
