@@ -176,8 +176,8 @@ public class LeaderBoard extends Screen implements TextInputListener {
 	 * @param name - name of player
 	 * @param score - score of player
 	 */
-	public void addLeaderBoardData(String name, int score) {
-		String stringscore = Integer.toString(score);
+	public void addLeaderBoardData(String name, float score) {
+		String stringscore = Integer.toString((int) score);
 		FileHandle handle = Gdx.files.local("leaderboarddata/playerData.txt");
 		handle.writeString("\n" + name + ";" + stringscore, true);
 		this.readPlayerData();

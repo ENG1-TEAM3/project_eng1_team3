@@ -1,5 +1,6 @@
 package com.undercooked.game.logic;
 
+import com.badlogic.gdx.utils.TimeUtils;
 import com.undercooked.game.assets.AudioManager;
 import com.undercooked.game.assets.TextureManager;
 import com.undercooked.game.entity.cook.CookController;
@@ -16,6 +17,7 @@ import com.undercooked.game.render.GameRenderer;
 import com.undercooked.game.screen.GameScreen;
 import com.undercooked.game.station.StationManager;
 import com.undercooked.game.util.Constants;
+import com.undercooked.game.util.StringUtil;
 
 /**
  * A class to extend from that indicates the logic of the
@@ -201,5 +203,13 @@ public abstract class GameLogic {
 
     public Items getItems() {
         return items;
+    }
+
+    public float getScore() {
+        return elapsedTime;
+    }
+
+    public String getScoreString() {
+        return StringUtil.formatSeconds(elapsedTime);
     }
 }

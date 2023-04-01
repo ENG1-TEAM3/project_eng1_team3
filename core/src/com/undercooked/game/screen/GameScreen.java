@@ -297,6 +297,9 @@ public class GameScreen extends Screen {
 
 	public void render(float delta) {
 
+		// Play Game Music
+		game.gameMusic.play();
+
 		// Update the game logic.
 		gameLogic.update(delta);
 
@@ -305,9 +308,6 @@ public class GameScreen extends Screen {
 
 		// Render the game
 		renderScreen(delta);
-
-		// Play Game Music
-		game.gameMusic.play();
 		// Draw Pause Button
 		MainGameClass.batch.setProjectionMatrix(uiCamera.combined);
 		stage.act();
