@@ -279,6 +279,8 @@ public class CustomerController {
 		Customer customer = register.getCustomer();
 		// If it's null, then return false
 		if (customer == null) return false;
+		// Customer must be waiting
+		if (!customer.isWaiting()) return false;
 
 		// Otherwise, check if the order and item matches
 		return customer.serve(item);
