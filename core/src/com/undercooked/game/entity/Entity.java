@@ -33,6 +33,10 @@ public class Entity {
 		batch.draw(sprite, pos.x, pos.y, collision.width, collision.height);
 	}
 
+	public void draw(ShapeRenderer shape) {
+
+	}
+
 	public void load(TextureManager textureManager, String textureID) {
 		// Load Texture
 		textureManager.loadAsset(textureID, texturePath, "textures");

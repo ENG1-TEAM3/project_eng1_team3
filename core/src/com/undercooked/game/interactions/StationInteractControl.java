@@ -1,5 +1,7 @@
 package com.undercooked.game.interactions;
 
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.Array;
 import com.undercooked.game.Input.InputType;
 import com.undercooked.game.assets.AudioManager;
@@ -220,5 +222,19 @@ public class StationInteractControl {
         }
         // If it's null, then just clear
         clear();
+    }
+
+    public void draw(SpriteBatch batch) {
+        if (currentInteraction == null) {
+            return;
+        }
+        currentInteraction.draw(interactionInstance, batch);
+    }
+
+    public void draw(ShapeRenderer shape) {
+        if (currentInteraction == null) {
+            return;
+        }
+        currentInteraction.draw(interactionInstance, shape);
     }
 }

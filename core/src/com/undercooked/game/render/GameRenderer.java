@@ -128,8 +128,8 @@ public class GameRenderer {
 
         // Render the entities in order, highest Y to lowest Y
         renderEntities.sort(entityCompare);
-        batch.begin();
         for (Entity renderEntity : renderEntities) {
+            batch.begin();
             renderEntity.draw(batch);
 
             // Draw the selected cook's interact target. It draws on
@@ -151,8 +151,14 @@ public class GameRenderer {
                 interactSprite.setPosition(interactBox.x, interactBox.y);
                 interactSprite.draw(batch);
             }
+
+            batch.end();
+            shape.begin(ShapeRenderer.ShapeType.Filled);
+            renderEntity.draw(shape);
+            shape.end();
         }
 
+        batch.begin();
         // Draw the select_box for displayCustomer
         if (logic.getDisplayCustomer() != null) {
             MapCell registerCell = logic.getDisplayCustomer().getRegister().getRegisterCell();

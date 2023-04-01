@@ -1,5 +1,7 @@
 package com.undercooked.game.interactions;
 
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.Array;
 import com.undercooked.game.Input.InputType;
 import com.undercooked.game.entity.cook.Cook;
@@ -149,7 +151,7 @@ public abstract class InteractionStep {
     }
 
     /**
-     * Interaction betweek a {@link Cook} and the {@link InteractionStep}.
+     * Interaction between a {@link Cook} and the {@link InteractionStep}.
      * @param instance {@link IStep} : The interaction instance.
      * @param cook {@link Cook} : The {@link Cook} that interacted.
      * @param keyID {@link String} : The ID of the Key used.
@@ -158,6 +160,30 @@ public abstract class InteractionStep {
      */
     public InteractResult interact(IStep instance, Cook cook, String keyID, InputType inputType) {
         return InteractResult.NONE;
+    }
+
+    /**
+     * Draws the {@link InteractionStep} visually on the screen, using
+     * the {@link SpriteBatch}.
+     * <br>To be override by children classes.
+     *
+     * @param instance {@link IStep} : The interaction instance.
+     * @param batch {@link SpriteBatch} : The {@link SpriteBatch} to draw to.
+     */
+    public void draw(IStep instance, SpriteBatch batch) {
+
+    }
+
+    /**
+     * Draws the {@link InteractionStep} visually on the screen, using
+     * the {@link ShapeRenderer}.
+     * <br>To be override by children classes.
+     *
+     * @param instance {@link IStep} : The interaction instance.
+     * @param shape {@link ShapeRenderer} : The {@link ShapeRenderer} to draw to.
+     */
+    public void draw(IStep instance, ShapeRenderer shape) {
+
     }
 
     /**

@@ -116,6 +116,11 @@ public class Station extends MapEntity {
 		}
 	}
 
+	public void draw(ShapeRenderer shape) {
+		// Draw the interaction
+		interactControl.draw(shape);
+	}
+
 	/**
 	 *
 	 * @param text Text to be drawn.
