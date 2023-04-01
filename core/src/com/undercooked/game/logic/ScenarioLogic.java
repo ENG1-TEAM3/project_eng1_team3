@@ -319,8 +319,10 @@ public class ScenarioLogic extends GameLogic {
                 newInstruction.load(textureManager, Constants.GAME_TEXTURE_ID);
             }
 
+            // Set the reputation threat of the request
             newRequest.setReputationThreat(rData.getInt("reputation_threat"));
 
+            // Finally, add the request to requests
             requests.add(newRequest);
         }
     }

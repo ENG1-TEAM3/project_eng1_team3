@@ -153,6 +153,16 @@ public class GameRenderer {
             }
         }
 
+        // Draw the select_box for displayCustomer
+        if (logic.getDisplayCustomer() != null) {
+            MapCell registerCell = logic.getDisplayCustomer().getRegister().getRegisterCell();
+            interactSprite.setColor(Color.PURPLE);
+            Rectangle registerBox = registerCell.getMapEntity().getInteractBox();
+            interactSprite.setSize(registerBox.width, registerBox.height);
+            interactSprite.setPosition(registerBox.x, registerBox.y);
+            interactSprite.draw(batch);
+        }
+
         // Render the Customers
         logic.getCustomerController().draw(batch);
         batch.end();
