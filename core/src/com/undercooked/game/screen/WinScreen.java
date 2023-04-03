@@ -5,7 +5,6 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.utils.ScreenUtils;
-import com.sun.org.apache.bcel.internal.Const;
 import com.undercooked.game.Input.InputController;
 import com.undercooked.game.MainGameClass;
 import com.undercooked.game.util.Constants;
@@ -65,9 +64,9 @@ public class WinScreen extends Screen {
             // If it's pressed, go to the LeaderBoard Screen.
             game.screenController.setScreen(Constants.LEADERBOARD_SCREEN_ID);
             // Get the Screen
-            LeaderBoard leaderBoard = (LeaderBoard) game.screenController.getScreen(Constants.LEADERBOARD_SCREEN_ID);
+            LeaderboardScreen leaderboardScreen = (LeaderboardScreen) game.screenController.getScreen(Constants.LEADERBOARD_SCREEN_ID);
             // And try to add the score
-            leaderBoard.addLeaderBoardData(nameInput, score);
+            leaderboardScreen.addLeaderBoardData(nameInput, score);
             // And stop here
             return;
         }

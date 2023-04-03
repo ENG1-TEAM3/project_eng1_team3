@@ -2,17 +2,12 @@ package com.undercooked.game;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.undercooked.game.Input.InputController;
 import com.undercooked.game.assets.AudioManager;
 import com.undercooked.game.audio.SoundStateChecker;
@@ -23,7 +18,6 @@ import com.undercooked.game.screen.*;
 import com.undercooked.game.station.StationManager;
 import com.undercooked.game.util.CameraController;
 import com.undercooked.game.util.Constants;
-import com.undercooked.game.util.json.JsonFormat;
 
 public class MainGameClass extends Game {
 	public Music mainScreenMusic;
@@ -103,7 +97,7 @@ public class MainGameClass extends Game {
 
 		screenController.addScreen(new MainScreen(this), Constants.MAIN_SCREEN_ID);
 		screenController.addScreen(new GameScreen(this), Constants.GAME_SCREEN_ID);
-		screenController.addScreen(new LeaderBoard(this), Constants.LEADERBOARD_SCREEN_ID);
+		screenController.addScreen(new LeaderboardScreen(this), Constants.LEADERBOARD_SCREEN_ID);
 		screenController.addScreen(new PauseScreen(this), Constants.PAUSE_SCREEN_ID);
 		screenController.addScreen(new WinScreen(this), Constants.WIN_SCREEN_ID);
 		screenController.addScreen(new LossScreen(this), Constants.LOSS_SCREEN_ID);

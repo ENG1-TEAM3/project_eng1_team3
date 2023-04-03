@@ -1,8 +1,6 @@
 package com.undercooked.game.util;
 
 import com.badlogic.gdx.utils.JsonValue;
-import com.undercooked.game.entity.cook.Cook;
-import com.undercooked.game.entity.customer.Customer;
 import com.undercooked.game.util.json.*;
 
 /** A class filled with public static final variables so that they can be accessed from anywhere. */
@@ -25,7 +23,7 @@ public final class Constants {
     public static final String MAIN_SCREEN_ID = "main";
     /** The ID for the {@link com.undercooked.game.screen.GameScreen}. */
     public static final String GAME_SCREEN_ID = "game";
-    /** The ID for the {@link com.undercooked.game.screen.LeaderBoard}. */
+    /** The ID for the {@link com.undercooked.game.screen.LeaderboardScreen}. */
     public static final String LEADERBOARD_SCREEN_ID = "leaderboard";
     /** The ID for the {@link com.undercooked.game.screen.PauseScreen}. */
     public static final String PAUSE_SCREEN_ID = "pause";
@@ -47,11 +45,11 @@ public final class Constants {
     public static final String GAME_TEXTURE_ID = "game";
     /** The texture ID for the textures on the {@link com.undercooked.game.screen.PauseScreen} */
     public static final String PAUSE_TEXTURE_ID = "pause";
-    /** The texture ID for the textures on the {@link com.undercooked.game.screen.LeaderBoard} */
+    /** The texture ID for the textures on the {@link com.undercooked.game.screen.LeaderboardScreen} */
     public static final String LEADERBOARD_TEXTURE_ID = "leaderboard";
     /** The texture ID for the textures on the {@link com.undercooked.game.screen.LossScreen} */
     public static final String LOSS_TEXTURE_ID = "loss";
-    /** The register id, used for finding where {@link Customer}s need to wait. */
+    /** The register id, used for finding where {@link com.undercooked.game.entity.customer.Customer}s need to wait. */
     public static final String REGISTER_ID = "<main>:register";
 
     // GameInfo, such as file names for maps, ingredients, stations, recipes
@@ -347,12 +345,12 @@ public final class Constants {
 
     // Textures
     /**
-     * The number of {@link Cook} {@link com.badlogic.gdx.graphics.Texture}s
+     * The number of {@link com.undercooked.game.entity.cook.Cook} {@link com.badlogic.gdx.graphics.Texture}s
      * in the asset folder.
      */
     public static final int NUM_COOK_TEXTURES = 3;
     /**
-     * The number of {@link Customer} {@link com.badlogic.gdx.graphics.Texture}s
+     * The number of {@link com.undercooked.game.entity.customer.Customer} {@link com.badlogic.gdx.graphics.Texture}s
      * in the asset folder.
      */
     public static int NUM_CUSTOMER_TEXTURES = 5;

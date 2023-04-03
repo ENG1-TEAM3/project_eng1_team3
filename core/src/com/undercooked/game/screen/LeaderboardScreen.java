@@ -1,6 +1,5 @@
 package com.undercooked.game.screen;
 
-import java.awt.event.ContainerAdapter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -22,7 +21,7 @@ import com.undercooked.game.util.Constants;
 //INCORRECT FILE FORMATTING WILL CRASH GAME
 //MAKE SURE ALL LINES IN LEADERBOARD FILE ARE x;y OR JUST s
 //NO NEWLINE AT END OF FILE
-public class LeaderBoard extends Screen implements TextInputListener {
+public class LeaderboardScreen extends Screen implements TextInputListener {
 
 	Texture background;
 	Texture line;
@@ -35,7 +34,7 @@ public class LeaderBoard extends Screen implements TextInputListener {
 	 * Constructor for leaderboard screen
 	 * @param game - Entry point class
 	 */
-	public LeaderBoard(MainGameClass game) {
+	public LeaderboardScreen(MainGameClass game) {
 		super(game);
 
 		readPlayerData();
