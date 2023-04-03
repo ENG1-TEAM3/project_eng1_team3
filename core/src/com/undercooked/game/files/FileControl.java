@@ -14,10 +14,12 @@ import java.util.Collections;
 import java.util.Scanner;
 
 /**
+ * This static class contains all methods relating to file handling
+ * for this game.
  *
- * TODO: NEEDS TO BE COMPLETED
- * TODO: Javadocs
+ * // TODO: JAVA DOCS
  *
+ * // TODO: COMPLETE THIS CLASS
  */
 
 public class FileControl {
@@ -27,8 +29,8 @@ public class FileControl {
     }
 
     public static String getDataPath(String endsWith) {
-        if (System.getProperty("os.name").equals("Linux")){
-            return "/data/" + Constants.DATA_FILE + endsWith;
+        if (System.getProperty("os.name").equals("Linux")) {
+            return "\\data\\" + Constants.DATA_FILE + endsWith;
         } else if (System.getProperty("os.name").startsWith("Windows")) {
             return System.getenv("APPDATA") + "/" + Constants.DATA_FILE + endsWith;
         }
@@ -71,7 +73,8 @@ public class FileControl {
         } else {
             directory = new FileHandle(dir);
         }
-        // If directory isn't a directory, or it doesn't exist, then create the directory.
+        // If directory isn't a directory, or it doesn't exist, then
+        // create the directory.
         if (!directory.isDirectory()) {
             System.out.println("Directory doesn't exist: " + directory);
             directory.file().mkdir();
@@ -82,12 +85,13 @@ public class FileControl {
         } else {
             file = new FileHandle(dirAndName(dir, fileName));
         }
-        // If file isn't a file, or it doesn't exist, then create the file using the default data.
+        // If file isn't a file, or it doesn't exist, then create the
+        // file using the default data.
         if (!file.file().isFile()) {
             System.out.println("File doesn't exist: " + fileName);
             try {
                 file.file().createNewFile();
-                saveToFile(dir,fileName,"{}");
+                saveToFile(dir, fileName, "{}");
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -125,7 +129,8 @@ public class FileControl {
         } else {
             directory = new FileHandle(dir);
         }
-        // If directory isn't a directory, or it doesn't exist, then return nothing.
+        // If directory isn't a directory, or it doesn't exist, then
+        // return nothing.
         if (!directory.isDirectory()) {
             if (internal) {
                 System.out.println("Internal directory doesn't exist: " + dir);
@@ -140,7 +145,8 @@ public class FileControl {
         } else {
             file = new FileHandle(dirAndName(dir, fileName));
         }
-        // If file isn't a file, or it doesn't exist, then return nothing.
+        // If file isn't a file, or it doesn't exist, then return
+        // nothing.
         if (!file.file().isFile()) {
             if (internal) {
                 System.out.println("Internal file doesn't exist: " + dirAndName(dir, fileName));
@@ -188,8 +194,8 @@ public class FileControl {
     public static JsonValue loadJsonAsset(String assetPath, String folderName) {
         // First, change assetPath to path.
         String path = toPath(assetPath, folderName);
-        // Then, depending on if it starts with "<main>:" or not, change whether it
-        // uses the AppData path or internal path.
+        // Then, depending on if it starts with "<main>:" or not,
+        // change whether it uses the AppData path or internal path.
         if (assetPath.startsWith("<main>")) {
             // Remove the "<main>:"
             // System.out.println(dirAndName("game/", path));
@@ -214,10 +220,10 @@ public class FileControl {
         mainFolderName = formatDir(mainFolderName);
         // AssetPath will be in the format group:filePath
         String[] args = assetPath.split(":", 2);
-        /* System.out.println(assetPath);
-        for (String str : args) {
-            System.out.println(str);
-        }*/
+        /*
+         * System.out.println(assetPath); for (String str : args) {
+         * System.out.println(str); }
+         */
         if (args.length != 2) {
             return assetPath;
         }

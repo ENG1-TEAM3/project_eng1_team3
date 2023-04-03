@@ -113,5 +113,6 @@ Thumbs.db
 /ios/IOSLauncher.app
 /ios/IOSLauncher.app.dSYM
 
-## Additonal
+## Additional
+## VSCode specific development-config files. Not needed for repo.
 *.code-workspace

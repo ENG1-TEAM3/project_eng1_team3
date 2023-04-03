@@ -6,8 +6,6 @@ import com.badlogic.gdx.utils.JsonWriter;
 import com.undercooked.game.files.FileControl;
 import com.undercooked.game.util.Constants;
 
-import javax.sound.midi.SysexMessage;
-
 public class JsonFormat {
 
     public static JsonValue formatJson(JsonValue json, JsonObject ideal) {
