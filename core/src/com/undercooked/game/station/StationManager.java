@@ -24,13 +24,13 @@ public class StationManager {
 	 * An {@link Array} of the {@link Station}s that are in the
 	 * game.
 	 */
-	public static Array<Station> stations = new Array<>();
+	public Array<Station> stations;
 	/**
 	 * An {@link ObjectMap<String, StationData>} that links a
 	 * {@link Station}'s id to the {@link StationData} that it
 	 * has loaded.
 	 */
-	public static ObjectMap<String, StationData> stationData;
+	public ObjectMap<String, StationData> stationData;
 
 	SpriteBatch batch;
 	GameScreen game;
@@ -125,6 +125,15 @@ public class StationManager {
 		// System.out.println(stationData);
 	}
 
+	public StationData loadStation(String stationPath) {
+		StationData loadedData = loadStationPath(stationPath);
+		// Add it to the array, if it's not null.
+		if (loadedData != null) {
+			stationData.put(stationPath, loadedData);
+		}
+		return loadedData;
+	}
+
 	public StationData loadStationPath(String stationPath) {
 		// Try to load this single station path
 		// Read the file data
@@ -175,9 +184,24 @@ public class StationManager {
 		}
 	}
 
+	public void reset() {
+		// Reset all stations
+		for (Station station : stations) {
+			station.reset();
+		}
+	}
+
 	public void clear() {
-		// Unload the stations
+		// Clear the stations
 		stations.clear();
+	}
+
+	public void dispose() {
+		// Clear
+		clear();
+
+		// And remove all StationData
+		stationData.clear();
 	}
 
 	public boolean hasID(String stationID) {

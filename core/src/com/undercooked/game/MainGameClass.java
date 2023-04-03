@@ -59,7 +59,7 @@ public class MainGameClass extends Game {
 	 */
 	public void load() {
 		// Load all station paths
-		stationManager.loadStationPaths();
+		// stationManager.loadStationPaths();
 
 		// Load the controls
 		InputController.loadControls();

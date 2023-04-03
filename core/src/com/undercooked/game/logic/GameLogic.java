@@ -1,6 +1,5 @@
 package com.undercooked.game.logic;
 
-import com.badlogic.gdx.utils.TimeUtils;
 import com.undercooked.game.assets.AudioManager;
 import com.undercooked.game.assets.TextureManager;
 import com.undercooked.game.entity.cook.CookController;
@@ -12,7 +11,6 @@ import com.undercooked.game.food.Items;
 import com.undercooked.game.interactions.Interactions;
 import com.undercooked.game.load.LoadResult;
 import com.undercooked.game.map.Map;
-import com.undercooked.game.map.MapCell;
 import com.undercooked.game.render.GameRenderer;
 import com.undercooked.game.screen.GameScreen;
 import com.undercooked.game.station.StationManager;
@@ -187,6 +185,9 @@ public abstract class GameLogic {
 
     public void dispose() {
         map.dispose();
+        cookController.dispose();
+        customerController.dispose();
+        stationManager.dispose();
     }
 
     public Map getMap() {
