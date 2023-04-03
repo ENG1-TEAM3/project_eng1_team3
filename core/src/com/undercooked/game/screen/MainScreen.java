@@ -266,7 +266,6 @@ public class MainScreen extends Screen {
 	 */
 	public void changeScreen(STATE state) {
 		if (state == STATE.leaderboard) {
-			game.mainScreenMusic.dispose();
 			game.screenController.nextScreen(Constants.LEADERBOARD_SCREEN_ID);
 		}
 		if (state == STATE.audio) {

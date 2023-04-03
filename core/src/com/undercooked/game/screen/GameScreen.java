@@ -1,6 +1,7 @@
 package com.undercooked.game.screen;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.maps.MapProperties;
@@ -65,24 +66,6 @@ public class GameScreen extends Screen {
 	OrthographicCamera uiCamera;
 	public static OrthographicCamera worldCamera;
 
-	/**
-	 * The customer that is currently being served. (This customer will
-	 * have their requested recipe displayed to the player, in the HUD.)
-	 */
-	public static Customer currentWaitingCustomer = null;
-
-	/** The IDs for each screen the game can show. */
-	public enum STATE {
-		Pause, Continue, main, audio
-	}
-
-	/**
-	 * The {@link STATE} ID of the game screen currently being
-	 * displayed.
-	 */
-	public static STATE state1;
-	float v;
-	float s;
 	int gameResolutionX;
 	int gameResolutionY;
 	float buttonwidth;
@@ -95,14 +78,8 @@ public class GameScreen extends Screen {
 	float audioBackgroundHeight;
 	float audioBackgroundx;
 	float audioBackgroundy;
-	long startTime;
-	long timeOnStartup;
-	long tempTime, tempThenTime;
+	boolean paused;
 	public Map map;
-	public static int currentCookIndex = 0;
-	
-	public static CookController cookController;
-	public static CustomerController customerController;
 
 	/**
 	 * Constructor to initialise game screen;
@@ -204,6 +181,8 @@ public class GameScreen extends Screen {
 	public void show() {
 		// When this screen is shown, reset the input processor
 		Gdx.input.setInputProcessor(stage);
+		// As it's showing, it's not paused
+		paused = false;
 	}
 
 	/**
@@ -277,8 +256,7 @@ public class GameScreen extends Screen {
 		mn.addListener(new ClickListener() {
 			public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
 				super.touchUp(event, x, y, pointer, button);
-				gameLogic.pause();
-				game.screenController.nextScreen(Constants.PAUSE_SCREEN_ID);
+				pauseGame();
 			}
 		});
 		// ======================================ADD=BUTTONS=TO=STAGES===================================================
@@ -298,6 +276,11 @@ public class GameScreen extends Screen {
 
 	}
 
+	public void pauseGame() {
+		gameLogic.pause();
+		game.screenController.nextScreen(Constants.PAUSE_SCREEN_ID);
+	}
+
 	AudioSliders audioSliders;
 	Slider musicSlider, gameSlider;
 
@@ -308,6 +291,15 @@ public class GameScreen extends Screen {
 	 */
 
 	public void render(float delta) {
+
+		// Pause the game before anything else
+		stage.act();
+		if (!paused && Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+			pauseGame();
+			return;
+		}
+		// If the game is paused, then don't continue
+		if (paused) return;
 
 		// Play Game Music
 		game.gameMusic.play();
@@ -322,7 +314,6 @@ public class GameScreen extends Screen {
 		renderScreen(delta);
 		// Draw Pause Button
 		MainGameClass.batch.setProjectionMatrix(uiCamera.combined);
-		stage.act();
 		stage.draw();
 
 		// =========================================CHECK=GAME=OVER======================================================
@@ -389,79 +380,6 @@ public class GameScreen extends Screen {
 		this.xSliderMax = xSliderMin + volSlideBackgr.width;
 		this.sliderWidth = volSlideBackgr.width;
 	}
-
-	/**
-	 * Construct an array of CollisionTile objects for collision
-	 * detection
-	 *
-	 * @param mp- game tilemap
-	 */
-	private void constructCollisionData(TiledMap mp) {
-		TiledMapTileLayer botlayer = (TiledMapTileLayer) mp.getLayers().get(0);
-		int mapwidth = botlayer.getWidth();
-		int mapheight = botlayer.getHeight();
-		CLTiles = new CollisionTile[mapwidth][mapheight];
-		TiledMapTileLayer toplayer = (TiledMapTileLayer) mp.getLayers().get(1);
-		int topwidth = toplayer.getWidth();
-		int topheight = toplayer.getHeight();
-		for (int y = 0; y < topheight; y++) {
-			for (int x = 0; x < topwidth; x++) {
-				TiledMapTileLayer.Cell tl2 = toplayer.getCell(x, y);
-				if (tl2 != null) {
-					CLTiles[x][y] = new CollisionTile(x * 64, y * 64, 64, 64);
-				}
-			}
-		}
-		for (int y = 0; y < mapheight; y++) {
-			for (int x = 0; x < mapwidth; x++) {
-				TiledMapTileLayer.Cell tl = botlayer.getCell(x, y);
-				if (tl != null) {
-					TiledMapTile tlt = tl.getTile();
-					MapProperties mpr = tlt.getProperties();
-					// Checks if tile have the "name" custom property In this
-					// implementation only the floor tiles have "name" property
-					if (mpr.get("name") == null) {
-						CLTiles[x][y] = new CollisionTile(x * 64, y * 64, 64, 64);
-					} else {
-						if (y != 0) {
-							if (CLTiles[x][y - 1] != null) {
-								CLTiles[x][y - 1] = null;
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-
-	/*
-	 * Check the tile the cookController.getCurrentCook() is looking at
-	 * for interaction
-	 *
-	 * @param ck - Selected cookController.getCurrentCook() @param sr -
-	 * ShapeRenderer to draw the coloured box
-	 */
-	/*
-	 * public void checkInteraction(Cook ck, ShapeRenderer sr) { float
-	 * centralCookX = ck.getX() + ck.getWidth() / 2; float centralCookY
-	 * = ck.getY(); int cellx = (int) Math.floor(centralCookX / 64); int
-	 * celly = (int) Math.floor(centralCookY / 64); int checkCellX =
-	 * cellx; int checkCellY = celly; checkCellX += ck.getDirection().x;
-	 * checkCellY += ck.getDirection().y + 1; Cell viewedTile =
-	 * ((TiledMapTileLayer) map1.getLayers().get(1)).getCell(checkCellX,
-	 * checkCellY);
-	 *
-	 * if (viewedTile != null) { Object stationType =
-	 * viewedTile.getTile().getProperties().get("Station"); if
-	 * (stationType != null) {
-	 * stationManager.checkInteractedTile((String)
-	 * viewedTile.getTile().getProperties().get("Station"), new
-	 * Vector2(checkCellX, checkCellY)); } else {
-	 * stationManager.checkInteractedTile("", new Vector2(checkCellX,
-	 * checkCellY)); } } sr.begin(ShapeRenderer.ShapeType.Line);
-	 * sr.setColor(new Color(1, 0, 1, 1)); sr.rect(checkCellX * 64,
-	 * checkCellY * 64, 64, 64); sr.end(); }
-	 */
 
 	/**
 	 * Resize game screen

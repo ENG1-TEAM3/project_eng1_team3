@@ -171,7 +171,7 @@ public final class Leaderboard {
 		// array of LeaderboardEntries
 		Array<LeaderboardEntry> entryArray = new Array<>();
 		for (JsonValue entryData : leaderboard.get("scores")) {
-			System.out.println(entryData);
+			// System.out.println(entryData);
 			// Make a new LeaderboardEntry with the name and score
 			LeaderboardEntry newEntry = new LeaderboardEntry(entryData.getString("name"), entryData.getFloat("score"));
 

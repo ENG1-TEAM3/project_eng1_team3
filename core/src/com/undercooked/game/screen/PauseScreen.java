@@ -1,6 +1,7 @@
 package com.undercooked.game.screen;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
@@ -98,7 +99,7 @@ public class PauseScreen extends Screen {
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 // System.out.println("TEST");
-                previous();
+                resumeGame();
             }
         });
 
@@ -138,9 +139,19 @@ public class PauseScreen extends Screen {
         }
 
         // Render the pause menu over the top of the previous screen
-        stage.act(delta);
+        // If escape is pressed, resume
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+            resumeGame();
+        } else {
+            // Otherwise, check button
+            stage.act(delta);
+        }
         stage.draw();
 
+    }
+
+    private void resumeGame() {
+        previous();
     }
 
     public void renderScreen() {

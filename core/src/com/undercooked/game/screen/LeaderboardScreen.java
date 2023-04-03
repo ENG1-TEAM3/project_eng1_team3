@@ -21,7 +21,7 @@ import com.undercooked.game.util.Constants;
 //INCORRECT FILE FORMATTING WILL CRASH GAME
 //MAKE SURE ALL LINES IN LEADERBOARD FILE ARE x;y OR JUST s
 //NO NEWLINE AT END OF FILE
-public class LeaderboardScreen extends Screen implements TextInputListener {
+public class LeaderboardScreen extends Screen {
 
 	Texture background;
 	Texture line;
@@ -90,7 +90,8 @@ public class LeaderboardScreen extends Screen implements TextInputListener {
 	 */
 	public void show() {
 		TextureManager textureManager = game.getTextureManager();
-		game.gameMusic = game.getAudioManager().getMusic("audio/music/GameMusic.ogg");
+		// Play the menu music
+		game.mainScreenMusic.play();
 		ScreenUtils.clear(0, 0, 0, 0);
 		background = textureManager.get("uielements/MainScreenBackground.jpg");
 		leaderboard = textureManager.get("uielements/LeaderBoard.png");
@@ -107,7 +108,10 @@ public class LeaderboardScreen extends Screen implements TextInputListener {
 		textureManager.load(Constants.LEADERBOARD_TEXTURE_ID, "uielements/LeaderBoard.png");
 		textureManager.load(Constants.LEADERBOARD_TEXTURE_ID, "uielements/line.jpg");
 
-		game.audioManager.loadMusic("audio/music/GameMusic.ogg", Constants.MUSIC_GROUP);
+		game.audioManager.loadMusic("audio/music/MainScreenMusic.ogg", Constants.MUSIC_GROUP);
+
+		// Load the leaderboard
+		Leaderboard.loadLeaderboard();
 	}
 
 	@Override
@@ -115,7 +119,10 @@ public class LeaderboardScreen extends Screen implements TextInputListener {
 		game.getTextureManager().unload(Constants.LEADERBOARD_TEXTURE_ID);
 		game.getTextureManager().unload(Constants.GAME_TEXTURE_ID);
 
-		game.audioManager.unloadMusic("audio/music/GameMusic.ogg");
+		game.audioManager.unloadMusic("audio/music/MainScreenMusic.ogg");
+
+		// Unload the leaderboard
+		Leaderboard.unloadLeaderboard();
 	}
 
 	/**
@@ -161,14 +168,10 @@ public class LeaderboardScreen extends Screen implements TextInputListener {
 		}
 
 		game.batch.end();
-		Gdx.input.setInputProcessor(new InputAdapter() {
-			public boolean keyDown(int key) {
-				if (key == Input.Keys.ESCAPE) {
-					changeScreenToMain();
-				}
-				return super.keyDown(key);
-			}
-		});
+
+		if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
+			changeScreenToMain();
+		}
 	}
 
 	/**
@@ -188,7 +191,7 @@ public class LeaderboardScreen extends Screen implements TextInputListener {
 	 * Change screen back to main menu
 	 */
 	public void changeScreenToMain() {
-		game.gameMusic.pause();
+		if (game.gameMusic != null) game.gameMusic.pause();
 		game.screenController.setScreen(Constants.MAIN_SCREEN_ID);
 	}
 
@@ -226,18 +229,6 @@ public class LeaderboardScreen extends Screen implements TextInputListener {
 	}
 
 	public void create() {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void input(String text) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void canceled() {
 		// TODO Auto-generated method stub
 
 	}
