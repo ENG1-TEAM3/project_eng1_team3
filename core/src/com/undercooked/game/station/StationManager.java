@@ -187,7 +187,7 @@ public class StationManager {
 	public void reset() {
 		// Reset all stations
 		for (Station station : stations) {
-			System.out.println("CLEARING STATION AT " + station.getX() + ", " + station.getY());
+			// System.out.println("CLEARING STATION AT " + station.getX() + ", " + station.getY());
 			station.reset();
 		}
 	}

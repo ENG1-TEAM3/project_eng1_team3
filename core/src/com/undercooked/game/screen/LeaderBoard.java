@@ -81,7 +81,7 @@ public class LeaderBoard extends Screen implements TextInputListener {
 			public int compare(ArrayList<String> e1, ArrayList<String> e2) {
 				Integer i1 = Integer.valueOf(e1.get(1));
 				Integer i2 = Integer.valueOf(e2.get(1));
-				return (i2.compareTo(i1));
+				return (i1.compareTo(i2));
 			}
 		});
 	}

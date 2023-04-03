@@ -119,7 +119,7 @@ public class StationInteractControl {
             station.updateStationInteractions();
             return InteractResult.STOP;
         } else {
-            System.out.println("Doing next: " + currentInteraction.getClass());
+            // System.out.println("Doing next: " + currentInteraction.getClass());
             // Otherwise call the finished last of the previous
             return currentInteraction.finishedLast(interactionInstance, cook, keyID, inputType);
         }
@@ -216,8 +216,8 @@ public class StationInteractControl {
             setInteractions(interaction.steps);
             // Update last delta check
             interactionInstance.updateDelta();
-            currentInteraction.output();
-            System.out.println("INTERACTION VALID: " + interaction.steps);
+            // currentInteraction.output();
+            // System.out.println("INTERACTION VALID: " + interaction.steps);
             return;
         }
         // If it's null, then just clear
