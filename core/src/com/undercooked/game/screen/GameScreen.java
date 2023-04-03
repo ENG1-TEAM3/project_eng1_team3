@@ -171,7 +171,7 @@ public class GameScreen extends Screen {
 
 		gameLogic.setTextureManager(textureManager);
 		gameLogic.setAudioManager(getAudioManager());
-		((ScenarioLogic) gameLogic).setScenario("<main>:test");
+		((ScenarioLogic) gameLogic).setScenario("<main>:main");
 		gameLogic.load();
 		gameRenderer.load(textureManager);
 		// System.out.println(map.getAllEntities());

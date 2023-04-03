@@ -1,5 +1,7 @@
 package com.undercooked.game.util.json;
 
+import com.badlogic.gdx.utils.JsonValue;
+
 public abstract class JsonVal<T> {
     protected String ID;
     protected T value;

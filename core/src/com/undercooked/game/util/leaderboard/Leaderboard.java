@@ -1,4 +1,4 @@
-package com.undercooked.game.util;
+package com.undercooked.game.util.leaderboard;
 
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
@@ -13,15 +13,6 @@ import com.undercooked.game.files.FileControl;
  * </p>
  */
 public final class Leaderboard {
-	private class LeaderboardEntry {
-		public String name;
-		public int time;
-
-		public LeaderboardEntry(String name, int time) {
-			this.name = name;
-			this.time = time;
-		}
-	}
 
 	public enum LeaderboardNames {
 		SCENARIO,
@@ -44,7 +35,7 @@ public final class Leaderboard {
 	/**
 	 * The default leaderboard to use.
 	 * <p>
-	 * Initially null. Use the method {@link #setDefaultLeaderboard()}
+	 * Initially null. Use the method {@link #setDefaultLeaderboard(LeaderboardNames)}
 	 * to set it.
 	 * </p>
 	 * Merely for convenience and you may choose not to use this, and
