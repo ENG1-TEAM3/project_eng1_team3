@@ -13,12 +13,12 @@ public class JsonOr extends JsonVal<JsonVal[]> {
     public boolean isValue(JsonValue value) {
         // Make sure at least one value matches
         for (JsonVal jsonVal : this.value) {
-            System.out.println("TYPE: " + jsonVal.getType() + " VS: " + value.type());
+            // System.out.println("TYPE: " + jsonVal.getType() + " VS: " + value.type());
             if (jsonVal.isValue(value)) {
                 return true;
             }
         }
-        System.out.println("NO MATCH");
+        // System.out.println("NO MATCH");
         // Otherwise return false.
         return false;
     }

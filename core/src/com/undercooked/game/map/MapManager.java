@@ -91,6 +91,7 @@ public class MapManager {
                             // If there is, then set the newStation to use it
                             newStation.setBasePath(basePath);
                         }
+                        // Add it to the station manager
                         stationManager.addStation(newStation);
 
                         boolean hasCollision;
@@ -142,19 +143,20 @@ public class MapManager {
     public static Station newCounter(StationManager stationManager, AudioManager audioManager, Interactions interactions, Items gameItems) {
         // If the counter isn't loaded, then try to load it
         if (!stationManager.hasID("<main>:counter")) {
-            System.out.println("LOADING COUNTER");
             StationData loadedData = stationManager.loadStation("<main>:counter");
             if (loadedData== null) {
                 // If it doesn't load, throw an error
                 throw new RuntimeException("Counter could not load.");
             }
-            System.out.println(loadedData.getID());
-            System.out.println(loadedData.getPath());
         }
-        System.out.println(stationManager.getStationData("<main>:counter"));
+        // Create the station
         Station newCounter = new Station(stationManager.getStationData("<main>:counter"));
         newCounter.makeInteractionController(audioManager, gameItems);
         newCounter.setInteractions(interactions);
+        // Add it to the station manager
+        stationManager.addStation(newCounter);
+
+        // Finally, return the counter
         return newCounter;
     }
 

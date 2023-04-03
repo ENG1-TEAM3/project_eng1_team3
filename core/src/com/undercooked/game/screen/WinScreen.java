@@ -33,7 +33,6 @@ public class WinScreen extends Screen {
     @Override
     public void show() {
         // Stop the game's music
-        game.gameMusic.setLooping(false);
         game.gameMusic.stop();
         // Reset name input
         this.nameInput = "";

@@ -318,6 +318,28 @@ public class CustomerController {
 		return null;
 	}
 
+    public void reset() {
+		// Clear the customer arrays
+		customers.clear();
+		toSpawn.clear();
+		drawCustomers.clear();
+
+		// Remove all customers from the registers
+		for (Register register : registers) {
+			register.setCustomer(null);
+		}
+    }
+
+	public void dispose() {
+		customers.clear();
+		toSpawn.clear();
+		drawCustomers.clear();
+		registers.clear();
+		getMoney = null;
+		loseReputation = null;
+		map = null;
+	}
+
 	/**
 	 * Check whether the customer zone is correct in the tile map, and construct
 	 * data structures for it

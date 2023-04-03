@@ -171,7 +171,7 @@ public class GameScreen extends Screen {
 
 		gameLogic.setTextureManager(textureManager);
 		gameLogic.setAudioManager(getAudioManager());
-		((ScenarioLogic) gameLogic).setScenario("<main>:main");
+		((ScenarioLogic) gameLogic).setScenario("<main>:test");
 		gameLogic.load();
 		gameRenderer.load(textureManager);
 		// System.out.println(map.getAllEntities());
@@ -204,6 +204,18 @@ public class GameScreen extends Screen {
 	public void show() {
 		// When this screen is shown, reset the input processor
 		Gdx.input.setInputProcessor(stage);
+	}
+
+	/**
+	 * Resets the currently loaded game.
+	 */
+	public void reset() {
+		// When this function is called, reset all the game's variables,
+		// and current situation. It should be as if the game was just
+		// started.
+
+		// Reset the game logic
+		gameLogic.reset();
 	}
 
 	/**
@@ -264,9 +276,9 @@ public class GameScreen extends Screen {
 		final GameScreen gs = this;
 		mn.addListener(new ClickListener() {
 			public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+				super.touchUp(event, x, y, pointer, button);
 				gameLogic.pause();
 				game.screenController.nextScreen(Constants.PAUSE_SCREEN_ID);
-				super.touchUp(event, x, y, pointer, button);
 			}
 		});
 		// ======================================ADD=BUTTONS=TO=STAGES===================================================

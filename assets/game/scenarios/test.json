@@ -1,0 +1,23 @@
+{
+  "map_id": "<main>:test",
+  "interactions": [
+    "<main>:pantry/tomato_pantry"
+  ],
+  "requests": [
+    {
+      "item_id": "<main>:tomato",
+      "time": 5,
+      "instructions": [
+        {
+          "texture_path": "<main>:item/tomato.png",
+          "text": "Grab Tomato"
+        },
+        {
+          "texture_path": "<main>:station/register.png",
+          "text": "Serve Tomato"
+        }
+      ]
+    }
+  ],
+  "reputation": 1
+}

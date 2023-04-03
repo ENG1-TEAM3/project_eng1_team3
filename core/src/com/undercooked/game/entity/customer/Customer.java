@@ -153,6 +153,7 @@ public class Customer {
 
 	public void setRequest(Request request) {
 		this.order = request;
+		this.waitTimer = request.getTime();
 	}
 
 	public void setRegister(Register register) {

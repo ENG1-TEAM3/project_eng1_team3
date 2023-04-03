@@ -201,14 +201,17 @@ public class Station extends MapEntity {
 		}
 		// Return the item that was popped.
 		Item returnItem = items.pop();
-		// If a Cook is locked, then unlock them
-		if (hasCookLocked()) {
-			unlockCooks();
-		}
 		// Update Station Interactions.
 		updateStationInteractions();
 		// Return the item that was taken.
 		return returnItem;
+	}
+
+	public void clear() {
+		// Clear all items
+		items.clear();
+		// Update station interactions
+		updateStationInteractions();
 	}
 
 	public void updateStationInteractions() {
@@ -279,4 +282,14 @@ public class Station extends MapEntity {
 			unlockCook(lockedCooks.get(i));
 		}
 	}
+
+    public void reset() {
+		// Clear the station
+		clear();
+
+		// If any cooks are locked, then unlock them
+		if (hasCookLocked()) {
+			unlockCooks();
+		}
+    }
 }

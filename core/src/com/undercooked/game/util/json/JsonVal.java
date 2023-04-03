@@ -28,7 +28,7 @@ public abstract class JsonVal<T> {
         setValue(value, true);
     }
     public void setType(JsonValue value) {
-        System.out.println("Set type:" + getType());
+        // System.out.println("Set type: " + getType());
         value.setType(getType());
     }
     public abstract JsonValue.ValueType getType();

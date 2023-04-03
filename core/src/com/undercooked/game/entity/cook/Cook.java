@@ -167,6 +167,10 @@ public class Cook extends MoveableEntity {
 				if (canAddItem()) {
 					// Then take the top item on the Station's stack
 					addItem(stationTarget.takeItem());
+					// If the cook is locked, also unlock them
+					if (stationTarget.hasCookLocked()) {
+						unlock();
+					}
 					// If it succeeds, stop here
 					return;
 				}
@@ -528,6 +532,11 @@ public class Cook extends MoveableEntity {
 		Item poppedItem = heldItems.pop();
 		updateTexture();
 		return poppedItem;
+	}
+
+	public void clear() {
+		heldItems.clear();
+		updateTexture();
 	}
 
 	public void lockToStation(Station station) {

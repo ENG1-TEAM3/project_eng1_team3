@@ -1,0 +1,21 @@
+{
+  "width": 3,
+  "height": 3,
+  "stations": [
+    {
+      "station_id": "<main>:pantry/tomato_pantry",
+      "x": 2,
+      "y": 1
+    },
+    {
+      "station_id": "<main>:register",
+      "x": 0,
+      "y": 1
+    }],
+  "cooks": [
+    {
+      "x": 1,
+      "y": 0.5
+    }
+  ]
+}

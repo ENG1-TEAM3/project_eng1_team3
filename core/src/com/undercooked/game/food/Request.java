@@ -8,6 +8,7 @@ import com.undercooked.game.assets.TextureManager;
 public class Request {
     public String itemID;
     private int value;
+    private float time;
 
     private int reputationThreat;
     private Texture texture;
@@ -16,6 +17,13 @@ public class Request {
     public Request(String itemID) {
         this.itemID = itemID;
         this.instructions = new Array<>();
+        this.time = -1;
+    }
+
+    public void postLoad(TextureManager textureManager) {
+        for (Instruction instruction : instructions) {
+            instruction.postLoad(textureManager);
+        }
     }
 
     public Instruction addInstruction(String texturePath, String text) {
@@ -36,6 +44,10 @@ public class Request {
         this.reputationThreat = Math.max(0, value);
     }
 
+    public void setTime(float time) {
+        this.time = time;
+    }
+
     public int getValue() {
         return value;
     }
@@ -51,9 +63,7 @@ public class Request {
         return items.getItem(itemID).sprite;
     }
 
-    public void postLoad(TextureManager textureManager) {
-        for (Instruction instruction : instructions) {
-            instruction.postLoad(textureManager);
-        }
+    public float getTime() {
+        return this.time;
     }
 }

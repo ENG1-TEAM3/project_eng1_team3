@@ -22,6 +22,8 @@ import com.undercooked.game.util.Listener;
 import com.undercooked.game.util.json.JsonFormat;
 import com.undercooked.game.util.json.JsonObject;
 
+import java.util.Random;
+
 public class ScenarioLogic extends GameLogic {
 
     /** The number of cooks in-game. */
@@ -34,11 +36,13 @@ public class ScenarioLogic extends GameLogic {
     private int requestsComplete = 0;
     private String scenario;
     private Array<Request> requests;
+    private Array<Request> startRequests;
 
     public ScenarioLogic(GameScreen game, TextureManager textureManager, AudioManager audioManager) {
         super(game, textureManager, audioManager);
         cookCount = 1;
         requests = new Array<>();
+        startRequests = new Array<>();
         // Set the listeners for the CustomerController
         customerController.setServedListener(new Listener<Customer>() {
             @Override
@@ -124,7 +128,7 @@ public class ScenarioLogic extends GameLogic {
         // Then check for loss condition
         if (reputation <= 0) {
             // If lost, go to loss screen
-            gameScreen.getScreenController().setScreen(Constants.LOSS_SCREEN_ID);
+            gameScreen.getScreenController().nextScreen(Constants.LOSS_SCREEN_ID);
             return true;
         }
 
@@ -185,9 +189,31 @@ public class ScenarioLogic extends GameLogic {
     public void postLoad() {
         super.postLoad();
 
-        // Load the instructions textures
+        // Reset the start requests array
+        startRequests.clear();
+
+        // Loop through the requests
         for (Request request : requests) {
+            // Make sure the textures are loaded
             request.postLoad(textureManager);
+
+            // And then add them to the start requests array
+            startRequests.add(request);
+        }
+    }
+
+    @Override
+    public void reset() {
+        // Reset the GameLogic
+        super.reset();
+
+        // Then reset the Scenario variables
+        requestsComplete = 0;
+
+        // Loop through the start requests
+        for (Request request : startRequests) {
+            // And then add them to the requests array
+            requests.add(request);
         }
     }
 
@@ -244,7 +270,7 @@ public class ScenarioLogic extends GameLogic {
         loadRequests(scenarioData.get("requests"));
 
         // Set the reputation
-        reputation = scenarioData.getInt("reputation");
+        startReputation = scenarioData.getInt("reputation");
 
         return LoadResult.SUCCESS;
     }
@@ -264,6 +290,9 @@ public class ScenarioLogic extends GameLogic {
         // This is for requests that have been loaded using the asset system, so that
         // they don't have to be loaded multiple times.
         ObjectMap<String, Request> loadedRequests = new ObjectMap<>();
+
+        // Create random
+        Random rand = new Random();
 
         // Loop through all the requests
         for (JsonValue request : requestData) {
@@ -321,6 +350,25 @@ public class ScenarioLogic extends GameLogic {
 
             // Set the reputation threat of the request
             newRequest.setReputationThreat(rData.getInt("reputation_threat"));
+
+            // Check the time value of the request
+            float time = rData.getFloat("time");
+            if (time >= 0) {
+                // If the time is valid, then set the request's timer
+                newRequest.setTime(time);
+
+            } else {
+                // If it's < 0, then check for time_min and time_max
+                float timeMin = rData.getFloat("time_min"),
+                      timeMax = rData.getFloat("time_max");
+                if (timeMin >= 0 && timeMax >= timeMin) {
+                    // If they're valid, then randomly select time
+                    // in the range
+                    newRequest.setTime(rand.nextFloat() * (timeMax - timeMin) + timeMin);
+                }
+                // If either of the two don't apply, it'll just use the default
+                // -1, which is no timer.
+            }
 
             // Finally, add the request to requests
             requests.add(newRequest);

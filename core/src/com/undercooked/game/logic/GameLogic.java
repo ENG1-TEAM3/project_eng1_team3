@@ -36,6 +36,8 @@ public abstract class GameLogic {
     float elapsedTime;
     /** How much reputation the player has. */
     public int reputation;
+    /** How much reputation the player starts with. */
+    public int startReputation;
     /** How much money the player has. */
     public int money;
 
@@ -47,6 +49,7 @@ public abstract class GameLogic {
         this.elapsedTime = 0;
         this.money = 0;
         this.reputation = 0;
+        this.startReputation = 3;
 
         this.cookController = new CookController(textureManager);
         this.customerController = new CustomerController(textureManager);
@@ -138,6 +141,8 @@ public abstract class GameLogic {
         items.postLoad(textureManager);
         // Post load the map
         map.postLoad(textureManager);
+        // Update the reputation
+        reputation = startReputation;
     }
 
     /**
@@ -212,5 +217,15 @@ public abstract class GameLogic {
 
     public String getScoreString() {
         return StringUtil.formatSeconds(elapsedTime);
+    }
+
+    public void reset() {
+        // Reset the game
+        elapsedTime = 0;
+        reputation = startReputation;
+        displayCustomer = null;
+        customerController.reset();
+        cookController.reset();
+        stationManager.reset();
     }
 }

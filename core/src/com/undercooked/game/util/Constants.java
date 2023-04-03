@@ -51,6 +51,8 @@ public final class Constants {
     public static final String PAUSE_TEXTURE_ID = "pause";
     /** The texture ID for the textures on the {@link com.undercooked.game.screen.LeaderBoard} */
     public static final String LEADERBOARD_TEXTURE_ID = "leaderboard";
+    /** The texture ID for the textures on the {@link com.undercooked.game.screen.LossScreen} */
+    public static final String LOSS_TEXTURE_ID = "loss";
     /** The register id, used for finding where {@link Customer}s need to wait. */
     public static final String REGISTER_ID = "<main>:register";
 
@@ -206,6 +208,9 @@ public final class Constants {
             asObject.addValue(new JsonString("item_id",null));
             asObject.addValue(new JsonInt("value", -1)); // Value of the request. If < 0, then uses item's default value.
 
+
+            asObject.addValue(new JsonFloat("time",-1F)); // The definite time that the request must be provided by.
+            // If the above is not set, then the below two are checked
             asObject.addValue(new JsonFloat("time_min", -1F)); // The lowest time that the request must be provided by.
             asObject.addValue(new JsonFloat("time_max", -1F)); // The highest time that the request must be provided by.
 

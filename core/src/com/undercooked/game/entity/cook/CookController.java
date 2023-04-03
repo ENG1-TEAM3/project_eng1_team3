@@ -3,6 +3,7 @@ package com.undercooked.game.entity.cook;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonValue;
+import com.badlogic.gdx.utils.ObjectMap;
 import com.undercooked.game.Input.InputController;
 import com.undercooked.game.Input.Keys;
 import com.undercooked.game.assets.TextureManager;
@@ -17,9 +18,16 @@ import com.undercooked.game.util.Listener;
  */
 public class CookController {
 
+    private class CookData {
+        public Cook cook;
+        public Vector2 startPos;
+    }
+
     // =======================================CookController ATTRIBUTES======================================================
     /** The array containing all the cooks in the game. */
     Array<Cook> cooks;
+    /** An ObjectMap mapping a Cook to their start position. */
+    ObjectMap<Cook, Vector2> cookStart;
     /** The index of the current cook. */
 	int currentCook = 0;
     /** Manages the textures for the cooks. */
@@ -38,6 +46,7 @@ public class CookController {
     public CookController(TextureManager textureManager) {
         this.textureManager = textureManager;
         this.cooks = new Array<>();
+        this.cookStart = new ObjectMap<>();
     }
 
     // =======================================LOGIC======================================================
@@ -62,21 +71,22 @@ public class CookController {
      * @param delta {@code float} : The time since the last frame.
 	 */
     public void update(float delta) {
-        // Change between cooks if needed
-		if (InputController.isKeyJustPressed(Keys.cook_next)) {
-            currentCook = (currentCook + 1) % cooks.size;
-            currentCook = Math.max(currentCook, 0);
-		}
-		if (InputController.isKeyJustPressed(Keys.cook_prev)) {
-            currentCook = currentCook - 1;
-            currentCook = Math.min(currentCook, cooks.size-1);
-            if (currentCook < 0) {
-                currentCook += cooks.size;
-            }
-		}
 
         // If there are cooks...
         if (cooks.size > 0) {
+            // Change between cooks if needed
+            if (InputController.isKeyJustPressed(Keys.cook_next)) {
+                currentCook = (currentCook + 1) % cooks.size;
+                currentCook = Math.max(currentCook, 0);
+            }
+            if (InputController.isKeyJustPressed(Keys.cook_prev)) {
+                currentCook = currentCook - 1;
+                currentCook = Math.min(currentCook, cooks.size-1);
+                if (currentCook < 0) {
+                    currentCook += cooks.size;
+                }
+            }
+
             // Get the current cook,
             Cook cCook = cooks.get(currentCook);
             // and if it's not null
@@ -188,6 +198,10 @@ public class CookController {
      *                                                to.
      */
     public void loadCooksIntoMap(JsonValue mapRoot, Map map, TextureManager textureManager) {
+        // Clear the startCooks array
+        cookStart.clear();
+
+        // Get the cooks Json data
         JsonValue cookArray = mapRoot.get("cooks");
         currentCook = 0;
         // System.out.println(cookArray);
@@ -199,6 +213,8 @@ public class CookController {
             Cook newCook = new Cook(cookPos, cookNo, textureManager, map);
             addCook(newCook);
             cookNo = Math.max(1, (cookNo+1) % (COOK_TEXTURES+1));
+
+            cookStart.put(newCook, new Vector2(cookPos));
         }
     }
 
@@ -226,5 +242,33 @@ public class CookController {
         for (Cook cook : cooks) {
             cook.interactRegisterListener = mapCellListener;
         }
+    }
+
+    public void reset() {
+        // For each Cook, check if it has a start position
+        for (int i = cooks.size-1 ; i >= 0 ; i--) {
+            Cook thisCook = cooks.get(i);
+            if (!cookStart.containsKey(thisCook)) {
+                // If it doesn't, then remove it
+                cooks.removeIndex(i);
+                continue;
+            }
+            // If it does, then set the Cook's position
+            Vector2 cookPos = cookStart.get(thisCook);
+            thisCook.setX(cookPos.x);
+            thisCook.setY(cookPos.y);
+
+            // And clear the Cook's ItemStack
+            thisCook.clear();
+        }
+
+        // Reset currentCook to 0
+        currentCook = 0;
+    }
+
+    public void dispose() {
+        // Clear all data
+        cooks.clear();
+        cookStart.clear();
     }
 }
