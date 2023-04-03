@@ -2,10 +2,10 @@ package com.undercooked.game.util.leaderboard;
 
 public class LeaderboardEntry {
     public String name;
-    public int time;
+    public float score;
 
-    public LeaderboardEntry(String name, int time) {
+    public LeaderboardEntry(String name, float score) {
         this.name = name;
-        this.time = time;
+        this.score = score;
     }
 }

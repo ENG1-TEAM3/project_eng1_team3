@@ -1,11 +1,9 @@
 package com.undercooked.game.util;
 
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonValue;
 import com.undercooked.game.entity.cook.Cook;
 import com.undercooked.game.entity.customer.Customer;
 import com.undercooked.game.util.json.*;
-import sun.jvm.hotspot.runtime.BasicObjectLock;
 
 /** A class filled with public static final variables so that they can be accessed from anywhere. */
 public final class Constants {
@@ -69,21 +67,21 @@ public final class Constants {
         // at all times
 
         /**
-         * The formatting for a {@link com.undercooked.game.screen.LeaderBoard}'s score
+         * The formatting for a {@link com.undercooked.game.util.leaderboard.Leaderboard}'s score
          * {@link JsonValue}.
          * @return {@link JsonObject} : The Json formatting to use in {@link JsonFormat#formatJson(JsonValue, JsonObject)}.
          */
-        public static JsonObject scoreFormat() {
+        public static JsonObject leaderboardFormat() {
             JsonObject root = new JsonObject();
             // Highscore variable set up
             JsonObject highscore = new JsonObject();
             highscore.addValue(new JsonString("name", null));
-            highscore.addValue(new JsonFloat("time",-1F)); // time in scenario, number of customers in endless.
+            highscore.addValue(new JsonFloat("score",-1F)); // time in scenario, number of customers in endless.
             JsonArray highscores = new JsonArray("scores", highscore);
 
             // Scenario scores
             JsonObject scenario = new JsonObject("scenario");
-            scenario.addValue(new JsonString("id", null));
+            scenario.addValue(new JsonString("id", "MISSING", false));
             scenario.addValue(highscores);
             root.addValue(new JsonArray("scenarios", scenario));
 
