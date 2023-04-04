@@ -120,20 +120,20 @@ public class ScenarioLogic extends GameLogic {
     public boolean checkGameOver() {
         // First check for win condition
         if (requestsComplete == requestTarget) {
-            // If won, go to win screen
-            gameScreen.getScreenController().setScreen(Constants.WIN_SCREEN_ID);
+            win();
             return true;
         }
 
         // Then check for loss condition
         if (reputation <= 0) {
-            // If lost, go to loss screen
-            gameScreen.getScreenController().nextScreen(Constants.LOSS_SCREEN_ID);
+            lose();
             return true;
         }
 
         return false;
     }
+
+
 
     @Override
     public void update(float delta) {

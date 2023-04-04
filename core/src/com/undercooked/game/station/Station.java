@@ -292,4 +292,9 @@ public class Station extends MapEntity {
 			unlockCooks();
 		}
     }
+
+	public void stop() {
+		// Stop the interaction
+		interactControl.stop();
+	}
 }

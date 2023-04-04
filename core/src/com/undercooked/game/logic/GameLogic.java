@@ -13,6 +13,7 @@ import com.undercooked.game.load.LoadResult;
 import com.undercooked.game.map.Map;
 import com.undercooked.game.render.GameRenderer;
 import com.undercooked.game.screen.GameScreen;
+import com.undercooked.game.station.Station;
 import com.undercooked.game.station.StationManager;
 import com.undercooked.game.util.Constants;
 import com.undercooked.game.util.StringUtil;
@@ -68,10 +69,28 @@ public abstract class GameLogic {
     }
 
     /**
+     * Called when the game ends.
+     */
+    public void stop() {
+        // Stop all station interactions (so it stops the sounds)
+        stationManager.stopAll();
+    }
+
+    /**
      * Will require a LeaderBoard rework.
      */
     public final void win() {
-        gameScreen.getScreenController();
+        // Stop anything that needs stopped
+        stop();
+        // If won, go to win screen
+        gameScreen.getScreenController().setScreen(Constants.WIN_SCREEN_ID);
+    }
+
+    public final void lose() {
+        // Stop anything that needs stopped
+        stop();
+        // If lost, go to loss screen
+        gameScreen.getScreenController().nextScreen(Constants.LOSS_SCREEN_ID);
     }
 
     /**
@@ -157,7 +176,10 @@ public abstract class GameLogic {
      * Called when the {@link GameScreen} moves to the {@link com.undercooked.game.screen.PauseScreen}.
      */
     public void pause() {
+        // Stop cooks
         cookController.stopMovement();
+        // Stop the game, as it's paused
+        stop();
     };
 
     public CookController getCookController() {

@@ -192,6 +192,14 @@ public class StationManager {
 		}
 	}
 
+	public void stopAll() {
+		// Stop all stations
+		for (Station station : stations) {
+			// System.out.println("CLEARING STATION AT " + station.getX() + ", " + station.getY());
+			station.stop();
+		}
+	}
+
 	public void clear() {
 		// Clear the stations
 		stations.clear();

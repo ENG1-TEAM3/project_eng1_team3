@@ -224,6 +224,12 @@ public class StationInteractControl {
         clear();
     }
 
+    public void stop() {
+        // If current interaction is not null...
+        // Stop the interaction instance
+        if (currentInteraction != null) currentInteraction.stop(interactionInstance);
+    }
+
     public void draw(SpriteBatch batch) {
         if (currentInteraction == null) {
             return;
