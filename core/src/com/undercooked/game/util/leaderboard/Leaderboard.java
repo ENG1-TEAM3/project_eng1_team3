@@ -5,6 +5,7 @@ import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
 import com.undercooked.game.files.FileControl;
 import com.undercooked.game.util.Constants;
+import com.undercooked.game.util.StringUtil;
 import com.undercooked.game.util.json.JsonFormat;
 
 /**
@@ -19,12 +20,12 @@ import com.undercooked.game.util.json.JsonFormat;
 public final class Leaderboard {
 
 	/**
-	 * Converts one of the {@link LeaderboardTypes} to a {@link String}
+	 * Converts one of the {@link LeaderboardType} to a {@link String}
 	 * value. This is the name of them inside the json file.
-	 * @param leaderboardType {@link LeaderboardTypes} : The name to get.
+	 * @param leaderboardType {@link LeaderboardType} : The name to get.
 	 * @return {@link String} : The name of the leaderboard.
 	 */
-	public static String getLeaderboardName(LeaderboardTypes leaderboardType) {
+	public static String getLeaderboardName(LeaderboardType leaderboardType) {
 		// If it's null, return null
 		if (leaderboardType == null) return "null";
 		// Otherwise, return the name
@@ -39,19 +40,39 @@ public final class Leaderboard {
 	}
 
 	/**
-	 * Returns a comparison of the scores based on {@link LeaderboardTypes}.
+	 * Converts a score value to a {@link String} formatted based
+	 * on what {@link LeaderboardType} it should use.
+	 *
+	 * @param currentLType {@link LeaderboardType} : The leaderboard to use.
+	 * @param score {@code float} : The score to get a {@link String} of.
+	 * @return
+	 */
+	public static String scoreToString(LeaderboardType currentLType, float score) {
+		if (currentLType == null) return Float.toString(score);
+		switch (currentLType) {
+			case SCENARIO:
+				return StringUtil.formatSeconds(score);
+			case ENDLESS:
+				return Integer.toString((int) score);
+		}
+		// Shouldn't reach here
+		return "error";
+	}
+
+	/**
+	 * Returns a comparison of the scores based on {@link LeaderboardType}.
 	 * This is because Scenarios favours lower time taken, while Endless mode
 	 * favours higher customers served.
 	 * <br>0 means they are equal.
 	 * <br>1 means score1 is better.
 	 * <br>-1 means score2 is better.
 	 *
-	 * @param leaderboardType {@link LeaderboardTypes} : The leaderboard to check.
+	 * @param leaderboardType {@link LeaderboardType} : The leaderboard to check.
 	 * @param score1 {@link float} : The score of the first entry.
 	 * @param score2 {@link float} : The score of the second entry.
 	 * @return
 	 */
-	public static int compareScore(LeaderboardTypes leaderboardType, float score1, float score2) {
+	public static int compareScore(LeaderboardType leaderboardType, float score1, float score2) {
 		if (leaderboardType == null) return 0;
 		switch (leaderboardType) {
 			case SCENARIO:
@@ -116,7 +137,7 @@ public final class Leaderboard {
 		root = null;
 	}
 
-	public static void addEntry(LeaderboardTypes lType, String id, String name, float score) {
+	public static void addEntry(LeaderboardType lType, String id, String name, float score) {
 		// Only continue if root is not null
 		if (root == null) return;
 
@@ -139,7 +160,7 @@ public final class Leaderboard {
 		leaderboard.get("scores").addChild(id, newEntry);
 	}
 
-	private static JsonValue addLeaderboard(LeaderboardTypes lType, String id) {
+	private static JsonValue addLeaderboard(LeaderboardType lType, String id) {
 		// First, get the leaderboards
 		JsonValue leaderboards = getLeaderboard(lType);
 		// Set up the new leaderboard json
@@ -157,11 +178,11 @@ public final class Leaderboard {
 
 	/**
 	 * Returns the sorted scores of a leaderboard using the id provided.
-	 * @param lType {@link LeaderboardTypes} : The leaderboard to use.
+	 * @param lType {@link LeaderboardType} : The leaderboard to use.
 	 * @param id {@link String} : The id of the leaderboard.
 	 * @return
 	 */
-	public static Array<LeaderboardEntry> getEntries(LeaderboardTypes lType, String id) {
+	public static Array<LeaderboardEntry> getEntries(LeaderboardType lType, String id) {
 		// Get the leaderboard by id
 		JsonValue leaderboard = getLeaderboard(lType, id);
 		// Only continue if it's not null
@@ -175,22 +196,27 @@ public final class Leaderboard {
 			// Make a new LeaderboardEntry with the name and score
 			LeaderboardEntry newEntry = new LeaderboardEntry(entryData.getString("name"), entryData.getFloat("score"));
 
-			// Add it to the array, sorted from best to worst
-			int index = 0;
-			while (index < entryArray.size) {
-				// Check if it's better than the current index
-				if (compareScore(lType, newEntry.score, entryArray.get(index).score) == 1) {
-					// If it's better, then stop looping here.
-					break;
-				}
-				index++;
-			}
-			// Insert it into the index found.
-			entryArray.insert(index, newEntry);
+			// Add it to the array
+			addToEntryArray(lType, entryArray, newEntry);
 		}
 
 		// Then return the array
 		return entryArray;
+	}
+
+	public static void addToEntryArray(LeaderboardType lType, Array<LeaderboardEntry> entryArray, LeaderboardEntry newEntry) {
+		// Add it to the array, sorted from best to worst
+		for (int i = 0 ; i < entryArray.size ; i++){
+			// Check if it's better than the current index
+			if (compareScore(lType, newEntry.score, entryArray.get(i).score) == 1) {
+				// If it's better, then insert it here
+				entryArray.insert(i, newEntry);
+				// Stop the function here.
+				return;
+			}
+		}
+		// If it doesn't succeed, then just add it to the end
+		entryArray.add(newEntry);
 	}
 
 	private static JsonValue getScores(JsonValue array, String id) {
@@ -215,7 +241,7 @@ public final class Leaderboard {
 		return null;
 	}
 
-	public static boolean removeEntry(LeaderboardTypes lType, String id, int index) {
+	public static boolean removeEntry(LeaderboardType lType, String id, int index) {
 		// Get the leaderboard by id
 		JsonValue leaderboard = getLeaderboard(lType, id);
 		// Only continue if it's not null
@@ -231,7 +257,7 @@ public final class Leaderboard {
 		return true;
 	}
 
-	public static boolean removeEntry(LeaderboardTypes lType, String id, String name) {
+	public static boolean removeEntry(LeaderboardType lType, String id, String name) {
 		// Get the leaderboard by id
 		JsonValue leaderboard = getLeaderboard(lType, id);
 		// Only continue if it's not null
@@ -253,14 +279,14 @@ public final class Leaderboard {
 		return entryRemoved;
 	}
 
-	private static JsonValue getLeaderboard(LeaderboardTypes lType, String id) {
+	private static JsonValue getLeaderboard(LeaderboardType lType, String id) {
 		// Get the array of entries
 		JsonValue leaderboards = getLeaderboard(lType);
 		// Return the matching entry id
 		return getScores(leaderboards, id);
 	}
 
-	private static JsonValue getLeaderboard(LeaderboardTypes lType) {
+	private static JsonValue getLeaderboard(LeaderboardType lType) {
 		// If root is null, return null
 		if (root == null) return null;
 
@@ -280,7 +306,7 @@ public final class Leaderboard {
 	public static void main(String[] args) {
 		Leaderboard.loadLeaderboard();
 		// System.out.println(root);
-		Leaderboard.addEntry(LeaderboardTypes.SCENARIO, "<main>:main", "test", 3.5F);
+		Leaderboard.addEntry(LeaderboardType.SCENARIO, "<main>:main", "test", 3.5F);
 		// System.out.println(getEntries(LeaderboardTypes.SCENARIO, "<main>:main"));
 		Leaderboard.saveLeaderboard();
 		Leaderboard.unloadLeaderboard();

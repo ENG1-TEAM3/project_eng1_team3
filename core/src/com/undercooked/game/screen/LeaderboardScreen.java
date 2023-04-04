@@ -1,22 +1,19 @@
 package com.undercooked.game.screen;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.Input.TextInputListener;
-import com.badlogic.gdx.InputAdapter;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.undercooked.game.MainGameClass;
 import com.undercooked.game.assets.TextureManager;
 import com.undercooked.game.util.CameraController;
 import com.undercooked.game.util.Constants;
+import com.undercooked.game.util.leaderboard.Leaderboard;
+import com.undercooked.game.util.leaderboard.LeaderboardEntry;
+import com.undercooked.game.util.leaderboard.LeaderboardType;
 
 //INCORRECT FILE FORMATTING WILL CRASH GAME
 //MAKE SURE ALL LINES IN LEADERBOARD FILE ARE x;y OR JUST s
@@ -28,7 +25,9 @@ public class LeaderboardScreen extends Screen {
 	Texture leaderboard;
 	OrthographicCamera camera;
 	FitViewport viewport;
-	ArrayList<ArrayList<String>> playerData;
+	Array<LeaderboardEntry> leaderboardData;
+	private LeaderboardType currentLType;
+	private String currentID;
 
 	/**
 	 * Constructor for leaderboard screen
@@ -37,8 +36,6 @@ public class LeaderboardScreen extends Screen {
 	public LeaderboardScreen(MainGameClass game) {
 		super(game);
 
-		readPlayerData();
-		sortPlayerData();
 	}
 
 	/**
@@ -47,7 +44,7 @@ public class LeaderboardScreen extends Screen {
 	 * The file starts with "s" and then adds scores
 	 */
 	public void readPlayerData() {
-		playerData = new ArrayList<>();
+		/*playerData = new ArrayList<>();
 		boolean doesPlayerDataExist = Gdx.files.local("leaderboarddata/playerData.txt").exists();
 		if (doesPlayerDataExist) {
 			FileHandle handle = Gdx.files.local("leaderboarddata/playerData.txt");
@@ -68,21 +65,21 @@ public class LeaderboardScreen extends Screen {
 		} else {
 			FileHandle file = Gdx.files.local("leaderboarddata/playerData.txt");
 			file.writeString("s",true);
-		}
+		}*/
 	}
 
 	/**
 	 * Order leaderboard data
 	 */
 	public void sortPlayerData() {
-		Collections.sort(playerData, new Comparator<ArrayList<String>>() {
+		/*Collections.sort(playerData, new Comparator<ArrayList<String>>() {
 			@Override
 			public int compare(ArrayList<String> e1, ArrayList<String> e2) {
 				Integer i1 = Integer.valueOf(e1.get(1));
 				Integer i2 = Integer.valueOf(e2.get(1));
 				return (i1.compareTo(i2));
 			}
-		});
+		});*/
 	}
 
 	/**
@@ -99,6 +96,7 @@ public class LeaderboardScreen extends Screen {
 		camera = CameraController.getCamera(Constants.UI_CAMERA_ID);
 		viewport = CameraController.getViewport(Constants.UI_CAMERA_ID);
 		game.font.getData().setScale((float) 2.5);
+		Gdx.input.setInputProcessor(null);
 	}
 
 	/** What needs to be loaded when this screen is loaded. */
@@ -112,6 +110,8 @@ public class LeaderboardScreen extends Screen {
 
 		// Load the leaderboard
 		Leaderboard.loadLeaderboard();
+
+		showLeaderboard(LeaderboardType.SCENARIO, "<main>:main");
 	}
 
 	@Override
@@ -134,7 +134,7 @@ public class LeaderboardScreen extends Screen {
 		ScreenUtils.clear(0, 0, 0, 0);
 		game.batch.setProjectionMatrix(camera.combined);
 		float gameResolutionX = Constants.V_WIDTH,
-			  gameResolutionY = Constants.V_HEIGHT;
+				gameResolutionY = Constants.V_HEIGHT;
 		float lbox = gameResolutionX / 10.0f;
 		float dbox = gameResolutionY / 10.0f;
 		float boxwid = 8 * lbox;
@@ -157,14 +157,16 @@ public class LeaderboardScreen extends Screen {
 		game.batch.draw(line, lbox, dbox + 5 * eachentryhi, boxwid, gameResolutionY / 100.0f);
 		game.batch.draw(line, lbox, dbox + 6 * eachentryhi, boxwid, gameResolutionY / 100.0f);
 
-		for (int scoreno = 0; scoreno < 7; scoreno++) {
-			if (this.playerData.size() >= scoreno + 1) {
-				float ycord = topentry - scoreno * eachentryhi - 0.3f * eachentryhi;
-				String name = this.playerData.get(scoreno).get(0);
-				String stringScore = this.playerData.get(scoreno).get(1);
-				game.font.draw(game.batch, name, 3 * gameResolutionX / 20.0f, ycord);
-				game.font.draw(game.batch, stringScore, 11 * gameResolutionX / 20.0f, ycord);
-			}
+		// If the leaderboard isn't null...
+		if (leaderboardData != null) {
+				for (int scoreno = 0; scoreno < Math.min(leaderboardData.size, 7); scoreno++) {
+					LeaderboardEntry thisEntry = leaderboardData.get(scoreno);
+					float ycord = topentry - scoreno * eachentryhi - 0.3f * eachentryhi;
+					String name = thisEntry.name;
+					String stringScore = Leaderboard.scoreToString(currentLType, thisEntry.score);
+					game.font.draw(game.batch, name, 3 * gameResolutionX / 20.0f, ycord);
+					game.font.draw(game.batch, stringScore, 11 * gameResolutionX / 20.0f, ycord);
+				}
 		}
 
 		game.batch.end();
@@ -174,17 +176,33 @@ public class LeaderboardScreen extends Screen {
 		}
 	}
 
+	public void showLeaderboard(LeaderboardType lType, String id) {
+		// Get the leaderboard
+		Array<LeaderboardEntry> leaderboard = Leaderboard.getEntries(lType, id);
+		// Set the leaderboardData
+		// If it's null, then it won't draw anything
+		leaderboardData = leaderboard;
+		System.out.println(leaderboardData);
+	}
+
 	/**
 	 * Add data to leaderboard
 	 * @param name - name of player
 	 * @param score - score of player
 	 */
-	public void addLeaderBoardData(String name, float score) {
-		String stringscore = Integer.toString((int) score);
-		FileHandle handle = Gdx.files.local("leaderboarddata/playerData.txt");
-		handle.writeString("\n" + name + ";" + stringscore, true);
-		this.readPlayerData();
-		this.sortPlayerData();
+	public void addLeaderBoardData(LeaderboardType lType, String id, String name, float score) {
+		// Only continue if it's loaded
+		if (leaderboardData == null) return;
+		// Add it to the leaderboard
+		Leaderboard.addEntry(lType, id, name, score);
+
+		// Then add it to the screen's data, if current type and id match
+		if (lType != currentLType) return;
+		if (!id.equals(currentID)) return;
+		// Make the new entry
+		LeaderboardEntry entry = new LeaderboardEntry(name, score);
+		// Add it to the data, ordered
+		Leaderboard.addToEntryArray(lType, leaderboardData, entry);
 	}
 
 	/**

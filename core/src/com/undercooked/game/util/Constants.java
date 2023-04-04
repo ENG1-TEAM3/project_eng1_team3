@@ -73,13 +73,13 @@ public final class Constants {
             JsonObject root = new JsonObject();
             // Highscore variable set up
             JsonObject highscore = new JsonObject();
-            highscore.addValue(new JsonString("name", null));
+            highscore.addValue(new JsonString("name", "missing name", false));
             highscore.addValue(new JsonFloat("score",-1F)); // time in scenario, number of customers in endless.
             JsonArray highscores = new JsonArray("scores", highscore);
 
             // Scenario scores
             JsonObject scenario = new JsonObject("scenario");
-            scenario.addValue(new JsonString("id", "MISSING", false));
+            scenario.addValue(new JsonString("id", "missing id", false));
             scenario.addValue(highscores);
             root.addValue(new JsonArray("scenarios", scenario));
 

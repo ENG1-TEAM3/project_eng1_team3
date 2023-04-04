@@ -8,6 +8,7 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.undercooked.game.Input.InputController;
 import com.undercooked.game.MainGameClass;
 import com.undercooked.game.util.Constants;
+import com.undercooked.game.util.leaderboard.LeaderboardType;
 
 public class WinScreen extends Screen {
 
@@ -15,6 +16,8 @@ public class WinScreen extends Screen {
     public float score;
     private GlyphLayout scoreText;
     private GlyphLayout nameGlyph;
+    private LeaderboardType leaderboardType;
+    private String leaderboardID;
 
     public WinScreen(MainGameClass game) {
         super(game);
@@ -66,7 +69,7 @@ public class WinScreen extends Screen {
             // Get the Screen
             LeaderboardScreen leaderboardScreen = (LeaderboardScreen) game.screenController.getScreen(Constants.LEADERBOARD_SCREEN_ID);
             // And try to add the score
-            leaderboardScreen.addLeaderBoardData(nameInput, score);
+            leaderboardScreen.addLeaderBoardData(leaderboardType, leaderboardID, nameInput, score);
             // And stop here
             return;
         }
@@ -115,6 +118,14 @@ public class WinScreen extends Screen {
         game.font.draw(game.batch, nameGlyph, Constants.V_WIDTH/2-nameGlyph.width/2, Constants.V_HEIGHT/2-30);
 
         game.batch.end();
+    }
+
+    public void setLeaderboardType(LeaderboardType leaderboardType) {
+        this.leaderboardType = leaderboardType;
+    }
+
+    public void setLeaderboardID(String leaderboardID) {
+        this.leaderboardID = leaderboardID;
     }
 
     @Override

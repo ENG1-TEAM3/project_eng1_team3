@@ -13,10 +13,11 @@ import com.undercooked.game.load.LoadResult;
 import com.undercooked.game.map.Map;
 import com.undercooked.game.render.GameRenderer;
 import com.undercooked.game.screen.GameScreen;
-import com.undercooked.game.station.Station;
+import com.undercooked.game.screen.WinScreen;
 import com.undercooked.game.station.StationManager;
 import com.undercooked.game.util.Constants;
 import com.undercooked.game.util.StringUtil;
+import com.undercooked.game.util.leaderboard.LeaderboardType;
 
 /**
  * A class to extend from that indicates the logic of the
@@ -43,6 +44,9 @@ public abstract class GameLogic {
     public int money;
 
     protected Customer displayCustomer;
+
+    protected String id;
+    protected LeaderboardType leaderboardType;
 
     public GameLogic(GameScreen game, TextureManager textureManager, AudioManager audioManager) {
         this.gameScreen = game;
@@ -77,16 +81,28 @@ public abstract class GameLogic {
     }
 
     /**
-     * Will require a LeaderBoard rework.
+     * Called once the game is won. Goes to the win screen.
+     * <br>Should be called by children, otherwise call the
+     * "stop" function and change screen.
      */
-    public final void win() {
+    public void win() {
         // Stop anything that needs stopped
         stop();
-        // If won, go to win screen
-        gameScreen.getScreenController().setScreen(Constants.WIN_SCREEN_ID);
+        // Get the WinScreen
+        WinScreen winScreen = (WinScreen) gameScreen.getScreenController().getScreen(Constants.WIN_SCREEN_ID);
+        // Go to win screen
+        gameScreen.getScreenController().setScreen(winScreen);
+        // Set the leaderboard type and id
+        winScreen.setLeaderboardID(id);
+        winScreen.setLeaderboardType(leaderboardType);
     }
 
-    public final void lose() {
+    /**
+     * Called once the game is lost. Goes to the loss screen.
+     * <br>Should be called by children, otherwise call the
+     * "stop" function and change screen.
+     */
+    public void lose() {
         // Stop anything that needs stopped
         stop();
         // If lost, go to loss screen

@@ -21,6 +21,7 @@ import com.undercooked.game.util.Constants;
 import com.undercooked.game.util.Listener;
 import com.undercooked.game.util.json.JsonFormat;
 import com.undercooked.game.util.json.JsonObject;
+import com.undercooked.game.util.leaderboard.LeaderboardType;
 
 import java.util.Random;
 
@@ -34,7 +35,6 @@ public class ScenarioLogic extends GameLogic {
 
     /** The number of requests that have been served correctly. */
     private int requestsComplete = 0;
-    private String scenario;
     private Array<Request> requests;
     private Array<Request> startRequests;
 
@@ -111,6 +111,8 @@ public class ScenarioLogic extends GameLogic {
                 displayCustomer = targetRegister.getCustomer();
             }
         });
+
+        this.leaderboardType = LeaderboardType.SCENARIO;
     }
 
     public ScenarioLogic() {
@@ -162,8 +164,8 @@ public class ScenarioLogic extends GameLogic {
         checkGameOver();
     }
 
-    public void setScenario(String scenario) {
-        this.scenario = scenario;
+    public void setId(String id) {
+        this.id = id;
     }
 
     @Override
@@ -174,7 +176,7 @@ public class ScenarioLogic extends GameLogic {
     @Override
     public void load() {
         // Load the Scenario
-        loadScenario(scenario);
+        loadScenario(id);
         // Set the request target to the number of requests loaded
         requestTarget = requests.size;
         // Load all the items

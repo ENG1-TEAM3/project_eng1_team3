@@ -13,6 +13,11 @@ public class JsonString extends JsonVal<String> {
     public JsonString(String ID, String value, boolean allowNull) {
         super(ID, value);
         this.allowNull = allowNull;
+        // If not allowed null, and default value is null, then
+        // instead change it to an empty string.
+        if (!allowNull && value == null) {
+            this.value = "";
+        }
     }
 
     @Override
@@ -23,7 +28,7 @@ public class JsonString extends JsonVal<String> {
     @Override
     public void setValue(JsonValue value, boolean existsBefore) {
         // If null is allowed, then leave it alone
-        if (allowNull && value.type() == JsonValue.ValueType.nullValue) {
+        if (allowNull && value.isNull()) {
             return;
         }
         value.set(this.value);
