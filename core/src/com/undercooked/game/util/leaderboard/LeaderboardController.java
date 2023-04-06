@@ -358,6 +358,15 @@ public final class LeaderboardController {
 		return leaderboardData.get(lType);
 	}
 
+	public static Array<String> getIDs(LeaderboardType leaderboardType) {
+		// If the leaderboard type doesn't exist, return null
+		ObjectMap<String, Leaderboard> leaderboards = getLeaderboards(leaderboardType);
+		if (leaderboards == null) return null;
+
+		// Return an array of the keys
+		return leaderboards.keys().toArray();
+	}
+
 	public static void saveLeaderboard() {
 		// If leaderboard data is null, stop
 		if (leaderboardData == null) return;
