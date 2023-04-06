@@ -29,20 +29,16 @@ import java.util.Random;
 
 public class ScenarioLogic extends GameLogic {
 
-    /** The number of cooks in-game. */
-    int cookCount;
-
     /** The number of requests to serve. */
-    private int requestTarget = 5;
+    protected int requestTarget = 5;
 
     /** The number of requests that have been served correctly. */
-    private int requestsComplete = 0;
-    private Array<Request> requests;
-    private Array<Request> startRequests;
+    protected int requestsComplete = 0;
+    protected Array<Request> requests;
+    protected Array<Request> startRequests;
 
     public ScenarioLogic(GameScreen game, TextureManager textureManager, AudioManager audioManager) {
         super(game, textureManager, audioManager);
-        cookCount = 1;
         requests = new Array<>();
         startRequests = new Array<>();
         // Set the listeners for the CustomerController
@@ -213,6 +209,7 @@ public class ScenarioLogic extends GameLogic {
 
         // Then reset the Scenario variables
         requestsComplete = 0;
+        money = 0;
 
         // Loop through the start requests
         for (Request request : startRequests) {
@@ -234,15 +231,7 @@ public class ScenarioLogic extends GameLogic {
         if (requests != null) requests.clear();
     }
 
-    public void addIngredient() {
-        items.load(textureManager);
-    }
-
-    public void setCookCount(int cookCount) {
-        this.cookCount = cookCount;
-    }
-
-    private LoadResult loadScenario(String scenarioAsset) {
+    protected LoadResult loadScenario(String scenarioAsset) {
         JsonValue scenarioData = FileControl.loadJsonAsset(scenarioAsset, "scenarios");
         if (scenarioData == null) {
             // It didn't load the scenario, so it's a failure.
