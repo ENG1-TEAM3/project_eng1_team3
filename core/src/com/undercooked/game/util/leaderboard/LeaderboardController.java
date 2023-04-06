@@ -184,8 +184,9 @@ public final class LeaderboardController {
 		* <li>"ENDLESS": [...]
 	 * </ul>
 	 */
-	static ObjectMap<LeaderboardType, ObjectMap<String, Leaderboard>> leaderboardData = new ObjectMap<>();
-	static String leaderboardFile = "leaderboard.json";
+	private static ObjectMap<LeaderboardType, ObjectMap<String, Leaderboard>> leaderboardData = new ObjectMap<>();
+	private static String leaderboardFile = "leaderboard.json";
+	private static boolean loaded = false;
 
 	/**
 	 * Loads the leaderboard.
@@ -237,6 +238,7 @@ public final class LeaderboardController {
 				}
 			}
 		}
+		loaded = true;
 	}
 
 	/**
@@ -248,9 +250,11 @@ public final class LeaderboardController {
 	 */
 	public static void unloadLeaderboard() {
 		leaderboardData.clear();
+		loaded = false;
 	}
 
 	public static void addEntry(LeaderboardType lType, String id, String leaderboardName, String name, float score) {
+		System.out.println(leaderboardData);
 		// Only continue if leaderboardData is not null
 		if (leaderboardData == null) return;
 
@@ -407,6 +411,10 @@ public final class LeaderboardController {
 			}
 		}
 		return root;
+	}
+
+	public static boolean isLoaded() {
+		return loaded;
 	}
 
 	public static void main(String[] args) {

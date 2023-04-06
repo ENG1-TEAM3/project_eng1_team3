@@ -47,6 +47,7 @@ public abstract class GameLogic {
 
     protected String id;
     protected LeaderboardType leaderboardType;
+    protected String leaderboardName;
 
     public GameLogic(GameScreen game, TextureManager textureManager, AudioManager audioManager) {
         this.gameScreen = game;
@@ -95,6 +96,7 @@ public abstract class GameLogic {
         // Set the leaderboard type and id
         winScreen.setLeaderboardID(id);
         winScreen.setLeaderboardType(leaderboardType);
+        winScreen.setLeaderboardName(leaderboardName);
     }
 
     /**

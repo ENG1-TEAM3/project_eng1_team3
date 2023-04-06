@@ -174,6 +174,9 @@ public final class Constants {
             // Map ID of the map to use
             root.addValue((new JsonString("map_id", null)));
 
+            // The name of the Scenario, displayed on the LeaderboardScreen
+            root.addValue(new JsonString("name", null));
+
             // Where the Cooks should be placed (at the start)
             JsonObject cook = new JsonObject();
             cook.addValue(new JsonInt("x", -1));

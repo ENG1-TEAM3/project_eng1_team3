@@ -117,6 +117,7 @@ public class ScenarioLogic extends GameLogic {
         });
 
         this.leaderboardType = LeaderboardType.SCENARIO;
+        this.leaderboardName = "Scenario";
     }
 
     public ScenarioLogic() {
@@ -274,6 +275,9 @@ public class ScenarioLogic extends GameLogic {
 
         // Set the reputation
         startReputation = scenarioData.getInt("reputation");
+
+        // Set the leaderboard name
+        leaderboardName = scenarioData.getString("name");
 
         return LoadResult.SUCCESS;
     }

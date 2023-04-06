@@ -1,5 +1,6 @@
 {
   "map_id": "main",
+  "name": "Tri burger, Tri salad",
   "interactions": [
     "<main>:preparation/form_patty",
     "<main>:preparation/make_burger",
@@ -19,10 +20,9 @@
   "requests": [
     "<main>:burger",
     "<main>:burger",
-    "<main>:salad",
-    "<main>:burger",
     "<main>:burger",
     "<main>:salad",
-    "<main>:burger"
+    "<main>:salad",
+    "<main>:salad"
   ]
 }

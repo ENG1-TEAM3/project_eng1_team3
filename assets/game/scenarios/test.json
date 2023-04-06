@@ -1,5 +1,6 @@
 {
   "map_id": "<main>:test",
+  "name": "Test Scenario",
   "interactions": [
     "<main>:pantry/tomato_pantry"
   ],

@@ -119,6 +119,10 @@ public class LeaderboardScreen extends Screen {
 
 		// Load the leaderboard
 		LeaderboardController.loadLeaderboard();
+
+		// And go to the scenario leaderboard by default
+		currentLType = null;
+		goToLeaderboard(LeaderboardType.SCENARIO);
 	}
 
 	@Override
@@ -134,6 +138,9 @@ public class LeaderboardScreen extends Screen {
 		leaderboardData = null;
 		leaderboardNameDisplay = null;
 
+		stage.dispose();
+		stage = null;
+
 		// Unload the leaderboard
 		LeaderboardController.unloadLeaderboard();
 	}
@@ -143,6 +150,9 @@ public class LeaderboardScreen extends Screen {
 	 */
 	public void show() {
 		TextureManager textureManager = game.getTextureManager();
+
+		// Update the main screen music variable
+		game.mainScreenMusic = game.audioManager.getMusic("audio/music/MainScreenMusic.ogg");
 		// Play the menu music
 		game.mainScreenMusic.play();
 		ScreenUtils.clear(0, 0, 0, 0);
@@ -166,6 +176,8 @@ public class LeaderboardScreen extends Screen {
 		Button scenarioBtn = new Button(scenarioBtnDrawable);
 		endlessBtnDrawable = new TextureRegionDrawable(textureManager.get("uielements/endless_off.png"));
 		Button endlessBtn = new Button(endlessBtnDrawable);
+
+		updateButtonTextures(currentLType);
 
 		// Set their position and sizes
 		leftBtn.setSize(128,128);
@@ -227,35 +239,6 @@ public class LeaderboardScreen extends Screen {
 		stage.addActor(endlessBtn);
 		stage.addActor(menuBtn);
 
-		// Set the input processor
-		Gdx.input.setInputProcessor(stage);
-
-		// Open the Scenario leaderboard
-		currentLType = null;
-		goToLeaderboard(LeaderboardType.SCENARIO);
-	}
-
-	public void goToLeaderboard(LeaderboardType leaderboardType) {
-		// If it's already that leaderboard, just return
-		if (leaderboardType == currentLType) return;
-
-		// Update the textures for the buttons
-		switch (leaderboardType) {
-			case SCENARIO:
-				// Scenario is active, Endless is not
-				scenarioBtnDrawable.setRegion(new TextureRegion(getTextureManager().get("uielements/scenario.png")));
-				endlessBtnDrawable.setRegion(new TextureRegion(getTextureManager().get("uielements/endless_off.png")));
-				scoreText = "Time";
-				break;
-			case ENDLESS:
-				// Endless is active, Scenario is not
-				endlessBtnDrawable.setRegion(new TextureRegion(getTextureManager().get("uielements/endless.png")));
-				scenarioBtnDrawable.setRegion(new TextureRegion(getTextureManager().get("uielements/scenario_off.png")));
-				scoreText = "Served";
-				break;
-
-		}
-
 		// Add a scroll listener to go up / down on the scores
 		stage.addListener(new InputListener() {
 			@Override
@@ -267,37 +250,11 @@ public class LeaderboardScreen extends Screen {
 			}
 		});
 
-		// Update the current type
-		currentLType = leaderboardType;
+		// Update the name text
+		updateNameText();
 
-		// Otherwise, get the ids for the leaderboards of this type
-		leaderboardIDs = LeaderboardController.getIDs(leaderboardType);
-
-		setIndex(0);
-	}
-
-	private void scrollLeaderboard(float amountY) {
-		// Add the scroll
-		firstScore += Math.signum(amountY);
-		// Clamp it between 0 and the number of possible
-		// Allows one scroll below the lowest to show that there's
-		// no more to scroll through.
-		firstScore = Math.max(0, Math.min(firstScore, leaderboardData.size-(SCORES_AT_ONCE-1)));
-	}
-
-	public void setIndex(int index) {
-		// If leaderboardIDs is null, return
-		if (leaderboardIDs == null) return;
-
-		// Otherwise, make sure it's in the range
-		while (index < 0) index += leaderboardIDs.size;
-		if (index > 0) index %= leaderboardIDs.size;
-
-		// And update the currentIndex
-		currentIndex = index;
-
-		// Then set it to use the id
-		showLeaderboard(currentLType, leaderboardIDs.get(index));
+		// Set the input processor
+		Gdx.input.setInputProcessor(stage);
 	}
 
 	/**
@@ -359,7 +316,86 @@ public class LeaderboardScreen extends Screen {
 		}
 	}
 
-	public void showLeaderboard(LeaderboardType lType, String id) {
+	public void updateButtonTextures(LeaderboardType leaderboardType) {
+		// Don't continue if either of the drawables are null
+		if (scenarioBtnDrawable == null || endlessBtnDrawable == null) return;
+
+		switch (leaderboardType) {
+			case SCENARIO:
+				// Scenario is active, Endless is not
+				scenarioBtnDrawable.setRegion(new TextureRegion(getTextureManager().get("uielements/scenario.png")));
+				endlessBtnDrawable.setRegion(new TextureRegion(getTextureManager().get("uielements/endless_off.png")));
+				scoreText = "Time";
+				break;
+			case ENDLESS:
+				// Endless is active, Scenario is not
+				endlessBtnDrawable.setRegion(new TextureRegion(getTextureManager().get("uielements/endless.png")));
+				scenarioBtnDrawable.setRegion(new TextureRegion(getTextureManager().get("uielements/scenario_off.png")));
+				scoreText = "Served";
+				break;
+
+		}
+	}
+
+	public void goToLeaderboard(LeaderboardType leaderboardType) {
+		// If it's already that leaderboard, just return
+		if (leaderboardType == currentLType) return;
+
+		// Update the textures for the buttons
+		updateButtonTextures(leaderboardType);
+
+		// Update the current type
+		currentLType = leaderboardType;
+
+		// Otherwise, get the ids for the leaderboards of this type
+		updateIDs();
+
+		setIndex(0);
+	}
+
+	private void updateIDs() {
+		leaderboardIDs = LeaderboardController.getIDs(currentLType);
+	}
+
+	private void scrollLeaderboard(float amountY) {
+		// Add the scroll
+		firstScore += Math.signum(amountY);
+		// Clamp it between 0 and the number of possible
+		// Allows one scroll below the lowest to show that there's
+		// no more to scroll through.
+		firstScore = Math.max(0, Math.min(firstScore, leaderboardData.size-(SCORES_AT_ONCE-1)));
+	}
+
+	public void setIndex(int index) {
+		// If leaderboardIDs is null, return
+		if (leaderboardIDs == null) return;
+
+		// Otherwise, make sure it's in the range
+		while (index < 0) index += leaderboardIDs.size;
+		if (index > 0) index %= leaderboardIDs.size;
+
+		// And update the currentIndex
+		currentIndex = index;
+
+		// Then set it to use the id
+		showLeaderboard(currentLType, leaderboardIDs.get(index));
+	}
+
+	public void showLeaderboard(String id) {
+		showLeaderboard(currentLType, id);
+	}
+
+	protected void updateNameText() {
+		game.font.setColor(Color.BLACK);
+		if (leaderboard.name != null) {
+			leaderboardNameDisplay.setText(game.font, leaderboard.name);
+		} else {
+			leaderboardNameDisplay.setText(game.font, "");
+		}
+		game.font.setColor(Color.WHITE);
+	}
+
+	protected void showLeaderboard(LeaderboardType lType, String id) {
 		// Get the leaderboard
 		leaderboard = LeaderboardController.getLeaderboard(lType, id);
 		// If it's null, set leaderboard data to null
@@ -371,10 +407,10 @@ public class LeaderboardScreen extends Screen {
 		// Set the leaderboardData
 		leaderboardData = leaderboard.copyLeaderboard();
 
+		// Update the name text
+		updateNameText();
+
 		firstScore = 0;
-		game.font.setColor(Color.BLACK);
-		leaderboardNameDisplay.setText(game.font, leaderboard.name);
-		game.font.setColor(Color.WHITE);
 
 		// System.out.println(leaderboardData);
 	}
@@ -386,9 +422,13 @@ public class LeaderboardScreen extends Screen {
 	 */
 	public void addLeaderBoardData(LeaderboardType lType, String id, String leaderboardName, String name, float score) {
 		// Only continue if it's loaded
-		if (leaderboardData == null) return;
+		if (!LeaderboardController.isLoaded()) return;
 		// Add it to the leaderboard
 		LeaderboardController.addEntry(lType, id, leaderboardName, name, score);
+		// And save the leaderboard
+		LeaderboardController.saveLeaderboard();
+		// If the currently displayed leaderboard is the same, update the IDs.
+		updateIDs();
 	}
 
 	/**
