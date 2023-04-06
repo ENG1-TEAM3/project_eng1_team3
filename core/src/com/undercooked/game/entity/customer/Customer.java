@@ -91,10 +91,10 @@ public class Customer {
 				// If waitTimer reaches 0, and the customer hasn't been served,
 				// then tell the listener
 				if (waitTimer <= 0) {
+					leave();
 					if (failedListener != null) {
 						failedListener.tell(this);
 					}
-					leave();
 				}
 			}
 			return;
@@ -130,12 +130,12 @@ public class Customer {
 
 	public boolean serve(Item item) {
 		if (item.getID().equals(this.order.itemID)) {
-			// Get the money for it
-			servedListener.tell(this);
 			// Remove this customer from the register
 			customerController.customerOffRegister(register);
 			// Then leave
 			leave();
+			// Finally, get the money for it
+			servedListener.tell(this);
 			return true;
 		}
 		return false;
