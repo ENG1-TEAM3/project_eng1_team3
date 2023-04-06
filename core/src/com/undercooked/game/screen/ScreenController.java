@@ -133,4 +133,10 @@ public class ScreenController {
         screens.remove(ID);
     }
 
+    public boolean onScreen(String ID) {
+        if (!screens.containsKey(ID)) {
+            return false;
+        }
+        return screenStack.peek() == screens.get(ID);
+    }
 }

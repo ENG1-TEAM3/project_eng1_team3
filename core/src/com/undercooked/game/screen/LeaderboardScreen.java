@@ -111,6 +111,7 @@ public class LeaderboardScreen extends Screen {
 		textureManager.load(Constants.LEADERBOARD_TEXTURE_ID, "uielements/scenario_off.png");
 		textureManager.load(Constants.LEADERBOARD_TEXTURE_ID, "uielements/endless.png");
 		textureManager.load(Constants.LEADERBOARD_TEXTURE_ID, "uielements/endless_off.png");
+		textureManager.load(Constants.LEADERBOARD_TEXTURE_ID, "uielements/exittomenu.png");
 
 		game.audioManager.loadMusic("audio/music/MainScreenMusic.ogg", Constants.MUSIC_GROUP);
 
@@ -159,6 +160,7 @@ public class LeaderboardScreen extends Screen {
 		// Create the buttons
 		Button leftBtn = new Button(new TextureRegionDrawable(textureManager.get("uielements/arrow_left.png")));
 		Button rightBtn = new Button(new TextureRegionDrawable(textureManager.get("uielements/arrow_right.png")));
+		Button menuBtn = new Button(new TextureRegionDrawable(textureManager.get("uielements/exittomenu.png")));
 
 		scenarioBtnDrawable = new TextureRegionDrawable(textureManager.get("uielements/scenario.png"));
 		Button scenarioBtn = new Button(scenarioBtnDrawable);
@@ -167,16 +169,19 @@ public class LeaderboardScreen extends Screen {
 
 		// Set their position and sizes
 		leftBtn.setSize(128,128);
-		leftBtn.setPosition(32,Constants.V_HEIGHT/2-64);
+		leftBtn.setPosition(32,Constants.V_HEIGHT/2-leftBtn.getHeight());
 
 		rightBtn.setSize(128,128);
-		rightBtn.setPosition(Constants.V_WIDTH-160,Constants.V_HEIGHT/2-64);
+		rightBtn.setPosition(Constants.V_WIDTH-rightBtn.getWidth()-32,Constants.V_HEIGHT/2-rightBtn.getHeight()/2);
 
 		scenarioBtn.setSize(473, 144);
-		scenarioBtn.setPosition(Constants.V_WIDTH/2-473,72);
+		scenarioBtn.setPosition(Constants.V_WIDTH/2-scenarioBtn.getWidth(),72);
 
 		endlessBtn.setSize(473, 144);
 		endlessBtn.setPosition(Constants.V_WIDTH/2,72);
+
+		menuBtn.setSize(473, 144);
+		menuBtn.setPosition(0,Constants.V_HEIGHT-menuBtn.getHeight());
 
 		// Add ClickListeners to the buttons
 		leftBtn.addListener(new ClickListener() {
@@ -208,11 +213,19 @@ public class LeaderboardScreen extends Screen {
 			}
 		});
 
+		menuBtn.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				changeScreenToMain();
+			}
+		});
+
 		// Add the buttons to the stage
 		stage.addActor(leftBtn);
 		stage.addActor(rightBtn);
 		stage.addActor(scenarioBtn);
 		stage.addActor(endlessBtn);
+		stage.addActor(menuBtn);
 
 		// Set the input processor
 		Gdx.input.setInputProcessor(stage);
@@ -308,8 +321,6 @@ public class LeaderboardScreen extends Screen {
 		game.batch.begin();
 		game.batch.draw(background, 0, 0, gameResolutionX, gameResolutionY);
 		game.batch.draw(leaderboardTexture, lbox, dbox, boxwid, boxhi);
-		game.font.draw(game.batch, "Press ESC to return to menu", gameResolutionX / 20.0f,
-				19 * gameResolutionY / 19.0f);
 		game.batch.draw(line, lbox, dbox + eachentryhi, boxwid, gameResolutionY / 100.0f);
 		game.batch.draw(line, lbox, dbox + 2 * eachentryhi, boxwid, gameResolutionY / 100.0f);
 		game.batch.draw(line, lbox, dbox + 3 * eachentryhi, boxwid, gameResolutionY / 100.0f);
@@ -339,12 +350,12 @@ public class LeaderboardScreen extends Screen {
 		game.font.setColor(Color.WHITE);
 
 		game.batch.end();
-
-		stage.act();
 		stage.draw();
 
 		if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
 			changeScreenToMain();
+		} else {
+			stage.act();
 		}
 	}
 
@@ -385,6 +396,7 @@ public class LeaderboardScreen extends Screen {
 	 */
 	public void changeScreenToMain() {
 		if (game.gameMusic != null) game.gameMusic.pause();
+		if (getScreenController().onScreen(Constants.MAIN_SCREEN_ID)) return;
 		game.screenController.setScreen(Constants.MAIN_SCREEN_ID);
 	}
 
