@@ -8,6 +8,8 @@ import com.undercooked.game.assets.AudioManager;
 import com.undercooked.game.assets.TextureManager;
 import com.undercooked.game.entity.cook.Cook;
 import com.undercooked.game.entity.customer.Customer;
+import com.undercooked.game.entity.customer.CustomerController;
+import com.undercooked.game.entity.customer.CustomerTarget;
 import com.undercooked.game.files.FileControl;
 import com.undercooked.game.food.Instruction;
 import com.undercooked.game.food.Item;
@@ -57,6 +59,8 @@ public class ScenarioLogic extends GameLogic {
                 customerFailed(customer);
             }
         });
+
+        customerController.setTargetType(CustomerTarget.RANDOM);
 
         // Set listener for CookController
         cookController.setServeListener(new Listener<Cook>() {
@@ -154,12 +158,6 @@ public class ScenarioLogic extends GameLogic {
         // Update Customers.
         customerController.update(delta);
 
-        // Spawn Customers
-        if (requests.size > 0) {
-            customerController.spawnCustomer(requests.get(0));
-            requests.removeIndex(0);
-        }
-
         // Check if game is over.
         checkGameOver();
     }
@@ -202,6 +200,9 @@ public class ScenarioLogic extends GameLogic {
             // And then add them to the start requests array
             startRequests.add(request);
         }
+
+        // Spawn the first Customer
+        spawnCustomer();
     }
 
     @Override
@@ -395,8 +396,20 @@ public class ScenarioLogic extends GameLogic {
     }
 
     public void customerGone(Customer customer) {
+        // If it's the display customer, remove it
         if (customer == displayCustomer) {
             displayCustomer = null;
+        }
+        // Spawn a new customer
+        spawnCustomer();
+    }
+
+    public void spawnCustomer() {
+        // Spawn the next customer, if there is more to serve
+        if (requests.size > 0) {
+            Request newRequest = requests.random();
+            customerController.spawnCustomer(newRequest);
+            requests.removeValue(newRequest, true);
         }
     }
 }
