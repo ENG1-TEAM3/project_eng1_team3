@@ -53,7 +53,9 @@ public class Leaderboard {
         // Create a new array
         Array<LeaderboardEntry> copy = new Array<>();
         // Copy over all the values
-        copy.addAll(entries);
+        for (LeaderboardEntry entry : entries) {
+            copy.add(entry);
+        }
         // Return the copy
         return copy;
     }

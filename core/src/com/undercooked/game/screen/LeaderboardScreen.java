@@ -35,7 +35,6 @@ public class LeaderboardScreen extends Screen {
 	 */
 	public LeaderboardScreen(MainGameClass game) {
 		super(game);
-
 	}
 
 	/**
@@ -121,6 +120,8 @@ public class LeaderboardScreen extends Screen {
 
 		game.audioManager.unloadMusic("audio/music/MainScreenMusic.ogg");
 
+		leaderboardData = null;
+
 		// Unload the leaderboard
 		LeaderboardController.unloadLeaderboard();
 	}
@@ -182,7 +183,8 @@ public class LeaderboardScreen extends Screen {
 		// Set the leaderboardData
 		// If it's null, then it won't draw anything
 		leaderboardData = leaderboard;
-		// System.out.println(leaderboardData);
+
+		System.out.println(leaderboardData);
 	}
 
 	/**
@@ -195,14 +197,6 @@ public class LeaderboardScreen extends Screen {
 		if (leaderboardData == null) return;
 		// Add it to the leaderboard
 		LeaderboardController.addEntry(lType, id, leaderboardName, name, score);
-
-		// Then add it to the screen's data, if current type and id match
-		if (lType != currentLType) return;
-		if (!id.equals(currentID)) return;
-		// Make the new entry
-		LeaderboardEntry entry = new LeaderboardEntry(name, score);
-		// Add it to the data, ordered
-		// LeaderboardController.addToEntryArray(lType, leaderboardData, entry);
 	}
 
 	/**

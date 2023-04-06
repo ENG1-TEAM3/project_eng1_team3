@@ -232,11 +232,8 @@ public final class LeaderboardController {
 							entry.getFloat("score")
 					);
 
-					System.out.println(entry);
-
 					// Make sure to set the date of the entry
 					newEntry.setDate(entry.getString("date"));
-					System.out.println(newEntry.getDate());
 				}
 			}
 		}
@@ -334,7 +331,7 @@ public final class LeaderboardController {
 		// Get the array of entries
 		ObjectMap<String, Leaderboard> leaderboards = getLeaderboards(lType);
 		// If the id doesn't exist, add it if addIfNull is true
-		if (leaderboards.containsKey(id)) {
+		if (!leaderboards.containsKey(id)) {
 			if (!addIfNull) return null;
 			return addLeaderboard(lType, "missing name", id);
 		}
