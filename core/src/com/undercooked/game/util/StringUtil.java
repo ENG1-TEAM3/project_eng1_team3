@@ -74,4 +74,15 @@ public class StringUtil {
         return formatSeconds((int) seconds);
     }
 
+    public static String formatSeconds(float seconds, int numOfMillis) {
+        String time = formatSeconds((int) seconds);
+        // Then remove the second portion
+        String millis = Integer.toString((int) Math.floor((Math.pow(10, numOfMillis)) * (seconds - Math.floor(seconds))));
+        // If the length of the string is too short, then add 0s
+        if (millis.length() < numOfMillis) {
+            millis = "0".repeat(numOfMillis - millis.length()) + millis;
+        }
+        return time + "." + millis;
+    }
+
 }

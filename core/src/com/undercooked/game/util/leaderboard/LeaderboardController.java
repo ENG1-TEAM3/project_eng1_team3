@@ -74,7 +74,7 @@ public final class LeaderboardController {
 		if (currentLType == null) return Float.toString(score);
 		switch (currentLType) {
 			case SCENARIO:
-				return StringUtil.formatSeconds(score);
+				return StringUtil.formatSeconds(score, 2);
 			case ENDLESS:
 				return Integer.toString((int) score);
 		}
