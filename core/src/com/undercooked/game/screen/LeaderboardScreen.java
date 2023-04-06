@@ -2,8 +2,10 @@ package com.undercooked.game.screen;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
@@ -18,6 +20,7 @@ import com.undercooked.game.MainGameClass;
 import com.undercooked.game.assets.TextureManager;
 import com.undercooked.game.util.CameraController;
 import com.undercooked.game.util.Constants;
+import com.undercooked.game.util.leaderboard.Leaderboard;
 import com.undercooked.game.util.leaderboard.LeaderboardController;
 import com.undercooked.game.util.leaderboard.LeaderboardEntry;
 import com.undercooked.game.util.leaderboard.LeaderboardType;
@@ -29,9 +32,10 @@ public class LeaderboardScreen extends Screen {
 
 	Texture background;
 	Texture line;
-	Texture leaderboard;
+	Texture leaderboardTexture;
 	OrthographicCamera camera;
 	FitViewport viewport;
+	Leaderboard leaderboard;
 	Array<LeaderboardEntry> leaderboardData;
 	private LeaderboardType currentLType;
 	private int currentIndex;
@@ -39,9 +43,10 @@ public class LeaderboardScreen extends Screen {
 	private TextureRegionDrawable scenarioBtnDrawable;
 	private TextureRegionDrawable endlessBtnDrawable;
 	private Array<String> leaderboardIDs;
+	private GlyphLayout leaderboardNameDisplay;
 	private int firstScore;
 	private String scoreText;
-	private static final int SCORES_AT_ONCE = 6;
+	private static final int SCORES_AT_ONCE = 5;
 	/**
 	 * Constructor for leaderboard screen
 	 * @param game - Entry point class
@@ -109,6 +114,8 @@ public class LeaderboardScreen extends Screen {
 
 		game.audioManager.loadMusic("audio/music/MainScreenMusic.ogg", Constants.MUSIC_GROUP);
 
+		leaderboardNameDisplay = new GlyphLayout(game.font, "");
+
 		// Load the leaderboard
 		LeaderboardController.loadLeaderboard();
 	}
@@ -120,7 +127,11 @@ public class LeaderboardScreen extends Screen {
 
 		game.audioManager.unloadMusic("audio/music/MainScreenMusic.ogg");
 
+		currentLType = null;
+		currentIndex = 0;
+		leaderboard = null;
 		leaderboardData = null;
+		leaderboardNameDisplay = null;
 
 		// Unload the leaderboard
 		LeaderboardController.unloadLeaderboard();
@@ -135,7 +146,7 @@ public class LeaderboardScreen extends Screen {
 		game.mainScreenMusic.play();
 		ScreenUtils.clear(0, 0, 0, 0);
 		background = textureManager.get("uielements/MainScreenBackground.jpg");
-		leaderboard = textureManager.get("uielements/LeaderBoard.png");
+		leaderboardTexture = textureManager.get("uielements/LeaderBoard.png");
 		line = textureManager.get("uielements/line.jpg");
 		camera = CameraController.getCamera(Constants.UI_CAMERA_ID);
 		viewport = CameraController.getViewport(Constants.UI_CAMERA_ID);
@@ -296,31 +307,36 @@ public class LeaderboardScreen extends Screen {
 
 		game.batch.begin();
 		game.batch.draw(background, 0, 0, gameResolutionX, gameResolutionY);
-		game.batch.draw(leaderboard, lbox, dbox, boxwid, boxhi);
+		game.batch.draw(leaderboardTexture, lbox, dbox, boxwid, boxhi);
 		game.font.draw(game.batch, "Press ESC to return to menu", gameResolutionX / 20.0f,
 				19 * gameResolutionY / 19.0f);
-		game.font.draw(game.batch, "Name", 4 * gameResolutionX / 20.0f, 17 * gameResolutionY / 20.0f);
-		game.font.draw(game.batch, scoreText, 12 * gameResolutionX / 20.0f, 17 * gameResolutionY / 20.0f);
 		game.batch.draw(line, lbox, dbox + eachentryhi, boxwid, gameResolutionY / 100.0f);
 		game.batch.draw(line, lbox, dbox + 2 * eachentryhi, boxwid, gameResolutionY / 100.0f);
 		game.batch.draw(line, lbox, dbox + 3 * eachentryhi, boxwid, gameResolutionY / 100.0f);
 		game.batch.draw(line, lbox, dbox + 4 * eachentryhi, boxwid, gameResolutionY / 100.0f);
 		game.batch.draw(line, lbox, dbox + 5 * eachentryhi, boxwid, gameResolutionY / 100.0f);
 		game.batch.draw(line, lbox, dbox + 6 * eachentryhi, boxwid, gameResolutionY / 100.0f);
+		game.font.setColor(Color.BLACK);
+
+		game.font.draw(game.batch, leaderboardNameDisplay, Constants.V_WIDTH/2-(leaderboardNameDisplay.width/2), 17 * gameResolutionY / 20.0f);
+		game.font.draw(game.batch, "Name", 4 * gameResolutionX / 20.0f, 15.5f * gameResolutionY / 20.0f);
+		game.font.draw(game.batch, scoreText, 12 * gameResolutionX / 20.0f + 40, 15.5f * gameResolutionY / 20.0f);
 
 		// If the leaderboard isn't null...
 		if (leaderboardData != null) {
-			int leaderboardIndex = 0;
+			int leaderboardIndex = 1;
 			for (int scoreno = firstScore; scoreno < Math.min(leaderboardData.size, firstScore+SCORES_AT_ONCE); scoreno++) {
 				LeaderboardEntry thisEntry = leaderboardData.get(scoreno);
 				float ycord = topentry - leaderboardIndex * eachentryhi - 0.3f * eachentryhi;
 				String name = thisEntry.name;
 				String stringScore = LeaderboardController.scoreToString(currentLType, thisEntry.score);
 				game.font.draw(game.batch, scoreno+1 + ". " + name, 3 * gameResolutionX / 20.0f, ycord);
-				game.font.draw(game.batch, stringScore, 11 * gameResolutionX / 20.0f, ycord);
+				game.font.draw(game.batch, stringScore, 11 * gameResolutionX / 20.0f + 100, ycord);
 				leaderboardIndex++;
 			}
 		}
+
+		game.font.setColor(Color.WHITE);
 
 		game.batch.end();
 
@@ -334,12 +350,20 @@ public class LeaderboardScreen extends Screen {
 
 	public void showLeaderboard(LeaderboardType lType, String id) {
 		// Get the leaderboard
-		Array<LeaderboardEntry> leaderboard = LeaderboardController.getEntries(lType, id);
+		leaderboard = LeaderboardController.getLeaderboard(lType, id);
+		// If it's null, set leaderboard data to null
+		if (leaderboard == null) {
+			leaderboardData = null;
+			leaderboardNameDisplay.setText(game.font, "");
+			return;
+		}
 		// Set the leaderboardData
-		// If it's null, then it won't draw anything
-		leaderboardData = leaderboard;
+		leaderboardData = leaderboard.copyLeaderboard();
 
 		firstScore = 0;
+		game.font.setColor(Color.BLACK);
+		leaderboardNameDisplay.setText(game.font, leaderboard.name);
+		game.font.setColor(Color.WHITE);
 
 		// System.out.println(leaderboardData);
 	}

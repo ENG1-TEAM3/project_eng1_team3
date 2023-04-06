@@ -323,7 +323,7 @@ public final class LeaderboardController {
 		return leaderboard.removeEntry(id, name);
 	}
 
-	private static Leaderboard getLeaderboard(LeaderboardType lType, String id) {
+	public static Leaderboard getLeaderboard(LeaderboardType lType, String id) {
 		return getLeaderboard(lType, id, false);
 	}
 
