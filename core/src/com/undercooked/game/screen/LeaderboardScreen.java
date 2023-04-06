@@ -11,7 +11,7 @@ import com.undercooked.game.MainGameClass;
 import com.undercooked.game.assets.TextureManager;
 import com.undercooked.game.util.CameraController;
 import com.undercooked.game.util.Constants;
-import com.undercooked.game.util.leaderboard.Leaderboard;
+import com.undercooked.game.util.leaderboard.LeaderboardController;
 import com.undercooked.game.util.leaderboard.LeaderboardEntry;
 import com.undercooked.game.util.leaderboard.LeaderboardType;
 
@@ -109,7 +109,7 @@ public class LeaderboardScreen extends Screen {
 		game.audioManager.loadMusic("audio/music/MainScreenMusic.ogg", Constants.MUSIC_GROUP);
 
 		// Load the leaderboard
-		Leaderboard.loadLeaderboard();
+		LeaderboardController.loadLeaderboard();
 
 		showLeaderboard(LeaderboardType.SCENARIO, "<main>:main");
 	}
@@ -122,7 +122,7 @@ public class LeaderboardScreen extends Screen {
 		game.audioManager.unloadMusic("audio/music/MainScreenMusic.ogg");
 
 		// Unload the leaderboard
-		Leaderboard.unloadLeaderboard();
+		LeaderboardController.unloadLeaderboard();
 	}
 
 	/**
@@ -163,7 +163,7 @@ public class LeaderboardScreen extends Screen {
 					LeaderboardEntry thisEntry = leaderboardData.get(scoreno);
 					float ycord = topentry - scoreno * eachentryhi - 0.3f * eachentryhi;
 					String name = thisEntry.name;
-					String stringScore = Leaderboard.scoreToString(currentLType, thisEntry.score);
+					String stringScore = LeaderboardController.scoreToString(currentLType, thisEntry.score);
 					game.font.draw(game.batch, name, 3 * gameResolutionX / 20.0f, ycord);
 					game.font.draw(game.batch, stringScore, 11 * gameResolutionX / 20.0f, ycord);
 				}
@@ -178,11 +178,11 @@ public class LeaderboardScreen extends Screen {
 
 	public void showLeaderboard(LeaderboardType lType, String id) {
 		// Get the leaderboard
-		Array<LeaderboardEntry> leaderboard = Leaderboard.getEntries(lType, id);
+		Array<LeaderboardEntry> leaderboard = LeaderboardController.getEntries(lType, id);
 		// Set the leaderboardData
 		// If it's null, then it won't draw anything
 		leaderboardData = leaderboard;
-		System.out.println(leaderboardData);
+		// System.out.println(leaderboardData);
 	}
 
 	/**
@@ -190,11 +190,11 @@ public class LeaderboardScreen extends Screen {
 	 * @param name - name of player
 	 * @param score - score of player
 	 */
-	public void addLeaderBoardData(LeaderboardType lType, String id, String name, float score) {
+	public void addLeaderBoardData(LeaderboardType lType, String id, String leaderboardName, String name, float score) {
 		// Only continue if it's loaded
 		if (leaderboardData == null) return;
 		// Add it to the leaderboard
-		Leaderboard.addEntry(lType, id, name, score);
+		LeaderboardController.addEntry(lType, id, leaderboardName, name, score);
 
 		// Then add it to the screen's data, if current type and id match
 		if (lType != currentLType) return;
@@ -202,7 +202,7 @@ public class LeaderboardScreen extends Screen {
 		// Make the new entry
 		LeaderboardEntry entry = new LeaderboardEntry(name, score);
 		// Add it to the data, ordered
-		Leaderboard.addToEntryArray(lType, leaderboardData, entry);
+		// LeaderboardController.addToEntryArray(lType, leaderboardData, entry);
 	}
 
 	/**

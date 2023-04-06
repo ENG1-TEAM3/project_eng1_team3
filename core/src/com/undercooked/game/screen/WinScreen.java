@@ -18,6 +18,7 @@ public class WinScreen extends Screen {
     private GlyphLayout nameGlyph;
     private LeaderboardType leaderboardType;
     private String leaderboardID;
+    private String leaderboardName;
 
     public WinScreen(MainGameClass game) {
         super(game);
@@ -69,7 +70,7 @@ public class WinScreen extends Screen {
             // Get the Screen
             LeaderboardScreen leaderboardScreen = (LeaderboardScreen) game.screenController.getScreen(Constants.LEADERBOARD_SCREEN_ID);
             // And try to add the score
-            leaderboardScreen.addLeaderBoardData(leaderboardType, leaderboardID, nameInput, score);
+            leaderboardScreen.addLeaderBoardData(leaderboardType, leaderboardName, leaderboardID, nameInput, score);
             // And stop here
             return;
         }
@@ -126,6 +127,10 @@ public class WinScreen extends Screen {
 
     public void setLeaderboardID(String leaderboardID) {
         this.leaderboardID = leaderboardID;
+    }
+
+    public void setLeaderboardName(String leaderboardName) {
+        this.leaderboardName = leaderboardName;
     }
 
     @Override

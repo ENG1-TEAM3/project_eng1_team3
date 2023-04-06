@@ -2,6 +2,7 @@ package com.undercooked.game.util;
 
 import com.badlogic.gdx.utils.JsonValue;
 import com.undercooked.game.util.json.*;
+import com.undercooked.game.util.leaderboard.LeaderboardController;
 
 /** A class filled with public static final variables so that they can be accessed from anywhere. */
 public final class Constants {
@@ -65,7 +66,7 @@ public final class Constants {
         // at all times
 
         /**
-         * The formatting for a {@link com.undercooked.game.util.leaderboard.Leaderboard}'s score
+         * The formatting for a {@link LeaderboardController}'s score
          * {@link JsonValue}.
          * @return {@link JsonObject} : The Json formatting to use in {@link JsonFormat#formatJson(JsonValue, JsonObject)}.
          */
@@ -75,16 +76,21 @@ public final class Constants {
             JsonObject highscore = new JsonObject();
             highscore.addValue(new JsonString("name", "missing name", false));
             highscore.addValue(new JsonFloat("score",-1F)); // time in scenario, number of customers in endless.
+            highscore.addValue(new JsonString("date", UNKNOWN_DATE, false)); // The date & time it was recorded
             JsonArray highscores = new JsonArray("scores", highscore);
 
             // Scenario scores
-            JsonObject scenario = new JsonObject("scenario");
-            scenario.addValue(new JsonString("id", "missing id", false));
-            scenario.addValue(highscores);
-            root.addValue(new JsonArray("scenarios", scenario));
+            JsonObject score = new JsonObject("scores");
+            score.addValue(new JsonString("id", "missing id", false));
+            score.addValue(new JsonString("name", "missing name", false));
+            score.addValue(highscores);
+
+            // Scenarios data
+
+            root.addValue(new JsonArray("scenarios", score));
 
             // Endless scores
-            root.addValue(new JsonArray("endless", highscore));
+            root.addValue(new JsonArray("endless", score));
             return root;
         }
 
@@ -373,4 +379,8 @@ public final class Constants {
     // public static final ... DEFAULT_CONTROLS = ...;
 
     // public static final... DEFAULT_SETTINGS = ...;
+
+    // Strings
+    public static final String DATE_TIME = "yyyy/MM/dd HH:mm:ss";
+    public static final String UNKNOWN_DATE = "????/??/?? ??:??:??";
 }
