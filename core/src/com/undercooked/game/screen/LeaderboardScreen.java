@@ -175,13 +175,13 @@ public class LeaderboardScreen extends Screen {
 		rightBtn.setPosition(Constants.V_WIDTH-rightBtn.getWidth()-32,Constants.V_HEIGHT/2-rightBtn.getHeight()/2);
 
 		scenarioBtn.setSize(473, 144);
-		scenarioBtn.setPosition(Constants.V_WIDTH/2-scenarioBtn.getWidth(),72);
+		scenarioBtn.setPosition(Constants.V_WIDTH/2-scenarioBtn.getWidth(),42);
 
 		endlessBtn.setSize(473, 144);
-		endlessBtn.setPosition(Constants.V_WIDTH/2,72);
+		endlessBtn.setPosition(Constants.V_WIDTH/2,42);
 
 		menuBtn.setSize(473, 144);
-		menuBtn.setPosition(0,Constants.V_HEIGHT-menuBtn.getHeight());
+		menuBtn.setPosition(16,Constants.V_HEIGHT-menuBtn.getHeight()-16);
 
 		// Add ClickListeners to the buttons
 		leftBtn.addListener(new ClickListener() {
