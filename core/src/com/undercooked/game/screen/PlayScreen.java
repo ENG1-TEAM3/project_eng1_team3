@@ -52,6 +52,10 @@ public class PlayScreen extends Screen {
     private final float titlePadding = 200;
     private final float descScale = 1;
     private final float descPadding = 100;
+    private final String[] scenarioFiles = {
+            "burger_salad",
+            "serve_quick"
+    };
 
     public PlayScreen(MainGameClass game) {
         super(game);
@@ -85,38 +89,22 @@ public class PlayScreen extends Screen {
         scenarioArray = new Array<>();
 
         // Load the game's Scenario's
-        loadScenarios("");
+        loadScenarios();
 
         // Then set to index 0
         setIndex(0);
 
     }
 
-    private void loadScenarios(String path) {
+    private void loadScenarios() {
         JsonObject format = DefaultJson.scenarioFormat();
-        // Look at the location provided, and load all the scenarios
-        FileHandle scenarios = FileControl.getFileHandle("game/scenarios/" + path, true);
-        for (FileHandle file : scenarios.list()) {
-            // If it's a directory, then recurse
-            if (file.isDirectory()) {
-                loadScenarios(path + file.name() + "/");
-            } else {
-                // If it's not, ensure it's a json.
-                if (file.extension().equals("json")) {
-                    // Load the json
-                    JsonValue root = FileControl.loadJsonFile("game/scenarios/", file.name(), true);
-                    // Skip if it's null
-                    if (root == null) continue;
+        // Load all the files in the array
+        for (String filePath : scenarioFiles) {
+            JsonValue root = FileControl.loadJsonFile("game/scenarios", filePath, true);
+            JsonFormat.formatJson(root, format);
+            scenarioArray.add(root);
 
-                    // If it's not, format it and add it to the array
-                    JsonFormat.formatJson(root, format);
-                    scenarioArray.add(root);
-
-                    // Add its path as the variable "ID"
-                    if (root.has("id")) root.remove("id");
-                    root.addChild("id", new JsonValue("<main>:" + path + file.nameWithoutExtension()));
-                }
-            }
+            root.addChild("id", new JsonValue("<main>:" + filePath));
         }
     }
 

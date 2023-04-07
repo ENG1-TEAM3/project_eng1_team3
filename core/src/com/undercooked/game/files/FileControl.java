@@ -6,12 +6,10 @@ import com.badlogic.gdx.utils.*;
 import com.undercooked.game.util.Constants;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.Collections;
-import java.util.Scanner;
 
 /**
  * This static class contains all methods relating to file handling
@@ -75,7 +73,7 @@ public class FileControl {
         }
         // If directory isn't a directory, or it doesn't exist, then
         // create the directory.
-        if (!directory.isDirectory()) {
+        if (!directory.isDirectory() && !internal) {
             System.out.println("Directory doesn't exist: " + directory);
             directory.file().mkdir();
         }
@@ -87,7 +85,7 @@ public class FileControl {
         }
         // If file isn't a file, or it doesn't exist, then create the
         // file using the default data.
-        if (!file.file().isFile()) {
+        if (!file.file().isFile() && !internal) {
             System.out.println("File doesn't exist: " + fileName);
             try {
                 file.file().createNewFile();
@@ -99,11 +97,8 @@ public class FileControl {
         // Otherwise, load the Json file.
         String fileData = "";
         try {
-            Scanner reader = new Scanner(file.file());
-            while (reader.hasNextLine()) {
-                fileData += reader.nextLine();
-            }
-        } catch (FileNotFoundException e) {
+            fileData = file.readString();
+        } catch (GdxRuntimeException e) {
             e.printStackTrace();
         }
         return fileData;
@@ -131,7 +126,7 @@ public class FileControl {
         }
         // If directory isn't a directory, or it doesn't exist, then
         // return nothing.
-        if (!directory.isDirectory()) {
+        if (!directory.isDirectory() && !internal) {
             if (internal) {
                 System.out.println("Internal directory doesn't exist: " + dir);
             } else {
@@ -147,7 +142,7 @@ public class FileControl {
         }
         // If file isn't a file, or it doesn't exist, then return
         // nothing.
-        if (!file.file().isFile()) {
+        if (!file.file().isFile() && !internal) {
             if (internal) {
                 System.out.println("Internal file doesn't exist: " + dirAndName(dir, fileName));
             } else {

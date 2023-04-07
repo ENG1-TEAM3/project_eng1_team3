@@ -152,7 +152,7 @@ public class InputController {
             keyFormat.addValue(new JsonType("interaction", JsonValue.ValueType.booleanValue));
 
             // Loop through all the keys in the defaultRoot.
-            for (JsonValue currentKey : defaultRoot.iterator()) {
+            for (JsonValue currentKey : defaultRoot) {
                 // Check if the save file already has it
                 if (root.has(currentKey.name())) {
                     // If it has the key, then ensure that the value is valid. If not, overwrite and
