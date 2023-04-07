@@ -8,7 +8,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.undercooked.game.GameType;
 import com.undercooked.game.assets.TextureManager;
-import com.undercooked.game.util.Constants;
 import com.undercooked.game.util.Listener;
 
 public class ModeButton {
@@ -54,13 +53,13 @@ public class ModeButton {
         scenarioBtn.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                setCurrentType(GameType.SCENARIO);
+                setCurrentType(GameType.SCENARIO, true);
             }
         });
         endlessBtn.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                setCurrentType(GameType.ENDLESS);
+                setCurrentType(GameType.ENDLESS, true);
             }
         });
 
@@ -92,6 +91,10 @@ public class ModeButton {
     }
 
     public void setCurrentType(GameType gameType) {
+        setCurrentType(gameType, false);
+    }
+
+    private void setCurrentType(GameType gameType, boolean tellListener) {
         GameType beforeType = this.currentType;
         this.currentType = gameType;
         // If the gameType is the same, no need to update the textures
@@ -99,7 +102,7 @@ public class ModeButton {
             update();
         }
         // If listener is not null, tell it
-        if (listener != null) {
+        if (tellListener && listener != null) {
             listener.tell(gameType);
         }
     }

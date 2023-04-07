@@ -313,6 +313,7 @@ public class LeaderboardScreen extends Screen {
 		if (gameType == currentLType) return;
 
 		// Update the textures for the buttons
+		modeButton.setCurrentType(gameType);
 		modeButton.update();
 
 		// Update the current type
