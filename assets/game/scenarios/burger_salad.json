@@ -1,5 +1,5 @@
 {
-  "map_id": "main",
+  "map_id": "<main>:burger_salad",
   "name": "Tri burger, Tri salad",
   "interactions": [
     "<main>:preparation/form_patty",
@@ -24,5 +24,6 @@
     "<main>:salad",
     "<main>:salad",
     "<main>:salad"
-  ]
+  ],
+  "spawn_timer": 20
 }

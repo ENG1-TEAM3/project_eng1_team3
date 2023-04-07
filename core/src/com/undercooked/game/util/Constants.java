@@ -145,8 +145,6 @@ public final class Constants {
          */
         public static JsonObject mapFormat() {
             JsonObject root = new JsonObject();
-            // Map ID
-            root.addValue(new JsonString("id",null));
 
             // Map Stations (Map will not load them by default)
             JsonObject station = new JsonObject();
@@ -174,8 +172,11 @@ public final class Constants {
             // Map ID of the map to use
             root.addValue((new JsonString("map_id", null)));
 
-            // The name of the Scenario, displayed on the LeaderboardScreen
+            // The name of the Scenario, displayed on the LeaderboardScreen and Scenario selection
             root.addValue(new JsonString("name", null));
+
+            // The description of the Scenario, used in the Scenario selection
+            root.addValue(new JsonString("description", "", false));
 
             // Where the Cooks should be placed (at the start)
             JsonObject cook = new JsonObject();
@@ -370,7 +371,7 @@ public final class Constants {
     /** The default volume for the Sound. */
     public static final float DEFAULT_SOUND_VOLUME = 0.5F;
     /** The default {@link com.undercooked.game.map.Map} to load if one fails to load. */
-    public static final String DEFAULT_MAP = "<main>:main";
+    public static final String DEFAULT_MAP = "<main>:empty";
     /** The default {@link com.badlogic.gdx.graphics.Texture} to load if one fails to load. */
     public static final String DEFAULT_TEXTURE = "items/missing.png";
     public static final String DEFAULT_FLOOR_TILE = "<main>:floor/floor_tile.png";

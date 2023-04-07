@@ -198,7 +198,11 @@ public class ScenarioLogic extends GameLogic {
             startRequests.add(request);
         }
 
-        // Spawn the first Customer
+        start();
+    }
+
+    @Override
+    public void start() {
         spawnCustomer();
     }
 
@@ -268,7 +272,20 @@ public class ScenarioLogic extends GameLogic {
         // Set the leaderboard name
         leaderboardName = scenarioData.getString("name");
 
+        // And call loadScenarioContents
+        loadScenarioContents(scenarioData);
+
         return LoadResult.SUCCESS;
+    }
+
+    /**
+     * For loading scenario data from the {@link #loadScenario(String)}
+     * {@link JsonValue}.
+     *
+     * @param scenarioRoot {@link JsonValue} : The Json for the scenario.
+     */
+    public void loadScenarioContents(JsonValue scenarioRoot) {
+
     }
 
     /**

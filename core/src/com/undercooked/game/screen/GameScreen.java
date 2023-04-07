@@ -16,6 +16,7 @@ import com.undercooked.game.assets.TextureManager;
 import com.undercooked.game.audio.AudioSettings;
 import com.undercooked.game.audio.AudioSliders;
 import com.undercooked.game.audio.Slider;
+import com.undercooked.game.logic.EndlessLogic;
 import com.undercooked.game.logic.GameLogic;
 import com.undercooked.game.logic.ScenarioLogic;
 import com.undercooked.game.map.Map;
@@ -141,7 +142,7 @@ public class GameScreen extends Screen {
 
 		gameLogic.setTextureManager(textureManager);
 		gameLogic.setAudioManager(getAudioManager());
-		((ScenarioLogic) gameLogic).setId("<main>:main");
+		((EndlessLogic) gameLogic).setId("<main>:burger_salad");
 		gameLogic.load();
 		gameRenderer.load(textureManager);
 		// System.out.println(map.getAllEntities());

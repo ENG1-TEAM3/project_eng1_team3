@@ -18,6 +18,7 @@ import com.undercooked.game.audio.AudioSettings;
 import com.undercooked.game.audio.AudioSliders;
 import com.undercooked.game.MainGameClass;
 import com.undercooked.game.audio.Slider;
+import com.undercooked.game.logic.EndlessLogic;
 import com.undercooked.game.logic.ScenarioLogic;
 import com.undercooked.game.render.GameRenderer;
 import com.undercooked.game.util.CameraController;
@@ -192,7 +193,8 @@ public class MainScreen extends Screen {
 				super.touchUp(event, x, y, pointer, button);
 				// TEMP - Using default Scenario
 				GameScreen gameScreen = (GameScreen) game.screenController.getScreen(Constants.GAME_SCREEN_ID);
-				gameScreen.setGameLogic(new ScenarioLogic(gameScreen, textureManager, getAudioManager()));
+				// gameScreen.setGameLogic(new ScenarioLogic(gameScreen, textureManager, getAudioManager()));
+				gameScreen.setGameLogic(new EndlessLogic(gameScreen, textureManager, getAudioManager()));
 				gameScreen.setGameRenderer(new GameRenderer());
 
 				// Move to the game screen

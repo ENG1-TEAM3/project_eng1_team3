@@ -1,0 +1,26 @@
+{
+  "map_id": "<main>:serve_quick",
+  "name": "Quick Serving",
+  "description": "",
+  "interactions": [
+    "<main>:misc/burger_box.json"
+  ],
+  "requests": [
+    {
+      "item_id": "<main>:burger",
+      "time": 2,
+      "instructions": [
+        {
+          "texture_path": "<main>:pantry/bun_box.png",
+          "text": "Grab Burger"
+        },
+        {
+          "texture_path": "<main>:station/register.png",
+          "text": "Serve Burger"
+        }
+      ]
+    }
+  ],
+  "reputation": 1,
+  "spawn_timer": 0
+}

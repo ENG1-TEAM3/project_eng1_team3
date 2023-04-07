@@ -1,5 +1,4 @@
 {
-  "id": "main",
   "width": 13,
   "height": 15,
   "stations": [
@@ -61,6 +60,11 @@
       "station_id": "<main>:preparation",
       "x": 3,
       "y": 8
+    },
+    {
+      "station_id": "<main>:preparation",
+      "x": 6,
+      "y": 4
     },
     {
       "station_id": "<main>:cutting",

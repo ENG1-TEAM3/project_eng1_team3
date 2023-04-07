@@ -82,6 +82,13 @@ public abstract class GameLogic {
     }
 
     /**
+     * Called when the game starts
+     */
+    public void start() {
+
+    }
+
+    /**
      * Called once the game is won. Goes to the win screen.
      * <br>Should be called by children, otherwise call the
      * "stop" function and change screen.

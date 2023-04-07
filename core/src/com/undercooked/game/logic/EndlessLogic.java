@@ -29,6 +29,9 @@ import java.util.Random;
 
 public class EndlessLogic extends ScenarioLogic {
     int numOfCustomers;
+    int customerLimit;
+    float spawnTimer;
+    float spawnTimerStart;
 
     public EndlessLogic(GameScreen game, TextureManager textureManager, AudioManager audioManager) {
         super(game, textureManager, audioManager);
@@ -36,6 +39,8 @@ public class EndlessLogic extends ScenarioLogic {
         this.leaderboardType = LeaderboardType.ENDLESS;
         this.leaderboardName = "Endless";
         numOfCustomers = 0;
+        customerLimit = 1;
+        spawnTimerStart = 10f;
     }
 
     public boolean checkGameOver() {
@@ -49,11 +54,24 @@ public class EndlessLogic extends ScenarioLogic {
     }
 
     @Override
+    public void postLoad() {
+        super.postLoad();
+
+        // Reset the game's timer
+        resetTimer();
+    }
+
+    @Override
     public void reset() {
         super.reset();
-
-        // Reset number of customers
         numOfCustomers = 0;
+        customerLimit = 1;
+        resetTimer();
+    }
+
+    @Override
+    public void start() {
+        resetTimer();
     }
 
     @Override
@@ -73,11 +91,28 @@ public class EndlessLogic extends ScenarioLogic {
 
         // Update Customers.
         customerController.update(delta);
+        updateCustomerLimit();
 
-        //
+        spawnTimer -= delta;
+        // If spawnTimer <= 0, then spawn the customer
+        if (spawnTimer <= 0 && numOfCustomers < customerLimit) {
+            spawnCustomer();
+            resetTimer();
+        }
 
         // Check if game is over.
         checkGameOver();
+    }
+
+    public void updateCustomerLimit() {
+        // After 6 minutes, allow spawning 3
+        if (elapsedTime > 60*6) {
+            customerLimit = 3;
+        }
+        // After 3 minutes, allow spawning 3
+        else if (elapsedTime > 60*3) {
+            customerLimit = 2;
+        }
     }
 
     public void customerServed(Customer customer) {
@@ -87,6 +122,12 @@ public class EndlessLogic extends ScenarioLogic {
         money += customer.getRequest().getValue();
         // And call customerGone
         customerGone(customer);
+    }
+
+    @Override
+    public void loadScenarioContents(JsonValue scenarioRoot) {
+        // Set the spawn timer. Anything <= 0 will be an instant spawn.
+        spawnTimerStart = scenarioRoot.getFloat("spawn_timer");
     }
 
     @Override
@@ -106,6 +147,10 @@ public class EndlessLogic extends ScenarioLogic {
             customerController.spawnCustomer(newRequest);
             numOfCustomers += 1;
         }
+    }
+
+    public void resetTimer() {
+        spawnTimer = spawnTimerStart;
     }
 
     @Override
