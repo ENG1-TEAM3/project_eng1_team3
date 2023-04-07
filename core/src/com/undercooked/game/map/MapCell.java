@@ -6,8 +6,8 @@ import com.badlogic.gdx.math.Rectangle;
 import com.undercooked.game.assets.TextureManager;
 
 public class MapCell {
-    boolean collidable;
-    boolean interactable;
+    private boolean collidable;
+    private boolean interactable;
     private int x, y;
     private float displayX, displayY;
     float width;
@@ -35,6 +35,11 @@ public class MapCell {
 
     public void setCollidable(boolean collidable) {
         this.collidable = collidable;
+        if (mapEntity == null) {
+            System.out.println("MapCell collision at (" + x + ", " + y + ") set to " + collidable);
+            return;
+        }
+        System.out.println("MapCell collision of " + mapEntity.id + " at (" + x + ", " + y + ") set to " + collidable);
     }
 
     public void setInteractable(boolean interactable) {

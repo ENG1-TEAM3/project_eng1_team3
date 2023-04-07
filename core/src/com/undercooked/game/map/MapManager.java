@@ -104,6 +104,13 @@ public class MapManager {
                             hasCollision = data.isCollidable();
                         }
 
+                        // Add it to the map
+                        outputMap.addMapEntity(newStation,
+                                               stationData.getInt("x"),
+                                               stationData.getInt("y"),
+                                               data.getFloorTile(),
+                                               hasCollision);
+
                         // If it does have collision
                         if (hasCollision) {
                             // Then set up the collision values
@@ -111,14 +118,12 @@ public class MapManager {
                             newStation.collision.setHeight(data.getCollisionHeight());
                             newStation.offsetX = data.getCollisionOffsetX();
                             newStation.offsetY = data.getCollisionOffsetY();
+                        } else {
+                            // If it doesn't, just set the collision to the size of the
+                            // station
+                            newStation.collision.setWidth(gridToPos(data.getWidth()));
+                            newStation.collision.setHeight(gridToPos(data.getHeight()));
                         }
-
-                        // Add it to the map
-                        outputMap.addMapEntity(newStation,
-                                               stationData.getInt("x"),
-                                               stationData.getInt("y"),
-                                               data.getFloorTile(),
-                                               hasCollision);
                     }
                 }
             } catch (GdxRuntimeException e) {

@@ -178,66 +178,68 @@ public class Map {
     }
 
     protected void addFullMapEntity(MapEntity entity, int x, int y, String floorTile, boolean hasCollision) {
-        Array<MapEntity> entitiesToRemove = new Array<>();
-        System.out.println(String.format("Placing tile at %d, %d", x, y));
+        System.out.println(String.format("Placing %s tile at %d, %d", entity.id, x, y));
         // And now add the entity
         for (int i = x + entity.getCellWidth()-1 ; i >= x ; i--) {
             for (int j = y + entity.getCellHeight()-1 ; j >= y ; j--) {
+                System.out.println("Placing at (" + i + ", " + j + ")");
                 // If it's a valid cell
                 if (validCellFull(i,j)) {
                     MapCell cellToReplace = getCellFull(i, j, false);
                     // If there's already a station here, remove it completely.
-                    boolean hadCollision = getCellFull(i, j).collidable;
-                    if (cellToReplace.mapEntity != null) {
+                    boolean hadCollision = cellToReplace.isCollidable();
+                    if (cellToReplace.getMapEntity() != null) {
                         // Only add it for removal if it hasn't been already
-                        MapEntity entityToRemove = getCellFull(i, j).mapEntity;
-                        if (!entitiesToRemove.contains(entityToRemove, true)) {
-                            entitiesToRemove.add(entityToRemove);
-                        }
+                        MapEntity entityToRemove = getCellFull(i, j).getMapEntity();
+                        removeEntity(entityToRemove);
                     }
                     cellToReplace.setCollidable(hasCollision);
                     cellToReplace.setInteractable(true);
+                    cellToReplace.setBase(false);
                     cellToReplace.setMapEntity(entity);
                     cellToReplace.setBelowTile(floorTile);
+                    System.out.println(hadCollision);
                     // If there is a station above this...
                     if (validCellFull(i,j+1)) {
                         MapCell aboveCell = getCellFull(i,j+1, false);
-                        if (aboveCell != null) {
+                        if (!aboveCell.isBase()) {
                             // And the previous cell had collision...
                             if (hadCollision) {
                                 // Then set this one to collidable
-                                cellToReplace.collidable = true;
+                                cellToReplace.setCollidable(true);
                             }
                         }
                     }
                 }
             }
 
-            // Below it, if there isn't a MapCell already, place a cupboard
+            // Below it, if it's outside the map, go to the next one
+            if (!validCellFull(i, y-1)) continue;
+
+            // Otherwise, if there isn't a MapCell already, place a cupboard
             // It is not in the loop above, as only the lowest y needs it below
             MapCell cellBelow = getCellFull(i, y-1, false);
             if (cellBelow != null) {
-                if (cellBelow.mapEntity == null) {
+                if (cellBelow.getMapEntity() == null) {
                     // If y-1 is valid, and basePath is not null
-                    if (entity.basePath != null && validCellFull(i, y - 1)) {
+                    if (entity.basePath != null) {
                         // Make a cupboard cell below and add it to the map
                         cellBelow.setCollidable(true);
                         cellBelow.setInteractable(false);
                         cellBelow.setBase(true);
                         cellBelow.setMapEntity(new MapEntity());
-                        cellBelow.mapEntity.setTexture(entity.basePath);
+                        cellBelow.getMapEntity().setTexture(entity.basePath);
                         cellBelow.setBelowTile(null);
                         cellBelow.setWidth(1);
                         cellBelow.setHeight(1);
                     }
                 } else {
-
                     // If not...
                     // Update the cell below, if it is a base
                     if (cellBelow.isBase()) {
                         // If the entity has a base path, then replace it
                         if (entity.basePath != null) {
-                            cellBelow.mapEntity.setTexture(entity.basePath);
+                            cellBelow.getMapEntity().setTexture(entity.basePath);
                         } else {
                             // If it doesn't have a base path, remove the base
                             resetCell(cellBelow);
@@ -250,15 +252,11 @@ public class Map {
                         // Note that this has a problem when a station with collision has a station placed above it
                         // that does not have a base, as it will remove the collision of the station below.
                         // E.g: Placing a bin directly above another bin.
+                        System.out.println("Entity below now collidable: " + (entity.basePath != null));
                         cellBelow.setCollidable(entity.basePath != null);
                     }
                 }
             }
-        }
-
-        // Remove all entities that need to be removed.
-        for (MapEntity mapEntity : entitiesToRemove) {
-            removeEntity(mapEntity);
         }
     }
 
