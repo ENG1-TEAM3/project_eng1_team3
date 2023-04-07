@@ -13,12 +13,10 @@ public class JsonOr extends JsonVal<JsonVal[]> {
     public boolean isValue(JsonValue value) {
         // Make sure at least one value matches
         for (JsonVal jsonVal : this.value) {
-            // System.out.println("TYPE: " + jsonVal.getType() + " VS: " + value.type());
             if (jsonVal.isValue(value)) {
                 return true;
             }
         }
-        // System.out.println("NO MATCH");
         // Otherwise return false.
         return false;
     }
@@ -79,7 +77,6 @@ public class JsonOr extends JsonVal<JsonVal[]> {
             this.value[0].checkChild(child, existsBefore);
             return;
         }
-        System.out.println(this.value[valid]);
         // Otherwise, if it's valid, then use the valid child to set the value
         this.value[valid].checkChild(child, existsBefore);
     }

@@ -255,7 +255,6 @@ public final class LeaderboardController {
 	}
 
 	public static void addEntry(GameType lType, String id, String leaderboardName, String name, float score) {
-		System.out.println(leaderboardData);
 		// Only continue if leaderboardData is not null
 		if (leaderboardData == null) return;
 
@@ -416,19 +415,5 @@ public final class LeaderboardController {
 
 	public static boolean isLoaded() {
 		return loaded;
-	}
-
-	public static void main(String[] args) {
-		loadLeaderboard();
-		// System.out.println(root);
-		addEntry(GameType.SCENARIO, "<main>:main", "Main Scenario", "Player 1", 30);
-		addEntry(GameType.ENDLESS, "<main>:main", "Main Scenario", "Player 2", 13);
-		addEntry(GameType.SCENARIO, "<main>:main", "Main Scenario", "Player 3", 27);
-		addEntry(GameType.ENDLESS, "<main>:main", "Main Scenario", "Player 4", 42);
-		addEntry(GameType.SCENARIO, "<main>:main", "Main Scenario", "Player 5", 18);
-		addEntry(GameType.SCENARIO, "<main>:main", "Main Scenario", "Player 6", 13);
-		// System.out.println(getEntries(LeaderboardTypes.SCENARIO, "<main>:main"));
-		saveLeaderboard();
-		unloadLeaderboard();
 	}
 }

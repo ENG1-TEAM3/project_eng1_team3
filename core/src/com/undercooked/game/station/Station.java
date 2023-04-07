@@ -55,8 +55,7 @@ public class Station extends MapEntity {
 	}
 
 	@Override
-	public InteractResult interact(Cook cook, String keyID, InputType inputType) {
-		// System.out.println(keyID + ": " + inputType.toString());
+	public InteractResult interact(Cook cook, String keyID, InputType inputType) {;
 		if (interactControl == null) {
 			// If it doesn't have an interaction control, then stop.
 			return InteractResult.STOP;

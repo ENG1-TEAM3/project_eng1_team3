@@ -32,11 +32,9 @@ public class JsonFormat {
             JsonVal jsonVal = values.get(i);
             // Check that it has the ID
             if (!json.has(jsonVal.ID)) {
-                //System.out.println("Doesn't have: " + jsonVal.ID);
                 // Add the child
                 jsonVal.addChild(json);
             } else {
-                //System.out.println("Has: " + jsonVal.ID);
                 // Get the child
                 JsonValue thisJson = json.get(jsonVal.ID);
                 // And then check if
@@ -44,18 +42,7 @@ public class JsonFormat {
             }
         }
 
-        //System.out.println(json);
-        //System.out.println("Final Json: " + json.prettyPrint(JsonWriter.OutputType.json, 0));
         // Finally return the input Json, in case it's needed
         return json;
     }
-
-    // TESTING
-    public static void main(String[] args) {
-        JsonValue jvalue = FileControl.loadJsonAsset("<main>:main", "requests");
-        System.out.println(jvalue);
-        formatJson(jvalue, (JsonObject) DefaultJson.requestFormat(false));
-        // System.out.println(jvalue.prettyPrint(JsonWriter.OutputType.json, 1));
-    }
-
 }

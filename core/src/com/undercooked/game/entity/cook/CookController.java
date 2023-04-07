@@ -204,11 +204,9 @@ public class CookController {
         // Get the cooks Json data
         JsonValue cookArray = mapRoot.get("cooks");
         currentCook = 0;
-        // System.out.println(cookArray);
         int cookNo = 1;
         // Iterate through the cooks and add them
         for (JsonValue cookData : cookArray.iterator()) {
-            // System.out.println(cookData);
             Vector2 cookPos = new Vector2(MapManager.gridToPos(cookData.getFloat("x")+map.getOffsetX()), MapManager.gridToPos(cookData.getFloat("y")+map.getOffsetY()));
             Cook newCook = new Cook(cookPos, cookNo, textureManager, map);
             addCook(newCook);

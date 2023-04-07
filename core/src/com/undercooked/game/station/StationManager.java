@@ -119,7 +119,6 @@ public class StationManager {
 		// Load from the external path.
 		loadStationsFromPath(FileControl.getDataPath(), false);
 
-		// System.out.println(stationData);
 	}
 
 	public StationData loadStation(String stationPath) {
@@ -137,8 +136,7 @@ public class StationManager {
 		JsonValue stationRoot = JsonFormat.formatJson(
 				FileControl.loadJsonAsset(stationPath, "stations"),
 				DefaultJson.stationFormat());
-		// System.out.println("stationPath: " + stationPath);
-		// System.out.println("stationRoot: " + stationRoot);
+
 		// If it's not null...
 		if (stationRoot != null) {
 			// Load the data
@@ -161,7 +159,6 @@ public class StationManager {
 
 			data.setCollisionOffsetX(stationRoot.getFloat("collision_offset_x"));
 			data.setCollisionOffsetY(stationRoot.getFloat("collision_offset_y"));
-			// System.out.println("Width: " + data.getWidth() + ", Height: " + data.getHeight());
 
 			data.setHoldCount(stationRoot.getInt("holds"));
 			// Then add it to the stations list
@@ -184,7 +181,6 @@ public class StationManager {
 	public void reset() {
 		// Reset all stations
 		for (Station station : stations) {
-			// System.out.println("CLEARING STATION AT " + station.getX() + ", " + station.getY());
 			station.reset();
 		}
 	}
@@ -192,7 +188,6 @@ public class StationManager {
 	public void stopAll() {
 		// Stop all stations
 		for (Station station : stations) {
-			// System.out.println("CLEARING STATION AT " + station.getX() + ", " + station.getY());
 			station.stop();
 		}
 	}

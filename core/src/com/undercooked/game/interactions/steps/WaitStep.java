@@ -26,7 +26,6 @@ public class WaitStep extends InteractionStep {
     public void update(IStep instance, Cook cook, float delta) {
         updateTime(instance, delta);
         // Check if elapsed time is >= time
-        // System.out.println(instance.elapsedTime);
         if (instance.elapsedTime >= time) {
             // If it is, then the wait is finished.
             finished(instance, cook, null, null, true);

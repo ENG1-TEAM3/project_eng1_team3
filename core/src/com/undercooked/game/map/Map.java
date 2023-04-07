@@ -178,11 +178,9 @@ public class Map {
     }
 
     protected void addFullMapEntity(MapEntity entity, int x, int y, String floorTile, boolean hasCollision) {
-        System.out.println(String.format("Placing %s tile at %d, %d", entity.id, x, y));
         // And now add the entity
         for (int i = x + entity.getCellWidth()-1 ; i >= x ; i--) {
             for (int j = y + entity.getCellHeight()-1 ; j >= y ; j--) {
-                System.out.println("Placing at (" + i + ", " + j + ")");
                 // If it's a valid cell
                 if (validCellFull(i,j)) {
                     MapCell cellToReplace = getCellFull(i, j, false);
@@ -252,7 +250,6 @@ public class Map {
                         // Note that this has a problem when a station with collision has a station placed above it
                         // that does not have a base, as it will remove the collision of the station below.
                         // E.g: Placing a bin directly above another bin.
-                        System.out.println("Entity below now collidable: " + (entity.basePath != null));
                         cellBelow.setCollidable(entity.basePath != null);
                     }
                 }
@@ -350,9 +347,6 @@ public class Map {
 
         int cellY    = MapManager.posToGridFloor(collision.y);
         int cellYMax = MapManager.posToGridFloor(collision.y + collision.height);
-
-        //System.out.println("cellX: " + cellX + ", cellXMax: " + cellXMax);
-        //System.out.println("cellY: " + cellY + ", cellYMax: " + cellYMax);
 
         Array<Point> validCells = null;
         if (returnClosest) {
@@ -552,12 +546,10 @@ public class Map {
     // Draw function
     public Array<MapEntity> getAllEntities() {
         Array<MapEntity> entities = new Array<>();
-        // System.out.println(String.format("fullWidth: %d, fullHeight: %d", fullWidth, fullHeight));
         // Loop through all the cells
         for (int x = 0 ; x < fullWidth ; x++) {
             for (int y = 0 ; y < fullHeight ; y++) {
                 // Get the current cell
-                // System.out.println(String.format("x: %d, y: %d", x, y));
                 MapCell thisCell = getCellFull(x,y);
                 // Make sure it's not null
                 if (thisCell != null) {

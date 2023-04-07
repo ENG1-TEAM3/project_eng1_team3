@@ -136,7 +136,6 @@ public abstract class GameLogic {
         for (Entity mapEntity : map.getAllEntities()) {
             gameRenderer.addEntity(mapEntity);
             mapEntity.load(textureManager);
-            // System.out.println(mapEntity.pos.x);
         }
         cookController.load(Constants.GAME_TEXTURE_ID);
         // Load the cooks into the renderer

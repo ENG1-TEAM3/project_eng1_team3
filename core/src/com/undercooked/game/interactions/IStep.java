@@ -61,13 +61,6 @@ public class IStep {
         if (soundPath != null) {
             //if (!audioManager.musicIsPlaying(soundID)) {
             audioManager.getMusicAsset(soundPath).play();
-                // Sound test = audioManager.getSoundAsset(soundPath);
-                // test.setLooping(soundID, true);
-
-                // System.out.println("Playing sound: " + soundPath + " to id " + soundID);
-            //} else {
-                // System.out.println("Sound playing: " + soundPath + " using id " + soundID);
-            //}
         }
     }
 

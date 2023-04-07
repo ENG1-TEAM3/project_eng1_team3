@@ -30,21 +30,6 @@ public class MapManager {
 
     }
 
-    /*public Map get() {
-        if (assetManager.isLoaded(mapPath)) {
-            return assetManager.get(mapPath, TiledMap.class);
-        } else {
-            System.out.println(mapPath + " not loaded.");
-            // If the Texture isn't loaded, then return the default texture.
-            // If it's not loaded, then just return null.
-            if (!assetManager.isLoaded(Constants.DEFAULT_MAP)) {
-                System.out.println("Default path not loaded.");
-                return null;
-            }
-            return assetManager.get(Constants.DEFAULT_MAP, TiledMap.class);
-        }
-    }*/
-
     public Map load(String path, StationManager stationManager, CookController cookController, Interactions interactions, Items gameItems) {
         // Try loading the Json
         JsonValue root = JsonFormat.formatJson(FileControl.loadJsonAsset(path, "maps"), DefaultJson.mapFormat());
@@ -135,7 +120,6 @@ public class MapManager {
         // Give the map to the CookController so that it can load the cooks
         cookController.loadCooksIntoMap(root, outputMap, textureManager);
 
-        // System.out.println(outputMap);
         return outputMap;
     }
 

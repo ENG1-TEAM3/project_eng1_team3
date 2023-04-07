@@ -100,7 +100,6 @@ public class StationInteractControl {
         if (currentInteraction != null) {
             return currentInteraction.interact(interactionInstance, cook, keyID, inputType);
         }
-        // System.out.println("current Interaction null");
         return InteractResult.NONE;
     }
 
@@ -119,7 +118,6 @@ public class StationInteractControl {
             station.updateStationInteractions();
             return InteractResult.STOP;
         } else {
-            // System.out.println("Doing next: " + currentInteraction.getClass());
             // Otherwise call the finished last of the previous
             return currentInteraction.finishedLast(interactionInstance, cook, keyID, inputType);
         }
@@ -137,29 +135,17 @@ public class StationInteractControl {
             return;
         }
         Array<String> stationInteractions = interactions.getStationInteractions(stationID);
-        // System.out.println(stationID + ": " + stationInteractions);
 
         // If it's null, then clear and return
         if (stationInteractions == null) {
-            // System.out.println("NO INTERACTION :(");
             possibleInteractions.clear();
             return;
         }
 
         // Load all the possible interactions for this station
         for (String stationInteraction : stationInteractions) {
-            // System.out.println("POSSIBLE INTERACTION!!!");
             possibleInteractions.add(interactions.getInteractionSteps(stationInteraction));
         }
-
-        // System.out.println(String.format("%s possible interactions:", stationID));
-        /*for (int i = 0 ; i < possibleInteractions.size ; i++) {
-            System.out.println("\t" + i + ":");
-            InteractionObject cStep = possibleInteractions.get(i);
-            for (int j = 0 ; j < cStep.items.size ; j++) {
-                cStep.steps.get(j).output(2);
-            }
-        }*/
     }
 
     public InteractionObject findValidInteraction(ItemStack items) {
@@ -216,8 +202,6 @@ public class StationInteractControl {
             setInteractions(interaction.steps);
             // Update last delta check
             interactionInstance.updateDelta();
-            // currentInteraction.output();
-            // System.out.println("INTERACTION VALID: " + interaction.steps);
             return;
         }
         // If it's null, then just clear

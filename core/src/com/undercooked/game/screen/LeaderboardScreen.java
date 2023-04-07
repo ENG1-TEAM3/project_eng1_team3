@@ -384,7 +384,6 @@ public class LeaderboardScreen extends Screen {
 
 		firstScore = 0;
 
-		// System.out.println(leaderboardData);
 	}
 
 	/**

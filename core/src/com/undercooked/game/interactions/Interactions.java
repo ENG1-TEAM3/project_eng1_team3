@@ -197,12 +197,6 @@ public class Interactions {
 
         // Then do the same for the interaction itself
         interactions.put(interactionID, new InteractionObject(out, neededIngredients));
-
-        /*System.out.println(interactions);
-        for (ObjectMap.Entry<String, Array<String>> interaction : stationInteractions) {
-            System.out.println(interaction.key);
-            System.out.println(interaction.value);
-        }*/
     }
 
     /**

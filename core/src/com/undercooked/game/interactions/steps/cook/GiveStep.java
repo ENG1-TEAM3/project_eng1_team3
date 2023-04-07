@@ -23,7 +23,6 @@ public class GiveStep extends InteractionStep {
             return finished(instance, cook, false);
         }
         // Give the item to the Cook, time number of times
-        // System.out.println(String.format("Given Cook %d '%s'", (int) time, value));
         for (int i = (int) time ; i > 0 ; i--) {
             cook.addItem(instance.gameItems.getItem(value));
         }

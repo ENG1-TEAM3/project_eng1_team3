@@ -63,8 +63,6 @@ public class Slider {
     public void interact(float x, float y) {
         setPercent((x-sliderSprite.getWidth()/2) / (sliderButton.getWidth() - sliderSprite.getWidth()));
         listenerController.tellListeners(percent);
-        // System.out.println(String.format("x: %f, y: %f", x, y));
-        // System.out.println(String.format("sliderButton.getWidth(): %f, percent: %f", sliderButton.getWidth(), percent));
     }
 
     public void addListener(Listener<Float> listener) {

@@ -59,8 +59,6 @@ public class LoadScreen extends Screen {
 
         lastLoad = TimeUtils.millis();
 
-        // System.out.println("Progress: " + assetManager.getProgress());
-
         // Check if the AssetManager is finished
         if (assetManager.isFinished()) {
             // Post load function for the Screen

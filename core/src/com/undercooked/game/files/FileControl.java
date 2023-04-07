@@ -193,7 +193,6 @@ public class FileControl {
         // change whether it uses the AppData path or internal path.
         if (assetPath.startsWith("<main>")) {
             // Remove the "<main>:"
-            // System.out.println(dirAndName("game/", path));
             return loadJsonFile("game/", path, true);
         } else {
             return loadJsonFile(getDataPath() + "game/", path, false);
@@ -215,28 +214,12 @@ public class FileControl {
         mainFolderName = formatDir(mainFolderName);
         // AssetPath will be in the format group:filePath
         String[] args = assetPath.split(":", 2);
-        /*
-         * System.out.println(assetPath); for (String str : args) {
-         * System.out.println(str); }
-         */
         if (args.length != 2) {
             return assetPath;
         }
 
         // Return the asset's path
         return mainFolderName + args[1];
-    }
-
-    public static void main(String[] args) {
-        String appdata = getDataPath();
-        System.out.println(appdata);
-        saveToFile(appdata, "save_data.txt", "Test!");
-        JsonValue jvalue = loadJsonData("settings.json");
-        System.out.println(jvalue);
-        jvalue.addChild("TEST", new JsonValue(JsonValue.ValueType.object));
-        System.out.println(jvalue);
-        saveJsonData("settings.json", jvalue);
-        System.out.println(jvalue.get("TEST"));
     }
 
 }

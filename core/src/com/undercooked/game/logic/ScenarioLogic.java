@@ -256,7 +256,6 @@ public class ScenarioLogic extends GameLogic {
 
         // Load all the Interactions
         for (JsonValue interaction : scenarioData.get("interactions")) {
-            // System.out.println(interaction);
             interactions.loadInteractionAsset(interaction.asString(), stationManager, audioManager, items);
         }
 
