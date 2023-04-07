@@ -18,12 +18,14 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.undercooked.game.MainGameClass;
 import com.undercooked.game.assets.TextureManager;
+import com.undercooked.game.screen.buttons.ModeButton;
 import com.undercooked.game.util.CameraController;
 import com.undercooked.game.util.Constants;
+import com.undercooked.game.util.Listener;
 import com.undercooked.game.util.leaderboard.Leaderboard;
 import com.undercooked.game.util.leaderboard.LeaderboardController;
 import com.undercooked.game.util.leaderboard.LeaderboardEntry;
-import com.undercooked.game.util.leaderboard.LeaderboardType;
+import com.undercooked.game.GameType;
 
 //INCORRECT FILE FORMATTING WILL CRASH GAME
 //MAKE SURE ALL LINES IN LEADERBOARD FILE ARE x;y OR JUST s
@@ -37,9 +39,10 @@ public class LeaderboardScreen extends Screen {
 	FitViewport viewport;
 	Leaderboard leaderboard;
 	Array<LeaderboardEntry> leaderboardData;
-	private LeaderboardType currentLType;
+	private GameType currentLType;
 	private int currentIndex;
 	private Stage stage;
+	private ModeButton modeButton;
 	private TextureRegionDrawable scenarioBtnDrawable;
 	private TextureRegionDrawable endlessBtnDrawable;
 	private Array<String> leaderboardIDs;
@@ -120,9 +123,19 @@ public class LeaderboardScreen extends Screen {
 		// Load the leaderboard
 		LeaderboardController.loadLeaderboard();
 
+		camera = CameraController.getCamera(Constants.UI_CAMERA_ID);
+		viewport = CameraController.getViewport(Constants.UI_CAMERA_ID);
+
+		// Create the stage
+		stage = new Stage(viewport, game.batch);
+
+		// Create the mode button
+		modeButton = new ModeButton(textureManager);
+		modeButton.load(Constants.LEADERBOARD_TEXTURE_ID);
+
 		// And go to the scenario leaderboard by default
 		currentLType = null;
-		goToLeaderboard(LeaderboardType.SCENARIO);
+		goToLeaderboard(GameType.SCENARIO);
 	}
 
 	@Override
@@ -140,6 +153,7 @@ public class LeaderboardScreen extends Screen {
 
 		stage.dispose();
 		stage = null;
+		modeButton = null;
 
 		// Unload the leaderboard
 		LeaderboardController.unloadLeaderboard();
@@ -149,7 +163,7 @@ public class LeaderboardScreen extends Screen {
 	 * What should be done when screen is shown
 	 */
 	public void show() {
-		TextureManager textureManager = game.getTextureManager();
+		final TextureManager textureManager = game.getTextureManager();
 
 		// Update the main screen music variable
 		game.mainScreenMusic = game.audioManager.getMusic("audio/music/MainScreenMusic.ogg");
@@ -159,25 +173,15 @@ public class LeaderboardScreen extends Screen {
 		background = textureManager.get("uielements/MainScreenBackground.jpg");
 		leaderboardTexture = textureManager.get("uielements/LeaderBoard.png");
 		line = textureManager.get("uielements/line.jpg");
-		camera = CameraController.getCamera(Constants.UI_CAMERA_ID);
-		viewport = CameraController.getViewport(Constants.UI_CAMERA_ID);
 		game.font.getData().setScale(2.5F);
-		Gdx.input.setInputProcessor(null);
-
-		// Create the stage
-		stage = new Stage(viewport, game.batch);
 
 		// Create the buttons
 		Button leftBtn = new Button(new TextureRegionDrawable(textureManager.get("uielements/arrow_left.png")));
 		Button rightBtn = new Button(new TextureRegionDrawable(textureManager.get("uielements/arrow_right.png")));
 		Button menuBtn = new Button(new TextureRegionDrawable(textureManager.get("uielements/exittomenu.png")));
 
-		scenarioBtnDrawable = new TextureRegionDrawable(textureManager.get("uielements/scenario.png"));
-		Button scenarioBtn = new Button(scenarioBtnDrawable);
-		endlessBtnDrawable = new TextureRegionDrawable(textureManager.get("uielements/endless_off.png"));
-		Button endlessBtn = new Button(endlessBtnDrawable);
-
-		updateButtonTextures(currentLType);
+		modeButton.postLoad();
+		scoreText = modeButton.update();
 
 		// Set their position and sizes
 		leftBtn.setSize(128,128);
@@ -185,12 +189,6 @@ public class LeaderboardScreen extends Screen {
 
 		rightBtn.setSize(128,128);
 		rightBtn.setPosition(Constants.V_WIDTH-rightBtn.getWidth()-32,Constants.V_HEIGHT/2-rightBtn.getHeight()/2);
-
-		scenarioBtn.setSize(473, 144);
-		scenarioBtn.setPosition(Constants.V_WIDTH/2-scenarioBtn.getWidth(),42);
-
-		endlessBtn.setSize(473, 144);
-		endlessBtn.setPosition(Constants.V_WIDTH/2,42);
 
 		menuBtn.setSize(473, 144);
 		menuBtn.setPosition(16,Constants.V_HEIGHT-menuBtn.getHeight()-16);
@@ -211,19 +209,14 @@ public class LeaderboardScreen extends Screen {
 			}
 		});
 
-		scenarioBtn.addListener(new ClickListener() {
+		modeButton.setListener(new Listener<GameType>() {
 			@Override
-			public void clicked(InputEvent event, float x, float y) {
-				goToLeaderboard(LeaderboardType.SCENARIO);
+			public void tell(GameType value) {
+				goToLeaderboard(value);
 			}
 		});
 
-		endlessBtn.addListener(new ClickListener() {
-			@Override
-			public void clicked(InputEvent event, float x, float y) {
-				goToLeaderboard(LeaderboardType.ENDLESS);
-			}
-		});
+		modeButton.setPosition(Constants.V_WIDTH/2, 72);
 
 		menuBtn.addListener(new ClickListener() {
 			@Override
@@ -235,9 +228,8 @@ public class LeaderboardScreen extends Screen {
 		// Add the buttons to the stage
 		stage.addActor(leftBtn);
 		stage.addActor(rightBtn);
-		stage.addActor(scenarioBtn);
-		stage.addActor(endlessBtn);
 		stage.addActor(menuBtn);
+		modeButton.addToStage(stage);
 
 		// Add a scroll listener to go up / down on the scores
 		stage.addListener(new InputListener() {
@@ -316,36 +308,15 @@ public class LeaderboardScreen extends Screen {
 		}
 	}
 
-	public void updateButtonTextures(LeaderboardType leaderboardType) {
-		// Don't continue if either of the drawables are null
-		if (scenarioBtnDrawable == null || endlessBtnDrawable == null) return;
-
-		switch (leaderboardType) {
-			case SCENARIO:
-				// Scenario is active, Endless is not
-				scenarioBtnDrawable.setRegion(new TextureRegion(getTextureManager().get("uielements/scenario.png")));
-				endlessBtnDrawable.setRegion(new TextureRegion(getTextureManager().get("uielements/endless_off.png")));
-				scoreText = "Time";
-				break;
-			case ENDLESS:
-				// Endless is active, Scenario is not
-				endlessBtnDrawable.setRegion(new TextureRegion(getTextureManager().get("uielements/endless.png")));
-				scenarioBtnDrawable.setRegion(new TextureRegion(getTextureManager().get("uielements/scenario_off.png")));
-				scoreText = "Served";
-				break;
-
-		}
-	}
-
-	public void goToLeaderboard(LeaderboardType leaderboardType) {
+	public void goToLeaderboard(GameType gameType) {
 		// If it's already that leaderboard, just return
-		if (leaderboardType == currentLType) return;
+		if (gameType == currentLType) return;
 
 		// Update the textures for the buttons
-		updateButtonTextures(leaderboardType);
+		modeButton.update();
 
 		// Update the current type
-		currentLType = leaderboardType;
+		currentLType = gameType;
 
 		// Otherwise, get the ids for the leaderboards of this type
 		updateIDs();
@@ -395,7 +366,7 @@ public class LeaderboardScreen extends Screen {
 		game.font.setColor(Color.WHITE);
 	}
 
-	protected void showLeaderboard(LeaderboardType lType, String id) {
+	protected void showLeaderboard(GameType lType, String id) {
 		// Get the leaderboard
 		leaderboard = LeaderboardController.getLeaderboard(lType, id);
 		// If it's null, set leaderboard data to null
@@ -420,7 +391,7 @@ public class LeaderboardScreen extends Screen {
 	 * @param name - name of player
 	 * @param score - score of player
 	 */
-	public void addLeaderBoardData(LeaderboardType lType, String id, String leaderboardName, String name, float score) {
+	public void addLeaderBoardData(GameType lType, String id, String leaderboardName, String name, float score) {
 		// Only continue if it's loaded
 		if (!LeaderboardController.isLoaded()) return;
 		// Add it to the leaderboard

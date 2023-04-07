@@ -13,6 +13,7 @@ import com.undercooked.game.interactions.steps.cook.input.PressedStep;
 import com.undercooked.game.interactions.steps.cook.input.ReleasedStep;
 import com.undercooked.game.station.StationManager;
 import com.undercooked.game.util.Constants;
+import com.undercooked.game.util.DefaultJson;
 import com.undercooked.game.util.json.JsonFormat;
 
 public class Interactions {
@@ -140,7 +141,7 @@ public class Interactions {
 
     private void loadInteraction(String interactionID, JsonValue interactionRoot, StationManager stationManager, AudioManager audioManager, Items items) {
         // Make sure it's formatted correctly
-        JsonFormat.formatJson(interactionRoot, Constants.DefaultJson.interactionFormat());
+        JsonFormat.formatJson(interactionRoot, DefaultJson.interactionFormat());
         // Check for ID
         Array<InteractionStep> out;
         Array<String> neededIngredients;

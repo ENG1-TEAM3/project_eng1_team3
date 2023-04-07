@@ -2,9 +2,8 @@ package com.undercooked.game.util.json;
 
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonValue;
-import com.badlogic.gdx.utils.JsonWriter;
 import com.undercooked.game.files.FileControl;
-import com.undercooked.game.util.Constants;
+import com.undercooked.game.util.DefaultJson;
 
 public class JsonFormat {
 
@@ -55,7 +54,7 @@ public class JsonFormat {
     public static void main(String[] args) {
         JsonValue jvalue = FileControl.loadJsonAsset("<main>:main", "requests");
         System.out.println(jvalue);
-        formatJson(jvalue, (JsonObject) Constants.DefaultJson.requestFormat(false));
+        formatJson(jvalue, (JsonObject) DefaultJson.requestFormat(false));
         // System.out.println(jvalue.prettyPrint(JsonWriter.OutputType.json, 1));
     }
 

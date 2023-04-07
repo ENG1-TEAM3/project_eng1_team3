@@ -8,7 +8,7 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.undercooked.game.Input.InputController;
 import com.undercooked.game.MainGameClass;
 import com.undercooked.game.util.Constants;
-import com.undercooked.game.util.leaderboard.LeaderboardType;
+import com.undercooked.game.GameType;
 
 public class WinScreen extends Screen {
 
@@ -16,7 +16,7 @@ public class WinScreen extends Screen {
     public float score;
     private GlyphLayout scoreText;
     private GlyphLayout nameGlyph;
-    private LeaderboardType leaderboardType;
+    private GameType gameType;
     private String leaderboardID;
     private String leaderboardName;
 
@@ -70,9 +70,9 @@ public class WinScreen extends Screen {
             // Get the Screen
             LeaderboardScreen leaderboardScreen = (LeaderboardScreen) game.screenController.getScreen(Constants.LEADERBOARD_SCREEN_ID);
             // And try to add the score
-            leaderboardScreen.addLeaderBoardData(leaderboardType, leaderboardID, leaderboardName, nameInput, score);
+            leaderboardScreen.addLeaderBoardData(gameType, leaderboardID, leaderboardName, nameInput, score);
             // And then set the leaderboard screen to view the leaderboard
-            leaderboardScreen.goToLeaderboard(leaderboardType);
+            leaderboardScreen.goToLeaderboard(gameType);
             leaderboardScreen.showLeaderboard(leaderboardID);
             // And stop here
             return;
@@ -84,8 +84,8 @@ public class WinScreen extends Screen {
             updateNameGlyph();
         }
 
-        // If the name is 20 chars long, don't check for inputs
-        if (nameInput.length() >= 20) return;
+        // If the name is too long, don't check for inputs
+        if (nameGlyph.width >= Constants.MAX_NAME_LENGTH) return;
 
         // If any letter keys, a - z, are pressed
         // or if any numbers are pressed, add them.
@@ -124,8 +124,8 @@ public class WinScreen extends Screen {
         game.batch.end();
     }
 
-    public void setLeaderboardType(LeaderboardType leaderboardType) {
-        this.leaderboardType = leaderboardType;
+    public void setLeaderboardType(GameType gameType) {
+        this.gameType = gameType;
     }
 
     public void setLeaderboardID(String leaderboardID) {

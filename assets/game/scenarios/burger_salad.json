@@ -1,6 +1,7 @@
 {
   "map_id": "<main>:burger_salad",
   "name": "Tri burger, Tri salad",
+  "description": "You have 3 Cooks to make 3 Burgers and 3 Salads.",
   "interactions": [
     "<main>:preparation/form_patty",
     "<main>:preparation/make_burger",
@@ -25,5 +26,6 @@
     "<main>:salad",
     "<main>:salad"
   ],
-  "spawn_timer": 20
+  "spawn_timer": 20,
+  "customer_speed": 1.5
 }

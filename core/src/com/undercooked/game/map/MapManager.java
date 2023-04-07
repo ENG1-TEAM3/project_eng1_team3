@@ -12,6 +12,7 @@ import com.undercooked.game.station.Station;
 import com.undercooked.game.station.StationData;
 import com.undercooked.game.station.StationManager;
 import com.undercooked.game.util.Constants;
+import com.undercooked.game.util.DefaultJson;
 import com.undercooked.game.util.json.JsonFormat;
 
 public class MapManager {
@@ -46,7 +47,7 @@ public class MapManager {
 
     public Map load(String path, StationManager stationManager, CookController cookController, Interactions interactions, Items gameItems) {
         // Try loading the Json
-        JsonValue root = JsonFormat.formatJson(FileControl.loadJsonAsset(path, "maps"), Constants.DefaultJson.mapFormat());
+        JsonValue root = JsonFormat.formatJson(FileControl.loadJsonAsset(path, "maps"), DefaultJson.mapFormat());
         // If it's null, then just load the default map and return that.
         if (root == null) {
             // Make sure this isn't the Default Map, to avoid an infinite loop.

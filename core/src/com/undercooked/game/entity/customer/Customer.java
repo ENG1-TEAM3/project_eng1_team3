@@ -38,8 +38,6 @@ public class Customer {
 
 	/**
 	 * Constructor for customer class
-	 * @param x - x starting pixel coordinate
-	 * @param y - y starting pixel coordinate
 	 * @param custno - customer number - changes texture
 	 * @param textureManager The {@link TextureManager} to use
 	 *                       to load and get {@link Texture}s from.
@@ -70,7 +68,7 @@ public class Customer {
 	public void update(float delta) {
 		// If leaving, and y <= 0, then make invisible before deleting
 		if (leaving) {
-			y -= moveSpeed;
+			y -= moveSpeed * delta;
 			if (y <= 0) {
 				visibility -= 0.1F;
 				if (visibility <= 0) {
@@ -106,7 +104,7 @@ public class Customer {
 		// If it has a register to go to...
 		if (register != null) {
 			// Then just move until it reaches the register
-			y += moveSpeed;
+			y += moveSpeed * delta;
 			// If posy >= registerCell's y, + 0.5, then wait
 			float targetY = register.getRegisterCell().getDisplayY() - MapManager.gridToPos(0.3F);
 			if (y >= targetY) {
@@ -118,7 +116,7 @@ public class Customer {
 
 		// If it doesn't have a register, then just move up if there's no other customer above.
 		if (!customerController.customerInSquarePos(x, y +MapManager.gridToPos(0.5F), this)) {
-			y += moveSpeed;
+			y += moveSpeed * delta;
 		}
 	}
 
@@ -158,6 +156,13 @@ public class Customer {
 
 	public void setRegister(Register register) {
 		this.register = register;
+	}
+
+	public void setMoveSpeed(float moveSpeed) {
+		// Convert it to cells / second
+		moveSpeed = MapManager.gridToPos(moveSpeed);
+		// Minimum of 0.001
+		this.moveSpeed = Math.max(1F, moveSpeed);
 	}
 
 	public float getX() {

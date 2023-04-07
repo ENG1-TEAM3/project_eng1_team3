@@ -17,7 +17,7 @@ import com.undercooked.game.screen.WinScreen;
 import com.undercooked.game.station.StationManager;
 import com.undercooked.game.util.Constants;
 import com.undercooked.game.util.StringUtil;
-import com.undercooked.game.util.leaderboard.LeaderboardType;
+import com.undercooked.game.GameType;
 
 /**
  * A class to extend from that indicates the logic of the
@@ -46,7 +46,7 @@ public abstract class GameLogic {
     protected Customer displayCustomer;
 
     protected String id;
-    protected LeaderboardType leaderboardType;
+    protected GameType gameType;
     protected String leaderboardName;
 
     public GameLogic(GameScreen game, TextureManager textureManager, AudioManager audioManager) {
@@ -102,7 +102,7 @@ public abstract class GameLogic {
         gameScreen.getScreenController().setScreen(winScreen);
         // Set the leaderboard type and id
         winScreen.setLeaderboardID(id);
-        winScreen.setLeaderboardType(leaderboardType);
+        winScreen.setLeaderboardType(gameType);
         winScreen.setLeaderboardName(leaderboardName);
     }
 

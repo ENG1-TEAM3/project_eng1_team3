@@ -26,6 +26,7 @@ public class CustomerController {
 
 	Map map;
 	float spawnX, spawnY;
+	float customerSpeed;
 
 	Listener<Customer> getMoney;
 	Listener<Customer> loseReputation;
@@ -59,6 +60,7 @@ public class CustomerController {
 		};
 
 		this.targetType = CustomerTarget.FARTHEST;
+		this.customerSpeed = 1F;
 	}
 
 	public CustomerController(TextureManager textureManager) {
@@ -147,9 +149,14 @@ public class CustomerController {
 		// Either way, add it to the draw array
 		drawCustomers.add(newCustomer);
 
+		// Set position
 		newCustomer.x = MapManager.gridToPos(spawnX);
 		newCustomer.y = MapManager.gridToPos(spawnY);
 
+		// Set speed
+		newCustomer.setMoveSpeed(customerSpeed);
+
+		// Set their listeners
 		newCustomer.servedListener = getMoney;
 		newCustomer.failedListener = loseReputation;
 		newCustomer.setRequest(request);
@@ -281,6 +288,14 @@ public class CustomerController {
 		this.getMoney = servedListener;
 	}
 
+	public void setTargetType(CustomerTarget targetType) {
+		this.targetType = targetType;
+	}
+
+	public void setCustomerSpeed(float customerSpeed) {
+		this.customerSpeed = customerSpeed;
+	}
+
 	public void findRegisters() {
 		// Clear the register array
 		registers.clear();
@@ -376,9 +391,5 @@ public class CustomerController {
 		getMoney = null;
 		loseReputation = null;
 		map = null;
-	}
-
-	public void setTargetType(CustomerTarget targetType) {
-		this.targetType = targetType;
 	}
 }

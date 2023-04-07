@@ -1,31 +1,13 @@
 package com.undercooked.game.logic;
 
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonValue;
-import com.badlogic.gdx.utils.ObjectMap;
 import com.undercooked.game.Input.InputController;
 import com.undercooked.game.assets.AudioManager;
 import com.undercooked.game.assets.TextureManager;
-import com.undercooked.game.entity.cook.Cook;
 import com.undercooked.game.entity.customer.Customer;
-import com.undercooked.game.entity.customer.CustomerTarget;
-import com.undercooked.game.files.FileControl;
-import com.undercooked.game.food.Instruction;
-import com.undercooked.game.food.Item;
 import com.undercooked.game.food.Request;
-import com.undercooked.game.load.LoadResult;
-import com.undercooked.game.map.MapCell;
-import com.undercooked.game.map.MapEntity;
-import com.undercooked.game.map.Register;
 import com.undercooked.game.screen.GameScreen;
-import com.undercooked.game.util.Constants;
-import com.undercooked.game.util.Listener;
-import com.undercooked.game.util.StringUtil;
-import com.undercooked.game.util.json.JsonFormat;
-import com.undercooked.game.util.json.JsonObject;
-import com.undercooked.game.util.leaderboard.LeaderboardType;
-
-import java.util.Random;
+import com.undercooked.game.GameType;
 
 public class EndlessLogic extends ScenarioLogic {
     int numOfCustomers;
@@ -36,7 +18,7 @@ public class EndlessLogic extends ScenarioLogic {
     public EndlessLogic(GameScreen game, TextureManager textureManager, AudioManager audioManager) {
         super(game, textureManager, audioManager);
 
-        this.leaderboardType = LeaderboardType.ENDLESS;
+        this.gameType = GameType.ENDLESS;
         this.leaderboardName = "Endless";
         numOfCustomers = 0;
         customerLimit = 1;

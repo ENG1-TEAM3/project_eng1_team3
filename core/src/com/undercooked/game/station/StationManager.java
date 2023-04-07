@@ -2,17 +2,14 @@ package com.undercooked.game.station;
 
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.undercooked.game.files.FileControl;
 import com.undercooked.game.map.MapManager;
 import com.undercooked.game.screen.GameScreen;
-import com.undercooked.game.util.Constants;
+import com.undercooked.game.util.DefaultJson;
 import com.undercooked.game.util.json.JsonFormat;
-
-import java.awt.datatransfer.StringSelection;
 
 /**
  * Deals with the loading and storage of all {@link Station}s
@@ -139,7 +136,7 @@ public class StationManager {
 		// Read the file data
 		JsonValue stationRoot = JsonFormat.formatJson(
 				FileControl.loadJsonAsset(stationPath, "stations"),
-				Constants.DefaultJson.stationFormat());
+				DefaultJson.stationFormat());
 		// System.out.println("stationPath: " + stationPath);
 		// System.out.println("stationRoot: " + stationRoot);
 		// If it's not null...

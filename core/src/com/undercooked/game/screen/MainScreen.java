@@ -191,15 +191,8 @@ public class MainScreen extends Screen {
 		sb.addListener(new ClickListener() {
 			public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
 				super.touchUp(event, x, y, pointer, button);
-				// TEMP - Using default Scenario
-				GameScreen gameScreen = (GameScreen) game.screenController.getScreen(Constants.GAME_SCREEN_ID);
-				// gameScreen.setGameLogic(new ScenarioLogic(gameScreen, textureManager, getAudioManager()));
-				gameScreen.setGameLogic(new EndlessLogic(gameScreen, textureManager, getAudioManager()));
-				gameScreen.setGameRenderer(new GameRenderer());
-
-				// Move to the game screen
-				game.mainScreenMusic.dispose();
-				game.screenController.setScreen(Constants.GAME_SCREEN_ID);
+				// Go to play screen
+				getScreenController().nextScreen(Constants.PLAY_SCREEN_ID);
 			}
 		});
 		lb.addListener(new ClickListener() {

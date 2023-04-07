@@ -8,7 +8,6 @@ import com.undercooked.game.assets.AudioManager;
 import com.undercooked.game.assets.TextureManager;
 import com.undercooked.game.entity.cook.Cook;
 import com.undercooked.game.entity.customer.Customer;
-import com.undercooked.game.entity.customer.CustomerController;
 import com.undercooked.game.entity.customer.CustomerTarget;
 import com.undercooked.game.files.FileControl;
 import com.undercooked.game.food.Instruction;
@@ -20,10 +19,11 @@ import com.undercooked.game.map.MapEntity;
 import com.undercooked.game.map.Register;
 import com.undercooked.game.screen.GameScreen;
 import com.undercooked.game.util.Constants;
+import com.undercooked.game.util.DefaultJson;
 import com.undercooked.game.util.Listener;
 import com.undercooked.game.util.json.JsonFormat;
 import com.undercooked.game.util.json.JsonObject;
-import com.undercooked.game.util.leaderboard.LeaderboardType;
+import com.undercooked.game.GameType;
 
 import java.util.Random;
 
@@ -112,7 +112,7 @@ public class ScenarioLogic extends GameLogic {
             }
         });
 
-        this.leaderboardType = LeaderboardType.SCENARIO;
+        this.gameType = GameType.SCENARIO;
         this.leaderboardName = "Scenario";
     }
 
@@ -246,7 +246,7 @@ public class ScenarioLogic extends GameLogic {
         unload();
 
         // If it loaded, format it correctly
-        JsonFormat.formatJson(scenarioData, Constants.DefaultJson.scenarioFormat());
+        JsonFormat.formatJson(scenarioData, DefaultJson.scenarioFormat());
 
         // Try to load the map
         // If map fails to load, then return failure
@@ -262,6 +262,9 @@ public class ScenarioLogic extends GameLogic {
 
         // Update all the stations to use the interactions
         stationManager.updateStationInteractions();
+
+        // Set the Customer's speed
+        customerController.setCustomerSpeed(scenarioData.getFloat("customer_speed"));
 
         // Load all the requests
         loadRequests(scenarioData.get("requests"));
@@ -298,7 +301,7 @@ public class ScenarioLogic extends GameLogic {
     protected void loadRequests(JsonValue requestData) {
         // Load the request format in case it's needed.
         // However, the format should only allow the object.
-        JsonObject requestFormat = (JsonObject) Constants.DefaultJson.requestFormat(false);
+        JsonObject requestFormat = (JsonObject) DefaultJson.requestFormat(false);
 
         // This is for requests that have been loaded using the asset system, so that
         // they don't have to be loaded multiple times.

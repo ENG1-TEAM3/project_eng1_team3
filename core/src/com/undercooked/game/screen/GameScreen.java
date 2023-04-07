@@ -142,7 +142,6 @@ public class GameScreen extends Screen {
 
 		gameLogic.setTextureManager(textureManager);
 		gameLogic.setAudioManager(getAudioManager());
-		((EndlessLogic) gameLogic).setId("<main>:burger_salad");
 		gameLogic.load();
 		gameRenderer.load(textureManager);
 		// System.out.println(map.getAllEntities());

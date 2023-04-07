@@ -5,6 +5,7 @@ import com.badlogic.gdx.utils.ObjectMap;
 import com.undercooked.game.assets.TextureManager;
 import com.undercooked.game.files.FileControl;
 import com.undercooked.game.util.Constants;
+import com.undercooked.game.util.DefaultJson;
 import com.undercooked.game.util.json.JsonFormat;
 
 /**
@@ -40,7 +41,7 @@ public class Items {
 		if (ingredientRoot == null) {
 			return null;
 		}
-		JsonFormat.formatJson(ingredientRoot, Constants.DefaultJson.itemFormat());
+		JsonFormat.formatJson(ingredientRoot, DefaultJson.itemFormat());
 		return addItem(assetPath,
 				ingredientRoot.getString("name"),
 				ingredientRoot.getString("texture_path"),
