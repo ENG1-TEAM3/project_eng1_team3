@@ -66,23 +66,23 @@ public class ModeButton {
         updateButtonSize();
     }
 
-    public String update() {
+    public void update() {
         // Don't continue if either of the drawables are null
-        if (scenarioBtnDrawable == null || endlessBtnDrawable == null) return "Buttons not set up";
+        if (scenarioBtnDrawable == null || endlessBtnDrawable == null) return;
 
         switch (currentType) {
             case SCENARIO:
                 // Scenario is active, Endless is not
                 scenarioBtnDrawable.setRegion(new TextureRegion(textureManager.get("uielements/scenario.png")));
                 endlessBtnDrawable.setRegion(new TextureRegion(textureManager.get("uielements/endless_off.png")));
-                return "Time";
+                return;
             case ENDLESS:
                 // Endless is active, Scenario is not
                 endlessBtnDrawable.setRegion(new TextureRegion(textureManager.get("uielements/endless.png")));
                 scenarioBtnDrawable.setRegion(new TextureRegion(textureManager.get("uielements/scenario_off.png")));
-                return "Served";
+                return;
         }
-        return null;
+        return;
     }
 
     public void addToStage(Stage stage) {

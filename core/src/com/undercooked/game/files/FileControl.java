@@ -195,7 +195,7 @@ public class FileControl {
             // Remove the "<main>:"
             return loadJsonFile("game/", path, true);
         } else {
-            return loadJsonFile(getDataPath() + "game/", path, false);
+            return loadJsonFile(getDataPath() + "game/" + getDir(assetPath), path, false);
         }
 
     }
@@ -220,6 +220,17 @@ public class FileControl {
 
         // Return the asset's path
         return mainFolderName + args[1];
+    }
+
+    public static String getDir(String assetPath) {
+        // AssetPath will be in the format group:filePath
+        String[] args = assetPath.split(":", 2);
+        if (args.length != 2) {
+            return "";
+        }
+
+        // Return the asset's path
+        return args[0] + "/";
     }
 
 }

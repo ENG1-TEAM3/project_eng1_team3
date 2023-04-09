@@ -220,6 +220,9 @@ public class ScenarioLogic extends GameLogic {
             // And then add them to the requests array
             requests.add(request);
         }
+
+        // And start
+        start();
     }
 
     @Override

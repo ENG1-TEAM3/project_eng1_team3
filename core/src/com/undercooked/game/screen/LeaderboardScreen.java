@@ -181,7 +181,7 @@ public class LeaderboardScreen extends Screen {
 		Button menuBtn = new Button(new TextureRegionDrawable(textureManager.get("uielements/exittomenu.png")));
 
 		modeButton.postLoad();
-		scoreText = modeButton.update();
+		modeButton.update();
 
 		// Set their position and sizes
 		leftBtn.setSize(128,128);
@@ -318,6 +318,18 @@ public class LeaderboardScreen extends Screen {
 
 		// Update the current type
 		currentLType = gameType;
+
+		// Update the visual
+		switch (gameType) {
+			case SCENARIO:
+				scoreText = "Time";
+				break;
+			case ENDLESS:
+				scoreText = "Served";
+				break;
+			default:
+				scoreText = "";
+		}
 
 		// Otherwise, get the ids for the leaderboards of this type
 		updateIDs();
