@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.Array;
 import com.undercooked.game.assets.TextureManager;
 import com.undercooked.game.food.Item;
@@ -117,6 +118,15 @@ public class CustomerController {
 		// Draw all the Customers
 		for (Customer customer : drawCustomers) {
 			customer.draw(batch);
+		}
+	}
+
+	public void draw(ShapeRenderer shape) {
+		// First sort the draw array
+		drawCustomers.sort(customerDrawComparator);
+		// Draw all the Customers
+		for (Customer customer : drawCustomers) {
+			customer.draw(shape);
 		}
 	}
 

@@ -1,8 +1,10 @@
 package com.undercooked.game.entity.customer;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.undercooked.game.assets.TextureManager;
 import com.undercooked.game.food.Item;
 import com.undercooked.game.food.Request;
@@ -126,6 +128,25 @@ public class Customer {
 		batch.setColor(1, 1, 1, 1);
 	}
 
+	public void draw(ShapeRenderer shape) {
+		// Only continue if waiting, as this is used to
+		// draw the wait timer
+		if (!waiting) return;
+
+		// Draw base rectangle
+		float width = 20;
+		float padding = 5;
+		float height = 60;
+		shape.setColor(Color.GRAY);
+		shape.rect(x, y+16, width, height);
+		float percentFilled = waitTimer / getRequest().getTime();
+		shape.setColor(Color.BLACK);
+		shape.rect(x+padding, y+16+padding, width-padding*2, height-padding*2);
+		shape.setColor(1f-percentFilled,percentFilled,0,1);
+		shape.rect(x+padding, y+16+padding, width-padding*2, (height-padding*2)* percentFilled);
+		shape.setColor(Color.WHITE);
+	}
+
 	public boolean serve(Item item) {
 		if (item.getID().equals(this.order.itemID)) {
 			// Remove this customer from the register
@@ -142,6 +163,8 @@ public class Customer {
 	protected void leave() {
 		// Set the Customer to leave
 		leaving = true;
+		// And that they are no longer waiting
+		waiting = false;
 		// If the Customer is at a register, then tell the
 		// CustomerController that.
 		customerController.customerOffRegister(register);

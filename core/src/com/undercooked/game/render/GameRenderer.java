@@ -173,6 +173,10 @@ public class GameRenderer {
         logic.getCustomerController().draw(batch);
         batch.end();
 
+        shape.begin(ShapeRenderer.ShapeType.Filled);
+        logic.getCustomerController().draw(shape);
+        shape.end();
+
         // Draw debug
         // renderDebug(delta);
 
