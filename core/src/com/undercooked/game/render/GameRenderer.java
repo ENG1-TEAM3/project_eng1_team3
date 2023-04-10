@@ -40,6 +40,9 @@ public class GameRenderer {
     private OrthographicCamera uiCamera;
     private GlyphLayout text;
     private Sprite interactSprite;
+    private Texture moneyTex;
+    private Texture reputationTex;
+
     private Comparator<Entity> entityCompare = new Comparator<Entity>() {
         @Override
         public int compare(Entity o1, Entity o2) {
@@ -192,7 +195,7 @@ public class GameRenderer {
         shape.setProjectionMatrix(uiCamera.combined);
         batch.setProjectionMatrix(uiCamera.combined);
 
-        // Render the Cook's heads in the top right of the screen
+        //// Render the Cook's heads in the top right of the screen
         CookController cookController = logic.getCookController();
         for (int i = 0; i < cookController.getCooks().size; i++) {
             if (i == cookController.getCurrentCookIndex()) {
@@ -208,6 +211,38 @@ public class GameRenderer {
             cookController.getCooks().get(i).draw_top(batch, Constants.V_WIDTH-128*(i+1), Constants.V_HEIGHT-128);
             batch.end();
         }
+
+
+
+
+
+
+        //// Render the money and reputation in the bottom right
+        final float texSize = 64f;
+        // Draw the background
+        shape.begin(ShapeRenderer.ShapeType.Filled);
+        shape.setColor(Color.DARK_GRAY);
+        shape.rect(Constants.V_WIDTH-350-texSize,0,350,100);
+        shape.end();
+
+        // Draw the reputation
+        batch.begin();
+
+        text.setText(font, Integer.toString(logic.getReputation()));
+        batch.draw(reputationTex, Constants.V_WIDTH-360-texSize/2f, 50-texSize/2f, texSize, texSize);
+        font.draw(batch, text, Constants.V_WIDTH-310, 64);
+
+        // Draw the money
+        String money = String.format("%.2f", logic.getMoney()/100f);;
+        text.setText(font, money);
+        batch.draw(moneyTex, Constants.V_WIDTH-200-texSize/2f, 50-texSize/2f, texSize, texSize);
+        font.draw(batch, text, Constants.V_WIDTH-150, 64);
+        batch.end();
+
+
+
+
+
 
         //// Render the recipe instructions in the bottom left.
         if (logic.getDisplayCustomer() != null) {
@@ -255,7 +290,6 @@ public class GameRenderer {
         shape.end();
 
         batch.begin();
-
         font.draw(batch, text,
                 textStart, Constants.V_HEIGHT-20);
         batch.end();
@@ -282,10 +316,14 @@ public class GameRenderer {
 
     public void load(TextureManager textureManager) {
         textureManager.load("interactions/select_box.png");
+        textureManager.load("uielements/reputation.png");
+        textureManager.load("uielements/money.png");
     }
 
     public void postLoad(TextureManager textureManager) {
         interactSprite = new Sprite(textureManager.get("interactions/select_box.png"));
+        moneyTex = textureManager.get("uielements/money.png");
+        reputationTex = textureManager.get("uielements/reputation.png");
         text = new GlyphLayout();
     }
 

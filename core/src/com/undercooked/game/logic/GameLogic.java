@@ -265,6 +265,14 @@ public abstract class GameLogic {
         return StringUtil.formatSeconds(elapsedTime);
     }
 
+    public int getReputation() {
+        return reputation;
+    }
+
+    public int getMoney() {
+        return money;
+    }
+
     public void reset() {
         // Reset the game
         elapsedTime = 0;
