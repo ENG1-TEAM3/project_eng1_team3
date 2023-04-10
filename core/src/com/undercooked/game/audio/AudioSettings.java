@@ -24,7 +24,7 @@ public class AudioSettings {
         @Override
         public void tell(Float value) {
             musicVolume = value;
-            setMusicVolume(value,"music");
+            setMusicVolume(value,Constants.MUSIC_GROUP);
         }
     };
 
@@ -32,7 +32,7 @@ public class AudioSettings {
         @Override
         public void tell(Float value) {
             gameVolume = value;
-            setMusicVolume(value,"game");
+            setMusicVolume(value,Constants.GAME_SOUND_GROUP);
             setSoundVolume(value, Constants.GAME_SOUND_GROUP);
         }
     };
