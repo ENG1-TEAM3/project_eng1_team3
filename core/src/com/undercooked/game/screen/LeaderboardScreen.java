@@ -354,7 +354,12 @@ public class LeaderboardScreen extends Screen {
 		// If leaderboardIDs is null, return
 		if (leaderboardIDs == null) return;
 		// If it's empty, just ignore
-		if (leaderboardIDs.size == 0) return;
+		if (leaderboardIDs.size == 0) {
+			leaderboard = null;
+			leaderboardData = null;
+			updateNameText();
+			return;
+		}
 
 		// Otherwise, make sure it's in the range
 		while (index < 0) index += leaderboardIDs.size;
