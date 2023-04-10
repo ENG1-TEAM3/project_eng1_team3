@@ -221,6 +221,13 @@ public class StationInteractControl {
         currentInteraction.draw(interactionInstance, batch);
     }
 
+    public void drawPost(SpriteBatch batch) {
+        if (currentInteraction == null) {
+            return;
+        }
+        currentInteraction.drawPost(interactionInstance, batch);
+    }
+
     public void draw(ShapeRenderer shape) {
         if (currentInteraction == null) {
             return;

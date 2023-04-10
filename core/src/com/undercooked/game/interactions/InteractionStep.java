@@ -175,6 +175,17 @@ public abstract class InteractionStep {
     }
 
     /**
+     * A versio nof the {@link #draw(IStep, SpriteBatch)} that occurs after the
+     * {@link #draw(IStep, ShapeRenderer)} function.
+     *
+     * @param instance {@link IStep} : The interaction instance.
+     * @param batch {@link SpriteBatch} : The {@link SpriteBatch} to draw to.
+     */
+    public void drawPost(IStep instance, SpriteBatch batch) {
+
+    }
+
+    /**
      * Draws the {@link InteractionStep} visually on the screen, using
      * the {@link ShapeRenderer}.
      * <br>To be override by children classes.
@@ -184,6 +195,30 @@ public abstract class InteractionStep {
      */
     public void draw(IStep instance, ShapeRenderer shape) {
 
+    }
+
+    /**
+     * Update the sound value.
+     * @param sound {@link String} : The sound asset path.
+     */
+    public void setSound(String sound) {
+        this.sound = sound;
+    }
+
+    /**
+     * Update the time value.
+     * @param time {@link float} : The time of the interaction.
+     */
+    public void setTime(float time) {
+        this.time = time;
+    }
+
+    /**
+     * Update the value value.
+     * @param value {@link String} : The value of the interaction.
+     */
+    public void setValue(String value) {
+        this.value = value;
     }
 
     /**

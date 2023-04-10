@@ -113,6 +113,14 @@ public class Station extends MapEntity {
 			batch.draw(items.get(i).sprite, pos.x + sprite.getWidth()/4 + itemPos.x, pos.y + sprite.getHeight()/4 + itemPos.y,
 					32, 32);
 		}
+		// And then draw the interaction
+		interactControl.draw(batch);
+	}
+
+	@Override
+	public void drawPost(SpriteBatch batch) {
+		// Do post drawing for the interaction
+		interactControl.drawPost(batch);
 	}
 
 	public void draw(ShapeRenderer shape) {

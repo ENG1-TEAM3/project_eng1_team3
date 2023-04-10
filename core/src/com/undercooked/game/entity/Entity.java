@@ -37,6 +37,10 @@ public class Entity {
 
 	}
 
+	public void drawPost(SpriteBatch batch) {
+
+	}
+
 	public void load(TextureManager textureManager, String textureID) {
 		// Load Texture
 		textureManager.loadAsset(textureID, texturePath, "textures");

@@ -1,7 +1,6 @@
 package com.undercooked.game.interactions.steps;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.undercooked.game.entity.cook.Cook;
 import com.undercooked.game.interactions.IStep;
@@ -28,8 +27,20 @@ public class WaitStep extends InteractionStep {
         // Check if elapsed time is >= time
         if (instance.elapsedTime >= time) {
             // If it is, then the wait is finished.
-            finished(instance, cook, null, null, true);
+            waitFinished(instance, cook);
         }
+    }
+
+    public void waitFinished(IStep instance, Cook cook) {
+        finished(instance, cook, null, null, true);
+    }
+
+    public float getDrawPercent(IStep instance) {
+        return Math.min(1f, instance.elapsedTime / time);
+    }
+
+    public void setBarColor(IStep instance, ShapeRenderer shape) {
+        shape.setColor(Color.GREEN);
     }
 
     @Override
@@ -43,8 +54,10 @@ public class WaitStep extends InteractionStep {
         shape.rect(drawX, drawY, width + paddingDouble, height + paddingDouble);
 
         // Draw progress bar
-        shape.setColor(Color.GREEN);
-        shape.rect(drawX+padding, drawY+padding, width * Math.min(1f, instance.elapsedTime / time), height);
+        shape.setColor(Color.BLACK);
+        shape.rect(drawX+padding, drawY+padding, width, height);
+        setBarColor(instance, shape);
+        shape.rect(drawX+padding, drawY+padding, width * getDrawPercent(instance), height);
 
         // Reset colour
         shape.setColor(Color.WHITE);

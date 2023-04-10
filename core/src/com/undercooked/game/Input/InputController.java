@@ -118,6 +118,13 @@ public class InputController {
         return Input.Keys.valueOf(keyName);
     }
 
+    public static String getKeyString(String keyName) {
+        // If it doesn't exist, stop
+        if (!inputs.containsKey(keyName)) return "Key doesn't exist: " + keyName;
+        // If it does, return it formatted to use title case
+        return StringUtil.convertToTitleCase(Input.Keys.toString(inputs.get(keyName).keys.get(0)));
+    }
+
     /**
      * Loads inputs from the controls.json.
      * <br><br>

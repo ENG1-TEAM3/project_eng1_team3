@@ -3,6 +3,7 @@ package com.undercooked.game.interactions;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.ObjectMap;
+import com.undercooked.game.MainGameClass;
 import com.undercooked.game.assets.AudioManager;
 import com.undercooked.game.files.FileControl;
 import com.undercooked.game.food.Items;
@@ -103,6 +104,9 @@ public class Interactions {
 
 
             // Inputs
+            case "timed_input":
+                interactionStep = new TimedInputStep(MainGameClass.font);
+                break;
             case "pressed":
                 interactionStep = new PressedStep();
                 break;
@@ -112,6 +116,13 @@ public class Interactions {
             case "released":
                 interactionStep = new ReleasedStep();
                 break;
+
+            case "stop_interact":
+                interactionStep = new StopInputStep();
+                break;
+            case "forget_input":
+                interactionStep = new ForgetInputStep();
+                break;
             default:
                 // If it is none of the above cases, then return null
                 // as the interaction has failed to load
@@ -119,12 +130,12 @@ public class Interactions {
         }
 
         // Set the values of the interactionStep
-        interactionStep.time = interactionRoot.getFloat("time");
-        interactionStep.sound = interactionRoot.getString("sound");
+        interactionStep.setTime(interactionRoot.getFloat("time"));
+        interactionStep.setSound(interactionRoot.getString("sound"));
         if (interactionStep.sound != null) {
             audioManager.loadMusicAsset(interactionStep.sound, Constants.GAME_SOUND_GROUP);
         }
-        interactionStep.value = interactionRoot.getString("value");
+        interactionStep.setValue(interactionRoot.getString("value"));
 
         // If there are success interactions, add those
         if (interactionRoot.get("success").size > 0) {

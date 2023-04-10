@@ -156,6 +156,9 @@ public class GameRenderer {
             shape.begin(ShapeRenderer.ShapeType.Filled);
             renderEntity.draw(shape);
             shape.end();
+            batch.begin();
+            renderEntity.drawPost(batch);
+            batch.end();
         }
 
         batch.begin();
