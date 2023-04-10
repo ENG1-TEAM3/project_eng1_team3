@@ -19,11 +19,9 @@ public class JustPressedStep extends InteractionStep {
     @Override
     public InteractResult interact(IStep instance, Cook cook, String keyID, InputType inputType) {
         // If it uses the key set in value
-        if (InputController.isKeyJustPressed(value)) {
+        if (keyID.equals(value) && inputType == InputType.JUST_PRESSED) {
             // Then move to the next instruction
-            return finished(instance, cook, true);
-            // Immediately check next input
-            // return InteractResult.RESTART;
+            return finished(instance, cook, keyID, inputType, true);
         }
         // Otherwise, just ignore
         return InteractResult.NONE;

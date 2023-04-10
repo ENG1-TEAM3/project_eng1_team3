@@ -117,7 +117,7 @@ public class Interactions {
                 interactionStep = new ReleasedStep();
                 break;
 
-            case "stop_interact":
+            case "stop_input":
                 interactionStep = new StopInputStep();
                 break;
             case "forget_input":
