@@ -353,6 +353,8 @@ public class LeaderboardScreen extends Screen {
 	public void setIndex(int index) {
 		// If leaderboardIDs is null, return
 		if (leaderboardIDs == null) return;
+		// If it's empty, just ignore
+		if (leaderboardIDs.size == 0) return;
 
 		// Otherwise, make sure it's in the range
 		while (index < 0) index += leaderboardIDs.size;
@@ -362,6 +364,7 @@ public class LeaderboardScreen extends Screen {
 		currentIndex = index;
 
 		// Then set it to use the id
+		if (leaderboardIDs.size <= 0) return;
 		showLeaderboard(currentLType, leaderboardIDs.get(index));
 	}
 
@@ -371,6 +374,11 @@ public class LeaderboardScreen extends Screen {
 
 	protected void updateNameText() {
 		game.font.setColor(Color.BLACK);
+		if (leaderboard == null) {
+			leaderboardNameDisplay.setText(game.font, "No Leaderboards Available");
+			game.font.setColor(Color.WHITE);
+			return;
+		}
 		if (leaderboard.name != null) {
 			leaderboardNameDisplay.setText(game.font, leaderboard.name);
 		} else {
