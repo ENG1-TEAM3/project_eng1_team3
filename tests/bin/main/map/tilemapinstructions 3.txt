@@ -1,0 +1,12 @@
+Customer carpet zone - Must be a 2 wide rectangle that goes all the way to bottom of map
+
+00000  00000   00000
+0++00  0+000   0++00
+0++00  0+000   0++00
+0++00  0+000   0++00
+0++00  0+000   00000
+Good    Bad     Bad
+
+Top layer only consists of counter tops and bin
+Bottom layer is everything else.
+Bottom layer should have holes where the top layer tiles go.

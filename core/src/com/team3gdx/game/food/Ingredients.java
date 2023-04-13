@@ -22,11 +22,18 @@ public class Ingredients {
 		burnedPatty.status = Status.BURNED;
 		burnedPatty.flipped = true;
 	}
-
+	//Dairy
+	public static Ingredient cheese = new Ingredient(null, 32, 32, "cheese", 1, 0);
+	//Chopped Dairy
+	public static Ingredient cheeseChopped = new Ingredient(null, 32, 32, "cheese", 1, 0);
+	static {
+		cheeseChopped.slices = 1;
+	}
 	// Vegetables.
 	public static Ingredient lettuce = new Ingredient(null, 32, 32, "lettuce", 1, 0);
 	public static Ingredient tomato = new Ingredient(null, 32, 32, "tomato", 1, 0);
 	public static Ingredient onion = new Ingredient(null, 32, 32, "onion", 1, 0);
+	public static Ingredient potato = new Ingredient(null, 32, 32, "potato", 1, .5f);
 	// Chopped vegetables.
 	public static Ingredient lettuceChopped = new Ingredient(null, 32, 32, "lettuce", 1, 0);
 	static {
@@ -40,9 +47,28 @@ public class Ingredients {
 	static {
 		onionChopped.slices = 1;
 	}
-
+	public static Ingredient potatoChopped = new Ingredient(null, 32, 32, "potato", 1, .5f);
+	static {
+		potatoChopped.slices = 1;
+	}
+	// Cooked vegtables.
+	public static Ingredient cookedPotato = new Ingredient(null, 32, 32, "potato", 1, .5f);
+	static {
+		cookedPotato.status = Status.COOKED;
+		cookedPotato.flipped = true;
+	}
+	public static Ingredient burnedPotato = new Ingredient(null, 32, 32, "potato", 1, .5f);
+	static {
+		burnedPotato.status = Status.BURNED;
+		burnedPotato.flipped = true;
+	}
+	//sauce vegtables.
+	public static Ingredient tomato_sauce = new Ingredient(null, 32, 32, "tomato_sauce", 0, 0);
 	// Breads.
 	public static Ingredient bun = new Ingredient(new Vector2(0, 0), 32, 32, "burger_bun", 0, .5f);
+	public static Ingredient dough = new Ingredient(null, 32, 32, "dough", 0, .5f);
+	public static Ingredient flat_dough = new Ingredient(null, 32, 32, "dough", 0, .5f);
+	public static Ingredient raw_pizza = new Ingredient(null, 32, 32, "dough", 0, .5f);
 	// Toasted breads.
 	public static Ingredient cooked_bun = new Ingredient(new Vector2(0, 0), 32, 32, "burger_bun", 0, .5f);
 	static {

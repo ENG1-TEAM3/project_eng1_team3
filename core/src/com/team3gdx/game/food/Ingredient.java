@@ -33,6 +33,7 @@ public class Ingredient extends Entity {
 	public boolean cooking = false;
 	public boolean slicing = false;
 	public boolean flipped = false;
+	public boolean rolling = false;
 
 	/**
 	 * Name of ingredient to get texture.

@@ -24,6 +24,11 @@ public class Menu {
 		BURGER_BURNED_STEPS.put(Ingredients.cooked_bun, "Toast");
 		BURGER_BURNED_STEPS.put(Ingredients.burnedPatty, "Fry");
 	}
+	private static final Map<Ingredient, String> JACKET_POTATO_STEPS = new HashMap<Ingredient, String>();
+	static {
+		JACKET_POTATO_STEPS.put(Ingredients.cookedPotato, "Toast");
+		JACKET_POTATO_STEPS.put(Ingredients.cheeseChopped, "cut");
+	}
 	private static final Map<Ingredient, String> SALAD_STEPS = new HashMap<Ingredient, String>();
 	static {
 		SALAD_STEPS.put(Ingredients.lettuceChopped, "Cut");
@@ -41,6 +46,8 @@ public class Menu {
 		RECIPES.put("Burned burger", new Recipe("Form patty", Ingredients.unformedPatty, BURGER_BURNED_STEPS,
 				"serve together", "burger_burned", false, null, 32, 32, 0));
 		RECIPES.put("Salad", new Recipe("", null, SALAD_STEPS, "serve together", "salad", false, null, 32, 32, 0));
+		RECIPES.put("Jacket_potato", new Recipe("cook_potato", Ingredients.potato, JACKET_POTATO_STEPS, "serve together",
+				"jacket_potato", false, null, 32, 32, 0));
 	}
 
 	/**
@@ -51,5 +58,16 @@ public class Menu {
 	static {
 		INGREDIENT_PREP.put(Ingredients.unformedPatty, Ingredients.formedPatty);
 
+	}
+	public static final Map<Ingredient, Ingredient> DOUGH_PREP = new HashMap<Ingredient, Ingredient>();
+	static {
+		DOUGH_PREP.put(Ingredients.dough, Ingredients.flat_dough);
+
+	}
+	public static final Map<Ingredient, Ingredient> RAW_PIZZA_PREP = new HashMap<Ingredient, Ingredient>();
+	static {
+		/**
+		 * impossible with current final Map<Ingredient, Ingredient> set up have to change before can impliment
+		 */
 	}
 }
