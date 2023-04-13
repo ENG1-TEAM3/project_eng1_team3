@@ -80,6 +80,7 @@ public final class DefaultJson {
         root.addValue(new JsonString("floor_tile", null));
         root.addValue(new JsonType("has_collision", JsonValue.ValueType.booleanValue));
         root.addValue(new JsonInt("holds", 0)); // How many items the station holds.
+        root.addValue(new JsonInt("price", 0)); // The default price of the station, if not set on the map
 
         /*JsonObject interactions = new JsonObject();
 
@@ -105,6 +106,9 @@ public final class DefaultJson {
         station.addValue(new JsonInt("x", -1));
         station.addValue(new JsonInt("y", -1));
         station.addValue(new JsonString("base_texture", null));
+        // Optional attributes:
+        // has_collision: boolean
+        // price: int
 
         root.addValue(new JsonArray("stations", station));
 

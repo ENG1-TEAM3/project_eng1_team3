@@ -6,6 +6,7 @@ public class StationData {
     private final String id;
     private int width, height;
     private int holds;
+    private int price;
     private float collisionWidth, collisionHeight,
           collisionOffsetX, collisionOffsetY;
     private boolean hasCollision;
@@ -31,6 +32,8 @@ public class StationData {
 
     public StationData(String id) {
         this.id = id;
+        this.holds = 0;
+        this.price = 0;
     }
 
     public void setPath(String path) {
@@ -81,6 +84,10 @@ public class StationData {
         this.holds = Math.max(0,holds);
     }
 
+    public void setPrice(int price) {
+        this.price = Math.max(0,price);
+    }
+
     public String getPath() {
         return path;
     }
@@ -127,6 +134,10 @@ public class StationData {
 
     public int getHoldCount() {
         return holds;
+    }
+
+    public int getPrice() {
+        return price;
     }
 
     public String getID() {

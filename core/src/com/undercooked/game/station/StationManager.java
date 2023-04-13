@@ -161,6 +161,8 @@ public class StationManager {
 			data.setCollisionOffsetY(stationRoot.getFloat("collision_offset_y"));
 
 			data.setHoldCount(stationRoot.getInt("holds"));
+
+			data.setPrice(stationRoot.getInt("price"));
 			// Then add it to the stations list
 			return data;
 		}

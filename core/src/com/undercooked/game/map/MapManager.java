@@ -90,6 +90,14 @@ public class MapManager {
                             hasCollision = data.isCollidable();
                         }
 
+                        // Check if it has a custom price
+                        if (stationData.has("price")) {
+                            // If it does, then set the station to use it
+                            newStation.setPrice(stationData.getInt("price"));
+                            // If not, the station will use the StationData,
+                            // which it does when give the StationData
+                        }
+
                         // Add it to the map
                         outputMap.addMapEntity(newStation,
                                                stationData.getInt("x"),

@@ -29,6 +29,8 @@ public class Station extends MapEntity {
 	private StationData stationData;
 	public ItemStack items;
 	private Array<Cook> lockedCooks;
+	private int price;
+	private boolean disabled;
 
 	public Station(StationData stationData) {
 		super();
@@ -36,6 +38,7 @@ public class Station extends MapEntity {
 		this.texturePath = stationData.getTexturePath();
 		this.items = new ItemStack();
 		this.lockedCooks = new Array<>();
+		this.price = 0;
 		this.setBasePath(stationData.getDefaultBase());
 		setWidth(stationData.getWidth());
 		setHeight(stationData.getHeight());
@@ -44,9 +47,12 @@ public class Station extends MapEntity {
 	public void setStationData(StationData stationData) {
 		this.stationData = stationData;
 		this.id = stationData.getID();
+		setPrice(stationData.getPrice());
 	}
 
 	public void update(float delta) {
+		// Only continue if not disabled
+		if (disabled) return;
 		if (lockedCooks.size == 0) {
 			interactControl.update(null);
 			return;
@@ -55,7 +61,10 @@ public class Station extends MapEntity {
 	}
 
 	@Override
-	public InteractResult interact(Cook cook, String keyID, InputType inputType) {;
+	public InteractResult interact(Cook cook, String keyID, InputType inputType) {
+		// If disabled, stop here
+		if (disabled) return InteractResult.NONE;
+
 		if (interactControl == null) {
 			// If it doesn't have an interaction control, then stop.
 			return InteractResult.STOP;
@@ -63,18 +72,23 @@ public class Station extends MapEntity {
 		return interactControl.interact(cook, keyID, inputType);
 	}
 
-	public void create() {
-
+	/**
+	 * Called when the player is trying to buy the {@link Station}.
+	 * @param money {@code int} : The money provided.
+	 */
+	public boolean buy(int money) {
+		// If money < price, then the purchase has failed
+		if (money < price) {
+			return false;
+		}
+		// Otherwise, the purchase was a success and the station can
+		// be enabled.
+		disabled = false;
+		return true;
 	}
 
-	public void drawStatusBar(SpriteBatch batch) {
-		shapeRenderer.setProjectionMatrix(batch.getProjectionMatrix());
-		shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-		shapeRenderer.setColor(Color.WHITE);
-		shapeRenderer.rect(collision.x * 64, collision.y * 64 + 64 + 64 / 10, 64, 64 / 8);
-		shapeRenderer.setColor(Color.GREEN);
-		shapeRenderer.rect(collision.x * 64, collision.y * 64 + 64 + 64 / 10, 64, 64 / 10);
-		shapeRenderer.end();
+	public void create() {
+
 	}
 
 	public Vector2 itemPos(int num) {
@@ -105,6 +119,10 @@ public class Station extends MapEntity {
 
 	@Override
 	public void draw(SpriteBatch batch) {
+		// If it's disabled, change the draw colour to be darker
+		if (disabled) {
+			batch.setColor(0.4f, 0.4f, 0.4f, 1f);
+		}
 		// Draw the Sprite
 		super.draw(batch);
 		// Then draw the items on top of the station
@@ -112,6 +130,11 @@ public class Station extends MapEntity {
 			Vector2 itemPos = itemPos(i);
 			batch.draw(items.get(i).sprite, pos.x + sprite.getWidth()/4 + itemPos.x, pos.y + sprite.getHeight()/4 + itemPos.y,
 					32, 32);
+		}
+		// If it's disabled, reset the draw colour and stop
+		if (disabled) {
+			batch.setColor(1, 1, 1, 1);
+			return;
 		}
 		// And then draw the interaction
 		interactControl.draw(batch);
@@ -252,6 +275,14 @@ public class Station extends MapEntity {
 
 	public void setInteractions(Interactions interactions) {
 		this.interactControl.setInteractions(interactions);
+	}
+
+	public void setPrice(int price) {
+		System.out.println(String.format("Station %s now has price %d", id, price));
+		this.price = price;
+		// Set it to be disabled or not depending on the price
+		this.disabled = (price > 0);
+		System.out.println(String.format("Station disabled: %b", disabled));
 	}
 
 	public boolean hasCookLocked() {
