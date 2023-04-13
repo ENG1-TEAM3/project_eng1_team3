@@ -53,6 +53,7 @@ public class PlayScreen extends Screen {
     private final float descScale = 1;
     private final float descPadding = 100;
     private final String[] scenarioFiles = {
+            "everything",
             "burger_salad",
             "serve_quick"
     };
