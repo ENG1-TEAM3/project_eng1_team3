@@ -11,12 +11,14 @@ import com.undercooked.game.map.Map;
 import com.undercooked.game.map.MapCell;
 import com.undercooked.game.map.MapManager;
 import com.undercooked.game.util.Listener;
+import com.undercooked.game.util.Observer;
 
 /**
  * Responsible for all functions that affect cook adding,
  * updating and removing.
  */
 public class CookController {
+
 
     private class CookData {
         public Cook cook;
@@ -35,8 +37,11 @@ public class CookController {
     /** The number of cook textures */
     static final int COOK_TEXTURES = 3;
     /** The served listener to call when a {@link Cook} serves at a register. */
-    Listener<Cook> serveListener;
-    Listener<MapCell> interactRegister;
+    private Listener<Cook> serveListener;
+    private Listener<MapCell> interactRegister;
+    private Listener<Integer> moneyUsedListener;
+    /** An {@link Observer} to find what the money is. */
+    private Observer<Integer> moneyObserver;
 
     /**
      * The constructor for the {@link CookController}.
@@ -63,6 +68,8 @@ public class CookController {
         cooks.add(cook);
         cook.serveListener = serveListener;
         cook.interactRegisterListener = interactRegister;
+        cook.moneyUsedListener = moneyUsedListener;
+        cook.moneyObserver = moneyObserver;
     }
 
     /**
@@ -239,6 +246,22 @@ public class CookController {
         // Make sure to update it for all cooks
         for (Cook cook : cooks) {
             cook.interactRegisterListener = mapCellListener;
+        }
+    }
+
+    public void setMoneyUsedListener(Listener<Integer> moneyUsedListener) {
+        this.moneyUsedListener = moneyUsedListener;
+        // Make sure to update it for all cooks
+        for (Cook cook : cooks) {
+            cook.moneyUsedListener = moneyUsedListener;
+        }
+    }
+
+    public void setMoneyObserver(Observer<Integer> moneyObserver) {
+        this.moneyObserver = moneyObserver;
+        // Make sure to update it for all cooks
+        for (Cook cook : cooks) {
+            cook.moneyObserver = moneyObserver;
         }
     }
 

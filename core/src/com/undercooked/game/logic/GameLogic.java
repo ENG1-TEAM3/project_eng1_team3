@@ -16,6 +16,8 @@ import com.undercooked.game.screen.GameScreen;
 import com.undercooked.game.screen.WinScreen;
 import com.undercooked.game.station.StationManager;
 import com.undercooked.game.util.Constants;
+import com.undercooked.game.util.Listener;
+import com.undercooked.game.util.Observer;
 import com.undercooked.game.util.StringUtil;
 import com.undercooked.game.GameType;
 
@@ -63,6 +65,20 @@ public abstract class GameLogic {
 
         this.textureManager = textureManager;
         this.audioManager = audioManager;
+
+        this.cookController.setMoneyObserver(new Observer<Integer>() {
+            @Override
+            public Integer observe() {
+                return money;
+            }
+        });
+
+        this.cookController.setMoneyUsedListener(new Listener<Integer>() {
+            @Override
+            public void tell(Integer value) {
+                money -= value;
+            }
+        });
     }
 
     public GameLogic(GameScreen game) {

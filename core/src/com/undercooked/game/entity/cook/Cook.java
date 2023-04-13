@@ -23,8 +23,7 @@ import com.undercooked.game.station.Station;
 import com.undercooked.game.util.CollisionTile;
 import com.undercooked.game.util.Constants;
 import com.undercooked.game.util.Listener;
-
-import java.util.concurrent.ConcurrentSkipListMap;
+import com.undercooked.game.util.Observer;
 
 public class Cook extends MoveableEntity {
 
@@ -49,6 +48,8 @@ public class Cook extends MoveableEntity {
 	Map map;
 	protected Listener<Cook> serveListener;
 	protected Listener<MapCell> interactRegisterListener;
+	protected Listener<Integer> moneyUsedListener;
+	protected Observer<Integer> moneyObserver;
 
 	/**
 	 * Cook entity constructor
@@ -133,7 +134,18 @@ public class Cook extends MoveableEntity {
 			return;
 		}
 		// If they're not null, make sure they're not disabled
-		if (stationTarget.isDisabled()) return;
+		if (stationTarget.isDisabled()) {
+			// If they're disabled, then try to buy the station if
+			// interact is pressed
+			if (InputController.isKeyJustPressed("interact")) {
+				if (moneyUsedListener != null && moneyObserver != null) {
+					if (stationTarget.buy(moneyObserver.observe())) {
+						moneyUsedListener.tell(stationTarget.getPrice());
+					}
+				}
+			}
+			return;
+		}
 
 
 		// If it's a Register...
