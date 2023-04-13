@@ -30,7 +30,11 @@ public class WinScreen extends Screen {
 
     @Override
     public void unload() {
-
+        nameInput = null;
+        scoreText = null;
+        nameGlyph = null;
+        leaderboardID = null;
+        leaderboardName = null;
     }
 
     @Override

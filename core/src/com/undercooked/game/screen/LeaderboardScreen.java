@@ -140,8 +140,7 @@ public class LeaderboardScreen extends Screen {
 
 	@Override
 	public void unload() {
-		game.getTextureManager().unload(Constants.LEADERBOARD_TEXTURE_ID);
-		game.getTextureManager().unload(Constants.GAME_TEXTURE_ID);
+		game.getTextureManager().unload(Constants.LEADERBOARD_TEXTURE_ID, true);
 
 		game.audioManager.unloadMusic("audio/music/MainScreenMusic.ogg");
 

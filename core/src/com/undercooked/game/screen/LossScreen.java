@@ -39,7 +39,7 @@ public class LossScreen extends Screen {
     @Override
     public void unload() {
         // Unload the textures
-        getTextureManager().unload(Constants.LOSS_TEXTURE_ID);
+        getTextureManager().unload(Constants.LOSS_TEXTURE_ID, true);
         // Dispose the stage
         stage.dispose();
     }

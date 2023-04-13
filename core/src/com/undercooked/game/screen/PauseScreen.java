@@ -48,7 +48,7 @@ public class PauseScreen extends Screen {
     @Override
     public void unload() {
         // Unload all Textures
-        getTextureManager().unload(Constants.PAUSE_TEXTURE_ID);
+        getTextureManager().unload(Constants.PAUSE_TEXTURE_ID, true);
 
         // Dispose stage
         stage.dispose();

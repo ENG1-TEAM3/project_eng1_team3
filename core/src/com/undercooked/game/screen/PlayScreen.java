@@ -111,7 +111,7 @@ public class PlayScreen extends Screen {
     @Override
     public void unload() {
         TextureManager textureManager = getTextureManager();
-        textureManager.unload(Constants.PLAY_TEXTURE_ID);
+        textureManager.unload(Constants.PLAY_TEXTURE_ID, true);
 
         game.audioManager.unloadMusic("audio/music/MainScreenMusic.ogg");
 

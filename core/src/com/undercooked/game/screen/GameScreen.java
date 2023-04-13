@@ -154,7 +154,7 @@ public class GameScreen extends Screen {
 
 		gameLogic.unloadObjects();
 
-		textureManager.unload(Constants.GAME_TEXTURE_ID);
+		textureManager.unload(Constants.GAME_TEXTURE_ID, true);
 
 		game.audioManager.unload(Constants.GAME_GROUP);
 		game.audioManager.unload(Constants.MUSIC_GROUP);

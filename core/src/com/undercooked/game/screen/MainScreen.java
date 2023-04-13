@@ -125,7 +125,7 @@ public class MainScreen extends Screen {
 
 	@Override
 	public void unload() {
-		game.getTextureManager().unload(Constants.MENU_TEXTURE_ID);
+		game.getTextureManager().unload(Constants.MENU_TEXTURE_ID, true);
 
 		game.audioManager.unloadMusic("audio/music/MainScreenMusic.ogg");
 		stage.dispose();

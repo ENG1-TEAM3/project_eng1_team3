@@ -115,7 +115,7 @@ public class TextureManager {
     /**
      * Unload all textures of a group
      */
-    public void unload(String textureGroup) {
+    public void unload(String textureGroup, boolean unloadRepeats) {
         // If the textureGroup doesn't exist, just return
         if (!textures.containsKey(textureGroup)) {
             return;
@@ -128,7 +128,7 @@ public class TextureManager {
         Array<String> pathsRemoved = new Array<>();
         for (int i = paths.size-1 ; i >= 0 ; i--) {
             String path = paths.get(i);
-            if (!pathsRemoved.contains(path, false)) {
+            if (unloadRepeats || !pathsRemoved.contains(path, false)) {
                 // Remove the index of the path from the paths array
                 paths.removeIndex(i);
                 // Add the path to removed paths.
@@ -140,6 +140,14 @@ public class TextureManager {
         }
         // Then remove the textureGroup as it's no longer needed
         textures.remove(textureGroup);
+    }
+
+    /**
+     * Unload all textures of a group, by default only unloading
+     * each file once.
+     */
+    public void unload(String textureGroup) {
+        unload(textureGroup, false);
     }
 
     /**
