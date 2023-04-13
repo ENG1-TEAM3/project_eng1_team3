@@ -30,11 +30,8 @@ public class WinScreen extends Screen {
 
     @Override
     public void unload() {
-        nameInput = null;
         scoreText = null;
         nameGlyph = null;
-        leaderboardID = null;
-        leaderboardName = null;
     }
 
     @Override
@@ -112,6 +109,9 @@ public class WinScreen extends Screen {
 
         // Update
         update(delta);
+
+        // If either of the text is null, stop
+        if (scoreText == null || nameGlyph == null) return;
 
         // Clear the Screen
         ScreenUtils.clear(0, 0, 0, 0);
