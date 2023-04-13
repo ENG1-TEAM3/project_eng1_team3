@@ -38,7 +38,6 @@ public class Station extends MapEntity {
 		this.texturePath = stationData.getTexturePath();
 		this.items = new ItemStack();
 		this.lockedCooks = new Array<>();
-		this.price = 0;
 		this.setBasePath(stationData.getDefaultBase());
 		setWidth(stationData.getWidth());
 		setHeight(stationData.getHeight());
@@ -278,11 +277,17 @@ public class Station extends MapEntity {
 	}
 
 	public void setPrice(int price) {
-		System.out.println(String.format("Station %s now has price %d", id, price));
 		this.price = price;
 		// Set it to be disabled or not depending on the price
 		this.disabled = (price > 0);
-		System.out.println(String.format("Station disabled: %b", disabled));
+	}
+
+	public int getPrice() {
+		return price;
+	}
+
+	public boolean isDisabled() {
+		return this.disabled;
 	}
 
 	public boolean hasCookLocked() {

@@ -132,6 +132,10 @@ public class Cook extends MoveableEntity {
 		if (interactTarget == null || stationTarget == null) {
 			return;
 		}
+		// If they're not null, make sure they're not disabled
+		if (stationTarget.isDisabled()) return;
+
+
 		// If it's a Register...
 		if (stationTarget.getID().equals(Constants.REGISTER_ID)) {
 			// Then do a few custom checks

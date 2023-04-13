@@ -134,6 +134,7 @@ public class GameRenderer {
         for (Entity renderEntity : renderEntities) {
             batch.begin();
             renderEntity.draw(batch);
+            batch.end();
 
             // Draw the selected cook's interact target. It draws on
             // the same order as the station, so that the cooks can
@@ -144,18 +145,29 @@ public class GameRenderer {
                 MapEntity interactEntity = interactTarget.getMapEntity();
                 Rectangle interactBox = interactEntity.getInteractBox();
                 // If the station target is null, then draw it red.
+                // if it's disabled, draw it green to show it can be bought.
                 // Otherwise, draw it yellow.
                 if (currentCook.getStationTarget() == null) {
                     interactSprite.setColor(Color.RED);
-                } else {
+                } else if (currentCook.getStationTarget().isDisabled()) {
+                    interactSprite.setColor(Color.GREEN);
+                    // If this is the case, also draw the price of the station.
+                    font.getData().setScale(0.6f);
+                    text.setText(font, String.format("%.2f", currentCook.getStationTarget().getPrice()/100f));
+                    batch.begin();
+                    font.draw(batch, text, interactBox.x + interactBox.width/2f - text.width/2f, interactBox.y + interactBox.height/2f);
+                    batch.end();
+                }
+                else {
                     interactSprite.setColor(Color.YELLOW);
                 }
                 interactSprite.setSize(interactBox.width,interactBox.height);
                 interactSprite.setPosition(interactBox.x, interactBox.y);
+                batch.begin();
                 interactSprite.draw(batch);
+                batch.end();
             }
 
-            batch.end();
             shape.begin(ShapeRenderer.ShapeType.Filled);
             renderEntity.draw(shape);
             shape.end();
@@ -218,6 +230,7 @@ public class GameRenderer {
 
 
         //// Render the money and reputation in the bottom right
+        font.getData().setScale(1f);
         final float texSize = 64f;
         // Draw the background
         shape.begin(ShapeRenderer.ShapeType.Filled);
