@@ -97,15 +97,6 @@ public class EndlessLogic extends ScenarioLogic {
         }
     }
 
-    public void customerServed(Customer customer) {
-        // Set number completed += 1
-        requestsComplete += 1;
-        // Add the value of the request
-        money += customer.getRequest().getValue();
-        // And call customerGone
-        customerGone(customer);
-    }
-
     @Override
     public void loadScenarioContents(JsonValue scenarioRoot) {
         // Set the spawn timer. Anything <= 0 will be an instant spawn.

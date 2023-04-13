@@ -136,6 +136,13 @@
       "station_id": "<main>:bin",
       "x": 10,
       "y": 2
+    },
+    {
+      "station_id": "<main>:oven",
+      "x": 4,
+      "y": 0,
+      "price": 200,
+      "base_texture": "<main>:station/blank.png"
     }],
   "cooks": [
     {

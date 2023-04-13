@@ -396,6 +396,8 @@ public class ScenarioLogic extends GameLogic {
     public void customerServed(Customer customer) {
         // Set number completed += 1
         requestsComplete += 1;
+        // Add the money
+        money += customer.getRequest().getValue();
         // And call customerGone
         customerGone(customer);
     }
