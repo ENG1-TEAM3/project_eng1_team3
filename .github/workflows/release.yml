@@ -1,0 +1,78 @@
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+# This workflow will build a Java project with Gradle and cache/restore any dependencies to improve the workflow execution time
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-java-with-gradle
+
+name: Automated Releases by Tag
+
+on:
+  push:
+    branches: [ "master" ]
+    tags: [ "v[0-9]+.[0-9]+.[0-9]+" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: [ubuntu-22.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    
+    permissions:
+      contents: read
+      
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up JDK 11
+      uses: actions/setup-java@v3
+      with:
+        java-version: '11'
+        distribution: 'temurin'
+      
+    - name: Build Executable
+      uses: gradle/gradle-build-action@v2.4.0
+      with:
+        arguments: desktop:dist
+        
+    - name: Upload Executable
+      uses: actions/upload-artifact@v3.1.2
+      with:
+        name: piazzapanic-${{ matrix.os }}.jar
+        path: ./desktop/build/libs/desktop-1.0.jar
+
+  releases:
+    strategy:
+      matrix:
+        os: [ubuntu-22.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    needs: build
+    if: startsWith(github.ref, 'refs/tags/')
+    permissions:
+      contents: write
+
+    steps:        
+    - name: Download a Ubuntu Build Artifact
+      uses: actions/download-artifact@v3.0.1
+      with:
+        name: piazzapanic-ubuntu-22.04.jar
+        
+    - name: Rename Ubuntu Build Artifact
+      run: mv desktop-1.0.jar lib-ubuntu.jar
+    
+    - name: Download a Windows Build Artifact
+      uses: actions/download-artifact@v3.0.1
+      with:
+        name: piazzapanic-windows-2022.jar
+        
+    - name: Rename Ubuntu Build Artifact
+      run: mv desktop-1.0.jar lib-windows.jar
+        
+    - name: Release
+      uses: softprops/action-gh-release@v1
+      with:
+        files: lib*.jar
+        
