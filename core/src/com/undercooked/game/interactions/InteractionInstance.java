@@ -1,15 +1,13 @@
 package com.undercooked.game.interactions;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.audio.Sound;
 import com.undercooked.game.assets.AudioManager;
 import com.undercooked.game.assets.TextureManager;
-import com.undercooked.game.audio.AudioSettings;
 import com.undercooked.game.food.Items;
 import com.undercooked.game.station.Station;
 import com.undercooked.game.util.Listener;
 
-public class IStep {
+public class InteractionInstance {
     // Holds the variables needed by the StationInteractControl to give to the InteractionSteps.
     // This makes it so only 1 InteractionStep has to exist at one point for each Interaction.
 
@@ -27,15 +25,12 @@ public class IStep {
 
     /** The elapsed time for the Interaction */
     public float elapsedTime;
-    /** The sound the Interaction plays (looped) */
-    public long soundID;
     /** The {@link AudioManager} to use to play the sound */
-
     private AudioManager audioManager;
     /** The result of the last delta check, the time since the last frame. */
     private float lastDeltaCheck;
 
-    public IStep(Station station, StationInteractControl interactControl, AudioManager audioManager, Items gameItems) {
+    public InteractionInstance(Station station, StationInteractControl interactControl, AudioManager audioManager, Items gameItems) {
         this.station = station;
         this.gameItems = gameItems;
         this.interactControl = interactControl;
@@ -70,7 +65,6 @@ public class IStep {
 
     public void reset() {
         elapsedTime = 0;
-        soundID = -1;
     }
 
     public void updateDelta() {

@@ -2,7 +2,7 @@ package com.undercooked.game.interactions.steps.cook;
 
 import com.undercooked.game.Input.InputType;
 import com.undercooked.game.entity.cook.Cook;
-import com.undercooked.game.interactions.IStep;
+import com.undercooked.game.interactions.InteractionInstance;
 import com.undercooked.game.interactions.InteractResult;
 import com.undercooked.game.interactions.InteractionStep;
 
@@ -15,7 +15,7 @@ import com.undercooked.game.interactions.InteractionStep;
  */
 public class CookRemoveStep extends InteractionStep {
     @Override
-    public InteractResult finishedLast(IStep instance, Cook cook, String keyID, InputType inputType) {
+    public InteractResult finishedLast(InteractionInstance instance, Cook cook, String keyID, InputType inputType) {
         if (cook == null) {
             return finished(instance, null, keyID, inputType, false);
         }
@@ -29,7 +29,7 @@ public class CookRemoveStep extends InteractionStep {
     }
 
     @Override
-    public void update(IStep instance, Cook cook, float delta) {
+    public void update(InteractionInstance instance, Cook cook, float delta) {
         finishedLast(instance,cook,null,null);
     }
 }

@@ -8,7 +8,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.undercooked.game.Input.InputController;
 import com.undercooked.game.Input.InputType;
 import com.undercooked.game.entity.cook.Cook;
-import com.undercooked.game.interactions.IStep;
+import com.undercooked.game.interactions.InteractionInstance;
 import com.undercooked.game.interactions.InteractResult;
 
 /**
@@ -42,13 +42,13 @@ public class TimedInputStep extends WaitStep {
         font.getData().setScale(1f);
     }
 
-    public void waitFinished(IStep instance, Cook cook) {
+    public void waitFinished(InteractionInstance instance, Cook cook) {
         // If the wait finishes, then it's a failure
         finished(instance, cook, null, null, false);
     }
 
     @Override
-    public InteractResult interact(IStep instance, Cook cook, String keyID, InputType inputType) {
+    public InteractResult interact(InteractionInstance instance, Cook cook, String keyID, InputType inputType) {
         // Check that the interaction is correct
         if (keyID.equals(value) && inputType == InputType.JUST_PRESSED) {
             // If this is the case, return that it successfully finished
@@ -58,16 +58,16 @@ public class TimedInputStep extends WaitStep {
         return InteractResult.NONE;
     }
 
-    private float calculateDrawX(IStep instance) {
+    private float calculateDrawX(InteractionInstance instance) {
         return instance.station.getX() + instance.station.getInteractBox().width/2f - text.width/2f;
     }
 
-    private float calculateDrawY(IStep instance) {
+    private float calculateDrawY(InteractionInstance instance) {
         return instance.station.getY() + instance.station.getInteractBox().height/2f + padding*2 + offsetY + height;
     }
 
     @Override
-    public void drawPost(IStep instance, SpriteBatch batch) {
+    public void drawPost(InteractionInstance instance, SpriteBatch batch) {
         font.getData().setScale(textScale);
         //// Above the bar, display the input that needs to be pressed
         // Calculate the x and y for the drawing
@@ -80,7 +80,7 @@ public class TimedInputStep extends WaitStep {
     }
 
     @Override
-    public void draw(IStep instance, ShapeRenderer shape) {
+    public void draw(InteractionInstance instance, ShapeRenderer shape) {
         super.draw(instance, shape);
         //// Above the bar, display the input that needs to be pressed
         // Calculate the x and y for the drawing
@@ -93,11 +93,11 @@ public class TimedInputStep extends WaitStep {
     }
 
     @Override
-    public float getDrawPercent(IStep instance) {
+    public float getDrawPercent(InteractionInstance instance) {
         return 1f - (instance.elapsedTime / time);
     }
 
-    public void setBarColor(IStep instance, ShapeRenderer shape) {
+    public void setBarColor(InteractionInstance instance, ShapeRenderer shape) {
         float drawPercent = getDrawPercent(instance);
         shape.setColor(1f-drawPercent, drawPercent, 0, 1);
     }

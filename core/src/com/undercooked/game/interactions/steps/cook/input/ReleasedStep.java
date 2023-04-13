@@ -1,9 +1,8 @@
 package com.undercooked.game.interactions.steps.cook.input;
 
-import com.undercooked.game.Input.InputController;
 import com.undercooked.game.Input.InputType;
 import com.undercooked.game.entity.cook.Cook;
-import com.undercooked.game.interactions.IStep;
+import com.undercooked.game.interactions.InteractionInstance;
 import com.undercooked.game.interactions.InteractResult;
 import com.undercooked.game.interactions.InteractionStep;
 
@@ -17,7 +16,7 @@ import com.undercooked.game.interactions.InteractionStep;
  */
 public class ReleasedStep extends InteractionStep {
     @Override
-    public InteractResult interact(IStep instance, Cook cook, String keyID, InputType inputType) {
+    public InteractResult interact(InteractionInstance instance, Cook cook, String keyID, InputType inputType) {
         // If it uses the key set in value
         if (keyID.equals(value) && inputType == InputType.RELEASED) {
             // Then move to the next instruction

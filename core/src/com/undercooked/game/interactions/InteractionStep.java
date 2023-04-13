@@ -27,15 +27,15 @@ public abstract class InteractionStep {
     protected Cook lastInteractedCook;
 
     /** Update the time value of the instance. */
-    public final void updateTime(IStep instance, float delta) {
+    public final void updateTime(InteractionInstance instance, float delta) {
         instance.elapsedTime += delta;
     }
 
     /**
      * Play the sound of the instance.
-     * @param instance {@link IStep} : The interaction instance.
+     * @param instance {@link InteractionInstance} : The interaction instance.
      */
-    public final void playSound(IStep instance) {
+    public final void playSound(InteractionInstance instance) {
         instance.playSound(sound);
     }
 
@@ -43,7 +43,7 @@ public abstract class InteractionStep {
      * Called when the {@link InteractionStep} has finished and needs to move to the
      * next {@link InteractionStep}.
      *
-     * @param instance {@link IStep} : The interaction instance
+     * @param instance {@link InteractionInstance} : The interaction instance
      * @param cook {@link Cook} : The {@link Cook} involved in the {@link InteractionStep}.
      * @param keyID {@link String} : The ID of the key used to complete the {@link InteractionStep}.
      * @param inputType {@link InputType} : The {@link InputType} used to complete the {@link InteractionStep}.
@@ -51,7 +51,7 @@ public abstract class InteractionStep {
      *                                  {@code false} if it was not.
      * @return {@link InteractResult} : The result of the {@link InteractionStep}, if anything specific is needed.
      */
-    public final InteractResult finished(IStep instance, Cook cook, String keyID, InputType inputType, boolean success) {
+    public final InteractResult finished(InteractionInstance instance, Cook cook, String keyID, InputType inputType, boolean success) {
         // Stop playing the sound
         instance.stopSound(sound);
         // Tell the Interact Controller it's done, so it can move on to the next Interaction
@@ -64,13 +64,13 @@ public abstract class InteractionStep {
      * <br>This version calls the main function based on the {@link Cook} involved and
      * the success of the {@link InteractionStep}, ignoring the other values.
      *
-     * @param instance {@link IStep} : The interaction instance
+     * @param instance {@link InteractionInstance} : The interaction instance
      * @param cook {@link Cook} : The {@link Cook} involved in the {@link InteractionStep}.
      * @param success {@code boolean} : {@code true} if the interaction was successful,
      *                                  {@code false} if it was not.
      * @return {@link InteractResult} : The result of the {@link InteractionStep}, if anything specific is needed.
      */
-    public final InteractResult finished(IStep instance, Cook cook, boolean success) {
+    public final InteractResult finished(InteractionInstance instance, Cook cook, boolean success) {
         return finished(instance, cook, null, null, success);
     }
 
@@ -80,13 +80,13 @@ public abstract class InteractionStep {
      * <br>This version calls the main function based on the {@link Cook} involved,
      * the key and {@link InputType} involved, ignoring the other values.
      *
-     * @param instance {@link IStep} : The interaction instance
+     * @param instance {@link InteractionInstance} : The interaction instance
      * @param cook {@link Cook} : The {@link Cook} involved in the {@link InteractionStep}.
      * @param keyID {@link String} : The ID of the key used to complete the {@link InteractionStep}.
      * @param inputType {@link InputType} : The {@link InputType} used to complete the {@link InteractionStep}.
      * @return {@link InteractResult} : The result of the {@link InteractionStep}, if anything specific is needed.
      */
-    public final InteractResult finished(IStep instance, Cook cook, String keyID, InputType inputType) {
+    public final InteractResult finished(InteractionInstance instance, Cook cook, String keyID, InputType inputType) {
         return finished(instance, cook, keyID, inputType, true);
     }
 
@@ -95,12 +95,12 @@ public abstract class InteractionStep {
      * next {@link InteractionStep}.
      * <br>This version calls the main function based on success, ignoring the other values.
      *
-     * @param instance {@link IStep} : The interaction instance
+     * @param instance {@link InteractionInstance} : The interaction instance
      * @param success {@code boolean} : {@code true} if the interaction was successful,
      *                                  {@code false} if it was not.
      * @return
      */
-    public final InteractResult finished(IStep instance, boolean success) {
+    public final InteractResult finished(InteractionInstance instance, boolean success) {
         return finished(instance, null, null, null, success);
     }
 
@@ -111,7 +111,7 @@ public abstract class InteractionStep {
      * the interaction is no longer valid.
      * @param instance {@link InteractionStep} :
      */
-    public void stop(IStep instance) {
+    public void stop(InteractionInstance instance) {
         // First unlock the Cooks
         instance.station.unlockCooks();
         // Then stop playing the sound
@@ -122,43 +122,43 @@ public abstract class InteractionStep {
      * Updates interactions for the interactions instance. Potentially useful if the items
      * on the {@link com.undercooked.game.station.Station} changes at all, and you want to
      * check for a different interaction based on that.
-     * @param instance {@link IStep} : The interaction instance.
+     * @param instance {@link InteractionInstance} : The interaction instance.
      */
-    public final void updateInteractions(IStep instance) {
+    public final void updateInteractions(InteractionInstance instance) {
         instance.updateInteractions();
     }
 
     /**
      * Function to update the station.
-     * @param instance {@link IStep} : The interaction instance for a {@link com.undercooked.game.station.Station}.
+     * @param instance {@link InteractionInstance} : The interaction instance for a {@link com.undercooked.game.station.Station}.
      * @param cook {@link Cook} : The {@link Cook} locked to the {@link com.undercooked.game.station.Station},
      *                            from a previous {@link InteractionStep} or {@code null}.
      * @param delta {@code float} : The time since the last frame.
      */
-    public void update(IStep instance, Cook cook, float delta) { }
+    public void update(InteractionInstance instance, Cook cook, float delta) { }
 
     /**
      * Called when the previous {@link InteractionStep} just finished,
      * passing along the cook, keyID and inputType.
-     * @param instance {@link IStep} : The interaction instance.
+     * @param instance {@link InteractionInstance} : The interaction instance.
      * @param cook {@link Cook} : The {@link Cook} that interacted.
      * @param keyID {@link String} : The ID of the Key used.
      * @param inputType {@link InputType} : The type of input used.
      * @return {@link InteractResult} : The result of the {@link InteractionStep}.
      */
-    public InteractResult finishedLast(IStep instance, Cook cook, String keyID, InputType inputType) {
+    public InteractResult finishedLast(InteractionInstance instance, Cook cook, String keyID, InputType inputType) {
         return InteractResult.NONE;
     }
 
     /**
      * Interaction between a {@link Cook} and the {@link InteractionStep}.
-     * @param instance {@link IStep} : The interaction instance.
+     * @param instance {@link InteractionInstance} : The interaction instance.
      * @param cook {@link Cook} : The {@link Cook} that interacted.
      * @param keyID {@link String} : The ID of the Key used.
      * @param inputType {@link InputType} : The type of input used.
      * @return {@link InteractResult} : The result of the {@link InteractionStep}.
      */
-    public InteractResult interact(IStep instance, Cook cook, String keyID, InputType inputType) {
+    public InteractResult interact(InteractionInstance instance, Cook cook, String keyID, InputType inputType) {
         return InteractResult.NONE;
     }
 
@@ -167,21 +167,21 @@ public abstract class InteractionStep {
      * the {@link SpriteBatch}.
      * <br>To be override by children classes.
      *
-     * @param instance {@link IStep} : The interaction instance.
+     * @param instance {@link InteractionInstance} : The interaction instance.
      * @param batch {@link SpriteBatch} : The {@link SpriteBatch} to draw to.
      */
-    public void draw(IStep instance, SpriteBatch batch) {
+    public void draw(InteractionInstance instance, SpriteBatch batch) {
 
     }
 
     /**
-     * A versio nof the {@link #draw(IStep, SpriteBatch)} that occurs after the
-     * {@link #draw(IStep, ShapeRenderer)} function.
+     * A versio nof the {@link #draw(InteractionInstance, SpriteBatch)} that occurs after the
+     * {@link #draw(InteractionInstance, ShapeRenderer)} function.
      *
-     * @param instance {@link IStep} : The interaction instance.
+     * @param instance {@link InteractionInstance} : The interaction instance.
      * @param batch {@link SpriteBatch} : The {@link SpriteBatch} to draw to.
      */
-    public void drawPost(IStep instance, SpriteBatch batch) {
+    public void drawPost(InteractionInstance instance, SpriteBatch batch) {
 
     }
 
@@ -190,10 +190,10 @@ public abstract class InteractionStep {
      * the {@link ShapeRenderer}.
      * <br>To be override by children classes.
      *
-     * @param instance {@link IStep} : The interaction instance.
+     * @param instance {@link InteractionInstance} : The interaction instance.
      * @param shape {@link ShapeRenderer} : The {@link ShapeRenderer} to draw to.
      */
-    public void draw(IStep instance, ShapeRenderer shape) {
+    public void draw(InteractionInstance instance, ShapeRenderer shape) {
 
     }
 

@@ -2,7 +2,7 @@ package com.undercooked.game.interactions.steps.cook;
 
 import com.undercooked.game.Input.InputType;
 import com.undercooked.game.entity.cook.Cook;
-import com.undercooked.game.interactions.IStep;
+import com.undercooked.game.interactions.InteractionInstance;
 import com.undercooked.game.interactions.InteractResult;
 import com.undercooked.game.interactions.InteractionStep;
 
@@ -16,7 +16,7 @@ import com.undercooked.game.interactions.InteractionStep;
 public class CookTakeStep extends InteractionStep {
 
     @Override
-    public InteractResult finishedLast(IStep instance, Cook cook, String keyID, InputType inputType) {
+    public InteractResult finishedLast(InteractionInstance instance, Cook cook, String keyID, InputType inputType) {
         // Try to take the Cook's item
         if (cook.heldItems.size() > 0) {
             if (!instance.station.canHoldItem()) {

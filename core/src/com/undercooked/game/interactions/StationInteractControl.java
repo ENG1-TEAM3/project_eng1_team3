@@ -14,7 +14,7 @@ import com.undercooked.game.station.Station;
 public class StationInteractControl {
 
     Station station;
-    IStep interactionInstance;
+    InteractionInstance interactionInstance;
     Interactions interactions;
 
     /**
@@ -29,7 +29,7 @@ public class StationInteractControl {
     public StationInteractControl(Station station, AudioManager audioManager, Items items) {
         this.station = station;
         this.audioManager = audioManager;
-        this.interactionInstance = new IStep(station, this, audioManager, items);
+        this.interactionInstance = new InteractionInstance(station, this, audioManager, items);
 
         this.possibleInteractions = new Array<>();
         this.completeSteps = new Array<>();
@@ -110,6 +110,8 @@ public class StationInteractControl {
         } else {
             addFollowingInteractions(currentInteraction.failure);
         }
+        // Reset interaction variables
+        interactionInstance.reset();
         // Then move to the next Interaction
         nextInteraction();
         interactionInstance.updateDelta();
