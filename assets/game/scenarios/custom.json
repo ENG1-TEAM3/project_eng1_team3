@@ -1,0 +1,35 @@
+{
+  "map_id": "<main>:everything",
+  "name": "Custom",
+  "description": "Complete a scenario with a specified number of random requests.",
+  "interactions": [
+    "<main>:preparation/form_patty",
+    "<main>:preparation/make_burger",
+    "<main>:preparation/make_salad",
+    "<main>:preparation/make_jacket_potato",
+    "<main>:pantry/tomato_pantry",
+    "<main>:pantry/onion_pantry",
+    "<main>:pantry/lettuce_pantry",
+    "<main>:pantry/bun_pantry",
+    "<main>:pantry/meat_pantry",
+    "<main>:pantry/potato_pantry",
+    "<main>:cutting/lettuce_chop",
+    "<main>:cutting/tomato_chop",
+    "<main>:cutting/onion_chop",
+    "<main>:cutting/potato_cut",
+    "<main>:grill/cook_bun",
+    "<main>:oven/cook_patty",
+    "<main>:oven/potato_cook",
+    "<main>:bin"
+  ],
+  "requests": [
+    "<main>:jacket_potato",
+    "<main>:burger",
+    "<main>:salad"
+  ],
+  "reputation": 10,
+  "spawn_timer": 0,
+  "customer_speed": 3,
+  "cook_cost": 200,
+  "duplicate_requests": true
+}

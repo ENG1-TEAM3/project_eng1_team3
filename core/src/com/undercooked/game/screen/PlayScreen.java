@@ -2,7 +2,6 @@ package com.undercooked.game.screen;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -44,6 +43,12 @@ public class PlayScreen extends Screen {
     private GlyphLayout title;
     private GlyphLayout description;
     private ModeButton modeButton;
+    private Button leftCustomerBtn;
+    private Button rightCustomerBtn;
+    private boolean showCustomerNumber;
+    private int customerNumber; // The number of requests to serve in the Custom mode
+    private GlyphLayout customerNumberText;
+    private float customerNumberScale = 2f;
     private int currentIndex;
     private Array<JsonValue> scenarioArray;
 
@@ -53,6 +58,7 @@ public class PlayScreen extends Screen {
     private final float descScale = 1;
     private final float descPadding = 100;
     private final String[] scenarioFiles = {
+            "custom",
             "everything",
             "burger_salad",
             "serve_quick"
@@ -87,13 +93,12 @@ public class PlayScreen extends Screen {
         title = new GlyphLayout();
         description = new GlyphLayout();
 
+        customerNumberText = new GlyphLayout();
+
         scenarioArray = new Array<>();
 
         // Load the game's Scenario's
         loadScenarios();
-
-        // Then set to index 0
-        setIndex(0);
 
     }
 
@@ -120,6 +125,9 @@ public class PlayScreen extends Screen {
         stage = null;
         modeButton = null;
 
+        leftCustomerBtn = null;
+        rightCustomerBtn = null;
+
         background = null;
         plate = null;
 
@@ -130,7 +138,7 @@ public class PlayScreen extends Screen {
     }
 
     @Override
-    public void show() {
+    public void postLoad() {
 
         final TextureManager textureManager = getTextureManager();
 
@@ -148,6 +156,10 @@ public class PlayScreen extends Screen {
         Button rightBtn = new Button(new TextureRegionDrawable(textureManager.get("uielements/arrow_right.png")));
         Button playBtn = new Button(new TextureRegionDrawable(textureManager.get("uielements/newgame.png")));
 
+
+        leftCustomerBtn = new Button(new TextureRegionDrawable(textureManager.get("uielements/arrow_left.png")));
+        rightCustomerBtn = new Button(new TextureRegionDrawable(textureManager.get("uielements/arrow_right.png")));
+
         // Set the position and size of the buttons
         menuBtn.setSize(473, 144);
         menuBtn.setPosition(16,Constants.V_HEIGHT-menuBtn.getHeight()-16);
@@ -160,6 +172,13 @@ public class PlayScreen extends Screen {
 
         playBtn.setSize(473, 144);
         playBtn.setPosition(Constants.V_WIDTH/2f-playBtn.getWidth()/2f, 0);
+
+        float customerBtnSize = plateSize*0.1f;
+        leftCustomerBtn.setSize(customerBtnSize, customerBtnSize);
+        leftCustomerBtn.setPosition(plate.getX()+20, plate.getY()+plate.getHeight()/2f-leftCustomerBtn.getHeight());
+
+        rightCustomerBtn.setSize(customerBtnSize, customerBtnSize);
+        rightCustomerBtn.setPosition(plate.getX()+plate.getWidth()-rightCustomerBtn.getWidth()-20, plate.getY()+plate.getHeight()/2f-rightCustomerBtn.getHeight());
 
         // Add the listeners to the buttons
         menuBtn.addListener(new ClickListener() {
@@ -193,6 +212,22 @@ public class PlayScreen extends Screen {
             }
         });
 
+        leftCustomerBtn.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                customerNumber = Math.max(1, customerNumber -1);
+                updateCustomerText();
+            }
+        });
+
+        rightCustomerBtn.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                customerNumber += 1;
+                updateCustomerText();
+            }
+        });
+
         // Set up the mode button
         modeButton.postLoad();
         modeButton.update();
@@ -203,7 +238,7 @@ public class PlayScreen extends Screen {
         modeButton.setListener(new Listener<GameType>() {
             @Override
             public void tell(GameType value) {
-
+                setIndex(currentIndex);
             }
         });
 
@@ -212,8 +247,16 @@ public class PlayScreen extends Screen {
         stage.addActor(leftBtn);
         stage.addActor(rightBtn);
         stage.addActor(playBtn);
+        stage.addActor(leftCustomerBtn);
+        stage.addActor(rightCustomerBtn);
         modeButton.addToStage(stage);
 
+        // Then show index 0
+        setIndex(0);
+    }
+
+    @Override
+    public void show() {
         // Set the input processor
         Gdx.input.setInputProcessor(stage);
     }
@@ -235,6 +278,13 @@ public class PlayScreen extends Screen {
         game.font.getData().setScale(descScale);
         game.font.draw(game.batch, description, Constants.V_WIDTH/2f - description.width/2f,
                 titleY-title.height-descPadding);
+
+        if (showCustomerNumber) {
+            game.font.getData().setScale(customerNumberScale);
+            game.font.draw(game.batch, customerNumberText, Constants.V_WIDTH/2f-customerNumberText.width/2f,
+                    Constants.V_HEIGHT/2f-customerNumberText.height/2f);
+            game.font.getData().setScale(1f);
+        }
         game.batch.end();
 
         stage.draw();
@@ -246,12 +296,29 @@ public class PlayScreen extends Screen {
 
     }
 
-    private void setIndex(int index) {
+    private void setIndex(int index, int changeVal) {
+
         // If it's not valid, don't do anything
         if (index < 0 || index >= scenarioArray.size) return;
+        // If it's the custom scenario, and the game type is currently endless, then
+        // move +1 or -1
+        // This is because the custom type only supports scenario mode, and the "everything"
+        // scenario can be used instead for endless.
+        if (scenarioArray.get(index).getString("id").equals(Constants.CUSTOM_SCENARIO_ID) && modeButton.getCurrentType() == GameType.ENDLESS) {
+            if (changeVal < 0) {
+                changeIndex(changeVal-1);
+            } else {
+                changeIndex(changeVal+1);
+            }
+            return;
+        }
         // If it's valid, update the current index and show the scenario data
         currentIndex = index;
         showScenarioData(scenarioArray.get(index));
+    }
+
+    private void setIndex(int index) {
+        setIndex(index, 0);
     }
 
     private void changeIndex(int change) {
@@ -261,7 +328,7 @@ public class PlayScreen extends Screen {
         newIndex %= scenarioArray.size;
 
         // Then set the new index
-        setIndex(newIndex);
+        setIndex(newIndex, change);
     }
 
     private void showScenarioData(JsonValue scenarioData) {
@@ -270,6 +337,26 @@ public class PlayScreen extends Screen {
 
         game.font.getData().setScale(descScale);
         description.setText(game.font, scenarioData.getString("description"), Color.BLACK, plateSize - descPadding, Align.left, true);
+        game.font.getData().setScale(1f);
+
+        // If it's the custom scenario, then show the customer buttons. Otherwise, hide them.
+        if (scenarioData.getString("id").equals(Constants.CUSTOM_SCENARIO_ID)) {
+            customerNumber = 3;
+            showCustomerNumber = true;
+            updateCustomerText();
+        } else {
+            showCustomerNumber = false;
+        }
+
+        leftCustomerBtn.setDisabled(!showCustomerNumber);
+        leftCustomerBtn.setVisible(showCustomerNumber);
+        rightCustomerBtn.setDisabled(!showCustomerNumber);
+        rightCustomerBtn.setVisible(showCustomerNumber);
+    }
+
+    private void updateCustomerText() {
+        game.font.getData().setScale(customerNumberScale);
+        customerNumberText.setText(game.font, Integer.toString(customerNumber));
         game.font.getData().setScale(1f);
     }
 
@@ -288,13 +375,17 @@ public class PlayScreen extends Screen {
         switch (modeButton.getCurrentType()) {
             case SCENARIO:
                 ScenarioLogic scenario = new ScenarioLogic(gameScreen, getTextureManager(), getAudioManager());
-                scenario.setId(currentData.getString("id"));
+                // If it's custom, set id and leaderboard name to custom values
+                if (currentData.getString("id").equals(Constants.CUSTOM_SCENARIO_ID)) {
+                    scenario.setLeaderboardId(String.format("%s-%d", currentData.getString("id"), customerNumber));
+                    scenario.setLeaderboardName(String.format("Custom - %d Customers", customerNumber));
+                    scenario.setRequestTarget(customerNumber);
+                }
                 gameLogic = scenario;
                 gameRenderer = new GameRenderer();
                 break;
             case ENDLESS:
                 EndlessLogic endless = new EndlessLogic(gameScreen, getTextureManager(), getAudioManager());
-                endless.setId(currentData.getString("id"));
                 gameLogic = endless;
                 gameRenderer = new GameRenderer();
                 break;
@@ -303,6 +394,7 @@ public class PlayScreen extends Screen {
                 return;
         }
 
+        gameLogic.setId(currentData.getString("id"));
 
         gameScreen.setGameLogic(gameLogic);
         gameScreen.setGameRenderer(gameRenderer);

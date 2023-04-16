@@ -19,7 +19,6 @@ public class EndlessLogic extends ScenarioLogic {
         super(game, textureManager, audioManager);
 
         this.gameType = GameType.ENDLESS;
-        this.leaderboardName = "Endless";
         numOfCustomers = 0;
         customerLimit = 1;
         spawnTimerStart = 10f;

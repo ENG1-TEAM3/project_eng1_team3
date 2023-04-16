@@ -50,6 +50,7 @@ public abstract class GameLogic {
     protected Customer displayCustomer;
 
     protected String id;
+    protected String leaderboardId;
     protected GameType gameType;
     protected String leaderboardName;
 
@@ -119,7 +120,7 @@ public abstract class GameLogic {
         // Go to win screen
         gameScreen.getScreenController().setScreen(winScreen);
         // Set the leaderboard type and id
-        winScreen.setLeaderboardID(id);
+        winScreen.setLeaderboardID(leaderboardId);
         winScreen.setLeaderboardType(gameType);
         winScreen.setLeaderboardName(leaderboardName);
     }
@@ -302,5 +303,21 @@ public abstract class GameLogic {
         customerController.reset();
         cookController.reset();
         stationManager.reset();
+    }
+
+    public void setLeaderboardName(String name) {
+        this.leaderboardName = name;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+        // If it's null, or the same, set leaderboardId to use it to
+        if (leaderboardId == null || leaderboardId.equals(id)) {
+            setLeaderboardId(id);
+        }
+    }
+
+    public void setLeaderboardId(String id) {
+        this.leaderboardId = id;
     }
 }

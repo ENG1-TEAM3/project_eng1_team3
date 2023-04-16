@@ -161,6 +161,16 @@ public final class DefaultJson {
         // Anything < 0 means they can't get another cook
         root.addValue(new JsonInt("cook_cost", -1));
 
+        // The number of requests that need to be completed (in scenario mode)
+        // If < 0, it will use all requests in the request array
+        // If >= requests size, if duplicate_requests is...
+        //              true: Will select that many requests
+        //              false: Will select all requests once, but no more than that
+        root.addValue(new JsonInt("num_of_requests", -1));
+
+        // Whether a request can be selected once or multiple times
+        root.addValue(new JsonBool("duplicate_requests", false));
+
         return root;
     }
 

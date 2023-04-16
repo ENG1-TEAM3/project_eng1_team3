@@ -66,6 +66,8 @@ public final class Constants {
     public static final String REGISTER_ID = "<main>:register";
     /** The phone id, used for the cell where the player gets more {@link com.undercooked.game.entity.cook.Cook}s. */
     public static final String PHONE_ID = "<main>:phone";
+    /** The asset path for the custom scenario, which the player can select the number of customers to serve. */
+    public static final String CUSTOM_SCENARIO_ID = "<main>:custom";
 
     // Music and Sounds
     /** {@link com.undercooked.game.assets.AudioManager} group for the game's Music. */
@@ -80,7 +82,7 @@ public final class Constants {
      * The number of {@link com.undercooked.game.entity.cook.Cook} {@link com.badlogic.gdx.graphics.Texture}s
      * in the asset folder.
      */
-    public static final int NUM_COOK_TEXTURES = 3;
+    public static final int NUM_COOK_TEXTURES = 3;;
     /**
      * The number of {@link com.undercooked.game.entity.customer.Customer} {@link com.badlogic.gdx.graphics.Texture}s
      * in the asset folder.

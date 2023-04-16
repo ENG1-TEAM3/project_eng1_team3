@@ -37,12 +37,18 @@ public class ScenarioLogic extends GameLogic {
     /** The number of requests that have been served correctly. */
     protected int requestsComplete = 0;
     protected Array<Request> requests;
-    protected Array<Request> startRequests;
+    protected Array<Request> requestPool;
+
+    /**
+     * Whether requests in the {@link #requestPool} can be added to the {@link #requests} array more than once.
+     */
+    protected boolean allowDuplicateRequests;
 
     public ScenarioLogic(GameScreen game, TextureManager textureManager, AudioManager audioManager) {
         super(game, textureManager, audioManager);
         requests = new Array<>();
-        startRequests = new Array<>();
+        requestPool = new Array<>();
+        allowDuplicateRequests = false;
         // Set the listeners for the CustomerController
         customerController.setServedListener(new Listener<Customer>() {
             @Override
@@ -123,7 +129,7 @@ public class ScenarioLogic extends GameLogic {
         });
 
         this.gameType = GameType.SCENARIO;
-        this.leaderboardName = "Scenario";
+        this.requestTarget = -1;
     }
 
     public ScenarioLogic() {
@@ -169,10 +175,6 @@ public class ScenarioLogic extends GameLogic {
         checkGameOver();
     }
 
-    public void setId(String id) {
-        this.id = id;
-    }
-
     @Override
     public void preLoad() {
 
@@ -182,8 +184,6 @@ public class ScenarioLogic extends GameLogic {
     public void load() {
         // Load the Scenario
         loadScenario(id);
-        // Set the request target to the number of requests loaded
-        requestTarget = requests.size;
         // Load all the items
         items.load(textureManager);
         // Load the map's floor textures
@@ -198,23 +198,19 @@ public class ScenarioLogic extends GameLogic {
     public void postLoad() {
         super.postLoad();
 
-        // Reset the start requests array
-        startRequests.clear();
-
         // Loop through the requests
-        for (Request request : requests) {
+        for (Request request : requestPool) {
             // Make sure the textures are loaded
             request.postLoad(textureManager);
-
-            // And then add them to the start requests array
-            startRequests.add(request);
         }
 
-        start();
+        // Reset the game
+        reset();
     }
 
     @Override
     public void start() {
+        // And then spawn a customer
         spawnCustomer();
     }
 
@@ -227,10 +223,31 @@ public class ScenarioLogic extends GameLogic {
         requestsComplete = 0;
         money = 0;
 
-        // Loop through the start requests
-        for (Request request : startRequests) {
-            // And then add them to the requests array
-            requests.add(request);
+        // Clear the requests
+        requests.clear();
+
+        // Duplicate the start requests array
+        Array<Request> duplicateRequests = new Array<>();
+        for (Request request : requestPool) {
+            duplicateRequests.add(request);
+        }
+
+        // Loop requestTarget number of times, randomly picking out a request and adding
+        // it to the requests array
+        Random random = new Random();
+        for (int i = 0 ; i < requestTarget ; i++) {
+            // if duplicateRequests is empty, then set requestTarget to i
+            if (duplicateRequests.size == 0) {
+                requestTarget = i;
+            }
+            // Randomly select a request from the duplicate requests
+            int newIndex = random.nextInt(0, duplicateRequests.size);
+            // Get the new request and add it
+            requests.add(duplicateRequests.get(newIndex));
+            // However, if allowDuplicateRequests is false, then remove the index
+            if (!allowDuplicateRequests) {
+                duplicateRequests.removeIndex(newIndex);
+            }
         }
 
         // And start
@@ -286,11 +303,26 @@ public class ScenarioLogic extends GameLogic {
         // Set the reputation
         startReputation = scenarioData.getInt("reputation");
 
-        // Set the leaderboard name
-        leaderboardName = scenarioData.getString("name");
+        // Set the leaderboard name, if it's currently null
+        if (leaderboardName == null) {
+            leaderboardName = scenarioData.getString("name");
+        }
 
         // Set the cook's price
         cookCost = scenarioData.getInt("cook_cost");
+
+        // Set whether requests can be selected multiple times or not
+        allowDuplicateRequests = scenarioData.getBoolean("duplicate_requests");
+
+        // Set the request target, only if requestTarget == -1 currently,
+        // which means it hasn't been set yet
+        if (requestTarget == -1) {
+            requestTarget = scenarioData.getInt("num_of_requests");
+            // If it's < 0, invalid, then set it to use all requests
+            if (requestTarget < 0) {
+                requestTarget = requestPool.size;
+            }
+        }
 
         // And call loadScenarioContents
         loadScenarioContents(scenarioData);
@@ -340,7 +372,7 @@ public class ScenarioLogic extends GameLogic {
 
                 // But if it's loaded already, just add it to the list
                 if (loadedRequests.containsKey(request.asString())) {
-                    requests.add(loadedRequests.get(request.asString()));
+                    requestPool.add(loadedRequests.get(request.asString()));
                     // And then the following can be skipped
                     continue;
                 }
@@ -404,7 +436,7 @@ public class ScenarioLogic extends GameLogic {
             }
 
             // Finally, add the request to requests
-            requests.add(newRequest);
+            requestPool.add(newRequest);
         }
     }
 
@@ -467,5 +499,13 @@ public class ScenarioLogic extends GameLogic {
         gameRenderer.addEntity(newCook);
 
 
+    }
+
+    public void setAllowDuplicateRequests(boolean allowDuplicateRequests) {
+        this.allowDuplicateRequests = allowDuplicateRequests;
+    }
+
+    public void setRequestTarget(int customNumber) {
+        this.requestTarget = Math.max(0, customNumber);
     }
 }
