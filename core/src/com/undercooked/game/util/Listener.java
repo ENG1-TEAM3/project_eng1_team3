@@ -1,7 +1,5 @@
 package com.undercooked.game.util;
 
-public class Listener<T> {
-    public void tell(T value) {
-
-    }
+public abstract class Listener<T> {
+    public abstract void tell(T value);
 }
