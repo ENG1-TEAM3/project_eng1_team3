@@ -145,18 +145,33 @@ public class GameRenderer {
                 MapEntity interactEntity = interactTarget.getMapEntity();
                 Rectangle interactBox = interactEntity.getInteractBox();
                 // If the station target is null, then draw it red.
-                // if it's disabled, draw it green to show it can be bought.
+                // if it's disabled or a phone, draw it green to show it can be bought.
                 // Otherwise, draw it yellow.
                 if (currentCook.getStationTarget() == null) {
                     interactSprite.setColor(Color.RED);
-                } else if (currentCook.getStationTarget().isDisabled()) {
+                } else if (currentCook.getStationTarget().isDisabled() || currentCook.getStationTarget().getID().equals(Constants.PHONE_ID)) {
                     interactSprite.setColor(Color.GREEN);
                     // If this is the case, also draw the price of the station.
                     font.getData().setScale(0.6f);
-                    text.setText(font, String.format("%.2f", currentCook.getStationTarget().getPrice()/100f));
-                    batch.begin();
-                    font.draw(batch, text, interactBox.x + interactBox.width/2f - text.width/2f, interactBox.y + interactBox.height/2f);
-                    batch.end();
+                    int price = -1;
+                    // Depending on if it's disabled, or a phone, change which price to use
+                    if (currentCook.getStationTarget().isDisabled()) {
+                        price = currentCook.getStationTarget().getPrice();
+                    } else if (currentCook.getStationTarget().getID().equals(Constants.PHONE_ID)) {
+                        price = logic.getCookCost();
+                    }
+                    // Only draw the price if it's >= 0
+                    if (price >= 0) {
+                        text.setText(font, String.format("%.2f", price / 100f));
+                        float drawX = interactBox.x + interactBox.width / 2f - text.width / 2f,
+                                drawY = interactBox.y + interactBox.height / 2f;
+                        shape.begin(ShapeRenderer.ShapeType.Filled);
+                        shape.rect(drawX - 5, drawY - text.height - 5, text.width + 10, text.height + 10);
+                        shape.end();
+                        batch.begin();
+                        font.draw(batch, text, drawX, drawY);
+                        batch.end();
+                    }
                 }
                 else {
                     interactSprite.setColor(Color.YELLOW);

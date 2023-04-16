@@ -334,6 +334,34 @@ public class Map {
         return offsetY;
     }
 
+    public MapCell randomOpenCellRange(int x, int y, int width, int height) {
+        // Make an array of open cells
+        Array<MapCell> openCells = new Array<>();
+        // Loop through the locations, and add them to the array if they're open cells
+        // (Those being cells with no collision)
+        for (int i = x ; i < x + width ; i++) {
+            for (int j = y ; j < y + height ; j++) {
+                MapCell thisCell = getCellFull(i,j);
+                if (!thisCell.isCollidable()) {
+                    openCells.add(thisCell);
+                }
+            }
+        }
+        // If the array is empty, return nothing
+        if (openCells.size == 0) return null;
+
+        // Otherwise return a random cell
+        return openCells.random();
+    }
+    public MapCell randomOpenCell() {
+        return randomOpenCellRange(offsetX, offsetY, width-1, height-1);
+    }
+
+    public MapCell randomOpenCellFull() {
+        return randomOpenCellRange(0,0,fullWidth,fullHeight);
+    }
+
+
 
     public enum CollisionType {
         COLLIDABLE,

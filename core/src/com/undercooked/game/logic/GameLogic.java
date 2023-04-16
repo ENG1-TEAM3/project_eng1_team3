@@ -44,6 +44,8 @@ public abstract class GameLogic {
     public int startReputation;
     /** How much money the player has. */
     public int money;
+    /** How much a {@link Cook} costs to get. */
+    protected int cookCost;
 
     protected Customer displayCustomer;
 
@@ -153,7 +155,6 @@ public abstract class GameLogic {
             gameRenderer.addEntity(mapEntity);
             mapEntity.load(textureManager);
         }
-        cookController.load(Constants.GAME_TEXTURE_ID);
         // Load the cooks into the renderer
         for (Entity cook : cookController.getCooks()) {
             gameRenderer.addEntity(cook);
@@ -287,6 +288,10 @@ public abstract class GameLogic {
 
     public int getMoney() {
         return money;
+    }
+
+    public int getCookCost() {
+        return cookCost;
     }
 
     public void reset() {

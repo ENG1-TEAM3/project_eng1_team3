@@ -1,5 +1,6 @@
 package com.undercooked.game.logic;
 
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.ObjectMap;
@@ -16,6 +17,7 @@ import com.undercooked.game.food.Request;
 import com.undercooked.game.load.LoadResult;
 import com.undercooked.game.map.MapCell;
 import com.undercooked.game.map.MapEntity;
+import com.undercooked.game.map.MapManager;
 import com.undercooked.game.map.Register;
 import com.undercooked.game.screen.GameScreen;
 import com.undercooked.game.util.Constants;
@@ -112,6 +114,14 @@ public class ScenarioLogic extends GameLogic {
             }
         });
 
+        cookController.setInteractPhoneListener(new Listener<MapCell>() {
+            @Override
+            public void tell(MapCell value) {
+                System.out.println("Trying to buy cook");
+                buyCook();
+            }
+        });
+
         this.gameType = GameType.SCENARIO;
         this.leaderboardName = "Scenario";
     }
@@ -180,6 +190,8 @@ public class ScenarioLogic extends GameLogic {
         map.loadFloor(textureManager, Constants.GAME_TEXTURE_ID);
         // Find the registers on the map for the Customers
         customerController.findRegisters();
+        // Load all the Cook textures
+        cookController.loadAll(Constants.GAME_TEXTURE_ID);
     }
 
     @Override
@@ -276,6 +288,9 @@ public class ScenarioLogic extends GameLogic {
 
         // Set the leaderboard name
         leaderboardName = scenarioData.getString("name");
+
+        // Set the cook's price
+        cookCost = scenarioData.getInt("cook_cost");
 
         // And call loadScenarioContents
         loadScenarioContents(scenarioData);
@@ -428,5 +443,29 @@ public class ScenarioLogic extends GameLogic {
             customerController.spawnCustomer(newRequest);
             requests.removeValue(newRequest, true);
         }
+    }
+
+    public void buyCook() {
+        // If the cook price > 0...
+        if (cookCost < 0) return;
+        // And the money the player has is enough...
+        if (money < cookCost) return;
+
+        // Get a random open cell
+        MapCell openCell = map.randomOpenCell();
+        // If it's null, then stop as there's no cell to add a cook to
+        if (openCell == null) return;
+
+        // If all the above is valid, take the money and add the cook
+        money -= cookCost;
+        Random random = new Random();
+        Cook newCook = new Cook(new Vector2(openCell.getDisplayX() + MapManager.gridToPos(0), openCell.getDisplayY() + MapManager.gridToPos(0.5f)),
+                random.nextInt(1,Constants.NUM_COOK_TEXTURES+1),
+                textureManager, map);
+        newCook.postLoad(textureManager);
+        cookController.addCook(newCook);
+        gameRenderer.addEntity(newCook);
+
+
     }
 }

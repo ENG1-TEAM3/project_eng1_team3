@@ -157,6 +157,10 @@ public final class DefaultJson {
         // The speed at which the customers move at
         root.addValue(new JsonFloat("customer_speed", 1.5F));
 
+        // The money needed to get another cook
+        // Anything < 0 means they can't get another cook
+        root.addValue(new JsonInt("cook_cost", -1));
+
         return root;
     }
 

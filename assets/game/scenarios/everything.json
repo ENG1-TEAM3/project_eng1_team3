@@ -29,5 +29,6 @@
   ],
   "reputation": 10,
   "spawn_timer": 0,
-  "customer_speed": 3
+  "customer_speed": 3,
+  "cook_cost": 200
 }

@@ -48,6 +48,7 @@ public class Cook extends MoveableEntity {
 	Map map;
 	protected Listener<Cook> serveListener;
 	protected Listener<MapCell> interactRegisterListener;
+	protected Listener<MapCell> interactPhoneListener;
 	protected Listener<Integer> moneyUsedListener;
 	protected Observer<Integer> moneyObserver;
 
@@ -148,6 +149,23 @@ public class Cook extends MoveableEntity {
 		}
 
 
+		/// Custom station interactions
+		// If it's a phone...
+		if (stationTarget.getID().equals(Constants.PHONE_ID)) {
+			// Then check if the player is interacting with it
+			if (InputController.isKeyJustPressed("interact")) {
+				// If they are, and the listener for it isn't null, then tell
+				// the phone interaction listener that it has been interacted with
+				if (interactPhoneListener != null) {
+					interactPhoneListener.tell(interactTarget);
+				}
+				return;
+			}
+
+			// Phones can not have any other interactions
+			return;
+		}
+
 		// If it's a Register...
 		if (stationTarget.getID().equals(Constants.REGISTER_ID)) {
 			// Then do a few custom checks
@@ -175,7 +193,9 @@ public class Cook extends MoveableEntity {
 			return;
 		}
 
-		// Check for custom interactions
+
+		// Station interactions
+		// Check for station interactions
 		if (InputController.isKeyJustPressed("take")) {
 			// If the station has an item, take it
 			if (stationTarget.items.size() > 0) {
@@ -321,52 +341,6 @@ public class Cook extends MoveableEntity {
 	}
 
 	/**
-	 * Put down the item on the top of the stack
-	 */
-	public void dropItem() {
-		if (heldItems.size() == 1) {
-			holding = false;
-			setWalkTexture("entities/cook_walk_" + cookno + ".png");
-		}
-		if (heldItems.size() > 0) {
-			heldItems.pop();
-		}
-		if (heldItems.size() == 0) {
-			holding = false;
-			setWalkTexture("entities/cook_walk_" + cookno + ".png");
-		}
-	}
-
-	public boolean full() {
-		return heldItems.size() >= MAX_STACK_SIZE;
-	}
-
-	/**
-	 * Draw bottom of cook
-	 * @param batch - spritebatch to draw with
-	 */
-	/*public void draw_bot(SpriteBatch batch) {
-		batch.draw(currentFrame[1][0], pos.x, pos.y, 64, 64);
-	}*/
-
-	/**
-	 * Draw top of cook
-	 * @param batch - spritebatch to draw with
-	 */
-	/*public void draw_top(SpriteBatch batch) {
-		batch.draw(currentFrame[0][0], pos.x, pos.y + 64, 64, 64);
-	}*/
-
-	/**
-	 * Draw top of cook at a certain position - used for the display in the top right
-	 * @param batch - spritebatch to draw with
-	 * @param position - position in pixels to draw at
-	 */
-	/*public void draw_top(SpriteBatch batch, Vector2 position) {
-		batch.draw(currentFrame[0][0], position.x, position.y + 128, 128, 128);
-	}*/
-
-	/**
 	 * Draw the {@link Cook}.
 	 * @param batch
 	 */
@@ -427,41 +401,6 @@ public class Cook extends MoveableEntity {
 		}*/
 		walkAnimation = new Animation<>(0.09f, spriteSheet[row]);
 		currentFrame = walkAnimation.getKeyFrame(stateTime, true);
-	}
-
-	/**
-	 * Check collision with collide tiles at a certain coordinate
-	 * @param cookx - cook x pixel coordinate
-	 * @param cooky - cook y pixel coordinate
-	 * @param cltiles - 2d Collision tiles array
-	 * @return True if the cook can move, false if they cant
-	 */
-	public Boolean checkCollision(float cookx, float cooky, CollisionTile[][] cltiles) {
-		if (cooky - 10 < 0) {
-			return false;
-		}
-		int wid = cltiles.length;
-		int hi = cltiles[0].length;
-		for (int x = 0; x < wid; x++) {
-			for (int y = 0; y < hi; y++) {
-				if (cltiles[x][y] != null) {
-					if (Intersector.overlaps(cltiles[x][y].returnRect(), this.getCollideBoxAtPosition(cookx, cooky))) {
-						return false;
-					}
-				}
-			}
-		}
-		return true;
-	}
-
-	/**
-	 * Return a rectangle which is the hitbox of the cook at a certain coordinate
-	 * @param x - x pixel coordinate
-	 * @param y - y pixel coordinate
-	 * @return Rectangle object of the cook hitbox
-	 */
-	Rectangle getCollideBoxAtPosition(float x, float y) {
-		return new Rectangle(x + 12, y - 10, 40, 25);
 	}
 
 	/**

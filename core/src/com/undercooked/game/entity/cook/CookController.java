@@ -19,7 +19,6 @@ import com.undercooked.game.util.Observer;
  */
 public class CookController {
 
-
     private class CookData {
         public Cook cook;
         public Vector2 startPos;
@@ -39,6 +38,7 @@ public class CookController {
     /** The served listener to call when a {@link Cook} serves at a register. */
     private Listener<Cook> serveListener;
     private Listener<MapCell> interactRegister;
+    private Listener<MapCell> interactPhone;
     private Listener<Integer> moneyUsedListener;
     /** An {@link Observer} to find what the money is. */
     private Observer<Integer> moneyObserver;
@@ -68,6 +68,7 @@ public class CookController {
         cooks.add(cook);
         cook.serveListener = serveListener;
         cook.interactRegisterListener = interactRegister;
+        cook.interactPhoneListener = interactPhone;
         cook.moneyUsedListener = moneyUsedListener;
         cook.moneyObserver = moneyObserver;
     }
@@ -246,6 +247,14 @@ public class CookController {
         // Make sure to update it for all cooks
         for (Cook cook : cooks) {
             cook.interactRegisterListener = mapCellListener;
+        }
+    }
+
+    public void setInteractPhoneListener(Listener<MapCell> mapCellListener) {
+        this.interactPhone = mapCellListener;
+        // Make sure to update it for all cooks
+        for (Cook cook : cooks) {
+            cook.interactPhoneListener = mapCellListener;
         }
     }
 

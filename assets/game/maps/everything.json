@@ -143,6 +143,11 @@
       "y": 0,
       "price": 200,
       "base_texture": "<main>:station/blank.png"
+    },
+    {
+      "station_id": "<main>:phone",
+      "x": 0,
+      "y": 1
     }],
   "cooks": [
     {

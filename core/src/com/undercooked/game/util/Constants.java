@@ -64,6 +64,8 @@ public final class Constants {
     public static final String PLAY_TEXTURE_ID = "play";
     /** The register id, used for finding where {@link com.undercooked.game.entity.customer.Customer}s need to wait. */
     public static final String REGISTER_ID = "<main>:register";
+    /** The phone id, used for the cell where the player gets more {@link com.undercooked.game.entity.cook.Cook}s. */
+    public static final String PHONE_ID = "<main>:phone";
 
     // Music and Sounds
     /** {@link com.undercooked.game.assets.AudioManager} group for the game's Music. */
