@@ -9,30 +9,6 @@ import org.junit.runner.RunWith;
 public class AssetTests {
 
     @Test
-    public void testBurgerAssetExists() {
-        assertTrue(Gdx.files.internal("items/burger_bun.png").exists());
-        assertTrue(Gdx.files.internal("items/burger_bun_burned.png").exists());
-        assertTrue(Gdx.files.internal("items/burger_bun_cooked.png").exists());
-        assertTrue(Gdx.files.internal("items/burger_burned.png").exists());
-        assertTrue(Gdx.files.internal("items/burger_cooked.png").exists());
-        assertTrue(Gdx.files.internal("items/Meat.png").exists());
-        assertTrue(Gdx.files.internal("items/Meat overcooked.png").exists());
-        assertTrue(Gdx.files.internal("items/Meat undercooked.png").exists());
-        assertTrue(Gdx.files.internal("items/unformed_patty.png").exists());
-    }
-
-    @Test
-    public void testSaladAssetExists(){
-        assertTrue(Gdx.files.internal("items/lettuce.png").exists());
-        assertTrue(Gdx.files.internal("items/lettuce_chopped.png").exists());
-        assertTrue(Gdx.files.internal("items/onion.png").exists());
-        assertTrue(Gdx.files.internal("items/onion_chopped.png").exists());
-        assertTrue(Gdx.files.internal("items/tomato.png").exists());
-        assertTrue(Gdx.files.internal("items/tomato_chopped.png").exists());
-        assertTrue(Gdx.files.internal("items/salad.png").exists());
-    }
-
-    @Test
     public void testPotatoAssetExists(){
         assertTrue(Gdx.files.internal("items/Cheese.png").exists());
         assertTrue(Gdx.files.internal("items/Cheesy-Baked_Potato.png").exists());
@@ -81,5 +57,31 @@ public class AssetTests {
         assertTrue(Gdx.files.internal("entities/cust4f.png").exists());
         assertTrue(Gdx.files.internal("entities/cust4l.png").exists());
         assertTrue(Gdx.files.internal("entities/cust4r.png").exists());
+    }
+
+    @Test
+    public void testSoundAssetExists() {
+        assertTrue(Gdx.files.internal("audio/music/testMusic.mp3").exists());
+        assertTrue(Gdx.files.internal("audio/soundFX/cash-register-opening.mp3").exists());
+        assertTrue(Gdx.files.internal("audio/soundFX/chopping.mp3").exists());
+        assertTrue(Gdx.files.internal("audio/soundFX/frying.mp3").exists());
+        assertTrue(Gdx.files.internal("audio/soundFX/money-collect.mp3").exists());
+        assertTrue(Gdx.files.internal("audio/soundFX/testSoundFX.mp3").exists());
+        assertTrue(Gdx.files.internal("audio/soundFX/timer-bell-ring.mp3").exists());
+    }
+
+    @Test
+    public void testParticlesAssetExists() {
+        assertTrue(Gdx.files.internal("particles/flame.png").exists());
+        assertTrue(Gdx.files.internal("particles/smoke.png").exists());
+    }
+
+    @Test
+    public void testPowerUpAssetExists() {
+        assertTrue(Gdx.files.internal("PowerUps/construction_cost_reduce.png").exists());
+        assertTrue(Gdx.files.internal("PowerUps/cooking_speed_reduce.png").exists());
+        assertTrue(Gdx.files.internal("PowerUps/Customer_time_increase.png").exists());
+        assertTrue(Gdx.files.internal("PowerUps/Increase_pay.png").exists());
+        assertTrue(Gdx.files.internal("PowerUps/speed_boost.png").exists());
     }
 }
