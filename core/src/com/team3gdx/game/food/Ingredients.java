@@ -23,9 +23,9 @@ public class Ingredients {
 		burnedPatty.flipped = true;
 	}
 	//Dairy
-	public static Ingredient cheese = new Ingredient(null, 32, 32, "cheese", 1, 0);
+	public static Ingredient cheese = new Ingredient(null, 32, 32, "Cheese", 1, 0);
 	//Chopped Dairy
-	public static Ingredient cheeseChopped = new Ingredient(null, 32, 32, "cheese", 1, 0);
+	public static Ingredient cheeseChopped = new Ingredient(null, 32, 32, "Cheese", 1, 0);
 	static {
 		cheeseChopped.slices = 1;
 	}
