@@ -130,4 +130,28 @@
   </properties>
   <image width="64" height="64" source="art_images/emptygrill.png"/>
  </tile>
+ <tile id="34">
+ <properties>
+   <property name="Station" value="cheese"/>
+  </properties>
+  <image width="128" height="64" source="art_images/cheese_station.png"/>
+  </tile>
+  <tile id="35">
+ <properties>
+   <property name="Station" value="sauce"/>
+  </properties>
+  <image width="64" height="64" source="art_images/sauce-station.png"/>
+  </tile>
+  <tile id="36">
+ <properties>
+   <property name="Station" value="dough"/>
+  </properties>
+  <image width="64" height="64" source="art_images/dough_station.png"/>
+  </tile>
+  <tile id="37">
+ <properties>
+   <property name="Station" value="potato"/>
+  </properties>
+  <image width="64" height="64" source="art_images/PotatoStation.png"/>
+  </tile>
 </tileset>
