@@ -15,14 +15,40 @@ public class ControlTests extends Control {
 
     @Test
     public void testKeyDown(){
+        // one key down
         keyDown(Keys.DOWN);
         assertTrue(down);
+        assertFalse(up);
+        assertFalse(right);
+        assertFalse(left);
+
+        // multiple keys down
+        keyDown(Keys.UP);
+        keyDown(Keys.A);
+        assertTrue(down);
+        assertTrue(up);
+        assertFalse(right);
+        assertTrue(left);
     }
 
     @Test
     public void testKeyUp(){
+        // Put keys down first
+        testKeyDown();
+        // Raise one key
         keyUp(Keys.DOWN);
         assertFalse(down);
+        assertTrue(up);
+        assertFalse(right);
+        assertTrue(left);
+
+        // Raise all keys
+        keyUp(Keys.UP);
+        keyUp(Keys.A);
+        assertFalse(down);
+        assertFalse(up);
+        assertFalse(right);
+        assertFalse(left);
     }
     @Test
     public void testKeyTyped(){
