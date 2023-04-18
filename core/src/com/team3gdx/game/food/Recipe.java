@@ -6,7 +6,6 @@ import java.util.Stack;
 
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 
 /**
@@ -28,7 +27,7 @@ public class Recipe extends Ingredient {
 	/**
 	 * Whether the recipe has to be made in order (specific order of ingredients).
 	 */
-	private boolean shouldBeOrdered;
+	public boolean shouldBeOrdered;
 	/**
 	 * Additional instructions.
 	 */
@@ -69,8 +68,6 @@ public class Recipe extends Ingredient {
 		this.shouldBeOrdered = shouldBeOrdered;
 		this.cost = cost;
 	}
-
-	ShapeRenderer shapeRenderer = new ShapeRenderer();
 
 	/**
 	 * Show the recipe as a list of instructions with the corresponding ingredient
@@ -125,9 +122,14 @@ public class Recipe extends Ingredient {
 		if (givenIngredients.size() != toCheck.size())
 			return false;
 		if (shouldBeOrdered) {
-			for (int i = 0; i < toCheck.size(); i++)
-				if (!toCheck.get(i).equals(givenIngredients.get(i)))
+			System.out.println("NOW");
+			for (int i = 0; i < toCheck.size(); i++) {
+				if (!toCheck.get(i).equals(givenIngredients.get(i))) {
+					System.out.println(toCheck.get(i).name);
+					System.out.println(givenIngredients.get(i).name);
 					return false;
+				}
+			}
 			return true;
 		}
 
@@ -150,7 +152,7 @@ public class Recipe extends Ingredient {
 	 * @param ingredients     The list of ingredients to search through.
 	 * @return A boolean to indicate if the ingredient matches one in the list.
 	 */
-	private boolean contains(Ingredient checkIngredient, ArrayList<Ingredient> ingredients) {
+	public boolean contains(Ingredient checkIngredient, ArrayList<Ingredient> ingredients) {
 		for (Ingredient ingredient : ingredientInstructions.keySet()) {
 			if (ingredient.equals(checkIngredient)) {
 				return true;
