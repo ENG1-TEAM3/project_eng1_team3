@@ -154,4 +154,28 @@
   </properties>
   <image width="64" height="64" source="art_images/PotatoStation.png"/>
   </tile>
+  <tile id="38">
+ <properties>
+   <property name="Station" value="Prep"/>
+  </properties>
+  <image width="128" height="64" source="art_images/Empty_prep.png"/>
+  </tile>
+  <tile id="39">
+ <properties>
+   <property name="Station" value="Baking"/>
+  </properties>
+  <image width="64" height="64" source="art_images/Empty_grill.png"/>
+  </tile>
+  <tile id="40">
+ <properties>
+   <property name="Station" value="Frying"/>
+  </properties>
+  <image width="64" height="64" source="art_images/empty_frying.png"/>
+  </tile>
+  <tile id="41">
+ <properties>
+   <property name="Station" value="Chopping"/>
+  </properties>
+  <image width="128" height="64" source="art_images/Cutting_empty.png"/>
+  </tile>
 </tileset>
