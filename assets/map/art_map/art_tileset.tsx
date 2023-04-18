@@ -140,7 +140,7 @@
  <properties>
    <property name="Station" value="sauce"/>
   </properties>
-  <image width="64" height="64" source="art_images/sauce-station.png"/>
+  <image width="64" height="64" source="art_images/Sauce-Station.png"/>
   </tile>
   <tile id="36">
  <properties>
