@@ -12,22 +12,38 @@
         "type": "forget_input"
       },
       {
-        "type": "wait",
-        "time": 3
-      },
-      {
         "type": "timed_input",
         "value": "interact",
-        "time": 30,
+        "time": 4,
         "success": [
           {
-            "type": "wait",
-            "time": 3
-          },
-          {
-            "type": "set",
-            "value": "<main>:potato_cooked_cut"
-          },
+            "type": "timed_input",
+            "value": "interact",
+            "time": 4,
+            "success": [
+              {
+                "type": "timed_input",
+                "value": "interact",
+                "time": 4,
+                "success": [
+                  {
+                    "type": "timed_input",
+                    "value": "interact",
+                    "time": 4,
+                    "success": [
+                      {
+                        "type": "set",
+                        "value": "<main>:potato_cooked_cut"
+                      }
+                    ],
+                    "sound": "<main>:chopping.mp3"
+                  }
+                ],
+                "sound": "<main>:chopping.mp3"
+              }
+            ],
+            "sound": "<main>:chopping.mp3"
+          }
         ],
         "sound": "<main>:chopping.mp3"
       },

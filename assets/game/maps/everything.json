@@ -24,13 +24,13 @@
       "base_texture": "<main>:station/cupboard.png"
     },
     {
-      "station_id": "<main>:counter",
+      "station_id": "<main>:pantry/cheese_pantry",
       "x": 7,
       "y": 14,
       "base_texture": "<main>:station/cupboard.png"
     },
     {
-      "station_id": "<main>:counter",
+      "station_id": "<main>:pantry/dough_pantry",
       "x": 8,
       "y": 14,
       "base_texture": "<main>:station/cupboard.png"

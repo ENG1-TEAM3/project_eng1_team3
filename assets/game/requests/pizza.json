@@ -1,0 +1,35 @@
+{
+  "item_id": "<main>:pizza",
+  "value": 300,
+  "time": 50,
+  "instructions": [
+    {
+      "texture_path": "<main>:item/dough.png",
+      "text": "Grab Dough"
+    },
+    {
+      "texture_path": "<main>:item/dough_formed.png",
+      "text": "Form Dough at Preparation Station"
+    },
+    {
+      "texture_path": "<main>:item/tomato.png",
+      "text": "Grab Tomato"
+    },
+    {
+      "texture_path": "<main>:item/tomato_sauce.png",
+      "text": "Make Tomato Sauce at Preparation Station"
+    },
+    {
+      "texture_path": "<main>:item/cheese.png",
+      "text": "Grab Cheese"
+    },
+    {
+      "texture_path": "<main>:item/pizza_uncooked.png",
+      "text": "Combine all at Preparation Station"
+    },
+    {
+      "texture_path": "<main>:station/ovtopcln.png",
+      "text": "Cook the Pizza"
+    }
+  ]
+}

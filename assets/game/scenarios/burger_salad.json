@@ -3,9 +3,9 @@
   "name": "Tri burger, Tri salad",
   "description": "You have 3 Cooks to make 3 Burgers and 3 Salads.",
   "interactions": [
-    "<main>:preparation/form_patty",
-    "<main>:preparation/make_burger",
-    "<main>:preparation/make_salad",
+    "<main>:preparation/patty_form",
+    "<main>:preparation/burger_make",
+    "<main>:preparation/salad_make",
     "<main>:pantry/tomato_pantry",
     "<main>:pantry/onion_pantry",
     "<main>:pantry/lettuce_pantry",
@@ -14,8 +14,8 @@
     "<main>:cutting/lettuce_chop",
     "<main>:cutting/tomato_chop",
     "<main>:cutting/onion_chop",
-    "<main>:grill/cook_bun",
-    "<main>:oven/cook_patty",
+    "<main>:grill/bun_cook",
+    "<main>:oven/patty_cook",
     "<main>:bin"
   ],
   "requests": [
