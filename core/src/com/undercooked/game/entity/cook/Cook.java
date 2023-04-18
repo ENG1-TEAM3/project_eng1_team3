@@ -371,9 +371,12 @@ public class Cook extends MoveableEntity {
 
 	public void drawHeldItems(SpriteBatch batch) {
 		int itemIndex = 0;
+		int currentOffset = 0;
 		for (Item item : heldItems) {
 			//if (ingredient.sprite.getTexture() != null) {
-			batch.draw(item.sprite, pos.x + 16, pos.y + 112 + itemIndex * 8, 32, 32);
+			item.draw(batch, pos.x + 32 - item.getWidth()/2f, pos.y + 112 + currentOffset);
+			// batch.draw(item.sprite, pos.x + 16, pos.y + 112 + itemIndex * 8, 32, 32);
+			currentOffset += item.getHeight()/2f;
 			itemIndex++;
 			//}
 		}

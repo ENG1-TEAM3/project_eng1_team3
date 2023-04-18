@@ -1,4 +1,6 @@
 {
   "name": "Patty",
-  "texture_path": "<main>:item/patty.png"
+  "texture_path": "<main>:item/patty.png",
+  "width": 32,
+  "height": 32
 }

@@ -55,6 +55,10 @@ public final class DefaultJson {
         root.addValue(new JsonString("name", null));
         root.addValue(new JsonString("texture_path", null));
         root.addValue(new JsonInt("value", 0));
+
+        // The draw width / height of the food item
+        root.addValue(new JsonFloat("width", -1f));
+        root.addValue(new JsonFloat("height", -1f));
         return root;
     }
 

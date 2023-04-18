@@ -42,10 +42,12 @@ public class Items {
 			return null;
 		}
 		JsonFormat.formatJson(ingredientRoot, DefaultJson.itemFormat());
-		return addItem(assetPath,
+		Item newItem = addItem(assetPath,
 				ingredientRoot.getString("name"),
 				ingredientRoot.getString("texture_path"),
 				ingredientRoot.getInt("value"));
+		newItem.setSize(ingredientRoot.getFloat("width"), ingredientRoot.getFloat("height"));
+		return newItem;
 	}
 
 	public Item getItem(String itemID) {

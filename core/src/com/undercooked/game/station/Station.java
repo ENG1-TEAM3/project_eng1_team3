@@ -127,8 +127,8 @@ public class Station extends MapEntity {
 		// Then draw the items on top of the station
 		for (int i = 0 ; i < items.size() ; i++) {
 			Vector2 itemPos = itemPos(i);
-			batch.draw(items.get(i).sprite, pos.x + sprite.getWidth()/4 + itemPos.x, pos.y + sprite.getHeight()/4 + itemPos.y,
-					32, 32);
+			Item thisItem = items.get(i);
+			thisItem.draw(batch, pos.x + sprite.getWidth()/2f + itemPos.x - thisItem.getWidth()/2f, pos.y + sprite.getHeight()/2f + itemPos.y - thisItem.getHeight()/2f);
 		}
 		// If it's disabled, reset the draw colour and stop
 		if (disabled) {
