@@ -11,13 +11,13 @@ public class AssetTests {
     @Test
     public void testPotatoAssetExists(){
         assertTrue(Gdx.files.internal("items/Cheese.png").exists());
-        assertTrue(Gdx.files.internal("items/Cheesy-Baked_Potato.png").exists());
-        assertTrue(Gdx.files.internal("items/Cooked_Potato.png").exists());
+        assertTrue(Gdx.files.internal("items/Jacket_potato.png").exists());
+        assertTrue(Gdx.files.internal("items/potato_cooked.png").exists());
         assertTrue(Gdx.files.internal("items/Cut_Cooked_Potato.png").exists());
-        assertTrue(Gdx.files.internal("items/GratedCheese.png").exists());
+        assertTrue(Gdx.files.internal("items/cheese_chopped.png").exists());
         assertTrue(Gdx.files.internal("items/Mushy_Grated_Cheese.png").exists());
         assertTrue(Gdx.files.internal("items/Potato.png").exists());
-        assertTrue(Gdx.files.internal("items/Burnt-Potato.png").exists());
+        assertTrue(Gdx.files.internal("items/potato_burned.png").exists());
     }
 
     @Test
