@@ -21,7 +21,7 @@ public class AssetTests {
     }
 
     @Test
-    public void testPizzaAssetExists(){
+    public void testPizzaAssetExists() {
         assertTrue(Gdx.files.internal("items/burned_pizza.png").exists());
         assertTrue(Gdx.files.internal("items/Dough.png").exists());
         assertTrue(Gdx.files.internal("items/Dough_Tomato.png").exists());
@@ -83,5 +83,13 @@ public class AssetTests {
         assertTrue(Gdx.files.internal("PowerUps/Customer_time_increase.png").exists());
         assertTrue(Gdx.files.internal("PowerUps/Increase_pay.png").exists());
         assertTrue(Gdx.files.internal("PowerUps/speed_boost.png").exists());
+    }
+
+    @Test
+    public void testDifficultyButtonAssetExists(){
+        assertTrue(Gdx.files.internal("uielements/button_easy.png").exists());
+        assertTrue(Gdx.files.internal("uielements/button_endless.png").exists());
+        assertTrue(Gdx.files.internal("uielements/button_medium.png").exists());
+        assertTrue(Gdx.files.internal("uielements/button_hard.png").exists());
     }
 }
