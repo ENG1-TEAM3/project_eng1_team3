@@ -122,11 +122,8 @@ public class Recipe extends Ingredient {
 		if (givenIngredients.size() != toCheck.size())
 			return false;
 		if (shouldBeOrdered) {
-			System.out.println("NOW");
 			for (int i = 0; i < toCheck.size(); i++) {
 				if (!toCheck.get(i).equals(givenIngredients.get(i))) {
-					System.out.println(toCheck.get(i).name);
-					System.out.println(givenIngredients.get(i).name);
 					return false;
 				}
 			}
