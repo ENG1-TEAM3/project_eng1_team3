@@ -99,7 +99,7 @@ public class StationManager {
 			takeIngredientStation(pos, Ingredients.potato);
 			break;
 		case "dough":
-			takeIngredientStation(pos, Ingredients.dough);
+			takeIngredientStation(pos, Ingredients.unformedDough);
 			break;
 		case "Frying":
 			checkStationExists(pos, new FryingStation(pos));
@@ -110,11 +110,10 @@ public class StationManager {
 			if (!stations.containsKey(pos)) {
 				stations.put(pos, new PrepStation(pos));
 			}
-
 			placeIngredientStation(pos);
 			PrepStation station = ((PrepStation) stations.get(pos));
 			station.lockCook();
-
+			
 			break;
 		case "Chopping":
 			if (!stations.containsKey(pos)) {
@@ -138,7 +137,6 @@ public class StationManager {
 
 			((ServingStation) stations.get(pos)).serveCustomer();
 			placeIngredientStation(pos);
-
 			break;
 		case "Bin":
 			if (!GameScreen.cook.heldItems.empty()) {
