@@ -1,5 +1,7 @@
 package com.team3gdx.game.tests.food;
 
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector2;
 import com.team3gdx.game.food.Ingredient;
 import com.team3gdx.game.food.Ingredients;
 import com.team3gdx.game.food.Recipe;
@@ -7,6 +9,7 @@ import com.team3gdx.game.tests.GdxTestRunner;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -70,15 +73,29 @@ public class RecipeTests {
 
     }
 
+    @Test
+    public void testDisplayRecipe() {
+        SpriteBatch batch = mock(SpriteBatch.class);
 
-     //   for (Ingredient ingredient : givenIngredients) {
-     //       if (contains(ingredient, toCheck)) {
-     //           toCheck.remove(ingredient);
-     //       }
-     //   }
-     //   if (toCheck.isEmpty())
-      //      return true;
+        Map<Ingredient, String> SALAD_STEPS = new HashMap<Ingredient, String>();
+        SALAD_STEPS.put(Ingredients.tomatoChopped, "Cut");
+        SALAD_STEPS.put(Ingredients.onionChopped, "Cut");
+        SALAD_STEPS.put(Ingredients.lettuceChopped, "Cut");
+        Recipe recipe = new Recipe("", null, SALAD_STEPS, "serve together", "salad", false, null, 32, 32, 0);
 
-       // return false;
+        recipe.displayRecipe(batch, new Vector2(64, 256));
+        verify(batch, atLeastOnce()).begin();
+        verify(batch, atLeastOnce()).end();
 
+
+        Map<Ingredient, String> BURGER_STEPS = new HashMap<Ingredient, String>();
+        BURGER_STEPS.put(Ingredients.cooked_bun, "Toast");
+        BURGER_STEPS.put(Ingredients.cookedPatty, "Fry");
+
+        Recipe recipe2 =  new Recipe("Form patty", Ingredients.unformedPatty, BURGER_STEPS, "serve together",
+                        "burger", false, null, 32, 32, 0);
+        recipe2.displayRecipe(batch, new Vector2(64, 256));
+        verify(batch, atLeastOnce()).begin();
+        verify(batch, atLeastOnce()).end();
+    }
 }
