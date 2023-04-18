@@ -89,6 +89,18 @@ public class StationManager {
 		case "Onions":
 			takeIngredientStation(pos, Ingredients.onion);
 			break;
+		case "cheese":
+			takeIngredientStation(pos, Ingredients.cheese);
+			break;
+		case "sauce":
+			takeIngredientStation(pos, Ingredients.tomato_sauce);
+			break;
+		case "potato":
+			takeIngredientStation(pos, Ingredients.potato);
+			break;
+		case "dough":
+			takeIngredientStation(pos, Ingredients.dough);
+			break;
 		case "Frying":
 			checkStationExists(pos, new FryingStation(pos));
 			((CookingStation) stations.get(pos)).checkCookingStation(batch);
