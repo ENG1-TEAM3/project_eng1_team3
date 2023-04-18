@@ -7,9 +7,11 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
+import com.team3gdx.game.entity.CustomerController;
 import com.team3gdx.game.food.Ingredient;
 import com.team3gdx.game.food.Ingredients;
 import com.team3gdx.game.screen.GameScreen;
+import com.team3gdx.game.util.GameMode;
 
 /**
  * 
@@ -72,7 +74,7 @@ public class StationManager {
 	 * @param type The station type.
 	 * @param pos  The position of the tile.
 	 */
-	public void checkInteractedTile(String type, Vector2 pos) {
+	public void checkInteractedTile(String type, Vector2 pos, CustomerController customerController, GameMode gameMode) {
 		switch (type) {
 		case "Buns":
 			takeIngredientStation(pos, Ingredients.bun);
@@ -121,7 +123,7 @@ public class StationManager {
 			break;
 		case "Service":
 			if (!stations.containsKey(pos)) {
-				stations.put(pos, new ServingStation(pos));
+				stations.put(pos, new ServingStation(pos, customerController, gameMode));
 			}
 
 			((ServingStation) stations.get(pos)).serveCustomer();

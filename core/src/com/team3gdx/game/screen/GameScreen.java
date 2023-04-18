@@ -39,13 +39,15 @@ import com.team3gdx.game.food.Menu;
 import com.team3gdx.game.station.StationManager;
 import com.team3gdx.game.util.CollisionTile;
 import com.team3gdx.game.util.Control;
+import com.team3gdx.game.util.GameMode;
 
 public class GameScreen implements Screen {
 
-	public static final int NUMBER_OF_WAVES = 5;
+	public int NUMBER_OF_WAVES = 5;
 
 	final MainGameClass game;
 	final MainScreen ms;
+	private final GameMode gameMode;
 
 	public static int currentWave = 0;
 
@@ -115,9 +117,11 @@ public class GameScreen implements Screen {
 	 * @param game - Main entry point class
 	 * @param ms   - Title screen class
 	 */
-	public GameScreen(MainGameClass game, MainScreen ms) {
+	public GameScreen(MainGameClass game, MainScreen ms, GameMode gameMode) {
 		this.game = game;
 		this.ms = ms;
+		this.gameMode = gameMode;
+		this.NUMBER_OF_WAVES = gameMode.getNumberOfWaves();
 		this.calculateBoxMaths();
 		control = new Control();
 		// map = new TmxMapLoader().load("map/art_map/prototype_map.tmx");
@@ -606,9 +610,9 @@ public class GameScreen implements Screen {
 			Object stationType = viewedTile.getTile().getProperties().get("Station");
 			if (stationType != null) {
 				stationManager.checkInteractedTile((String) viewedTile.getTile().getProperties().get("Station"),
-						new Vector2(checkCellX, checkCellY));
+						new Vector2(checkCellX, checkCellY), cc, gameMode);
 			} else {
-				stationManager.checkInteractedTile("", new Vector2(checkCellX, checkCellY));
+				stationManager.checkInteractedTile("", new Vector2(checkCellX, checkCellY), cc, gameMode);
 			}
 		}
 		sr.begin(ShapeRenderer.ShapeType.Line);
