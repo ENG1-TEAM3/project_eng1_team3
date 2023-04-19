@@ -418,22 +418,32 @@ public class ScenarioLogic extends GameLogic {
 
             // Check the time value of the request
             float time = rData.getFloat("time");
-            if (time >= 0) {
-                // If the time is valid, then set the request's timer
-                newRequest.setTime(time);
-
-            } else {
+            if (time < 0) {
+                // If the time is invalid, default to -1
+                time = -1;
                 // If it's < 0, then check for time_min and time_max
                 float timeMin = rData.getFloat("time_min"),
                       timeMax = rData.getFloat("time_max");
                 if (timeMin >= 0 && timeMax >= timeMin) {
                     // If they're valid, then randomly select time
                     // in the range
-                    newRequest.setTime(rand.nextFloat() * (timeMax - timeMin) + timeMin);
+                    time = rand.nextFloat() * (timeMax - timeMin) + timeMin;
                 }
                 // If either of the two don't apply, it'll just use the default
                 // -1, which is no timer.
             }
+            // Multiply the time, based on difficulty.
+            // Easy is x2, Medium is x1.5, Hard does nothing
+            switch (difficulty) {
+                case Difficulty.EASY:
+                    time *= 2f;
+                    break;
+                case Difficulty.MEDIUM:
+                    time *= 1.5f;
+                    break;
+            }
+            // Set the time value
+            newRequest.setTime(time);
 
             // Finally, add the request to requests
             requestPool.add(newRequest);
