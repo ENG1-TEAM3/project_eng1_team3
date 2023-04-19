@@ -1,7 +1,7 @@
 {
   "map_id": "<main>:everything",
-  "name": "Custom",
-  "description": "Complete a scenario with a specified number of random requests.",
+  "name": "Power up a bit of everything",
+  "description": "Everything on the menu must be served once, but with a lot of powerups.",
   "interactions": [
     "<main>:preparation/patty_form",
     "<main>:preparation/burger_make",
@@ -38,12 +38,10 @@
   "spawn_timer": 5,
   "customer_speed": 3,
   "cook_cost": 200,
-  "duplicate_requests": true,
   "power_ups": {
     "use_time": 8,
-    "time_min": 6,
-    "time_max": 14,
-    "max": 4,
-    "despawn_time": 10
+    "time": 0.25,
+    "max": 20,
+    "despawn_time": 4
   }
 }

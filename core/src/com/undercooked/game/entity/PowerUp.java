@@ -24,7 +24,6 @@ public class PowerUp extends Entity {
         // If it's in use, then slowly decrease the timer
         if (inUse) {
             useTimer -= delta;
-            System.out.println(useTimer);
             // If use Timer <= 0, then remove
             if (useTimer <= 0) {
                 // It has finished, so remove

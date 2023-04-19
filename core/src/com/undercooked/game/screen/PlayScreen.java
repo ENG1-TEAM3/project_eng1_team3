@@ -49,8 +49,11 @@ public class PlayScreen extends Screen {
     private Button rightCustomerBtn;
 
     private TextureRegionDrawable easyModeBtnDrawable;
+    private Button easyModeBtn;
     private TextureRegionDrawable mediumModeBtnDrawable;
+    private Button mediumModeBtn;
     private TextureRegionDrawable hardModeBtnDrawable;
+    private Button hardModeBtn;
     private int currentDifficulty;
     private boolean showCustomerNumber;
     private int customerNumber; // The number of requests to serve in the Custom mode
@@ -64,11 +67,14 @@ public class PlayScreen extends Screen {
     private final float titlePadding = 200;
     private final float descScale = 1;
     private final float descPadding = 100;
+
+    private final float diffBtnY = 200;
     private final String[] scenarioFiles = {
             "custom",
             "everything",
             "burger_salad",
-            "serve_quick"
+            "serve_quick",
+            "everything_with_powerups"
     };
 
     public PlayScreen(MainGameClass game) {
@@ -176,11 +182,9 @@ public class PlayScreen extends Screen {
         mediumModeBtnDrawable = new TextureRegionDrawable(textureManager.get("uielements/difficulty/medium_mode_on.png"));
         hardModeBtnDrawable = new TextureRegionDrawable(textureManager.get("uielements/difficulty/hard_mode_off.png"));
 
-        Button easyModeBtn = new Button(easyModeBtnDrawable);
-        Button mediumModeBtn = new Button(mediumModeBtnDrawable);
-        Button hardModeBtn = new Button(hardModeBtnDrawable);
-
-        setDifficulty(Difficulty.MEDIUM);
+        easyModeBtn = new Button(easyModeBtnDrawable);
+        mediumModeBtn = new Button(mediumModeBtnDrawable);
+        hardModeBtn = new Button(hardModeBtnDrawable);
 
 
         leftCustomerBtn = new Button(new TextureRegionDrawable(textureManager.get("uielements/arrow_left.png")));
@@ -204,12 +208,6 @@ public class PlayScreen extends Screen {
         easyModeBtn.setSize(difficultyWidth, difficultyHeight);
         mediumModeBtn.setSize(difficultyWidth, difficultyHeight);
         hardModeBtn.setSize(difficultyWidth, difficultyHeight);
-
-        float difficultyXPos = Constants.V_WIDTH/2f,
-              difficultyYPos = 200;
-        easyModeBtn.setPosition(difficultyXPos - mediumModeBtn.getWidth()/2f - easyModeBtn.getWidth(), difficultyYPos);
-        mediumModeBtn.setPosition(difficultyXPos - mediumModeBtn.getWidth()/2f, difficultyYPos+30);
-        hardModeBtn.setPosition(difficultyXPos + mediumModeBtn.getWidth()/2f, difficultyYPos);
 
         float customerBtnSize = plateSize*0.1f;
         leftCustomerBtn.setSize(customerBtnSize, customerBtnSize);
@@ -313,6 +311,9 @@ public class PlayScreen extends Screen {
         stage.addActor(hardModeBtn);
         modeButton.addToStage(stage);
 
+        // Set the difficulty
+        setDifficulty(Difficulty.MEDIUM);
+
         // Then show index 0
         setIndex(0);
     }
@@ -361,24 +362,37 @@ public class PlayScreen extends Screen {
     private void setDifficulty(int difficulty) {
         this.currentDifficulty = difficulty;
         TextureManager textureManager = getTextureManager();
+
+
+        float difficultyXPos = Constants.V_WIDTH/2f,
+                difficultyYPos = 200;
+        easyModeBtn.setPosition(difficultyXPos - mediumModeBtn.getWidth()/2f - easyModeBtn.getWidth(), difficultyYPos);
+        mediumModeBtn.setPosition(difficultyXPos - mediumModeBtn.getWidth()/2f, difficultyYPos);
+        hardModeBtn.setPosition(difficultyXPos + mediumModeBtn.getWidth()/2f, difficultyYPos);
         switch (currentDifficulty) {
             case Difficulty.EASY:
                 // Easy is active
                 easyModeBtnDrawable.setRegion(new TextureRegion(textureManager.get("uielements/difficulty/easy_mode_on.png")));
                 mediumModeBtnDrawable.setRegion(new TextureRegion(textureManager.get("uielements/difficulty/medium_mode_off.png")));
                 hardModeBtnDrawable.setRegion(new TextureRegion(textureManager.get("uielements/difficulty/hard_mode_off.png")));
+
+                easyModeBtn.setPosition(easyModeBtn.getX(), easyModeBtn.getY()+30);
                 break;
             case Difficulty.MEDIUM:
                 // Easy is active
                 easyModeBtnDrawable.setRegion(new TextureRegion(textureManager.get("uielements/difficulty/easy_mode_off.png")));
                 mediumModeBtnDrawable.setRegion(new TextureRegion(textureManager.get("uielements/difficulty/medium_mode_on.png")));
                 hardModeBtnDrawable.setRegion(new TextureRegion(textureManager.get("uielements/difficulty/hard_mode_off.png")));
+
+                mediumModeBtn.setPosition(mediumModeBtn.getX(), mediumModeBtn.getY()+30);
                 break;
             case Difficulty.HARD:
                 // Easy is active
                 easyModeBtnDrawable.setRegion(new TextureRegion(textureManager.get("uielements/difficulty/easy_mode_off.png")));
                 mediumModeBtnDrawable.setRegion(new TextureRegion(textureManager.get("uielements/difficulty/medium_mode_off.png")));
                 hardModeBtnDrawable.setRegion(new TextureRegion(textureManager.get("uielements/difficulty/hard_mode_on.png")));
+
+                hardModeBtn.setPosition(hardModeBtn.getX(), hardModeBtn.getY()+30);
                 break;
         }
     }

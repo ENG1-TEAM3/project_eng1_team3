@@ -35,7 +35,14 @@
     "<main>:pizza"
   ],
   "reputation": 10,
-  "spawn_timer": 0,
+  "spawn_timer": 5,
   "customer_speed": 3,
-  "cook_cost": 200
+  "cook_cost": 200,
+  "power_ups": {
+    "use_time": 8,
+    "time_min": 6,
+    "time_max": 14,
+    "max": 4,
+    "despawn_time": 10
+  }
 }
