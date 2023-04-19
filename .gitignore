@@ -116,3 +116,6 @@ Thumbs.db
 ## Additional
 ## VSCode specific development-config files. Not needed for repo.
 *.code-workspace
+tests/build/reports/tests/test/*.html
+tests/build/tmp/test/*_tmp
+tests/build/test-results/test/*.xml
