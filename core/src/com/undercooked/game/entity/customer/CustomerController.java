@@ -190,12 +190,16 @@ public class CustomerController {
 		newCustomer.setWaitSpeed(waitSpeed);
 
 		// Set their listeners
-		newCustomer.servedListener = getMoney;
-		newCustomer.failedListener = loseReputation;
+		setCustomersListeners(newCustomer);
 		newCustomer.setRequest(request);
 		// Try to put the customer on a register
 		customerOnRegister(newCustomer, getOpenRegister());
 		amountActiveCustomers += 1;
+	}
+
+	protected void setCustomersListeners(Customer customer) {
+		customer.servedListener = getMoney;
+		customer.failedListener = loseReputation;
 	}
 
 	Comparator<Register> registerYComparator = new Comparator<Register>() {
@@ -492,6 +496,8 @@ public class CustomerController {
 			customer.waitTimer = customerObject.getFloat("wait_timer");
 			customer.moveSpeed = customerObject.getFloat("move_speed");
 			customer.visibility = 1f;
+			setCustomersListeners(customer);
+			amountActiveCustomers += 1;
 			if (customerObject.getBoolean("to_spawn")) {
 				// Add the Cook to the toSpawn array
 				toSpawn.add(customer);

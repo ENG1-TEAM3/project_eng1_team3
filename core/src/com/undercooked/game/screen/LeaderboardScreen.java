@@ -166,8 +166,6 @@ public class LeaderboardScreen extends Screen {
 
 		// Update the main screen music variable
 		game.mainScreenMusic = game.audioManager.getMusic("audio/music/MainScreenMusic.ogg");
-		// Play the menu music
-		game.mainScreenMusic.play();
 		ScreenUtils.clear(0, 0, 0, 0);
 		background = textureManager.get("uielements/MainScreenBackground.jpg");
 		leaderboardTexture = textureManager.get("uielements/LeaderBoard.png");
@@ -265,6 +263,9 @@ public class LeaderboardScreen extends Screen {
 		float entryhi = 7 * dbox;
 		float topentry = dbox + entryhi;
 		float eachentryhi = entryhi / 7;
+
+		// Play the menu music
+		game.mainScreenMusic.play();
 
 		game.batch.begin();
 		game.batch.draw(background, 0, 0, gameResolutionX, gameResolutionY);

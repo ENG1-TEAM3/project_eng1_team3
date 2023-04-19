@@ -46,7 +46,7 @@ public class LoadScreen extends Screen {
 
     }
 
-    public void update() {
+    public void update(boolean moveToNext) {
 
         // Update the AssetManager for a short bit before moving on
         while (TimeUtils.timeSinceMillis(lastLoad) <= 100
@@ -62,7 +62,7 @@ public class LoadScreen extends Screen {
         lastLoad = TimeUtils.millis();
 
         // Check if the AssetManager is finished
-        if (assetManager.isFinished()) {
+        if (assetManager.isFinished() && moveToNext) {
             // Post load function for the Screen
             next.postLoad();
             // Then swap to the screen that was loading
@@ -78,7 +78,7 @@ public class LoadScreen extends Screen {
     public void render(float delta) {
 
         // Update the screen
-        update();
+        update(true);
 
         // Render the previous screen underneath (if there is one)
         if (previous != null) {
@@ -149,7 +149,7 @@ public class LoadScreen extends Screen {
         // Then update once before moving on to the next frame
         // This means that if it's done in one go, then it can just go
         // straight to the screen rather than wait a frame
-        update();
+        update(false);
 
         // Render the bar, if it's not finished updating yet
         if (!assetManager.isFinished()) {
