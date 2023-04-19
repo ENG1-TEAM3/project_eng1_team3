@@ -12,7 +12,7 @@ import com.undercooked.game.interactions.steps.cook.*;
 import com.undercooked.game.interactions.steps.cook.input.JustPressedStep;
 import com.undercooked.game.interactions.steps.cook.input.PressedStep;
 import com.undercooked.game.interactions.steps.cook.input.ReleasedStep;
-import com.undercooked.game.station.StationManager;
+import com.undercooked.game.station.StationController;
 import com.undercooked.game.util.Constants;
 import com.undercooked.game.util.DefaultJson;
 import com.undercooked.game.util.json.JsonFormat;
@@ -29,7 +29,8 @@ public class Interactions {
         this.interactions = new ObjectMap<>();
     }
 
-    public void loadInteractionAsset(String assetPath, StationManager stationManager, AudioManager audioManager, Items items) {
+    public void loadInteractionAsset(String assetPath, StationController stationManager, AudioManager audioManager,
+            Items items) {
         JsonValue interactionRoot = FileControl.loadJsonAsset(assetPath, "interactions");
         // If it's not null...
         if (interactionRoot != null) {
@@ -102,7 +103,6 @@ public class Interactions {
                 interactionStep = new RemoveStep();
                 break;
 
-
             // Inputs
             case "timed_input":
                 interactionStep = new TimedInputStep(MainGameClass.font);
@@ -150,7 +150,8 @@ public class Interactions {
         return interactionStep;
     }
 
-    private void loadInteraction(String interactionID, JsonValue interactionRoot, StationManager stationManager, AudioManager audioManager, Items items) {
+    private void loadInteraction(String interactionID, JsonValue interactionRoot, StationController stationManager,
+            AudioManager audioManager, Items items) {
         // Make sure it's formatted correctly
         JsonFormat.formatJson(interactionRoot, DefaultJson.interactionFormat());
         // Check for ID
@@ -188,7 +189,8 @@ public class Interactions {
             }
 
             // Then, Make sure that there's at least one step.
-            // Loop through all the Interactions recursively in order to get them all stored in the array
+            // Loop through all the Interactions recursively in order to get them all stored
+            // in the array
             out = addInteractions(interactionRoot.get("steps"), audioManager, items);
         } else {
             return;

@@ -14,7 +14,7 @@ import com.undercooked.game.map.Map;
 import com.undercooked.game.render.GameRenderer;
 import com.undercooked.game.screen.GameScreen;
 import com.undercooked.game.screen.WinScreen;
-import com.undercooked.game.station.StationManager;
+import com.undercooked.game.station.StationController;
 import com.undercooked.game.util.Constants;
 import com.undercooked.game.util.Listener;
 import com.undercooked.game.util.Observer;
@@ -31,7 +31,7 @@ public abstract class GameLogic {
     Items items;
     CookController cookController;
     CustomerController customerController;
-    StationManager stationManager;
+    StationController stationManager;
     GameRenderer gameRenderer;
     TextureManager textureManager;
     AudioManager audioManager;
@@ -110,7 +110,8 @@ public abstract class GameLogic {
 
     /**
      * Called once the game is won. Goes to the win screen.
-     * <br>Should be called by children, otherwise call the
+     * <br>
+     * Should be called by children, otherwise call the
      * "stop" function and change screen.
      */
     public void win() {
@@ -123,12 +124,14 @@ public abstract class GameLogic {
         // Set the leaderboard type and id
         winScreen.setLeaderboardID(leaderboardId + "-" + Difficulty.toString(difficulty));
         winScreen.setLeaderboardType(gameType);
-        winScreen.setLeaderboardName(leaderboardName + " - " + StringUtil.convertToTitleCase(Difficulty.toString(difficulty)));
+        winScreen.setLeaderboardName(
+                leaderboardName + " - " + StringUtil.convertToTitleCase(Difficulty.toString(difficulty)));
     }
 
     /**
      * Called once the game is lost. Goes to the loss screen.
-     * <br>Should be called by children, otherwise call the
+     * <br>
+     * Should be called by children, otherwise call the
      * "stop" function and change screen.
      */
     public void lose() {
@@ -174,8 +177,10 @@ public abstract class GameLogic {
 
     /**
      * The GameLogic should load the game assets in this function.
-     * For example, a {@link ScenarioLogic} would only need to load the {@link Items} that
-     * will be available, while {@link Endless} mode should load all the game's food {@link Items}.
+     * For example, a {@link ScenarioLogic} would only need to load the
+     * {@link Items} that
+     * will be available, while {@link Endless} mode should load all the game's food
+     * {@link Items}.
      */
     public abstract void load();
 
@@ -216,7 +221,8 @@ public abstract class GameLogic {
     }
 
     /**
-     * Called when the {@link GameScreen} moves to the {@link com.undercooked.game.screen.PauseScreen}.
+     * Called when the {@link GameScreen} moves to the
+     * {@link com.undercooked.game.screen.PauseScreen}.
      */
     public void pause() {
         // Stop cooks
@@ -237,7 +243,7 @@ public abstract class GameLogic {
         this.gameScreen = gameScreen;
     }
 
-    public void setStationManager(StationManager stationManager) {
+    public void setStationManager(StationController stationManager) {
         this.stationManager = stationManager;
     }
 

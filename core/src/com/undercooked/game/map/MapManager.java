@@ -10,7 +10,7 @@ import com.undercooked.game.food.Items;
 import com.undercooked.game.interactions.Interactions;
 import com.undercooked.game.station.Station;
 import com.undercooked.game.station.StationData;
-import com.undercooked.game.station.StationManager;
+import com.undercooked.game.station.StationController;
 import com.undercooked.game.util.Constants;
 import com.undercooked.game.util.DefaultJson;
 import com.undercooked.game.util.json.JsonFormat;
@@ -30,13 +30,14 @@ public class MapManager {
 
     }
 
-    public Map load(String path, StationManager stationManager, CookController cookController, Interactions interactions, Items gameItems) {
+    public Map load(String path, StationController stationManager, CookController cookController,
+            Interactions interactions, Items gameItems) {
         // Try loading the Json
         JsonValue root = JsonFormat.formatJson(FileControl.loadJsonAsset(path, "maps"), DefaultJson.mapFormat());
         // If it's null, then just load the default map and return that.
         if (root == null) {
             // Make sure this isn't the Default Map, to avoid an infinite loop.
-            if (path != Constants.DEFAULT_MAP){
+            if (path != Constants.DEFAULT_MAP) {
                 return load(Constants.DEFAULT_MAP, stationManager, cookController, interactions, gameItems);
             } else {
                 return null;
@@ -47,7 +48,8 @@ public class MapManager {
         stationManager.clear();
 
         // Convert the Map Json into an actual map
-        Map outputMap = mapOfSize(root.getInt("width"), root.getInt("height"), stationManager, textureManager, audioManager, interactions, gameItems);
+        Map outputMap = mapOfSize(root.getInt("width"), root.getInt("height"), stationManager, textureManager,
+                audioManager, interactions, gameItems);
 
         // Loop through the stations
         for (JsonValue stationData : root.get("stations").iterator()) {
@@ -100,10 +102,10 @@ public class MapManager {
 
                         // Add it to the map
                         outputMap.addMapEntity(newStation,
-                                               stationData.getInt("x"),
-                                               stationData.getInt("y"),
-                                               data.getFloorTile(),
-                                               hasCollision);
+                                stationData.getInt("x"),
+                                stationData.getInt("y"),
+                                data.getFloorTile(),
+                                hasCollision);
 
                         // If it does have collision
                         if (hasCollision) {
@@ -138,11 +140,12 @@ public class MapManager {
 
     }
 
-    public static Station newCounter(StationManager stationManager, AudioManager audioManager, Interactions interactions, Items gameItems) {
+    public static Station newCounter(StationController stationManager, AudioManager audioManager,
+            Interactions interactions, Items gameItems) {
         // If the counter isn't loaded, then try to load it
         if (!stationManager.hasID("<main>:counter")) {
             StationData loadedData = stationManager.loadStation("<main>:counter");
-            if (loadedData== null) {
+            if (loadedData == null) {
                 // If it doesn't load, throw an error
                 throw new RuntimeException("Counter could not load.");
             }
@@ -159,12 +162,13 @@ public class MapManager {
     }
 
     // Creates a map of size width and height.
-    public static Map mapOfSize(int width, int height, StationManager stationManager, TextureManager textureManager, AudioManager audioManager, Interactions interactions, Items gameItems) {
+    public static Map mapOfSize(int width, int height, StationController stationManager, TextureManager textureManager,
+            AudioManager audioManager, Interactions interactions, Items gameItems) {
         // The map size is the area that the players can run around in.
         // Therefore, height += 2, for top and bottom counters, and then
         // width has a few more added, primarily on the left.
         int fullWidth = width + 4,
-            fullHeight = height + 1;
+                fullHeight = height + 1;
         Map returnMap = new Map(width, height, fullWidth, fullHeight, textureManager);
         int offsetX = 4, offsetY = 1;
         returnMap.setOffsetX(offsetX);
@@ -172,33 +176,41 @@ public class MapManager {
 
         // Add the counter border
         // X entities
-        for (int i = 0 ; i < width ; i++) {
-            returnMap.addMapEntity(newCounter(stationManager, audioManager, interactions, gameItems),i,0,null);
-            returnMap.addMapEntity(newCounter(stationManager, audioManager, interactions, gameItems),i,height-1,null);
+        for (int i = 0; i < width; i++) {
+            returnMap.addMapEntity(newCounter(stationManager, audioManager, interactions, gameItems), i, 0, null);
+            returnMap.addMapEntity(newCounter(stationManager, audioManager, interactions, gameItems), i, height - 1,
+                    null);
         }
         // Y entities
-        for (int j = 1 ; j < height-1 ; j++) {
-            returnMap.addMapEntity(newCounter(stationManager, audioManager, interactions, gameItems),0,j,null);
-            returnMap.addMapEntity(newCounter(stationManager, audioManager, interactions, gameItems),width-1,j,null);
+        for (int j = 1; j < height - 1; j++) {
+            returnMap.addMapEntity(newCounter(stationManager, audioManager, interactions, gameItems), 0, j, null);
+            returnMap.addMapEntity(newCounter(stationManager, audioManager, interactions, gameItems), width - 1, j,
+                    null);
         }
 
         // Leftmost wall
-        for (int j = 1 ; j < fullHeight ; j++) {
-            returnMap.addFullMapEntity(newCounter(stationManager, audioManager, interactions, gameItems),0,j,null);
+        for (int j = 1; j < fullHeight; j++) {
+            returnMap.addFullMapEntity(newCounter(stationManager, audioManager, interactions, gameItems), 0, j, null);
         }
 
         // Add 2 at the top at x=1, x=2
-        returnMap.addFullMapEntity(newCounter(stationManager, audioManager, interactions, gameItems), 1, fullHeight-1,null);
-        returnMap.addFullMapEntity(newCounter(stationManager, audioManager, interactions, gameItems), 2, fullHeight-1,null);
-        returnMap.addFullMapEntity(newCounter(stationManager, audioManager, interactions, gameItems), 3, fullHeight-1,null);
+        returnMap.addFullMapEntity(newCounter(stationManager, audioManager, interactions, gameItems), 1, fullHeight - 1,
+                null);
+        returnMap.addFullMapEntity(newCounter(stationManager, audioManager, interactions, gameItems), 2, fullHeight - 1,
+                null);
+        returnMap.addFullMapEntity(newCounter(stationManager, audioManager, interactions, gameItems), 3, fullHeight - 1,
+                null);
 
         // Add the customer floor tiles
-        for (int i = 2 ; i <= 3 ; i++) {
-            for (int j = 0 ; j < fullHeight-2; j++) {
+        for (int i = 2; i <= 3; i++) {
+            for (int j = 0; j < fullHeight - 2; j++) {
                 MapCell thisCell = returnMap.getCellFull(i, j);
-                if (j == 0) thisCell.setBelowTile("<main>:floor/customer_tile_bot.png");
-                else if (j == fullHeight-3) thisCell.setBelowTile("<main>:floor/customer_tile_top.png");
-                else thisCell.setBelowTile("<main>:floor/customer_tile_mid.png");
+                if (j == 0)
+                    thisCell.setBelowTile("<main>:floor/customer_tile_bot.png");
+                else if (j == fullHeight - 3)
+                    thisCell.setBelowTile("<main>:floor/customer_tile_top.png");
+                else
+                    thisCell.setBelowTile("<main>:floor/customer_tile_mid.png");
             }
         }
 

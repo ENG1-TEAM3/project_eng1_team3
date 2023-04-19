@@ -15,7 +15,7 @@ import com.undercooked.game.util.json.JsonFormat;
  * Deals with the loading and storage of all {@link Station}s
  * and their {@link StationData} within the game.
  */
-public class StationManager {
+public class StationController {
 
 	/**
 	 * An {@link Array} of the {@link Station}s that are in the
@@ -33,11 +33,11 @@ public class StationManager {
 	GameScreen game;
 
 	/**
-	 * Constructor for the {@link StationManager}.
+	 * Constructor for the {@link StationController}.
 	 * This sets up the {@link Array<Station>} for {@link #stations}
 	 * and the {@link ObjectMap<String, StationData>} for {@link #stationData}.
 	 */
-	public StationManager() {
+	public StationController() {
 		this.stations = new Array<>();
 		this.stationData = new ObjectMap<>();
 	}
@@ -46,6 +46,7 @@ public class StationManager {
 	 * A function that calls the {@link Station#update(float)} function
 	 * for all {@link Station}s that are stored by the {@link #stations}
 	 * {@link Array}.
+	 * 
 	 * @param delta
 	 */
 	public void update(float delta) {
@@ -60,7 +61,8 @@ public class StationManager {
 	 * {@link Station#updateStationInteractions()} functions for
 	 * all of the {@link Station}s stored in the {@link #stations}
 	 * {@link Array}.
-	 * <br>This sets up their interactions.
+	 * <br>
+	 * This sets up their interactions.
 	 */
 	public void updateStationInteractions() {
 		// Update all interactions for the stations.
@@ -73,7 +75,9 @@ public class StationManager {
 	/**
 	 * Loads all of the {@link StationData} for each {@link Station} ID
 	 * into the {@link #stationData} {@link ObjectMap}
-	 * @param path {@link String} : The asset path to the {@link StationData} JSON.
+	 * 
+	 * @param path       {@link String} : The asset path to the {@link StationData}
+	 *                   JSON.
 	 * @param internal
 	 * @param pathPrefix
 	 */
@@ -106,7 +110,8 @@ public class StationManager {
 	}
 
 	/**
-	 * Loads all the station paths in the game and stores them in an {@link ObjectMap}
+	 * Loads all the station paths in the game and stores them in an
+	 * {@link ObjectMap}
 	 * pairing of the station's id and its path.
 	 */
 	public void loadStationPaths() {
@@ -209,5 +214,18 @@ public class StationManager {
 
 	public boolean hasID(String stationID) {
 		return stationData.containsKey(stationID);
+	}
+
+	public JsonValue serializeStations() {
+		// JsonValue stationsRoot = new JsonValue(JsonValue.ValueType.object);
+		JsonValue stationsArrayRoot = new JsonValue(JsonValue.ValueType.array);
+		// stationsRoot.addChild("stations", stationsArrayRoot);
+
+		for (Station station : this.stations) {
+			stationsArrayRoot.addChild(station.serial());
+		}
+
+		// return stationsRoot;
+		return stationsArrayRoot;
 	}
 }
