@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
@@ -21,6 +22,7 @@ import com.undercooked.game.GameType;
 import com.undercooked.game.MainGameClass;
 import com.undercooked.game.assets.TextureManager;
 import com.undercooked.game.files.FileControl;
+import com.undercooked.game.logic.Difficulty;
 import com.undercooked.game.logic.EndlessLogic;
 import com.undercooked.game.logic.GameLogic;
 import com.undercooked.game.logic.ScenarioLogic;
@@ -45,6 +47,11 @@ public class PlayScreen extends Screen {
     private ModeButton modeButton;
     private Button leftCustomerBtn;
     private Button rightCustomerBtn;
+
+    private TextureRegionDrawable easyModeBtnDrawable;
+    private TextureRegionDrawable mediumModeBtnDrawable;
+    private TextureRegionDrawable hardModeBtnDrawable;
+    private int currentDifficulty;
     private boolean showCustomerNumber;
     private int customerNumber; // The number of requests to serve in the Custom mode
     private GlyphLayout customerNumberText;
@@ -77,6 +84,15 @@ public class PlayScreen extends Screen {
         textureManager.load(Constants.PLAY_TEXTURE_ID, "uielements/newgame.png");
         textureManager.load(Constants.PLAY_TEXTURE_ID, "uielements/arrow_left.png");
         textureManager.load(Constants.PLAY_TEXTURE_ID, "uielements/arrow_right.png");
+        textureManager.load(Constants.PLAY_TEXTURE_ID, "uielements/difficulty/easy_mode_off.png");
+        textureManager.load(Constants.PLAY_TEXTURE_ID, "uielements/difficulty/easy_mode_on.png");
+        textureManager.load(Constants.PLAY_TEXTURE_ID, "uielements/difficulty/medium_mode_off.png");
+        textureManager.load(Constants.PLAY_TEXTURE_ID, "uielements/difficulty/medium_mode_on.png");
+        textureManager.load(Constants.PLAY_TEXTURE_ID, "uielements/difficulty/hard_mode_off.png");
+        textureManager.load(Constants.PLAY_TEXTURE_ID, "uielements/difficulty/hard_mode_on.png");
+
+        // TEMPORARY
+        textureManager.load(Constants.PLAY_TEXTURE_ID, "uielements/scenario.png");
 
         game.audioManager.loadMusic("audio/music/MainScreenMusic.ogg", Constants.MUSIC_GROUP);
 
@@ -156,6 +172,16 @@ public class PlayScreen extends Screen {
         Button rightBtn = new Button(new TextureRegionDrawable(textureManager.get("uielements/arrow_right.png")));
         Button playBtn = new Button(new TextureRegionDrawable(textureManager.get("uielements/newgame.png")));
 
+        easyModeBtnDrawable = new TextureRegionDrawable(textureManager.get("uielements/difficulty/easy_mode_off.png"));
+        mediumModeBtnDrawable = new TextureRegionDrawable(textureManager.get("uielements/difficulty/medium_mode_on.png"));
+        hardModeBtnDrawable = new TextureRegionDrawable(textureManager.get("uielements/difficulty/hard_mode_off.png"));
+
+        Button easyModeBtn = new Button(easyModeBtnDrawable);
+        Button mediumModeBtn = new Button(mediumModeBtnDrawable);
+        Button hardModeBtn = new Button(hardModeBtnDrawable);
+
+        setDifficulty(Difficulty.MEDIUM);
+
 
         leftCustomerBtn = new Button(new TextureRegionDrawable(textureManager.get("uielements/arrow_left.png")));
         rightCustomerBtn = new Button(new TextureRegionDrawable(textureManager.get("uielements/arrow_right.png")));
@@ -172,6 +198,18 @@ public class PlayScreen extends Screen {
 
         playBtn.setSize(473, 144);
         playBtn.setPosition(Constants.V_WIDTH/2f-playBtn.getWidth()/2f, 0);
+
+        float difficultyWidth = 270.28f,
+              difficultyHeight = 82.28f;
+        easyModeBtn.setSize(difficultyWidth, difficultyHeight);
+        mediumModeBtn.setSize(difficultyWidth, difficultyHeight);
+        hardModeBtn.setSize(difficultyWidth, difficultyHeight);
+
+        float difficultyXPos = Constants.V_WIDTH/2f,
+              difficultyYPos = 200;
+        easyModeBtn.setPosition(difficultyXPos - mediumModeBtn.getWidth()/2f - easyModeBtn.getWidth(), difficultyYPos);
+        mediumModeBtn.setPosition(difficultyXPos - mediumModeBtn.getWidth()/2f, difficultyYPos+30);
+        hardModeBtn.setPosition(difficultyXPos + mediumModeBtn.getWidth()/2f, difficultyYPos);
 
         float customerBtnSize = plateSize*0.1f;
         leftCustomerBtn.setSize(customerBtnSize, customerBtnSize);
@@ -228,6 +266,27 @@ public class PlayScreen extends Screen {
             }
         });
 
+        easyModeBtn.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                setDifficulty(Difficulty.EASY);
+            }
+        });
+
+        mediumModeBtn.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                setDifficulty(Difficulty.MEDIUM);
+            }
+        });
+
+        hardModeBtn.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                setDifficulty(Difficulty.HARD);
+            }
+        });
+
         // Set up the mode button
         modeButton.postLoad();
         modeButton.update();
@@ -249,6 +308,9 @@ public class PlayScreen extends Screen {
         stage.addActor(playBtn);
         stage.addActor(leftCustomerBtn);
         stage.addActor(rightCustomerBtn);
+        stage.addActor(easyModeBtn);
+        stage.addActor(mediumModeBtn);
+        stage.addActor(hardModeBtn);
         modeButton.addToStage(stage);
 
         // Then show index 0
@@ -294,6 +356,31 @@ public class PlayScreen extends Screen {
             stage.act();
         }
 
+    }
+
+    private void setDifficulty(int difficulty) {
+        this.currentDifficulty = difficulty;
+        TextureManager textureManager = getTextureManager();
+        switch (currentDifficulty) {
+            case Difficulty.EASY:
+                // Easy is active
+                easyModeBtnDrawable.setRegion(new TextureRegion(textureManager.get("uielements/difficulty/easy_mode_on.png")));
+                mediumModeBtnDrawable.setRegion(new TextureRegion(textureManager.get("uielements/difficulty/medium_mode_off.png")));
+                hardModeBtnDrawable.setRegion(new TextureRegion(textureManager.get("uielements/difficulty/hard_mode_off.png")));
+                break;
+            case Difficulty.MEDIUM:
+                // Easy is active
+                easyModeBtnDrawable.setRegion(new TextureRegion(textureManager.get("uielements/difficulty/easy_mode_off.png")));
+                mediumModeBtnDrawable.setRegion(new TextureRegion(textureManager.get("uielements/difficulty/medium_mode_on.png")));
+                hardModeBtnDrawable.setRegion(new TextureRegion(textureManager.get("uielements/difficulty/hard_mode_off.png")));
+                break;
+            case Difficulty.HARD:
+                // Easy is active
+                easyModeBtnDrawable.setRegion(new TextureRegion(textureManager.get("uielements/difficulty/easy_mode_off.png")));
+                mediumModeBtnDrawable.setRegion(new TextureRegion(textureManager.get("uielements/difficulty/medium_mode_off.png")));
+                hardModeBtnDrawable.setRegion(new TextureRegion(textureManager.get("uielements/difficulty/hard_mode_on.png")));
+                break;
+        }
     }
 
     private void setIndex(int index, int changeVal) {
@@ -395,6 +482,7 @@ public class PlayScreen extends Screen {
         }
 
         gameLogic.setId(currentData.getString("id"));
+        gameLogic.setDifficulty(currentDifficulty);
 
         gameScreen.setGameLogic(gameLogic);
         gameScreen.setGameRenderer(gameRenderer);

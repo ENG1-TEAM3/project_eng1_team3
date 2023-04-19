@@ -53,6 +53,7 @@ public abstract class GameLogic {
     protected String leaderboardId;
     protected GameType gameType;
     protected String leaderboardName;
+    protected int difficulty;
 
     public GameLogic(GameScreen game, TextureManager textureManager, AudioManager audioManager) {
         this.gameScreen = game;
@@ -120,9 +121,9 @@ public abstract class GameLogic {
         // Go to win screen
         gameScreen.getScreenController().setScreen(winScreen);
         // Set the leaderboard type and id
-        winScreen.setLeaderboardID(leaderboardId);
+        winScreen.setLeaderboardID(leaderboardId + "-" + Difficulty.toString(difficulty));
         winScreen.setLeaderboardType(gameType);
-        winScreen.setLeaderboardName(leaderboardName);
+        winScreen.setLeaderboardName(leaderboardName + " - " + StringUtil.convertToTitleCase(Difficulty.toString(difficulty)));
     }
 
     /**
@@ -315,6 +316,10 @@ public abstract class GameLogic {
         if (leaderboardId == null || leaderboardId.equals(id)) {
             setLeaderboardId(id);
         }
+    }
+
+    public void setDifficulty(int difficulty) {
+        this.difficulty = difficulty;
     }
 
     public void setLeaderboardId(String id) {
