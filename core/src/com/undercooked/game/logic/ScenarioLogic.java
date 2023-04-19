@@ -7,6 +7,8 @@ import com.badlogic.gdx.utils.ObjectMap;
 import com.undercooked.game.Input.InputController;
 import com.undercooked.game.assets.AudioManager;
 import com.undercooked.game.assets.TextureManager;
+import com.undercooked.game.entity.PowerUp;
+import com.undercooked.game.entity.PowerUpType;
 import com.undercooked.game.entity.cook.Cook;
 import com.undercooked.game.entity.customer.Customer;
 import com.undercooked.game.entity.customer.CustomerTarget;
@@ -41,10 +43,27 @@ public class ScenarioLogic extends GameLogic {
      */
     protected boolean allowDuplicateRequests;
 
+    // Power up spawning
+    protected int maxPowerups;
+    protected float powerUpTimerMin;
+    protected float powerUpTimerMax;
+    protected float powerUpTimer;
+    protected float powerUpUseTime;
+    protected float powerUpDespawnTime;
+    protected Listener<PowerUp> powerUpListener;
+    protected Listener<PowerUp> powerUpRemoveListener;
+    protected Array<PowerUp> powerUps;
+    protected PowerUpType[] powerUpPool;
+
+    // Power Up variables
+    protected float interactSpeedMultiplier = 1f;
+
+
     public ScenarioLogic(GameScreen game, TextureManager textureManager, AudioManager audioManager) {
         super(game, textureManager, audioManager);
         requests = new Array<>();
         requestPool = new Array<>();
+        powerUps = new Array<>();
         allowDuplicateRequests = false;
         // Set the listeners for the CustomerController
         customerController.setServedListener(new Listener<Customer>() {
@@ -120,13 +139,31 @@ public class ScenarioLogic extends GameLogic {
         cookController.setInteractPhoneListener(new Listener<MapCell>() {
             @Override
             public void tell(MapCell value) {
-                System.out.println("Trying to buy cook");
                 buyCook();
             }
         });
 
+        powerUpRemoveListener = new Listener<PowerUp>() {
+            @Override
+            public void tell(PowerUp powerUp) {
+                removePowerUp(powerUp, true);
+            }
+        };
+
         this.gameType = GameType.SCENARIO;
         this.requestTarget = -1;
+
+        // Only create the power up pool if it hasn't already been made
+        if (powerUpPool == null) {
+            this.powerUpPool = new PowerUpType[] {
+                    PowerUpType.COOK_SPEED_UP,
+                    PowerUpType.COOK_ITEM_MAX_UP,
+                    PowerUpType.CUSTOMER_WAIT_SLOW,
+                    PowerUpType.INTERACT_FAST,
+                    /*PowerUpType.MONEY_UP,
+                    PowerUpType.REPUTATION_UP*/
+            };
+        }
     }
 
     public ScenarioLogic() {
@@ -160,7 +197,7 @@ public class ScenarioLogic extends GameLogic {
         elapsedTime += delta;
 
         // Update the Stations
-        stationController.update(delta);
+        stationController.update(delta, interactSpeedMultiplier);
 
         // Update cooks.
         cookController.update(delta);
@@ -168,8 +205,37 @@ public class ScenarioLogic extends GameLogic {
         // Update Customers.
         customerController.update(delta);
 
+        // Update the Power Ups
+        updatePowerUps(delta);
+
         // Check if game is over.
         checkGameOver();
+    }
+
+    public void updatePowerUps(float delta) {
+        // Update the active power ups
+        Cook currentCook = cookController.getCurrentCook();
+        for (PowerUp powerup : powerUps) {
+            // Check if the player is colliding. If they are, then use it
+            if (currentCook != null && powerup.checkCollision(currentCook)) {
+                usePowerup(powerup);
+            } else {
+                // Otherwise, update the power up
+                powerup.update(delta);
+            }
+        }
+
+        // If not currently at the max number of power ups,
+        // go to spawn one (if the timer is >= 0)
+        if (powerUpTimer >= 0) {
+            if (powerUps.size < maxPowerups) {
+                powerUpTimer -= delta;
+                if (powerUpTimer <= 0) {
+                    createNewPowerUp();
+                    updatePowerUpTimer();
+                }
+            }
+        }
     }
 
     @Override
@@ -182,13 +248,15 @@ public class ScenarioLogic extends GameLogic {
         // Load the Scenario
         loadScenario(id);
         // Load all the items
-        items.load(textureManager);
+        items.load(textureManager, Constants.GAME_TEXTURE_ID);
         // Load the map's floor textures
         map.loadFloor(textureManager, Constants.GAME_TEXTURE_ID);
         // Find the registers on the map for the Customers
         customerController.findRegisters();
         // Load all the Cook textures
         cookController.loadAll(Constants.GAME_TEXTURE_ID);
+        // Load all the power up textures
+
     }
 
     @Override
@@ -207,8 +275,152 @@ public class ScenarioLogic extends GameLogic {
 
     @Override
     public void start() {
-        // And then spawn a customer
+        // Spawn a customer
         spawnCustomer();
+        // Start the power up timer
+        updatePowerUpTimer();
+    }
+
+    public void createNewPowerUp() {
+        // Get a random map cell that's open (with nothing blocking)
+        MapCell openCell = map.randomOpenCell(Map.CollisionType.ANY);
+
+        // If there's no open cell, don't add a power up
+        if (openCell == null) return;
+
+        // If it's <= 0, then spawn the PowerUp.
+        PowerUp newPowerUp = new PowerUp();
+        // Randomly pick a power up from the pool
+        Random random = new Random();
+        PowerUpType newType = powerUpPool[random.nextInt(0,powerUpPool.length)];
+        newPowerUp.setType(newType);
+        newPowerUp.setTexture(newType.texturePath);
+        newPowerUp.postLoad(textureManager);
+        newPowerUp.setDespawnTime(powerUpDespawnTime);
+        newPowerUp.setUseTimer(powerUpUseTime);
+        newPowerUp.setRemoveListener(powerUpRemoveListener);
+
+        // Then add it to the map
+        newPowerUp.setX(openCell.getDisplayX() + MapManager.gridToPos(0.5f));
+        newPowerUp.setY(openCell.getDisplayY() + MapManager.gridToPos(0.5f));
+
+        // And add it to the arrays
+        gameRenderer.addEntity(newPowerUp);
+        powerUps.add(newPowerUp);
+
+        System.out.println(String.format("New power up created at %d, %d", openCell.getX(), openCell.getY()));
+    }
+
+    public void addEffect(PowerUpType powerUpType) {
+        addEffect(powerUpType, null);
+    }
+
+    public void addEffect(PowerUp powerUp) {
+        addEffect(powerUp.getType(), powerUp);
+    }
+
+    private void addEffect(PowerUpType powerUpType, PowerUp powerUp) {
+        switch (powerUpType) {
+            case COOK_SPEED_UP:
+                cookController.setCookSpeed(1.5f);
+                return;
+            case COOK_ITEM_MAX_UP:
+                cookController.setCookHoldLimit(10);
+                return;
+            case CUSTOMER_WAIT_SLOW:
+                customerController.setCustomerWaitSpeed(0.4f);
+                return;
+            case INTERACT_FAST:
+                interactSpeedMultiplier = 3f;
+                return;
+
+            // Instant effect power ups
+            case MONEY_UP:
+                money += 100;
+                removePowerUp(powerUp, false);
+                return;
+            case REPUTATION_UP:
+                reputation += 1;
+                removePowerUp(powerUp, false);
+                return;
+        }
+    }
+
+    public void removeEffect(PowerUpType powerUpType) {
+        removeEffect(powerUpType, null);
+    }
+
+    public void removeEffect(PowerUp powerUp) {
+        removeEffect(powerUp.getType(), powerUp);
+    }
+
+    public void removeEffect(PowerUpType powerUpType, PowerUp powerUp) {
+        switch (powerUpType) {
+            case COOK_SPEED_UP:
+                cookController.setCookSpeed(1f);
+                break;
+            case COOK_ITEM_MAX_UP:
+                cookController.setCookHoldLimit(5);
+                return;
+            case CUSTOMER_WAIT_SLOW:
+                customerController.setCustomerWaitSpeed(1f);
+                return;
+            case INTERACT_FAST:
+                interactSpeedMultiplier = 1f;
+                return;
+        }
+    }
+
+    public void usePowerup(PowerUp powerUp) {
+        PowerUpType powerUpType = powerUp.getType();
+        // If there's a power up of the same type already, remove it
+        for (int i = 0 ; i < powerUps.size ; i++) {
+            PowerUp thisPowerUp = powerUps.get(i);
+            // Only check the power up if it's in use
+            if (!thisPowerUp.isInUse()) continue;
+            // If the types match...
+            if (powerUpType == thisPowerUp.getType()) {
+                // Then remove the one in use
+                removePowerUp(thisPowerUp, false);
+                break;
+            }
+        }
+
+        // Hide it visually
+        gameRenderer.removeEntity(powerUp);
+
+        // Use the power up
+        powerUp.use();
+
+        // Add the effect
+        addEffect(powerUp);
+    }
+
+    public void removePowerUp(PowerUp powerUp, boolean removeEffect) {
+        // Remove it from the game
+        gameRenderer.removeEntity(powerUp);
+        powerUps.removeValue(powerUp, true);
+
+        // Remove the effect, if it's in use, if set to true
+        if (removeEffect && powerUp.isInUse()) {
+            removeEffect(powerUp);
+        }
+    }
+
+    public void updatePowerUpTimer() {
+        // If timer max and / or min < 0 then just set to -1 and stop
+        if (powerUpTimerMin < 0) {
+            powerUpTimer = -1f;
+            return;
+        }
+        // If timer max <= min, then just use min
+        if (powerUpTimerMax <= powerUpTimerMin) {
+            powerUpTimer = powerUpTimerMin;
+        } else {
+            Random random = new Random();
+            // Otherwise, randomly pick a value between the two
+            powerUpTimer = random.nextFloat() * (powerUpTimerMax - powerUpTimerMin) + powerUpTimerMin;
+        }
     }
 
     @Override
@@ -245,6 +457,11 @@ public class ScenarioLogic extends GameLogic {
             if (!allowDuplicateRequests) {
                 duplicateRequests.removeIndex(newIndex);
             }
+        }
+
+        // Remove all power up effects
+        for (PowerUpType powerUpType : powerUpPool) {
+            removeEffect(powerUpType);
         }
 
         // And start
@@ -320,6 +537,29 @@ public class ScenarioLogic extends GameLogic {
                 requestTarget = requestPool.size;
             }
         }
+
+        // Load the Power up data
+        JsonValue powerUpData = scenarioData.get("power_ups");
+        float time = powerUpData.getFloat("time");
+        // Default max to -1f.
+        powerUpTimerMax = -1f;
+        // If it's < 0, check the min / max
+        if (time < 0) {
+            // Set the max time
+            powerUpTimerMax = powerUpData.getFloat("time_max");
+            time = powerUpData.getFloat("time_min");
+        }
+        // Set the min time
+        powerUpTimerMin = time;
+
+        // Set the power up use time
+        powerUpUseTime = powerUpData.getFloat("use_time");
+
+        // Set the despawn time of the power up
+        powerUpDespawnTime = powerUpData.getFloat("despawn_time");
+
+        // Set the maximum number of power ups that can spawn at a time
+        maxPowerups = powerUpData.getInt("max");
 
         // And call loadScenarioContents
         loadScenarioContents(scenarioData);

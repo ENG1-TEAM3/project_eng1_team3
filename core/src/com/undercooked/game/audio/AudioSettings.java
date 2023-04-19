@@ -44,7 +44,6 @@ public class AudioSettings {
         public void tell(Float change) {
             // Only save if there was a change
             if (change == 0) return;
-            System.out.println(String.format("Test %f", change));
             saveVolumes();
         }
     };

@@ -22,8 +22,8 @@ public class WaitStep extends InteractionStep {
     static final float offsetY = 32F;
 
     @Override
-    public void update(InteractionInstance instance, Cook cook, float delta) {
-        updateTime(instance, delta);
+    public void update(InteractionInstance instance, Cook cook, float delta, float powerUpMultiplier) {
+        updateTime(instance, delta, powerUpMultiplier);
         // Check if elapsed time is >= time
         if (instance.elapsedTime >= time) {
             // If it is, then the wait is finished.

@@ -50,15 +50,15 @@ public class Station extends MapEntity {
 		setPrice(stationData.getPrice());
 	}
 
-	public void update(float delta) {
+	public void update(float delta,float powerUpMultiplier) {
 		// Only continue if not disabled
 		if (disabled)
 			return;
 		if (lockedCooks.size == 0) {
-			interactControl.update(null);
+			interactControl.update(null, powerUpMultiplier);
 			return;
 		}
-		interactControl.update(lockedCooks.get(0));
+		interactControl.update(lockedCooks.get(0), powerUpMultiplier);
 	}
 
 	@Override

@@ -14,22 +14,22 @@
       {
         "type": "timed_input",
         "value": "interact",
-        "time": 4,
+        "time": 1,
         "success": [
           {
             "type": "timed_input",
             "value": "interact",
-            "time": 4,
+            "time": 1,
             "success": [
               {
                 "type": "timed_input",
                 "value": "interact",
-                "time": 4,
+                "time": 1,
                 "success": [
                   {
                     "type": "timed_input",
                     "value": "interact",
-                    "time": 4,
+                    "time": 1,
                     "success": [
                       {
                         "type": "set",

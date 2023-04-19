@@ -36,12 +36,12 @@ public class StationInteractControl {
         this.stepsToFollow = new Array<>();
     }
 
-    public void update(Cook cook) {
+    public void update(Cook cook, float powerUpMultiplier) {
         // Only update if there's an interaction currently
         if (currentInteraction != null) {
             interactionInstance.updateDelta();
             currentInteraction.playSound(interactionInstance);
-            currentInteraction.update(interactionInstance, cook, interactionInstance.getDelta());
+            currentInteraction.update(interactionInstance, cook, interactionInstance.getDelta(), powerUpMultiplier);
         }
     }
 

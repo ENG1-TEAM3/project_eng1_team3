@@ -42,6 +42,11 @@ public class TimedInputStep extends WaitStep {
         font.getData().setScale(1f);
     }
 
+    @Override
+    public void updateTime(InteractionInstance instance, float delta, float powerUpMultiplier) {
+        instance.elapsedTime += delta / powerUpMultiplier;
+    }
+
     public void waitFinished(InteractionInstance instance, Cook cook) {
         // If the wait finishes, then it's a failure
         finished(instance, cook, null, null, false);

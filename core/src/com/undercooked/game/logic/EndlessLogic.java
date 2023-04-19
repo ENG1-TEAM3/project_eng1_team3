@@ -65,7 +65,7 @@ public class EndlessLogic extends ScenarioLogic {
         elapsedTime += delta;
 
         // Update the Stations
-        stationController.update(delta);
+        stationController.update(delta, interactSpeedMultiplier);
 
         // Update cooks.
         cookController.update(delta);
@@ -80,6 +80,9 @@ public class EndlessLogic extends ScenarioLogic {
             spawnCustomer();
             resetTimer();
         }
+
+        // Update the Power Ups
+        updatePowerUps(delta);
 
         // Check if game is over.
         checkGameOver();

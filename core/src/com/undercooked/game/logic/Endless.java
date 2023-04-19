@@ -64,7 +64,7 @@ public class Endless extends ScenarioLogic {
         }
 
         // Load all base ingredients
-        items.load(textureManager);
+        items.load(textureManager, Constants.GAME_TEXTURE_ID);
     }
 
     @Override

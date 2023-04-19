@@ -44,6 +44,11 @@ public class CookController {
     /** An {@link Observer} to find what the money is. */
     private Observer<Integer> moneyObserver;
 
+    /** The movement multiplier of the {@link Cook}s. */
+    float cookSpeed = 1f;
+    /** The max number of items the {@link Cook}s can hold. */
+    int cookStackMax = 5;
+
     /**
      * The constructor for the {@link CookController}.
      * 
@@ -75,6 +80,9 @@ public class CookController {
         cook.interactPhoneListener = interactPhone;
         cook.moneyUsedListener = moneyUsedListener;
         cook.moneyObserver = moneyObserver;
+
+        cook.setSpeed(cookSpeed);
+        cook.setHoldLimit(cookStackMax);
     }
 
     /**
@@ -289,6 +297,20 @@ public class CookController {
         // Make sure to update it for all cooks
         for (Cook cook : cooks) {
             cook.moneyObserver = moneyObserver;
+        }
+    }
+
+    public void setCookSpeed(float multiplier) {
+        cookSpeed = multiplier;
+        for (Cook cook : cooks) {
+            cook.setSpeed(multiplier);
+        }
+    }
+
+    public void setCookHoldLimit(int maxItems) {
+        cookStackMax = maxItems;
+        for (Cook cook : cooks) {
+            cook.setHoldLimit(maxItems);
         }
     }
 

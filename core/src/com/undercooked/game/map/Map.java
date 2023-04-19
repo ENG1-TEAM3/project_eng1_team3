@@ -334,7 +334,18 @@ public class Map {
         return offsetY;
     }
 
-    public MapCell randomOpenCellRange(int x, int y, int width, int height) {
+    /**
+     * Randomly gets a cell in the range provided, given that it's NOT of the type
+     * {@code collisionType}.
+     *
+     * @param x {@code int} : Left-most x
+     * @param y {@code int} : Bottom-most x
+     * @param width {@code int} : The width
+     * @param height {@code int} : The height
+     * @param collisionType {@code int} : Collision Type to not include
+     * @return
+     */
+    public MapCell randomOpenCellRange(int x, int y, int width, int height, CollisionType collisionType) {
         // Make an array of open cells
         Array<MapCell> openCells = new Array<>();
         // Loop through the locations, and add them to the array if they're open cells
@@ -342,8 +353,22 @@ public class Map {
         for (int i = x ; i < x + width ; i++) {
             for (int j = y ; j < y + height ; j++) {
                 MapCell thisCell = getCellFull(i,j);
-                if (!thisCell.isCollidable()) {
-                    openCells.add(thisCell);
+                switch (collisionType) {
+                    case COLLIDABLE:
+                        if (!thisCell.isCollidable()) {
+                            openCells.add(thisCell);
+                        }
+                        break;
+                    case INTERACTABLE:
+                        if (!thisCell.isInteractable()) {
+                            openCells.add(thisCell);
+                        }
+                        break;
+                    case ANY:
+                        if (!thisCell.isCollidable() && !thisCell.isInteractable() && !thisCell.isBase()) {
+                            openCells.add(thisCell);
+                        }
+                        break;
                 }
             }
         }
@@ -354,18 +379,25 @@ public class Map {
         return openCells.random();
     }
     public MapCell randomOpenCell() {
-        return randomOpenCellRange(offsetX, offsetY, width-1, height-1);
+        return randomOpenCell(CollisionType.ANY);
+    }
+    public MapCell randomOpenCell(CollisionType collisionType) {
+        return randomOpenCellRange(offsetX, offsetY, width-1, height-1, collisionType);
     }
 
     public MapCell randomOpenCellFull() {
-        return randomOpenCellRange(0,0,fullWidth,fullHeight);
+        return randomOpenCellFull(CollisionType.ANY);
+    }
+
+    public MapCell randomOpenCellFull(CollisionType collisionType) {
+        return randomOpenCellRange(0,0,fullWidth,fullHeight, collisionType);
     }
 
 
 
     public enum CollisionType {
         COLLIDABLE,
-        INTERACTABLE
+        ANY, INTERACTABLE
     }
 
     public MapCell getCollision(Rectangle collision, boolean returnClosest, CollisionType collisionType) {
