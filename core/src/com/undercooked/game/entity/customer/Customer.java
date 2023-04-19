@@ -223,6 +223,7 @@ public class Customer {
 		customerRoot.addChild("x", new JsonValue(register.getRegisterCell().getX()));
 		customerRoot.addChild("y", new JsonValue(register.getRegisterCell().getY()));
 		customerRoot.addChild("custno", new JsonValue(custNo));
+		customerRoot.addChild("waitTimer", new JsonValue(waitTimer));
 		customerRoot.addChild("request", order.serial());
 		return customerRoot;
 	}
