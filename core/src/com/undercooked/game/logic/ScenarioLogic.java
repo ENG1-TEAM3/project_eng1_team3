@@ -45,7 +45,6 @@ public class ScenarioLogic extends GameLogic {
     protected float powerUpTimer;
     protected float powerUpUseTime;
     protected float powerUpDespawnTime;
-    protected Listener<PowerUp> powerUpListener;
     protected Listener<PowerUp> powerUpRemoveListener;
     protected Array<PowerUp> powerUps;
     protected PowerUpType[] powerUpPool;
@@ -271,6 +270,14 @@ public class ScenarioLogic extends GameLogic {
     public void start() {
         // Spawn a customer
         spawnCustomer();
+    }
+
+    public void resetPowerUps() {
+        // Remove all power up effects
+        for (PowerUpType powerUpType : powerUpPool) {
+            removeEffect(powerUpType);
+        }
+
         // Start the power up timer
         updatePowerUpTimer();
     }
@@ -417,6 +424,10 @@ public class ScenarioLogic extends GameLogic {
 
     @Override
     public void reset() {
+
+        // Reset power ups
+        resetPowerUps();
+
         if (!resetOnLoad) {
             resetOnLoad = true;
             return;
@@ -453,11 +464,6 @@ public class ScenarioLogic extends GameLogic {
             if (!allowDuplicateRequests) {
                 duplicateRequests.removeIndex(newIndex);
             }
-        }
-
-        // Remove all power up effects
-        for (PowerUpType powerUpType : powerUpPool) {
-            removeEffect(powerUpType);
         }
 
         // And start

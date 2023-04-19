@@ -332,6 +332,7 @@ public class MainScreen extends Screen {
 		// Move to the game screen
 		game.screenController.setScreen(Constants.GAME_SCREEN_ID);
 
+		// Load the game
 		SaveLoadGame.loadGame(gameLogic, saveData);
 	}
 

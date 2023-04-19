@@ -16,6 +16,7 @@ import com.undercooked.game.food.Items;
 import com.undercooked.game.interactions.InteractResult;
 import com.undercooked.game.interactions.Interactions;
 import com.undercooked.game.interactions.StationInteractControl;
+import com.undercooked.game.map.Map;
 import com.undercooked.game.map.MapEntity;
 import com.undercooked.game.map.MapManager;
 
@@ -26,13 +27,14 @@ import static com.undercooked.game.MainGameClass.shapeRenderer;
  * 
  */
 public class Station extends MapEntity {
-
 	StationInteractControl interactControl;
 	private StationData stationData;
 	public ItemStack items;
 	private Array<Cook> lockedCooks;
 	private int price;
 	private boolean disabled;
+
+	public boolean hasCollision;
 
 	public void setDisabled(boolean value) {
 		disabled = value;
@@ -356,11 +358,13 @@ public class Station extends MapEntity {
 	/**
 	 * Serialize the station class.
 	 */
-	public JsonValue serial() {
+	public JsonValue serial(Map map) {
 		// If the station is not unlocked, or if it has no items on it, then just ignore
 		// as there's no reason to save anything
-		if (!(disabled && price > 0) && items.size() == 0) {
-			return null;
+		if (!(!disabled && price > 0)) {
+			if (items.size() == 0) {
+				return null;
+			}
 		}
 		// Get ItemIDs from the station items
 		JsonValue theItemIds = new JsonValue(JsonValue.ValueType.array);
@@ -371,11 +375,14 @@ public class Station extends MapEntity {
 		// Return JsonValue
 		JsonValue stationRoot = new JsonValue(JsonValue.ValueType.object);
 		stationRoot.addChild("station_id", new JsonValue(id));
-		stationRoot.addChild("x", new JsonValue(MapManager.posToGridFloor(pos.x)));
-		stationRoot.addChild("y", new JsonValue(MapManager.posToGridFloor(pos.y)));
+		stationRoot.addChild("base_texture", new JsonValue(basePath));
+		stationRoot.addChild("has_collision", new JsonValue(hasCollision));
+		stationRoot.addChild("x", new JsonValue(MapManager.posToGridFloor(pos.x) - map.getOffsetX()));
+		stationRoot.addChild("y", new JsonValue(MapManager.posToGridFloor(pos.y) - map.getOffsetY()));
 		stationRoot.addChild("price", new JsonValue(price));
-		stationRoot.addChild("unlocked", new JsonValue(disabled && price > 0));
+		stationRoot.addChild("disabled", new JsonValue(disabled));
 		stationRoot.addChild("items", theItemIds);
+
 		return stationRoot;
 	}
 }

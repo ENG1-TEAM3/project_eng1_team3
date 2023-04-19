@@ -373,7 +373,7 @@ public abstract class GameLogic {
         }
 
         gameRoot.addChild("cooks", cookController.serializeCooks(map));
-        gameRoot.addChild("stations", stationController.serializeStations());
+        gameRoot.addChild("stations", stationController.serializeStations(map));
         gameRoot.addChild("customers", customerController.serializeCustomers());
 
         return gameRoot;
@@ -391,6 +391,7 @@ public abstract class GameLogic {
             newRequest.load(textureManager, Constants.GAME_TEXTURE_ID);
         }
 
+        this.id = gameRoot.getString("scenario_id");
         this.leaderboardId = gameRoot.getString("leaderboard_id");
         this.leaderboardName = gameRoot.getString("leaderboard_name");
         this.money = gameRoot.getInt("money");
@@ -405,7 +406,7 @@ public abstract class GameLogic {
         }
 
         // Loads the stations
-        stationController.deserializeStations(gameRoot.get("stations"), audioManager, items, map);
+        stationController.deserializeStations(this, gameRoot.get("stations"), audioManager, interactions, items, map);
 
         // Loads the customers
         customerController.deserializeCustomers(this, gameRoot.get("customers"));
@@ -413,5 +414,9 @@ public abstract class GameLogic {
 
     public double getDifficulty() {
         return this.difficulty;
+    }
+
+    public GameRenderer getGameRenderer() {
+        return gameRenderer;
     }
 }

@@ -367,7 +367,14 @@ public class GameRenderer {
     }
 
     public void removeEntity(Entity entity) {
+        if (entity == null) return;
         renderEntities.removeValue(entity,true);
+    }
+
+    public void removeEntities(Array<Entity> removedEntities) {
+        for (Entity entityToRemove : removedEntities) {
+            removeEntity(entityToRemove);
+        }
     }
 
     public Array<Entity> getEntities() {

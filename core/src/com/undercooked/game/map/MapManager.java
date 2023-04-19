@@ -1,9 +1,11 @@
 package com.undercooked.game.map;
 
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.JsonValue;
 import com.undercooked.game.assets.AudioManager;
 import com.undercooked.game.assets.TextureManager;
+import com.undercooked.game.entity.Entity;
 import com.undercooked.game.entity.cook.CookController;
 import com.undercooked.game.files.FileControl;
 import com.undercooked.game.food.Items;
@@ -69,56 +71,7 @@ public class MapManager {
                     if (data != null) {
                         // Initialise the Station
                         Station newStation = new Station(data);
-                        newStation.makeInteractionController(audioManager, gameItems);
-                        newStation.setInteractions(interactions);
-
-                        // Check if there is a custom base
-                        String basePath = stationData.getString("base_texture");
-                        if (basePath != null) {
-                            // If there is, then set the newStation to use it
-                            newStation.setBasePath(basePath);
-                        }
-                        // Add it to the station manager
-                        stationController.addStation(newStation);
-
-                        boolean hasCollision;
-                        // Check if it has a custom has_collision tag
-                        if (stationData.has("has_collision")) {
-                            // If it does, then set the station to use it
-                            hasCollision = stationData.getBoolean("has_collision");
-                        } else {
-                            // If it doesn't, get it from the station data
-                            hasCollision = data.isCollidable();
-                        }
-
-                        // Check if it has a custom price
-                        if (stationData.has("price")) {
-                            // If it does, then set the station to use it
-                            newStation.setPrice(stationData.getInt("price"));
-                            // If not, the station will use the StationData,
-                            // which it does when give the StationData
-                        }
-
-                        // Add it to the map
-                        outputMap.addMapEntity(newStation,
-                                stationData.getInt("x"),
-                                stationData.getInt("y"),
-                                data.getFloorTile(),
-                                hasCollision);
-
-                        // If it does have collision
-                        if (hasCollision) {
-                            // Then set up the collision values
-                            newStation.collision.setWidth(data.getCollisionWidth());
-                            newStation.collision.setHeight(data.getCollisionHeight());
-                            newStation.offsetX = data.getCollisionOffsetX();
-                            newStation.offsetY = data.getCollisionOffsetY();
-                        } else {
-                            // If it doesn't, just set the collision to the size of the
-                            // station
-                            newStation.collision.setWidth(gridToPos(data.getWidth()));
-                            newStation.collision.setHeight(gridToPos(data.getHeight()));
-                        }
+                        setupStation(outputMap, stationData, stationController, newStation, data, interactions, audioManager, gameItems);
                     }
                 }
             } catch (GdxRuntimeException e) {
@@ -130,6 +83,59 @@ public class MapManager {
         cookController.loadCooksIntoMap(root, gameItems, outputMap, textureManager, true, true);
 
         return outputMap;
+    }
+
+    public static Array<Entity> setupStation(Map map, JsonValue jsonData, StationController stationController, Station newStation, StationData stationData, Interactions interactions, AudioManager audioManager, Items gameItems) {
+        newStation.makeInteractionController(audioManager, gameItems);
+        newStation.setInteractions(interactions);
+
+        // Check if there is a custom base
+        String basePath = jsonData.getString("base_texture");
+        if (basePath != null) {
+            // If there is, then set the newStation to use it
+            newStation.setBasePath(basePath);
+        }
+        // Add it to the station manager
+        stationController.addStation(newStation);
+
+        // Check if it has a custom has_collision tag
+        if (jsonData.has("has_collision")) {
+            // If it does, then set the station to use it
+            newStation.hasCollision = jsonData.getBoolean("has_collision");
+        } else {
+            // If it doesn't, get it from the station data
+            newStation.hasCollision = stationData.isCollidable();
+        }
+
+        // Check if it has a custom price
+        if (jsonData.has("price")) {
+            // If it does, then set the station to use it
+            newStation.setPrice(jsonData.getInt("price"));
+            // If not, the station will use the StationData,
+            // which it does when give the StationData
+        }
+
+        // Add it to the map
+        Array<Entity> removedEntities = map.addMapEntity(newStation,
+                jsonData.getInt("x"),
+                jsonData.getInt("y"),
+                stationData.getFloorTile(),
+                newStation.hasCollision);
+
+        // If it does have collision
+        if (newStation.hasCollision) {
+            // Then set up the collision values
+            newStation.collision.setWidth(stationData.getCollisionWidth());
+            newStation.collision.setHeight(stationData.getCollisionHeight());
+            newStation.offsetX = stationData.getCollisionOffsetX();
+            newStation.offsetY = stationData.getCollisionOffsetY();
+        } else {
+            // If it doesn't, just set the collision to the size of the
+            // station
+            newStation.collision.setWidth(gridToPos(stationData.getWidth()));
+            newStation.collision.setHeight(gridToPos(stationData.getHeight()));
+        }
+        return removedEntities;
     }
 
     /**

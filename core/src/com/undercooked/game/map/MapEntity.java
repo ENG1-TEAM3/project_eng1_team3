@@ -14,7 +14,7 @@ public class MapEntity extends Entity {
     private int width;
     private int height;
     Rectangle interactBox;
-    String basePath;
+    protected String basePath;
     protected String id;
 
     public MapEntity() {

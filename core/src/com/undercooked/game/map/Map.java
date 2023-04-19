@@ -173,11 +173,12 @@ public class Map {
         setFullMapCell(x+offsetX, y+offsetY, cell);
     }
 
-    protected void addFullMapEntity(MapEntity entity, int x, int y, String floorTile) {
-        addFullMapEntity(entity, x, y, floorTile, false);
+    protected Array<Entity> addFullMapEntity(MapEntity entity, int x, int y, String floorTile) {
+        return addFullMapEntity(entity, x, y, floorTile, false);
     }
 
-    public void addFullMapEntity(MapEntity entity, int x, int y, String floorTile, boolean hasCollision) {
+    public Array<Entity> addFullMapEntity(MapEntity entity, int x, int y, String floorTile, boolean hasCollision) {
+        Array<Entity> removedEntities = new Array<>();
         // And now add the entity
         for (int i = x + entity.getCellWidth()-1 ; i >= x ; i--) {
             for (int j = y + entity.getCellHeight()-1 ; j >= y ; j--) {
@@ -190,13 +191,14 @@ public class Map {
                         // Only add it for removal if it hasn't been already
                         MapEntity entityToRemove = getCellFull(i, j).getMapEntity();
                         removeEntity(entityToRemove);
+                        // Add entity to removed entities, if it's not there already
+                        if (!removedEntities.contains(entityToRemove, true)) removedEntities.add(entityToRemove);
                     }
                     cellToReplace.setCollidable(hasCollision);
                     cellToReplace.setInteractable(true);
                     cellToReplace.setBase(false);
                     cellToReplace.setMapEntity(entity);
                     cellToReplace.setBelowTile(floorTile);
-                    System.out.println(hadCollision);
                     // If there is a station above this...
                     if (validCellFull(i,j+1)) {
                         MapCell aboveCell = getCellFull(i,j+1, false);
@@ -239,6 +241,8 @@ public class Map {
                         if (entity.basePath != null) {
                             cellBelow.getMapEntity().setTexture(entity.basePath);
                         } else {
+                            // Add entity to removed entities, if it's not there already
+                            if (!removedEntities.contains(cellBelow.mapEntity, true)) removedEntities.add(cellBelow.mapEntity);
                             // If it doesn't have a base path, remove the base
                             resetCell(cellBelow);
                         }
@@ -255,10 +259,11 @@ public class Map {
                 }
             }
         }
+        return removedEntities;
     }
 
-    public void addMapEntity(MapEntity entity, int x, int y, String floorTile) {
-        addMapEntity(entity, x, y, floorTile, false);
+    public Array<Entity> addMapEntity(MapEntity entity, int x, int y, String floorTile) {
+        return addMapEntity(entity, x, y, floorTile, false);
     }
 
     /**
@@ -267,21 +272,21 @@ public class Map {
      * @param x The {@code x} position of the {@link MapEntity}.
      * @param y The {@code y} position of the {@link MapEntity}.
      */
-    public void addMapEntity(MapEntity entity, int x, int y, String floorTile, boolean hasCollision) {
+    public Array<Entity> addMapEntity(MapEntity entity, int x, int y, String floorTile, boolean hasCollision) {
         // Make sure the range is valid
         // (x, x+entity.width, y, y+entity.height all in range)
         // Make sure that width and height are > 0
         if (entity.getCellWidth() <= 0 || entity.getCellHeight() <= 0) {
-            return;
+            return null;
         }
         // Make sure that the cell is valid
         if (!(validCell(x,y) && validCell(x+entity.getCellWidth()-1,y+entity.getCellHeight()-1))) {
             // If it's not, then return as it can't be added.
-            return;
+            return null;
         }
 
         // Add it to the map
-        addFullMapEntity(entity, x+offsetX, y+offsetY, floorTile, hasCollision);
+        return addFullMapEntity(entity, x+offsetX, y+offsetY, floorTile, hasCollision);
     }
 
     /**
@@ -396,8 +401,9 @@ public class Map {
 
 
     public enum CollisionType {
+        ANY,
         COLLIDABLE,
-        ANY, INTERACTABLE
+        INTERACTABLE
     }
 
     public MapCell getCollision(Rectangle collision, boolean returnClosest, CollisionType collisionType) {

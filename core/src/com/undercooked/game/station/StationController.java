@@ -6,9 +6,12 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.undercooked.game.assets.AudioManager;
+import com.undercooked.game.entity.Entity;
 import com.undercooked.game.files.FileControl;
 import com.undercooked.game.food.Item;
 import com.undercooked.game.food.Items;
+import com.undercooked.game.interactions.Interactions;
+import com.undercooked.game.logic.GameLogic;
 import com.undercooked.game.map.Map;
 import com.undercooked.game.map.MapManager;
 import com.undercooked.game.screen.GameScreen;
@@ -192,6 +195,10 @@ public class StationController {
 		}
 	}
 
+	public void removeStation (Station station) {
+		stations.removeValue(station, true);
+	}
+
 	public void reset() {
 		// Reset all stations
 		for (Station station : stations) {
@@ -223,13 +230,14 @@ public class StationController {
 		return stationData.containsKey(stationID);
 	}
 
-	public JsonValue serializeStations() {
+	public JsonValue serializeStations(Map map) {
 		// JsonValue stationsRoot = new JsonValue(JsonValue.ValueType.object);
 		JsonValue stationsArrayRoot = new JsonValue(JsonValue.ValueType.array);
 		// stationsRoot.addChild("stations", stationsArrayRoot);
 
-		for (Station station : this.stations) {
-			JsonValue stationData = station.serial();
+		for (Station station : stations) {
+			JsonValue stationData = station.serial(map);
+			System.out.println("Station Data: " + stationData);
 			if (stationData == null) continue;
 			stationsArrayRoot.addChild(stationData);
 		}
@@ -238,24 +246,17 @@ public class StationController {
 		return stationsArrayRoot;
 	}
 
-	public void deserializeStations(JsonValue jsonValue, AudioManager audioManager, Items items, Map map) {
-		// Clear the stations
-		clear();
-
-		// JsonValue stationsRoot = jsonValue.get("stations");
-		JsonValue stationsArrayRoot = jsonValue;
-
+	public void deserializeStations(GameLogic logic, JsonValue jsonValue, AudioManager audioManager, Interactions interactions, Items items, Map map) {
 		// For each station
-		for (JsonValue stationRoot : stationsArrayRoot) {
+		for (JsonValue stationRoot : jsonValue) {
 			StationData data = loadStationPath(stationRoot.getString("station_id"));
 			// If it's not null
 			if (data != null) {
 				// Create a new station
 				Station station = new Station(data);
-				station.makeInteractionController(audioManager, items);
+				Array<Entity> removedEntities = MapManager.setupStation(map, stationRoot, this, station, data, interactions, audioManager, items);
 				// Deserialize it
-				station.setPrice(stationRoot.getInt("price"));
-				station.setDisabled(stationRoot.getBoolean("unlocked"));
+				station.setDisabled(stationRoot.getBoolean("disabled"));
 				JsonValue itemsArray = stationRoot.get("items");
 				for (JsonValue item : itemsArray) {
 					Item thisItem = items.addItemAsset(item.asString());
@@ -263,11 +264,21 @@ public class StationController {
 						station.items.add(thisItem);
 					}
 				}
-				// Add it to the stations
-				addStation(station);
 
-				// Add it to the map
-				map.addFullMapEntity(station, stationRoot.getInt("x"), stationRoot.getInt("y"), data.getFloorTile(), data.isCollidable());
+				// Add it to the map, and the game renderer
+				logic.getGameRenderer().addEntity(station);
+				// Remove the Station entities from this station controller
+				for (Entity removedEntity : removedEntities) {
+					if (removedEntity.getClass().equals(Station.class)) {
+						removeStation((Station) removedEntity);
+					}
+				}
+				// And remove the entities it removed from the game renderer
+				logic.getGameRenderer().removeEntities(removedEntities);
+
+				// Update station interactions
+				station.updateInteractions();
+				station.updateStationInteractions();
 			}
 		}
 	}
