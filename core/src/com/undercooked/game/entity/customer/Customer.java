@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.utils.JsonValue;
 import com.undercooked.game.assets.TextureManager;
 import com.undercooked.game.food.Item;
 import com.undercooked.game.food.Request;
@@ -40,7 +41,8 @@ public class Customer {
 
 	/**
 	 * Constructor for customer class
-	 * @param custno - customer number - changes texture
+	 * 
+	 * @param custno         - customer number - changes texture
 	 * @param textureManager The {@link TextureManager} to use
 	 *                       to load and get {@link Texture}s from.
 	 */
@@ -116,14 +118,15 @@ public class Customer {
 			return;
 		}
 
-		// If it doesn't have a register, then just move up if there's no other customer above.
-		if (!customerController.customerInSquarePos(x, y +MapManager.gridToPos(0.5F), this)) {
+		// If it doesn't have a register, then just move up if there's no other customer
+		// above.
+		if (!customerController.customerInSquarePos(x, y + MapManager.gridToPos(0.5F), this)) {
 			y += moveSpeed * delta;
 		}
 	}
 
 	public void draw(SpriteBatch batch) {
-		batch.setColor(1,1,1,visibility);
+		batch.setColor(1, 1, 1, visibility);
 		batch.draw(textf, x, y, 64, 128);
 		batch.setColor(1, 1, 1, 1);
 	}
@@ -131,19 +134,20 @@ public class Customer {
 	public void draw(ShapeRenderer shape) {
 		// Only continue if waiting, as this is used to
 		// draw the wait timer
-		if (!waiting) return;
+		if (!waiting)
+			return;
 
 		// Draw base rectangle
 		float width = 20;
 		float padding = 5;
 		float height = 60;
 		shape.setColor(Color.GRAY);
-		shape.rect(x, y+16, width, height);
+		shape.rect(x, y + 16, width, height);
 		float percentFilled = waitTimer / getRequest().getTime();
 		shape.setColor(Color.BLACK);
-		shape.rect(x+padding, y+16+padding, width-padding*2, height-padding*2);
-		shape.setColor(1f-percentFilled,percentFilled,0,1);
-		shape.rect(x+padding, y+16+padding, width-padding*2, (height-padding*2)* percentFilled);
+		shape.rect(x + padding, y + 16 + padding, width - padding * 2, height - padding * 2);
+		shape.setColor(1f - percentFilled, percentFilled, 0, 1);
+		shape.rect(x + padding, y + 16 + padding, width - padding * 2, (height - padding * 2) * percentFilled);
 		shape.setColor(Color.WHITE);
 	}
 
@@ -206,5 +210,14 @@ public class Customer {
 
 	public boolean isWaiting() {
 		return waiting;
+	}
+
+	public JsonValue serial() {
+		// Return JsonValue
+		JsonValue customerRoot = new JsonValue(JsonValue.ValueType.object);
+		customerRoot.addChild("x", new JsonValue(register.getRegisterCell().getX()));
+		customerRoot.addChild("y", new JsonValue(register.getRegisterCell().getY()));
+		customerRoot.addChild("request", order.serial());
+		return customerRoot;
 	}
 }

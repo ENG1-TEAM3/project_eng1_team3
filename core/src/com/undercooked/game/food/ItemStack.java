@@ -1,6 +1,7 @@
 package com.undercooked.game.food;
 
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.JsonValue;
 
 import java.util.Iterator;
 
@@ -45,9 +46,10 @@ public class ItemStack implements Iterable<Item> {
     /**
      * Returns whether the {@link ItemStack} has an {@link Item}
      * with the provided {@link String} ID or not.
+     * 
      * @param itemID {@link String} : The ID of the {@link Item}.
      * @return {@code boolean} : {@code true} if it has the ID,
-     *                           {@code false} if it does not.
+     *         {@code false} if it does not.
      */
     public boolean hasID(String itemID) {
         for (Item item : items) {
@@ -60,10 +62,11 @@ public class ItemStack implements Iterable<Item> {
 
     /**
      * A static version of the {@link #hasID(String)} function.
-     * @param items {@link Array<Item>} : An {@link Array} of the {@link Item}s.
+     * 
+     * @param items  {@link Array<Item>} : An {@link Array} of the {@link Item}s.
      * @param itemID {@link String} : The ID of the {@link Item}.
      * @return {@code boolean} : {@code true} if it has the ID,
-     *                           {@code false} if it does not.
+     *         {@code false} if it does not.
      */
     public static boolean hasID(Array<Item> items, String itemID) {
         for (Item item : items) {
@@ -77,8 +80,9 @@ public class ItemStack implements Iterable<Item> {
     /**
      * Returns an {@link Array} of the {@link #items} {@link Array}
      * that the ItemStack uses, either as a copy or not.
+     * 
      * @param copy {@code boolean} : Whether it should return as a copy or
-     *                               not.
+     *             not.
      * @return {@link Array<Item>} : An {@link Array} of the {@link Item}s.
      */
     public Array<Item> asArray(boolean copy) {
@@ -100,9 +104,24 @@ public class ItemStack implements Iterable<Item> {
     /**
      * Returns a copy of the {@link #items} {@link Array}
      * that the ItemStack uses.
+     * 
      * @return {@link Array<Item>} : An {@link Array} of the {@link Item}s.
      */
     public Array<Item> asArray() {
         return asArray(true);
+    }
+
+    public String getStack() {
+        return null;
+    }
+
+    public JsonValue serial() {
+        // Get ItemIDs from {@link heldItems}
+        JsonValue theItemIds = new JsonValue(JsonValue.ValueType.array);
+        for (Item item : items) {
+            theItemIds.addChild("", new JsonValue(item.getID()));
+        }
+        // Return the ItemIDs
+        return theItemIds;
     }
 }

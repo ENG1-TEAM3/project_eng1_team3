@@ -102,7 +102,6 @@ public class Interactions {
                 interactionStep = new RemoveStep();
                 break;
 
-
             // Inputs
             case "timed_input":
                 interactionStep = new TimedInputStep(MainGameClass.font);
@@ -188,7 +187,8 @@ public class Interactions {
             }
 
             // Then, Make sure that there's at least one step.
-            // Loop through all the Interactions recursively in order to get them all stored in the array
+            // Loop through all the Interactions recursively in order to get them all stored
+            // in the array
             out = addInteractions(interactionRoot.get("steps"), audioManager, items);
         } else {
             return;

@@ -3,6 +3,7 @@ package com.undercooked.game.food;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.JsonValue;
 import com.undercooked.game.assets.TextureManager;
 
 public class Request {
@@ -59,11 +60,29 @@ public class Request {
     public Array<Instruction> getInstructions() {
         return instructions;
     }
+
     public Sprite getSprite(Items items) {
         return items.getItem(itemID).sprite;
     }
 
     public float getTime() {
         return this.time;
+    }
+
+    public JsonValue serial() {
+        JsonValue requestRoot = new JsonValue(JsonValue.ValueType.object);
+        requestRoot.addChild("itemID", new JsonValue(itemID));
+        requestRoot.addChild("value", new JsonValue(value));
+        requestRoot.addChild("time", new JsonValue(time));
+
+        // * Caveat: As instructions is an Array<Instruction>, I cannot create a serial
+        // function for it.
+        // * meaning, its serialization will be done here.
+        JsonValue instructionsRoot = new JsonValue(JsonValue.ValueType.array);
+        for (Instruction instruction : instructions) {
+            instructionsRoot.addChild(instruction.serial());
+        }
+        requestRoot.addChild("instructions", instructionsRoot);
+        return requestRoot;
     }
 }

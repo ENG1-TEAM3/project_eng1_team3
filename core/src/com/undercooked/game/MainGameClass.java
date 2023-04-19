@@ -8,9 +8,12 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Vector2;
 import com.undercooked.game.Input.InputController;
 import com.undercooked.game.assets.AudioManager;
 import com.undercooked.game.audio.SoundStateChecker;
+import com.undercooked.game.entity.cook.Cook;
+import com.undercooked.game.files.FileControl;
 import com.undercooked.game.files.SettingsControl;
 import com.undercooked.game.map.MapManager;
 import com.undercooked.game.assets.TextureManager;
@@ -36,6 +39,7 @@ public class MainGameClass extends Game {
 	public static SpriteBatch batch;
 	public static BitmapFont font;
 	public static ShapeRenderer shapeRenderer;
+
 	/**
 	 * Constructor for the Game.
 	 */
@@ -46,7 +50,7 @@ public class MainGameClass extends Game {
 		// assetManager.setLoader(TiledMap.class, new TmxMapLoader(new InternalFileHandleResolver()));
 		audioManager = new AudioManager(assetManager, soundChecker);
 		textureManager = new TextureManager(assetManager);
-		mapManager = new MapManager(textureManager,audioManager);
+		mapManager = new MapManager(textureManager, audioManager);
 		screenController = new ScreenController(this, assetManager);
 		stationController = new StationController();
 	}
@@ -87,12 +91,10 @@ public class MainGameClass extends Game {
 		CameraController.getCamera(Constants.WORLD_CAMERA_ID);
 		CameraController.getCamera(Constants.UI_CAMERA_ID);
 
-
 		// ===================FONT=INITIALISATION======================
 		font = new BitmapFont(Gdx.files.internal("uielements/font.fnt"), Gdx.files.internal("uielements/font.png"),
 				false);
 		font.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
-
 
 		// ===============GAME=SCREEN=INITIALISATION===========================
 
@@ -122,9 +124,11 @@ public class MainGameClass extends Game {
 	public AudioManager getAudioManager() {
 		return audioManager;
 	}
+
 	public TextureManager getTextureManager() {
 		return textureManager;
 	}
+
 	public AudioSettings getAudioSettings() {
 		return audioSettings;
 	}

@@ -24,13 +24,14 @@ public class CookController {
         public Vector2 startPos;
     }
 
-    // =======================================CookController ATTRIBUTES======================================================
+    // =======================================CookController
+    // ATTRIBUTES======================================================
     /** The array containing all the cooks in the game. */
     Array<Cook> cooks;
     /** An ObjectMap mapping a Cook to their start position. */
     ObjectMap<Cook, Vector2> cookStart;
     /** The index of the current cook. */
-	int currentCook = 0;
+    int currentCook = 0;
     /** Manages the textures for the cooks. */
     TextureManager textureManager;
     /** The number of cook textures */
@@ -45,8 +46,10 @@ public class CookController {
 
     /**
      * The constructor for the {@link CookController}.
-     * @param textureManager {@link TextureManager} : The {@link TextureManager} to get and load
-     *                                                {@link com.badlogic.gdx.graphics.Texture}s from
+     * 
+     * @param textureManager {@link TextureManager} : The {@link TextureManager} to
+     *                       get and load
+     *                       {@link com.badlogic.gdx.graphics.Texture}s from
      */
     public CookController(TextureManager textureManager) {
         this.textureManager = textureManager;
@@ -58,6 +61,7 @@ public class CookController {
 
     /**
      * Adds an {@link Cook} to the {@link #cooks} {@link Array}.
+     * 
      * @param cook {@link Cook} : The {@link Cook} to add.
      */
     public void addCook(Cook cook) {
@@ -74,10 +78,11 @@ public class CookController {
     }
 
     /**
-	 * Change selected cook, and update the {@link Cook}s, making the
+     * Change selected cook, and update the {@link Cook}s, making the
      * {@link Cook} check for inputs if it's the selected {@link Cook}.
+     * 
      * @param delta {@code float} : The time since the last frame.
-	 */
+     */
     public void update(float delta) {
 
         // If there are cooks...
@@ -89,7 +94,7 @@ public class CookController {
             }
             if (InputController.isKeyJustPressed(Keys.cook_prev)) {
                 currentCook = currentCook - 1;
-                currentCook = Math.min(currentCook, cooks.size-1);
+                currentCook = Math.min(currentCook, cooks.size - 1);
                 if (currentCook < 0) {
                     currentCook += cooks.size;
                 }
@@ -108,7 +113,7 @@ public class CookController {
         for (Cook cook : cooks) {
             cook.update(delta);
         }
-	}
+    }
 
     /**
      * Function to stop all {@link Cook} movement for when the
@@ -124,8 +129,9 @@ public class CookController {
     // =======================================GETTERS======================================================
     /**
      * Cooks array getter. Get the cooks array.
+     * 
      * @return {@link Array<Cook>} : An {@link Array} of the {@link Cook}s
-     *                      that the {@link CookController} controls.
+     *         that the {@link CookController} controls.
      */
     public final Array<Cook> getCooks() {
         return cooks;
@@ -133,6 +139,7 @@ public class CookController {
 
     /**
      * Current cook getter. Get the current cook.
+     * 
      * @return Cook
      */
     public final Cook getCurrentCook() {
@@ -144,6 +151,7 @@ public class CookController {
 
     /**
      * Loads all of the {@link Cook}'s {@link com.badlogic.gdx.graphics.Texture}s.
+     * 
      * @param textureGroup
      */
     public void load(String textureGroup) {
@@ -156,7 +164,8 @@ public class CookController {
     /**
      * Call the {@link Cook#postLoad(TextureManager)} function for all
      * of the {@link Cook}s in the {@link #cooks} {@link Array}.
-     * <br>This updates their {@link com.badlogic.gdx.graphics.g2d.Sprite} to use
+     * <br>
+     * This updates their {@link com.badlogic.gdx.graphics.g2d.Sprite} to use
      * the loaded {@link com.badlogic.gdx.graphics.Texture}.
      */
     public void postLoad() {
@@ -167,14 +176,17 @@ public class CookController {
     }
 
     /**
-     * Loads all the possible {@link Cook} {@link com.badlogic.gdx.graphics.Texture}s,
+     * Loads all the possible {@link Cook}
+     * {@link com.badlogic.gdx.graphics.Texture}s,
      * if all of them are needed.
-     * <br>Needed for the {@link com.undercooked.game.logic.Endless} mode.
+     * <br>
+     * Needed for the {@link com.undercooked.game.logic.Endless} mode.
+     * 
      * @param textureGroup
      */
     public void loadAll(String textureGroup) {
         // Load all the Cook textures
-        for (int i = 1 ; i <= COOK_TEXTURES ; i++) {
+        for (int i = 1; i <= COOK_TEXTURES; i++) {
             textureManager.load(textureGroup, "entities/cook_walk_" + i + ".png");
             textureManager.load(textureGroup, "entities/cook_walk_hands_" + i + ".png");
         }
@@ -190,6 +202,7 @@ public class CookController {
 
     /**
      * Returns the index of the current {@link Cook}.
+     * 
      * @return {@link Cook} : The {@code int} index of the current {@link Cook}.
      */
     public int getCurrentCookIndex() {
@@ -199,11 +212,15 @@ public class CookController {
     /**
      * Loads all of the {@link Cook}s from the map {@link JsonValue}, onto
      * the {@link Map}
-     * @param mapRoot {@link JsonValue} : The {@link Map}'s JSON.
-     * @param map {@link Map} : The {@link Map} to add the {@link Cook}s to.
-     * @param textureManager {@link TextureManager} : The {@link TextureManager} to load the
-     *                                                {@link Cook}'s {@link com.badlogic.gdx.graphics.Texture}s
-     *                                                to.
+     * 
+     * @param mapRoot        {@link JsonValue} : The {@link Map}'s JSON.
+     * @param map            {@link Map} : The {@link Map} to add the {@link Cook}s
+     *                       to.
+     * @param textureManager {@link TextureManager} : The {@link TextureManager} to
+     *                       load the
+     *                       {@link Cook}'s
+     *                       {@link com.badlogic.gdx.graphics.Texture}s
+     *                       to.
      */
     public void loadCooksIntoMap(JsonValue mapRoot, Map map, TextureManager textureManager) {
         // Clear the startCooks array
@@ -215,10 +232,11 @@ public class CookController {
         int cookNo = 1;
         // Iterate through the cooks and add them
         for (JsonValue cookData : cookArray.iterator()) {
-            Vector2 cookPos = new Vector2(MapManager.gridToPos(cookData.getFloat("x")+map.getOffsetX()), MapManager.gridToPos(cookData.getFloat("y")+map.getOffsetY()));
+            Vector2 cookPos = new Vector2(MapManager.gridToPos(cookData.getFloat("x") + map.getOffsetX()),
+                    MapManager.gridToPos(cookData.getFloat("y") + map.getOffsetY()));
             Cook newCook = new Cook(cookPos, cookNo, textureManager, map);
             addCook(newCook);
-            cookNo = Math.max(1, (cookNo+1) % (COOK_TEXTURES+1));
+            cookNo = Math.max(1, (cookNo + 1) % (COOK_TEXTURES + 1));
 
             cookStart.put(newCook, new Vector2(cookPos));
         }
@@ -232,7 +250,7 @@ public class CookController {
      * is a register.
      *
      * @param serveListener {@link Listener<Cook>} : The {@link Listener}
-     *                                            to use.
+     *                      to use.
      */
     public void setServeListener(Listener<Cook> serveListener) {
         this.serveListener = serveListener;
@@ -276,7 +294,7 @@ public class CookController {
 
     public void reset() {
         // For each Cook, check if it has a start position
-        for (int i = cooks.size-1 ; i >= 0 ; i--) {
+        for (int i = cooks.size - 1; i >= 0; i--) {
             Cook thisCook = cooks.get(i);
             if (!cookStart.containsKey(thisCook)) {
                 // If it doesn't, then remove it
@@ -300,5 +318,25 @@ public class CookController {
         // Clear all data
         cooks.clear();
         cookStart.clear();
+    }
+
+    /**
+     * Serialises the {@link Cook}s to a {@link JsonValue}.
+     */
+    public JsonValue serializeCooks() {
+        // Create the cooks JsonValue
+        JsonValue cooksArrayRoot = new JsonValue(JsonValue.ValueType.array);
+
+        // For each Cook, add it to the cooks JsonValue
+        for (Cook cook : cooks) {
+            cooksArrayRoot.addChild(cook.serial());
+        }
+
+        // JsonValue cooksRoot = new JsonValue(JsonValue.ValueType.object);
+        // // Add the cooks JsonValue to the root JsonValue
+        // cooksRoot.addChild("cooks", cooksRoot);
+
+        // return cooksRoot;
+        return cooksArrayRoot;
     }
 }

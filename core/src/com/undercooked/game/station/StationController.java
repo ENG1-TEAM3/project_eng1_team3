@@ -46,6 +46,7 @@ public class StationController {
 	 * A function that calls the {@link Station#update(float)} function
 	 * for all {@link Station}s that are stored by the {@link #stations}
 	 * {@link Array}.
+	 * 
 	 * @param delta
 	 */
 	public void update(float delta) {
@@ -60,7 +61,8 @@ public class StationController {
 	 * {@link Station#updateStationInteractions()} functions for
 	 * all of the {@link Station}s stored in the {@link #stations}
 	 * {@link Array}.
-	 * <br>This sets up their interactions.
+	 * <br>
+	 * This sets up their interactions.
 	 */
 	public void updateStationInteractions() {
 		// Update all interactions for the stations.
@@ -73,7 +75,9 @@ public class StationController {
 	/**
 	 * Loads all of the {@link StationData} for each {@link Station} ID
 	 * into the {@link #stationData} {@link ObjectMap}
-	 * @param path {@link String} : The asset path to the {@link StationData} JSON.
+	 * 
+	 * @param path       {@link String} : The asset path to the {@link StationData}
+	 *                   JSON.
 	 * @param internal
 	 * @param pathPrefix
 	 */
@@ -106,7 +110,8 @@ public class StationController {
 	}
 
 	/**
-	 * Loads all the station paths in the game and stores them in an {@link ObjectMap}
+	 * Loads all the station paths in the game and stores them in an
+	 * {@link ObjectMap}
 	 * pairing of the station's id and its path.
 	 */
 	public void loadStationPaths() {
@@ -209,5 +214,18 @@ public class StationController {
 
 	public boolean hasID(String stationID) {
 		return stationData.containsKey(stationID);
+	}
+
+	public JsonValue serializeStations() {
+		// JsonValue stationsRoot = new JsonValue(JsonValue.ValueType.object);
+		JsonValue stationsArrayRoot = new JsonValue(JsonValue.ValueType.array);
+		// stationsRoot.addChild("stations", stationsArrayRoot);
+
+		for (Station station : this.stations) {
+			stationsArrayRoot.addChild(station.serial());
+		}
+
+		// return stationsRoot;
+		return stationsArrayRoot;
 	}
 }

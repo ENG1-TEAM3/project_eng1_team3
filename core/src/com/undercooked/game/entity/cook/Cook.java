@@ -9,6 +9,8 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.JsonValue;
 import com.undercooked.game.Input.InputController;
 import com.undercooked.game.Input.InputType;
 import com.undercooked.game.Input.Keys;
@@ -24,13 +26,16 @@ import com.undercooked.game.util.CollisionTile;
 import com.undercooked.game.util.Constants;
 import com.undercooked.game.util.Listener;
 import com.undercooked.game.util.Observer;
+import com.undercooked.game.util.json.JsonArray;
+import com.undercooked.game.util.json.JsonObject;
+import com.undercooked.game.util.json.JsonVal;
 
 public class Cook extends MoveableEntity {
 
 	private static final int MAX_STACK_SIZE = 5;
 	private static final int FRAME_COLS = 5, FRAME_ROWS = 4;
 
-    private Vector2 direction;
+	private Vector2 direction;
 	private final int cookno;
 	private final TextureManager textureManager;
 	private Animation<TextureRegion> walkAnimation;
@@ -54,7 +59,8 @@ public class Cook extends MoveableEntity {
 
 	/**
 	 * Cook entity constructor
-	 * @param pos - x y position vector in pixels
+	 * 
+	 * @param pos     - x y position vector in pixels
 	 * @param cookNum - cook number, changes texture
 	 */
 	public Cook(Vector2 pos, int cookNum, TextureManager textureManager, Map map) {
@@ -69,12 +75,12 @@ public class Cook extends MoveableEntity {
 
 		this.interactTarget = null;
 		this.stationTarget = null;
-		this.interactCollision = new Rectangle(collision.x, collision.y, 16,16);
+		this.interactCollision = new Rectangle(collision.x, collision.y, 16, 16);
 
 		collision.width = 40;
-		offsetX = (64 - collision.getWidth())/2;
+		offsetX = (64 - collision.getWidth()) / 2;
 		collision.height = 10;
-		offsetY = -collision.height/2;
+		offsetY = -collision.height / 2;
 		speed = 2.5f;
 		direction = new Vector2(0, -1);
 
@@ -148,7 +154,6 @@ public class Cook extends MoveableEntity {
 			return;
 		}
 
-
 		/// Custom station interactions
 		// If it's a phone...
 		if (stationTarget.getID().equals(Constants.PHONE_ID)) {
@@ -192,7 +197,6 @@ public class Cook extends MoveableEntity {
 			// Registers can not have any other interactions.
 			return;
 		}
-
 
 		// Station interactions
 		// Check for station interactions
@@ -272,6 +276,7 @@ public class Cook extends MoveableEntity {
 
 	/**
 	 * Update cook using user input
+	 * 
 	 * @param delta - The time difference from the last frame
 	 */
 	public void update(float delta) {
@@ -286,7 +291,7 @@ public class Cook extends MoveableEntity {
 				collision.x += 0.01F * dirX;
 			}
 			collision.x -= 0.01F * dirX;
-			pos.x = collision.x-offsetX;
+			pos.x = collision.x - offsetX;
 			dirX = 0;
 		}
 
@@ -297,14 +302,15 @@ public class Cook extends MoveableEntity {
 				collision.y += 0.01F * dirY;
 			}
 			collision.y -= 0.01F * dirY;
-			pos.y = collision.y-offsetY;
+			pos.y = collision.y - offsetY;
 			dirY = 0;
 		}
 
 		// Move
 		move(delta);
-		interactCollision.x = collision.x + collision.width/2 + (direction.x * 32) - interactCollision.width/2;
-		interactCollision.y = 64 + collision.y + collision.height/2 + (direction.y * 32) - interactCollision.width/2;
+		interactCollision.x = collision.x + collision.width / 2 + (direction.x * 32) - interactCollision.width / 2;
+		interactCollision.y = 64 + collision.y + collision.height / 2 + (direction.y * 32)
+				- interactCollision.width / 2;
 
 		// Update the cell that is currently being looked at
 		interactTarget = map.getCollision(interactCollision, true, Map.CollisionType.INTERACTABLE);
@@ -342,6 +348,7 @@ public class Cook extends MoveableEntity {
 
 	/**
 	 * Draw the {@link Cook}.
+	 * 
 	 * @param batch
 	 */
 	@Override
@@ -354,18 +361,20 @@ public class Cook extends MoveableEntity {
 	public void drawDebug(ShapeRenderer shape) {
 		super.drawDebug(shape);
 		shape.setColor(Color.GREEN);
-		shape.rect(interactCollision.x,interactCollision.y,interactCollision.width,interactCollision.height);
+		shape.rect(interactCollision.x, interactCollision.y, interactCollision.width, interactCollision.height);
 		shape.setColor(Color.WHITE);
 	}
 
 	/**
 	 * Draw the top half of the {@link Cook} at the location provided.
+	 * 
 	 * @param batch {@link SpriteBatch} : The {@link SpriteBatch} to draw with.
-	 * @param x {@code float} : The {@code x} position to draw at.
-	 * @param y {@code float} : The {@code y} position to draw at.
+	 * @param x     {@code float} : The {@code x} position to draw at.
+	 * @param y     {@code float} : The {@code y} position to draw at.
 	 */
 	public void draw_top(SpriteBatch batch, int x, int y) {
-		TextureRegion chef_top = new TextureRegion(currentFrame, 0, 0, currentFrame.getRegionWidth(), currentFrame.getRegionHeight()/2);
+		TextureRegion chef_top = new TextureRegion(currentFrame, 0, 0, currentFrame.getRegionWidth(),
+				currentFrame.getRegionHeight() / 2);
 		batch.draw(chef_top, x, y, 128, 128);
 	}
 
@@ -373,17 +382,18 @@ public class Cook extends MoveableEntity {
 		int itemIndex = 0;
 		int currentOffset = 0;
 		for (Item item : heldItems) {
-			//if (ingredient.sprite.getTexture() != null) {
-			item.draw(batch, pos.x + 32 - item.getWidth()/2f, pos.y + 112 + currentOffset);
+			// if (ingredient.sprite.getTexture() != null) {
+			item.draw(batch, pos.x + 32 - item.getWidth() / 2f, pos.y + 112 + currentOffset);
 			// batch.draw(item.sprite, pos.x + 16, pos.y + 112 + itemIndex * 8, 32, 32);
-			currentOffset += item.getHeight()/2f;
+			currentOffset += item.getHeight() / 2f;
 			itemIndex++;
-			//}
+			// }
 		}
 	}
 
 	/**
 	 * Set the texture to draw with
+	 * 
 	 * @param path - Filepath to texture
 	 */
 	private void setWalkTexture(String path) {
@@ -396,18 +406,22 @@ public class Cook extends MoveableEntity {
 
 	/**
 	 * Set specific walk frames
+	 * 
 	 * @param row - row on the sprite sheet to draw
 	 */
 	private void setWalkFrames(int row) {
-		/*for (int i = 0; i < FRAME_COLS; i++) {
-			walkFrames[i] = spriteSheet[row][i];
-		}*/
+		/*
+		 * for (int i = 0; i < FRAME_COLS; i++) {
+		 * walkFrames[i] = spriteSheet[row][i];
+		 * }
+		 */
 		walkAnimation = new Animation<>(0.09f, spriteSheet[row]);
 		currentFrame = walkAnimation.getKeyFrame(stateTime, true);
 	}
 
 	/**
 	 * Return cook x pixel coordinate
+	 * 
 	 * @return cook x pixel coordinate
 	 */
 	public float getX() {
@@ -416,6 +430,7 @@ public class Cook extends MoveableEntity {
 
 	/**
 	 * Return cook y pixel coordinate
+	 * 
 	 * @return cook y pixel coordinate
 	 */
 	public float getY() {
@@ -424,6 +439,7 @@ public class Cook extends MoveableEntity {
 
 	/**
 	 * Return cook width
+	 * 
 	 * @return cook width
 	 */
 	public float getWidth() {
@@ -432,6 +448,7 @@ public class Cook extends MoveableEntity {
 
 	/**
 	 * return cook height
+	 * 
 	 * @return cook height
 	 */
 	public float getHeight() {
@@ -440,6 +457,7 @@ public class Cook extends MoveableEntity {
 
 	/**
 	 * Return cook direction vector
+	 * 
 	 * @return cook direction vector
 	 */
 	public Vector2 getDirection() {
@@ -527,4 +545,17 @@ public class Cook extends MoveableEntity {
 			setWalkTexture("entities/cook_walk_" + cookno + ".png");
 		}
 	}
+
+	/**
+	 * Return the {@link Cook} as a {@link String}
+	 */
+	public JsonValue serial() {
+		// Return JsonValue
+		JsonValue cookRoot = new JsonValue(JsonValue.ValueType.object);
+		cookRoot.addChild("x", new JsonValue(pos.x));
+		cookRoot.addChild("y", new JsonValue(pos.y));
+		cookRoot.addChild("items", heldItems.serial());
+		return cookRoot;
+	}
+
 }

@@ -47,7 +47,8 @@ public class MapManager {
         stationController.clear();
 
         // Convert the Map Json into an actual map
-        Map outputMap = mapOfSize(root.getInt("width"), root.getInt("height"), stationController, textureManager, audioManager, interactions, gameItems);
+        Map outputMap = mapOfSize(root.getInt("width"), root.getInt("height"), stationController, textureManager,
+                audioManager, interactions, gameItems);
 
         // Loop through the stations
         for (JsonValue stationData : root.get("stations").iterator()) {
@@ -100,10 +101,10 @@ public class MapManager {
 
                         // Add it to the map
                         outputMap.addMapEntity(newStation,
-                                               stationData.getInt("x"),
-                                               stationData.getInt("y"),
-                                               data.getFloorTile(),
-                                               hasCollision);
+                                stationData.getInt("x"),
+                                stationData.getInt("y"),
+                                data.getFloorTile(),
+                                hasCollision);
 
                         // If it does have collision
                         if (hasCollision) {
@@ -164,7 +165,7 @@ public class MapManager {
         // Therefore, height += 2, for top and bottom counters, and then
         // width has a few more added, primarily on the left.
         int fullWidth = width + 4,
-            fullHeight = height + 1;
+                fullHeight = height + 1;
         Map returnMap = new Map(width, height, fullWidth, fullHeight, textureManager);
         int offsetX = 4, offsetY = 1;
         returnMap.setOffsetX(offsetX);
@@ -193,12 +194,15 @@ public class MapManager {
         returnMap.addFullMapEntity(newCounter(stationController, audioManager, interactions, gameItems), 3, fullHeight-1,null);
 
         // Add the customer floor tiles
-        for (int i = 2 ; i <= 3 ; i++) {
-            for (int j = 0 ; j < fullHeight-2; j++) {
+        for (int i = 2; i <= 3; i++) {
+            for (int j = 0; j < fullHeight - 2; j++) {
                 MapCell thisCell = returnMap.getCellFull(i, j);
-                if (j == 0) thisCell.setBelowTile("<main>:floor/customer_tile_bot.png");
-                else if (j == fullHeight-3) thisCell.setBelowTile("<main>:floor/customer_tile_top.png");
-                else thisCell.setBelowTile("<main>:floor/customer_tile_mid.png");
+                if (j == 0)
+                    thisCell.setBelowTile("<main>:floor/customer_tile_bot.png");
+                else if (j == fullHeight - 3)
+                    thisCell.setBelowTile("<main>:floor/customer_tile_top.png");
+                else
+                    thisCell.setBelowTile("<main>:floor/customer_tile_mid.png");
             }
         }
 
