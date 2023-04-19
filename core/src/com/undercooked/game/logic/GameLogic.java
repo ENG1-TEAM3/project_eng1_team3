@@ -365,6 +365,8 @@ public abstract class GameLogic {
         gameRoot.addChild("reputation", new JsonValue(reputation));
         gameRoot.addChild("difficulty", new JsonValue(Difficulty.toString(difficulty)));
         gameRoot.addChild("game_type", new JsonValue(gameType.name()));
+        gameRoot.addChild("customers_served", new JsonValue(requestsComplete));
+        gameRoot.addChild("time", new JsonValue(elapsedTime));
 
         JsonValue requestsData = new JsonValue(JsonValue.ValueType.array);
         gameRoot.addChild("requests", requestsData);
@@ -396,6 +398,8 @@ public abstract class GameLogic {
         this.leaderboardName = gameRoot.getString("leaderboard_name");
         this.money = gameRoot.getInt("money");
         this.reputation = gameRoot.getInt("reputation");
+        this.requestsComplete = gameRoot.getInt("customers_served");
+        this.elapsedTime = gameRoot.getFloat("time");
         setDifficulty(Difficulty.asInt(gameRoot.getString("difficulty")));
 
         // Load the coooks

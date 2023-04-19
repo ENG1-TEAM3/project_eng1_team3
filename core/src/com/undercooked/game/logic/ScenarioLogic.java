@@ -752,6 +752,12 @@ public class ScenarioLogic extends GameLogic {
     }
 
     @Override
+    JsonValue seralise(JsonValue gameRoot) {
+        gameRoot.addChild("customer_target", new JsonValue(requestTarget));
+        return super.seralise(gameRoot);
+    }
+
+    @Override
     public void deserialise(JsonValue gameRoot) {
         // And then remove what is no longer needed
         requests.clear();
@@ -760,6 +766,9 @@ public class ScenarioLogic extends GameLogic {
             gameRenderer.removeEntity(cook);
         }
         cookController.getCooks().clear();
+
+        // Set request target
+        requestTarget = gameRoot.getInt("customer_target");
 
         // Load requests
         loadRequests(gameRoot.get("requests"));
