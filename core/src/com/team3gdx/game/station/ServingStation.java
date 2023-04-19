@@ -4,13 +4,17 @@ import java.util.Random;
 
 import com.badlogic.gdx.math.Vector2;
 import com.team3gdx.game.entity.Customer;
+import com.team3gdx.game.entity.CustomerController;
 import com.team3gdx.game.food.Ingredient;
 import com.team3gdx.game.food.Menu;
 import com.team3gdx.game.food.Recipe;
 import com.team3gdx.game.screen.GameScreen;
+import com.team3gdx.game.util.GameMode;
 
 public class ServingStation extends Station {
 
+	private final CustomerController customerController;
+	private final GameMode gameMode;
 	String[] possibleOrders = new String[] { "Burger", "Salad" };
 
 	/**
@@ -25,8 +29,10 @@ public class ServingStation extends Station {
 		}
 	};
 
-	public ServingStation(Vector2 pos) {
+	public ServingStation(Vector2 pos, CustomerController customerController, GameMode gameMode) {
 		super(pos, 1, false, allowedIngredients, "audio/soundFX/money-collect.mp3");
+		this.customerController = customerController;
+		this.gameMode = gameMode;
 	}
 
 	/**
@@ -34,7 +40,7 @@ public class ServingStation extends Station {
 	 * serving station contains it.
 	 */
 	public void serveCustomer() {
-		Customer waitingCustomer = GameScreen.cc.isCustomerAtPos(new Vector2(pos.x - 1, pos.y));
+		Customer waitingCustomer = customerController.isCustomerAtPos(new Vector2(pos.x - 1, pos.y));
 		if (waitingCustomer != null && waitingCustomer.locked) {
 			if (GameScreen.currentWaitingCustomer == null) {
 				waitingCustomer.order = possibleOrders[new Random().nextInt(possibleOrders.length)];
@@ -44,9 +50,9 @@ public class ServingStation extends Station {
 			if (waitingCustomer == GameScreen.currentWaitingCustomer && !slots.empty()
 					&& slots.peek().equals(Menu.RECIPES.get(waitingCustomer.order))) {
 				slots.pop();
-				GameScreen.cc.delCustomer(waitingCustomer);
-				if (GameScreen.currentWave < GameScreen.NUMBER_OF_WAVES){
-					GameScreen.cc.spawnCustomer();
+				customerController.delCustomer(waitingCustomer);
+				if (GameScreen.currentWave < gameMode.getNumberOfWaves()){
+					customerController.spawnCustomer();
 				}
 				GameScreen.currentWave++;
 				waitingCustomer.locked = false;
