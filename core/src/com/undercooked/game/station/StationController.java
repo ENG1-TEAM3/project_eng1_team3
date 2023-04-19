@@ -5,8 +5,11 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.ObjectMap;
+import com.undercooked.game.assets.AudioManager;
 import com.undercooked.game.files.FileControl;
 import com.undercooked.game.food.Item;
+import com.undercooked.game.food.Items;
+import com.undercooked.game.map.Map;
 import com.undercooked.game.map.MapManager;
 import com.undercooked.game.screen.GameScreen;
 import com.undercooked.game.util.DefaultJson;
@@ -137,6 +140,9 @@ public class StationController {
 	}
 
 	public StationData loadStationPath(String stationPath) {
+		if (stationData.containsKey(stationPath)) {
+			return stationData.get(stationPath);
+		}
 		// Try to load this single station path
 		// Read the file data
 		JsonValue stationRoot = JsonFormat.formatJson(
@@ -223,14 +229,16 @@ public class StationController {
 		// stationsRoot.addChild("stations", stationsArrayRoot);
 
 		for (Station station : this.stations) {
-			stationsArrayRoot.addChild(station.serial());
+			JsonValue stationData = station.serial();
+			if (stationData == null) continue;
+			stationsArrayRoot.addChild(stationData);
 		}
 
 		// return stationsRoot;
 		return stationsArrayRoot;
 	}
 
-	public void deserializeStations(JsonValue jsonValue) {
+	public void deserializeStations(JsonValue jsonValue, AudioManager audioManager, Items items, Map map) {
 		// Clear the stations
 		clear();
 
@@ -239,23 +247,27 @@ public class StationController {
 
 		// For each station
 		for (JsonValue stationRoot : stationsArrayRoot) {
-			// Get the station data
-			StationData data = getStationData(stationRoot.getString("station_id"));
+			StationData data = loadStationPath(stationRoot.getString("station_id"));
 			// If it's not null
 			if (data != null) {
 				// Create a new station
 				Station station = new Station(data);
+				station.makeInteractionController(audioManager, items);
 				// Deserialize it
-				station.setX(stationRoot.getInt("x"));
-				station.setY(stationRoot.getInt("y"));
 				station.setPrice(stationRoot.getInt("price"));
 				station.setDisabled(stationRoot.getBoolean("unlocked"));
 				JsonValue itemsArray = stationRoot.get("items");
 				for (JsonValue item : itemsArray) {
-					station.addItem(new Item(item.toString()));
+					Item thisItem = items.addItemAsset(item.asString());
+					if (thisItem != null) {
+						station.items.add(thisItem);
+					}
 				}
 				// Add it to the stations
 				addStation(station);
+
+				// Add it to the map
+				map.addFullMapEntity(station, stationRoot.getInt("x"), stationRoot.getInt("y"), data.getFloorTile(), data.isCollidable());
 			}
 		}
 	}

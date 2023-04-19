@@ -18,6 +18,7 @@ import com.undercooked.game.audio.AudioSettings;
 import com.undercooked.game.audio.AudioSliders;
 import com.undercooked.game.util.CameraController;
 import com.undercooked.game.util.Constants;
+import com.undercooked.game.util.SaveLoadGame;
 
 public class PauseScreen extends Screen {
 
@@ -26,6 +27,7 @@ public class PauseScreen extends Screen {
     Stage stage;
     Texture menuBack;
     AudioSliders audioSliders;
+    GameScreen gameScreen;
 
     public PauseScreen(MainGameClass game) {
         super(game);
@@ -46,6 +48,7 @@ public class PauseScreen extends Screen {
         textureManager.load(Constants.PAUSE_TEXTURE_ID, "uielements/vControl.png");
         textureManager.load(Constants.PAUSE_TEXTURE_ID, "uielements/background.png");
         textureManager.load(Constants.PAUSE_TEXTURE_ID, "uielements/vButton.jpg");
+        textureManager.load(Constants.PAUSE_TEXTURE_ID, "uielements/save.png");
 
         // Create Stage
         stage = new Stage(CameraController.getViewport(Constants.UI_CAMERA_ID));
@@ -90,15 +93,18 @@ public class PauseScreen extends Screen {
 
         // Create the Buttons
         Button unpause = new Button(new TextureRegionDrawable(textureManager.get("uielements/resume.png")));
+        Button save = new Button(new TextureRegionDrawable(textureManager.get("uielements/save.png")));
         Button menu = new Button(new TextureRegionDrawable(textureManager.get("uielements/exitmenu.png")));
-
-        // Set the Button positions
-        unpause.setPosition(100, 100);
-        menu.setPosition(100, 200);
 
         // Set the Button visuals
         unpause.setSize(200,100);
+        save.setSize(200, 100);
         menu.setSize(200,100);
+
+        // Set the Button positions
+        unpause.setPosition(100, 100);
+        save.setPosition(100, 200);
+        menu.setPosition(100, 300);
 
         // Add Button listeners
         unpause.addListener(new ClickListener() {
@@ -108,17 +114,24 @@ public class PauseScreen extends Screen {
             }
         });
 
+        save.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                SaveLoadGame.saveGame(gameScreen.gameLogic);
+                quitToMenu();
+            }
+        });
+
         menu.addListener(new ClickListener() {
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                // Go to the main menu, if still on the pause screen
-                if (!getScreenController().onScreen(Constants.PAUSE_SCREEN_ID)) return;
-                game.screenController.setScreen(Constants.MAIN_SCREEN_ID);
+                quitToMenu();
             }
         });
 
         // Add the Buttons to the Stage
         stage.addActor(unpause);
+        stage.addActor(save);
         stage.addActor(menu);
 
         // Add the audio sliders
@@ -127,6 +140,12 @@ public class PauseScreen extends Screen {
         // Finally, set the Gdx inputProcessor to use the stage
         Gdx.input.setInputProcessor(stage);
 
+    }
+
+    public void quitToMenu() {
+        // Go to the main menu, if still on the pause screen
+        if (!getScreenController().onScreen(Constants.PAUSE_SCREEN_ID)) return;
+        game.screenController.setScreen(Constants.MAIN_SCREEN_ID);
     }
 
     @Override

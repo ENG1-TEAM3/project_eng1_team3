@@ -37,6 +37,9 @@ public class Items {
 	}
 
 	public Item addItemAsset(String assetPath) {
+		if (items.containsKey(assetPath)) {
+			return items.get(assetPath);
+		}
 		JsonValue ingredientRoot = FileControl.loadJsonAsset(assetPath, "items");
 		if (ingredientRoot == null) {
 			return null;

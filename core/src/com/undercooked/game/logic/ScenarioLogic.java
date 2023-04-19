@@ -33,11 +33,6 @@ public class ScenarioLogic extends GameLogic {
     /** The number of requests to serve. */
     protected int requestTarget = 5;
 
-    /** The number of requests that have been served correctly. */
-    protected int requestsComplete = 0;
-    protected Array<Request> requests;
-    protected Array<Request> requestPool;
-
     /**
      * Whether requests in the {@link #requestPool} can be added to the {@link #requests} array more than once.
      */
@@ -249,7 +244,7 @@ public class ScenarioLogic extends GameLogic {
         // Load the map's floor textures
         map.loadFloor(textureManager, Constants.GAME_TEXTURE_ID);
         // Find the registers on the map for the Customers
-        customerController.findRegisters();
+        customerController.load(Constants.GAME_TEXTURE_ID);
         // Load all the Cook textures
         cookController.loadAll(Constants.GAME_TEXTURE_ID);
         // Load all the power up textures
@@ -259,6 +254,8 @@ public class ScenarioLogic extends GameLogic {
     @Override
     public void postLoad() {
         super.postLoad();
+        // Post Load the CustomerController
+        customerController.postLoad();
 
         // Loop through the requests
         for (Request request : requestPool) {
@@ -420,6 +417,10 @@ public class ScenarioLogic extends GameLogic {
 
     @Override
     public void reset() {
+        if (!resetOnLoad) {
+            resetOnLoad = true;
+            return;
+        }
         // Reset the GameLogic
         super.reset();
 
@@ -666,14 +667,7 @@ public class ScenarioLogic extends GameLogic {
             }
             // Multiply the time, based on difficulty.
             // Easy is x2, Medium is x1.5, Hard does nothing
-            switch (difficulty) {
-                case Difficulty.EASY:
-                    time *= 2f;
-                    break;
-                case Difficulty.MEDIUM:
-                    time *= 1.5f;
-                    break;
-            }
+            time *= getDifficultyMultiplier();
             // Set the time value
             newRequest.setTime(time);
 
@@ -749,5 +743,21 @@ public class ScenarioLogic extends GameLogic {
 
     public void setRequestTarget(int customNumber) {
         this.requestTarget = Math.max(0, customNumber);
+    }
+
+    @Override
+    public void deserialise(JsonValue gameRoot) {
+        // And then remove what is no longer needed
+        requests.clear();
+        Array<Cook> cooks = cookController.getCooks();
+        for (Cook cook : cooks) {
+            gameRenderer.removeEntity(cook);
+        }
+        cookController.getCooks().clear();
+
+        // Load requests
+        loadRequests(gameRoot.get("requests"));
+
+        super.deserialise(gameRoot);
     }
 }

@@ -17,6 +17,7 @@ import com.undercooked.game.interactions.InteractResult;
 import com.undercooked.game.interactions.Interactions;
 import com.undercooked.game.interactions.StationInteractControl;
 import com.undercooked.game.map.MapEntity;
+import com.undercooked.game.map.MapManager;
 
 import static com.undercooked.game.MainGameClass.shapeRenderer;
 
@@ -356,6 +357,11 @@ public class Station extends MapEntity {
 	 * Serialize the station class.
 	 */
 	public JsonValue serial() {
+		// If the station is not unlocked, or if it has no items on it, then just ignore
+		// as there's no reason to save anything
+		if (!(disabled && price > 0) && items.size() == 0) {
+			return null;
+		}
 		// Get ItemIDs from the station items
 		JsonValue theItemIds = new JsonValue(JsonValue.ValueType.array);
 		for (Item item : items) {
@@ -365,8 +371,8 @@ public class Station extends MapEntity {
 		// Return JsonValue
 		JsonValue stationRoot = new JsonValue(JsonValue.ValueType.object);
 		stationRoot.addChild("station_id", new JsonValue(id));
-		stationRoot.addChild("x", new JsonValue(pos.x));
-		stationRoot.addChild("y", new JsonValue(pos.y));
+		stationRoot.addChild("x", new JsonValue(MapManager.posToGridFloor(pos.x)));
+		stationRoot.addChild("y", new JsonValue(MapManager.posToGridFloor(pos.y)));
 		stationRoot.addChild("price", new JsonValue(price));
 		stationRoot.addChild("unlocked", new JsonValue(disabled && price > 0));
 		stationRoot.addChild("items", theItemIds);

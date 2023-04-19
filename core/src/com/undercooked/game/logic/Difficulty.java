@@ -16,4 +16,16 @@ public class Difficulty {
         }
         return "default";
     }
+
+    public static int asInt(String difficulty) {
+        switch (difficulty) {
+            case "easy":
+                return EASY;
+            case "medium":
+                return MEDIUM;
+            case "hard":
+                return HARD;
+        }
+        return -1;
+    }
 }

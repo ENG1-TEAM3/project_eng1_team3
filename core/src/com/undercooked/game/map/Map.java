@@ -177,7 +177,7 @@ public class Map {
         addFullMapEntity(entity, x, y, floorTile, false);
     }
 
-    protected void addFullMapEntity(MapEntity entity, int x, int y, String floorTile, boolean hasCollision) {
+    public void addFullMapEntity(MapEntity entity, int x, int y, String floorTile, boolean hasCollision) {
         // And now add the entity
         for (int i = x + entity.getCellWidth()-1 ; i >= x ; i--) {
             for (int j = y + entity.getCellHeight()-1 ; j >= y ; j--) {

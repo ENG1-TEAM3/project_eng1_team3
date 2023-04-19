@@ -23,8 +23,13 @@ public class Instruction {
 
     public JsonValue serial() {
         JsonValue instructionRoot = new JsonValue(JsonValue.ValueType.object);
-        instructionRoot.addChild("texturePath", new JsonValue(texturePath));
+        instructionRoot.addChild("texture_path", new JsonValue(texturePath));
         instructionRoot.addChild("text", new JsonValue(text));
         return instructionRoot;
+    }
+
+    public void deserialise(JsonValue instructionRoot) {
+        texturePath = instructionRoot.getString("texture_path");
+        text = instructionRoot.getString("text");
     }
 }

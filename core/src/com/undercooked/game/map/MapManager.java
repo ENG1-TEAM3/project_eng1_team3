@@ -127,7 +127,7 @@ public class MapManager {
         }
 
         // Give the map to the CookController so that it can load the cooks
-        cookController.loadCooksIntoMap(root, outputMap, textureManager);
+        cookController.loadCooksIntoMap(root, gameItems, outputMap, textureManager, true, true);
 
         return outputMap;
     }

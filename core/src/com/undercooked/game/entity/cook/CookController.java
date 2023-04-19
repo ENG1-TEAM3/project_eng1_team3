@@ -7,6 +7,9 @@ import com.badlogic.gdx.utils.ObjectMap;
 import com.undercooked.game.Input.InputController;
 import com.undercooked.game.Input.Keys;
 import com.undercooked.game.assets.TextureManager;
+import com.undercooked.game.food.Item;
+import com.undercooked.game.food.ItemStack;
+import com.undercooked.game.food.Items;
 import com.undercooked.game.map.Map;
 import com.undercooked.game.map.MapCell;
 import com.undercooked.game.map.MapManager;
@@ -230,23 +233,31 @@ public class CookController {
      *                       {@link com.badlogic.gdx.graphics.Texture}s
      *                       to.
      */
-    public void loadCooksIntoMap(JsonValue mapRoot, Map map, TextureManager textureManager) {
-        // Clear the startCooks array
-        cookStart.clear();
-
+    public void loadCooksIntoMap(JsonValue mapRoot, Items items, Map map, TextureManager textureManager, boolean addToMap, boolean addToStartCooks) {
         // Get the cooks Json data
         JsonValue cookArray = mapRoot.get("cooks");
         currentCook = 0;
         int cookNo = 1;
         // Iterate through the cooks and add them
-        for (JsonValue cookData : cookArray.iterator()) {
+        for (JsonValue cookData : cookArray) {
             Vector2 cookPos = new Vector2(MapManager.gridToPos(cookData.getFloat("x") + map.getOffsetX()),
                     MapManager.gridToPos(cookData.getFloat("y") + map.getOffsetY()));
             Cook newCook = new Cook(cookPos, cookNo, textureManager, map);
-            addCook(newCook);
+
+            if (cookData.has("items")) {
+                for (JsonValue itemData : cookData.get("items")) {
+                    Item item = items.addItemAsset(itemData.asString());
+                    if (item != null) {
+                        newCook.heldItems.add(item);
+                    }
+                }
+            }
+
+            if (addToMap) addCook(newCook);
+
             cookNo = Math.max(1, (cookNo + 1) % (COOK_TEXTURES + 1));
 
-            cookStart.put(newCook, new Vector2(cookPos));
+            if (addToStartCooks) cookStart.put(newCook, new Vector2(cookPos));
         }
     }
 
@@ -345,13 +356,13 @@ public class CookController {
     /**
      * Serialises the {@link Cook}s to a {@link JsonValue}.
      */
-    public JsonValue serializeCooks() {
+    public JsonValue serializeCooks(Map map) {
         // Create the cooks JsonValue
         JsonValue cooksArrayRoot = new JsonValue(JsonValue.ValueType.array);
 
         // For each Cook, add it to the cooks JsonValue
         for (Cook cook : cooks) {
-            cooksArrayRoot.addChild(cook.serial());
+            cooksArrayRoot.addChild(cook.serial(map));
         }
 
         // JsonValue cooksRoot = new JsonValue(JsonValue.ValueType.object);
@@ -362,7 +373,7 @@ public class CookController {
         return cooksArrayRoot;
     }
 
-    public void deserializeCooks(JsonValue jsonValue, Map map) {
-        loadCooksIntoMap(jsonValue, map, textureManager);
+    public void deserializeCooks(JsonValue jsonValue, Items items, Map map) {
+        loadCooksIntoMap(jsonValue, items, map, textureManager, true, false);
     }
 }

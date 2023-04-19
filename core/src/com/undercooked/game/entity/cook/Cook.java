@@ -19,6 +19,7 @@ import com.undercooked.game.food.ItemStack;
 import com.undercooked.game.interactions.InteractResult;
 import com.undercooked.game.map.Map;
 import com.undercooked.game.map.MapCell;
+import com.undercooked.game.map.MapManager;
 import com.undercooked.game.station.Station;
 import com.undercooked.game.util.Constants;
 import com.undercooked.game.util.Listener;
@@ -570,12 +571,12 @@ public class Cook extends MoveableEntity {
 	/**
 	 * Return the {@link Cook} as a {@link String}
 	 */
-	public JsonValue serial() {
+	public JsonValue serial(Map map) {
 		// Return JsonValue
 		JsonValue cookRoot = new JsonValue(JsonValue.ValueType.object);
 		cookRoot.addChild("cookno", new JsonValue(cookno));
-		cookRoot.addChild("x", new JsonValue(pos.x));
-		cookRoot.addChild("y", new JsonValue(pos.y));
+		cookRoot.addChild("x", new JsonValue(MapManager.posToGrid(pos.x) - map.getOffsetX()));
+		cookRoot.addChild("y", new JsonValue(MapManager.posToGrid(pos.y) - map.getOffsetY()));
 		cookRoot.addChild("items", heldItems.serial());
 		return cookRoot;
 	}

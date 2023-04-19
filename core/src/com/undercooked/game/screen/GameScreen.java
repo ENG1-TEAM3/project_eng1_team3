@@ -27,7 +27,7 @@ import com.undercooked.game.util.Constants;
  * For game logic, see {@link GameLogic}.
  */
 public class GameScreen extends Screen {
-	GameLogic gameLogic;
+    GameLogic gameLogic;
 	GameRenderer gameRenderer;
 
 	Rectangle volSlideBackgr;
@@ -262,6 +262,9 @@ public class GameScreen extends Screen {
 	public void pauseGame() {
 		gameLogic.pause();
 		game.screenController.nextScreen(Constants.PAUSE_SCREEN_ID);
+
+		PauseScreen pauseScreen = (PauseScreen) game.screenController.getScreen(Constants.PAUSE_SCREEN_ID);
+		pauseScreen.gameScreen = this;
 	}
 
 	AudioSliders audioSliders;

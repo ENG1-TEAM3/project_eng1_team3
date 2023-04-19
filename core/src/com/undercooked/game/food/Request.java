@@ -21,6 +21,17 @@ public class Request {
         this.time = -1;
     }
 
+    public Request(JsonValue requestRoot) {
+        this(requestRoot.getString("item_id"));
+        deserialise(requestRoot);
+    }
+
+    public void load(TextureManager textureManager, String textureID) {
+        for (Instruction instruction : instructions) {
+            instruction.load(textureManager, textureID);
+        }
+    }
+
     public void postLoad(TextureManager textureManager) {
         for (Instruction instruction : instructions) {
             instruction.postLoad(textureManager);
@@ -71,9 +82,10 @@ public class Request {
 
     public JsonValue serial() {
         JsonValue requestRoot = new JsonValue(JsonValue.ValueType.object);
-        requestRoot.addChild("itemID", new JsonValue(itemID));
+        requestRoot.addChild("item_id", new JsonValue(itemID));
         requestRoot.addChild("value", new JsonValue(value));
         requestRoot.addChild("time", new JsonValue(time));
+        requestRoot.addChild("reputation_threat", new JsonValue(reputationThreat));
 
         // * Caveat: As instructions is an Array<Instruction>, I cannot create a serial
         // function for it.
@@ -84,5 +96,17 @@ public class Request {
         }
         requestRoot.addChild("instructions", instructionsRoot);
         return requestRoot;
+    }
+
+    public void deserialise(JsonValue requestRoot) {
+        setTime(requestRoot.getFloat("time"));
+        setValue(requestRoot.getInt("value"));
+        setReputationThreat(requestRoot.getInt("reputation_threat"));
+
+        for (JsonValue instruction : requestRoot.get("instructions")) {
+            Instruction newInstruction = new Instruction();
+            newInstruction.deserialise(instruction);
+            instructions.add(newInstruction);
+        }
     }
 }

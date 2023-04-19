@@ -10,6 +10,7 @@ import com.badlogic.gdx.utils.JsonValue;
 import com.undercooked.game.assets.TextureManager;
 import com.undercooked.game.food.Item;
 import com.undercooked.game.food.Request;
+import com.undercooked.game.logic.GameLogic;
 import com.undercooked.game.map.*;
 import com.undercooked.game.util.Constants;
 import com.undercooked.game.util.Listener;
@@ -75,11 +76,30 @@ public class CustomerController {
 	}
 
 	public void load(String textureGroup) {
+		// Finds the registers
+		findRegisters();
 		// Load all the customer textures
 		textureManager.load(textureGroup, "entities/cust3f.png");
 		textureManager.load(textureGroup, "entities/cust3b.png");
 		textureManager.load(textureGroup, "entities/cust3r.png");
 		textureManager.load(textureGroup, "entities/cust3l.png");
+		// Load any customers that are already in the arrays
+		for (Customer customer : customers) {
+			customer.load(textureManager, textureGroup);
+		}
+		for (Customer customer : toSpawn) {
+			customer.load(textureManager, textureGroup);
+		}
+	}
+
+	public void postLoad() {
+		// Post load any customers that are already in the arrays
+		for (Customer customer : customers) {
+			customer.postLoad(textureManager);
+		}
+		for (Customer customer : toSpawn) {
+			customer.postLoad(textureManager);
+		}
 	}
 
 	public void unload() {
@@ -389,6 +409,18 @@ public class CustomerController {
 		return null;
 	}
 
+	public Register getRegisterAtPos(int x, int y) {
+		// Check through all registers
+		for (Register register : registers) {
+			// If the Cell position matches, return the register
+			if (register.getRegisterCell().getX() == x && register.getRegisterCell().getY() == y) {
+				return register;
+			}
+		}
+		// If none found, return null
+		return null;
+	}
+
 	public Register getRegisterFromCell(MapCell mapCell) {
 		// Check through all registers
 		for (Register register : registers) {
@@ -429,7 +461,11 @@ public class CustomerController {
 
 		// For each Cook, add it to the cooks JsonValue
 		for (Customer customer : customers) {
-			customersArrayRoot.addChild(customer.serial());
+			JsonValue customerData = customer.serial();
+			if (customerData != null) {
+				customerData.addChild("to_spawn", new JsonValue(toSpawn.contains(customer, true)));
+				customersArrayRoot.addChild(customerData);
+			}
 		}
 
 		// JsonValue customersRoot = new JsonValue(JsonValue.ValueType.object);
@@ -440,26 +476,44 @@ public class CustomerController {
 		return customersArrayRoot;
 	}
 
-	public void deserializeCustomers(JsonValue jsonValue) {
+	public void deserializeCustomers(GameLogic logic, JsonValue jsonValue) {
 		// Clear the customers
 		customers.clear();
 		toSpawn.clear();
 		drawCustomers.clear();
 
-		// Get the cooks JsonValue
-		JsonValue customersArrayRoot = jsonValue.get("customers");
-
 		// Loop through the cooks JsonValue
-		for (JsonValue customerObject = customersArrayRoot.child; customerObject != null; customerObject = customerObject.next) {
+		for (JsonValue customerObject : jsonValue) {
 			// Create a new Cook-
 			Customer customer = new Customer(customerObject.getInt("custno"), this, textureManager);
-			// Add the Cook to the cooks array
-			customers.add(customer);
-			// Add the Cook to the toSpawn array
-			toSpawn.add(customer);
-			// Add the Cook to the drawCustomers array
-			// TODO: The below is probably wrong
-			drawCustomers.add(customer);
+			customer.x = customerObject.getFloat("x");
+			customer.y = customerObject.getFloat("y");
+			customer.setRequest(new Request(customerObject.get("request")));
+			customer.waitTimer = customerObject.getFloat("wait_timer");
+			customer.moveSpeed = customerObject.getFloat("move_speed");
+			customer.visibility = 1f;
+			if (customerObject.getBoolean("to_spawn")) {
+				// Add the Cook to the toSpawn array
+				toSpawn.add(customer);
+			} else {
+				Register registerAtPos = getRegisterAtPos(customerObject.getInt("reg_x"), customerObject.getInt("reg_y"));
+				if (registerAtPos == null) {
+					toSpawn.add(customer);
+					continue;
+				}
+
+				customerOnRegister(customer,registerAtPos);
+
+				// Add the Cook to the cooks array
+				customers.add(customer);
+				// Add the Cook to the drawCustomers array
+				drawCustomers.add(customer);
+
+				if (customer.y >= MapManager.gridToPos(customerObject.getInt("reg_y"))) {
+					customer.waiting = true;
+					customer.y = MapManager.gridToPos(customerObject.getInt("reg_y"));
+				}
+			}
 		}
 	}
 }

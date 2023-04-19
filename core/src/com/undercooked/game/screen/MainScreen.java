@@ -11,18 +11,24 @@ import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.undercooked.game.GameType;
 import com.undercooked.game.assets.TextureManager;
 import com.undercooked.game.audio.AudioSettings;
 import com.undercooked.game.audio.AudioSliders;
 import com.undercooked.game.MainGameClass;
 import com.undercooked.game.audio.Slider;
+import com.undercooked.game.logic.Difficulty;
 import com.undercooked.game.logic.EndlessLogic;
+import com.undercooked.game.logic.GameLogic;
 import com.undercooked.game.logic.ScenarioLogic;
 import com.undercooked.game.render.GameRenderer;
 import com.undercooked.game.util.CameraController;
 import com.undercooked.game.util.Constants;
+import com.undercooked.game.util.SaveLoadGame;
+import jdk.internal.org.jline.utils.DiffHelper;
 
 public class MainScreen extends Screen {
 	float v = 0;
@@ -119,6 +125,7 @@ public class MainScreen extends Screen {
 		textureManager.load(Constants.MENU_TEXTURE_ID, "uielements/audio.png");
 		textureManager.load(Constants.MENU_TEXTURE_ID, "uielements/background.png");
 		textureManager.load(Constants.MENU_TEXTURE_ID, "uielements/exitgame.png");
+		textureManager.load(Constants.MENU_TEXTURE_ID, "uielements/loadgame.png");
 
 		game.audioManager.loadMusic("audio/music/MainScreenMusic.ogg", Constants.MUSIC_GROUP);
 	}
@@ -166,15 +173,19 @@ public class MainScreen extends Screen {
 		ad = new Button(new TextureRegionDrawable(audio));
 		eg = new Button(new TextureRegionDrawable(exitGame));
 
-		sb.setPosition(gameResolutionX / 10.0f, 4 * gameResolutionY / 5.0f - buttonheight / 2);
-		lb.setPosition(gameResolutionX / 10.0f, 3 * gameResolutionY / 5.0f - buttonheight / 2);
-		ad.setPosition(gameResolutionX / 10.0f, 2 * gameResolutionY / 5.0f - buttonheight / 2);
-		eg.setPosition(gameResolutionX / 10.0f, gameResolutionY / 5.0f - buttonheight / 2);
+		Button loadGameBtn = new Button(new TextureRegionDrawable(textureManager.get("uielements/loadgame.png")));
 
 		lb.setSize(buttonwidth, buttonheight);
 		ad.setSize(buttonwidth, buttonheight);
 		eg.setSize(buttonwidth, buttonheight);
 		sb.setSize(buttonwidth, buttonheight);
+		loadGameBtn.setSize(buttonwidth, buttonheight);
+
+		sb.setPosition(gameResolutionX / 10.0f, 4 * gameResolutionY / 5.0f - buttonheight / 2);
+		lb.setPosition(gameResolutionX / 10.0f, 3 * gameResolutionY / 5.0f - buttonheight / 2);
+		ad.setPosition(gameResolutionX / 10.0f, 2 * gameResolutionY / 5.0f - buttonheight / 2);
+		eg.setPosition(gameResolutionX / 10.0f, gameResolutionY / 5.0f - buttonheight / 2);
+		loadGameBtn.setPosition(gameResolutionX / 10.0f + sb.getWidth() + 50, 4 * gameResolutionY / 5.0f - buttonheight / 2);
 
 		ad.addListener(new ClickListener() {
 			public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
@@ -207,6 +218,12 @@ public class MainScreen extends Screen {
 				super.touchUp(event, x, y, pointer, button);
 			}
 		});
+		loadGameBtn.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				loadGame();
+			}
+		});
 
 		stage = new Stage(viewport, game.batch);
 
@@ -214,6 +231,7 @@ public class MainScreen extends Screen {
 		stage.addActor(lb);
 		stage.addActor(ad);
 		stage.addActor(eg);
+		stage.addActor(loadGameBtn);
 
 		audioSliders = game.getAudioSettings().createAudioSliders(ad.getX() + 650, ad.getY() - 10, stage, audioEdit, vButton);
 
@@ -279,6 +297,42 @@ public class MainScreen extends Screen {
 			musicSlider.setTouchable(Touchable.disabled);
 			gameSlider.setTouchable(Touchable.disabled);
 		}
+	}
+
+	public void loadGame() {
+		JsonValue saveData = SaveLoadGame.loadGameJson();
+		if (saveData == null) return;
+		GameType gameType = GameType.valueOf(saveData.getString("game_type"));
+		GameScreen gameScreen = (GameScreen) game.screenController.getScreen(Constants.GAME_SCREEN_ID);
+		GameLogic gameLogic;
+		GameRenderer gameRenderer;
+		switch (gameType) {
+			case SCENARIO:
+				gameLogic = new ScenarioLogic(gameScreen, getTextureManager(), getAudioManager());
+				// If it's custom, set id and leaderboard name to custom values
+				gameRenderer = new GameRenderer();
+				break;
+			case ENDLESS:
+				gameLogic = new EndlessLogic(gameScreen, getTextureManager(), getAudioManager());
+				gameRenderer = new GameRenderer();
+				break;
+			default:
+				// If it reaches here, it's invalid.
+				return;
+		}
+
+		gameLogic.setId(saveData.getString("scenario_id"));
+		gameLogic.setDifficulty(Difficulty.asInt(saveData.getString("difficulty")));
+
+		gameScreen.setGameLogic(gameLogic);
+		gameScreen.setGameRenderer(gameRenderer);
+
+		gameLogic.resetOnLoad = false;
+
+		// Move to the game screen
+		game.screenController.setScreen(Constants.GAME_SCREEN_ID);
+
+		SaveLoadGame.loadGame(gameLogic, saveData);
 	}
 
 	/**

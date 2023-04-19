@@ -29,7 +29,7 @@ public class Customer {
 	float moveSpeed;
 	public boolean leaving;
 
-	private float visibility;
+	float visibility;
 	private Register register;
 	Listener<Customer> servedListener;
 	Listener<Customer> failedListener;
@@ -130,6 +130,18 @@ public class Customer {
 		}
 	}
 
+	public void load(TextureManager textureManager, String textureID) {
+		if (getRequest() != null) {
+			getRequest().load(textureManager, textureID);
+		}
+	}
+
+	public void postLoad(TextureManager textureManager) {
+		if (getRequest() != null) {
+			getRequest().postLoad(textureManager);
+		}
+	}
+
 	public void draw(SpriteBatch batch) {
 		batch.setColor(1, 1, 1, visibility);
 		batch.draw(textf, x, y, 64, 128);
@@ -218,12 +230,18 @@ public class Customer {
 	}
 
 	public JsonValue serial() {
+		if (leaving) return null;
 		// Return JsonValue
 		JsonValue customerRoot = new JsonValue(JsonValue.ValueType.object);
-		customerRoot.addChild("x", new JsonValue(register.getRegisterCell().getX()));
-		customerRoot.addChild("y", new JsonValue(register.getRegisterCell().getY()));
+		customerRoot.addChild("x", new JsonValue(x));
+		customerRoot.addChild("y", new JsonValue(y));
+		if (register != null) {
+			customerRoot.addChild("reg_x", new JsonValue(register.getRegisterCell().getX()));
+			customerRoot.addChild("reg_y", new JsonValue(register.getRegisterCell().getY()));
+		}
 		customerRoot.addChild("custno", new JsonValue(custNo));
-		customerRoot.addChild("waitTimer", new JsonValue(waitTimer));
+		customerRoot.addChild("wait_timer", new JsonValue(waitTimer));
+		customerRoot.addChild("move_speed", new JsonValue(moveSpeed));
 		customerRoot.addChild("request", order.serial());
 		return customerRoot;
 	}

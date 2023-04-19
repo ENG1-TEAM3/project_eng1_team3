@@ -1,5 +1,7 @@
 package com.undercooked.game.logic;
 
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.JsonValue;
 import com.undercooked.game.assets.AudioManager;
 import com.undercooked.game.assets.TextureManager;
 import com.undercooked.game.entity.cook.CookController;
@@ -8,6 +10,7 @@ import com.undercooked.game.entity.Entity;
 import com.undercooked.game.entity.cook.Cook;
 import com.undercooked.game.entity.customer.Customer;
 import com.undercooked.game.food.Items;
+import com.undercooked.game.food.Request;
 import com.undercooked.game.interactions.Interactions;
 import com.undercooked.game.load.LoadResult;
 import com.undercooked.game.map.Map;
@@ -20,6 +23,7 @@ import com.undercooked.game.util.Listener;
 import com.undercooked.game.util.Observer;
 import com.undercooked.game.util.StringUtil;
 import com.undercooked.game.GameType;
+import com.undercooked.game.util.leaderboard.LeaderboardController;
 
 /**
  * A class to extend from that indicates the logic of the
@@ -47,6 +51,11 @@ public abstract class GameLogic {
     /** How much a {@link Cook} costs to get. */
     protected int cookCost;
 
+    /** The number of requests that have been served correctly. */
+    protected int requestsComplete = 0;
+    protected Array<Request> requests;
+    protected Array<Request> requestPool;
+
     protected Customer displayCustomer;
 
     protected String id;
@@ -54,6 +63,7 @@ public abstract class GameLogic {
     protected GameType gameType;
     protected String leaderboardName;
     protected int difficulty;
+    public boolean resetOnLoad;
 
     public GameLogic(GameScreen game, TextureManager textureManager, AudioManager audioManager) {
         this.gameScreen = game;
@@ -62,6 +72,7 @@ public abstract class GameLogic {
         this.money = 0;
         this.reputation = 0;
         this.startReputation = 3;
+        this.resetOnLoad = true;
 
         this.cookController = new CookController(textureManager);
         this.customerController = new CustomerController(textureManager);
@@ -231,6 +242,16 @@ public abstract class GameLogic {
         stop();
     };
 
+    public float getDifficultyMultiplier() {
+        switch (difficulty) {
+            case Difficulty.EASY:
+                return 2f;
+            case Difficulty.MEDIUM:
+                return 1.5f;
+        }
+        return 1f;
+    }
+
     public CookController getCookController() {
         return cookController;
     }
@@ -303,6 +324,10 @@ public abstract class GameLogic {
     }
 
     public void reset() {
+        if (!resetOnLoad) {
+            resetOnLoad = true;
+            return;
+        }
         // Reset the game
         elapsedTime = 0;
         reputation = startReputation;
@@ -330,5 +355,63 @@ public abstract class GameLogic {
 
     public void setLeaderboardId(String id) {
         this.leaderboardId = id;
+    }
+
+    JsonValue seralise(JsonValue gameRoot) {
+        gameRoot.addChild("scenario_id", new JsonValue(id));
+        gameRoot.addChild("leaderboard_id", new JsonValue(leaderboardId));
+        gameRoot.addChild("leaderboard_name", new JsonValue(leaderboardName));
+        gameRoot.addChild("money", new JsonValue(money));
+        gameRoot.addChild("reputation", new JsonValue(reputation));
+        gameRoot.addChild("difficulty", new JsonValue(Difficulty.toString(difficulty)));
+        gameRoot.addChild("game_type", new JsonValue(gameType.name()));
+
+        JsonValue requestsData = new JsonValue(JsonValue.ValueType.array);
+        gameRoot.addChild("requests", requestsData);
+        for (Request request : requests) {
+            requestsData.addChild("", request.serial());
+        }
+
+        gameRoot.addChild("cooks", cookController.serializeCooks(map));
+        gameRoot.addChild("stations", stationController.serializeStations());
+        gameRoot.addChild("customers", customerController.serializeCustomers());
+
+        return gameRoot;
+    }
+
+    public JsonValue serialise() {
+        return seralise(new JsonValue(JsonValue.ValueType.object));
+    }
+
+    public void deserialise(JsonValue gameRoot) {
+
+        for (JsonValue request : gameRoot.get("requests")) {
+            Request newRequest = new Request(request);
+            requests.add(newRequest);
+            newRequest.load(textureManager, Constants.GAME_TEXTURE_ID);
+        }
+
+        this.leaderboardId = gameRoot.getString("leaderboard_id");
+        this.leaderboardName = gameRoot.getString("leaderboard_name");
+        this.money = gameRoot.getInt("money");
+        this.reputation = gameRoot.getInt("reputation");
+        setDifficulty(Difficulty.asInt(gameRoot.getString("difficulty")));
+
+        // Load the coooks
+        cookController.deserializeCooks(gameRoot, items, map);
+        // And add them to the game renderer
+        for (Cook cook: cookController.getCooks()) {
+            gameRenderer.addEntity(cook);
+        }
+
+        // Loads the stations
+        stationController.deserializeStations(gameRoot.get("stations"), audioManager, items, map);
+
+        // Loads the customers
+        customerController.deserializeCustomers(this, gameRoot.get("customers"));
+    }
+
+    public double getDifficulty() {
+        return this.difficulty;
     }
 }
