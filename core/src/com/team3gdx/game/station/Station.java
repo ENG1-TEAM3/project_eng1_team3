@@ -49,6 +49,11 @@ public class Station {
 	 */
 	public Cook lockedCook;
 
+	/* 
+	 * if the station can be used or not
+	*/
+	public Boolean active;
+
 	/**
 	 * 
 	 * @param pos                The (x, y) coordinates of the station.
@@ -59,11 +64,12 @@ public class Station {
 	 *                           slots.
 	 */
 	public Station(Vector2 pos, int numberOfSlots, boolean infinite, Ingredient[] allowedIngredients,
-			String soundPath) {
+			String soundPath, Boolean active) {
 		this.pos = pos;
 		this.numberOfSlots = numberOfSlots;
 		this.infinite = infinite;
 		this.allowedIngredients = allowedIngredients;
+		this.active = active;
 		slots = new Stack<Ingredient>();
 		if (soundPath != null)
 			interactSound = Gdx.audio.newMusic(Gdx.files.internal(soundPath));
@@ -92,8 +98,10 @@ public class Station {
 	 * @return A boolean to indicate if the ingredient was allowed.
 	 */
 	public boolean isAllowed(Ingredient droppedIngredient) {
-		if (allowedIngredients == null)
-			return true;
+		if (active == false)
+			{return false;}
+		else if (allowedIngredients == null)
+			{return true;}
 		for (Ingredient ingredient : allowedIngredients) {
 			if (ingredient.equals(droppedIngredient) && slots.size() < numberOfSlots)
 				return true;
@@ -111,6 +119,8 @@ public class Station {
 		if (slots.empty())
 			return null;
 		interactSound.stop();
+		if (active == false)
+			{return null;}
 		if (!infinite) {
 			return new Ingredient(slots.pop());
 		}
@@ -156,5 +166,18 @@ public class Station {
 		interactSound.setVolume(MainGameClass.gameVolumeScale);
 		interactSound.play();
 	}
-
+	public void buyBack() {
+		if (active == false){
+			/** if (money >= 100){money - 100}*/ 
+			active = true;
+		} 
+	}
+	public void drawBuyBackText(SpriteBatch batch){
+		if (active == false){
+			drawText(batch, "Buy back [e]", new Vector2(pos.x * 64, pos.y * 64));
+		}
+	}
+	public boolean active(){
+		return active;
+	}
 }

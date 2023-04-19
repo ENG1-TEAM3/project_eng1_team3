@@ -36,7 +36,15 @@ public class StationManager {
 	public void handleStations(SpriteBatch batch, ShapeRenderer shapeRenderer) {
 		this.batch = batch;
 		for (Station station : stations.values()) {
-			if (!station.slots.empty() && !station.infinite) {
+			if (station.active() == false){
+				if (GameScreen.cook.heldItems.empty()){
+					station.drawBuyBackText(batch);
+					if (GameScreen.control.interact) {
+						station.buyBack();
+				}
+			}
+			}
+			else if (!station.slots.empty() && !station.infinite) {
 				for (int i = 0; i < station.slots.size(); i++) {
 					// Handle each ingredient in slot.
 					Ingredient currentIngredient = station.slots.get(i);
@@ -102,13 +110,13 @@ public class StationManager {
 			takeIngredientStation(pos, Ingredients.unformedDough);
 			break;
 		case "Frying":
-			checkStationExists(pos, new FryingStation(pos));
+			checkStationExists(pos, new FryingStation(pos,true));
 			((CookingStation) stations.get(pos)).checkCookingStation(batch);
 			((CookingStation) stations.get(pos)).lockCook();
 			break;
 		case "Prep":
 			if (!stations.containsKey(pos)) {
-				stations.put(pos, new PrepStation(pos));
+				stations.put(pos, new PrepStation(pos,true));
 			}
 			placeIngredientStation(pos);
 			PrepStation station = ((PrepStation) stations.get(pos));
@@ -117,7 +125,7 @@ public class StationManager {
 			break;
 		case "Chopping":
 			if (!stations.containsKey(pos)) {
-				stations.put(pos, new CuttingStation(pos, 1));
+				stations.put(pos, new CuttingStation(pos, 1,true));
 			}
 
 			placeIngredientStation(pos);
@@ -126,10 +134,40 @@ public class StationManager {
 
 			break;
 		case "Baking":
-			checkStationExists(pos, new BakingStation(pos));
+			checkStationExists(pos, new BakingStation(pos,true));
 			((CookingStation) stations.get(pos)).checkCookingStation(batch);
 			((CookingStation) stations.get(pos)).lockCook();
 			break;
+		case "Frying_inactivce":
+			checkStationExists(pos, new FryingStation(pos,false));
+			((CookingStation) stations.get(pos)).checkCookingStation(batch);
+			((CookingStation) stations.get(pos)).lockCook();
+			break;
+		case "Prep_inactive":
+			if (!stations.containsKey(pos)) {
+				stations.put(pos, new PrepStation(pos,false));
+			}
+			placeIngredientStation(pos);
+			PrepStation station2 = ((PrepStation) stations.get(pos));
+			station2.lockCook();
+			
+			break;
+		case "Chopping_inactive":
+			if (!stations.containsKey(pos)) {
+				stations.put(pos, new CuttingStation(pos, 1,false));
+			}
+
+			placeIngredientStation(pos);
+			CuttingStation cutStation2 = ((CuttingStation) stations.get(pos));
+			cutStation2.lockCook();
+
+			break;
+		case "Baking_inactive":
+			checkStationExists(pos, new BakingStation(pos,false));
+			((CookingStation) stations.get(pos)).checkCookingStation(batch);
+			((CookingStation) stations.get(pos)).lockCook();
+			break;
+
 		case "Service":
 			if (!stations.containsKey(pos)) {
 				stations.put(pos, new ServingStation(pos));
@@ -177,7 +215,7 @@ public class StationManager {
 	 * @param pos The position to lookup the station.
 	 */
 	private void placeIngredientStation(Vector2 pos) {
-		checkStationExists(pos, new Station(pos, 4, false, null, null));
+		checkStationExists(pos, new Station(pos, 4, false, null, null,true));
 		stations.get(pos).drawTakeText(batch);
 		stations.get(pos).drawDropText(batch);
 		if (GameScreen.control.interact) {

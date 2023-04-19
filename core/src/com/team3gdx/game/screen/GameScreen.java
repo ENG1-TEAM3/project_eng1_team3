@@ -48,6 +48,7 @@ public class GameScreen implements Screen {
 	final MainScreen ms;
 
 	public static int currentWave = 0;
+	public static int money = 0;
 
 	Rectangle volSlideBackgr;
 	Rectangle volSlide;
@@ -91,7 +92,6 @@ public class GameScreen implements Screen {
 	float xSliderMax;
 	float xSliderMin;
 	float sliderWidth;
-
 	float audioBackgroundWidth;
 	float audioBackgroundHeight;
 	float audioBackgroundx;
@@ -339,7 +339,9 @@ public class GameScreen implements Screen {
 		game.batch.begin();
 		game.font.draw(game.batch, Long.toString((startTime - timeOnStartup) / 1000),
 				gameResolutionX / 2f + gameResolutionX / 10f, 19 * gameResolutionY / 20f);
-		game.font.draw(game.batch, "Time in s:", gameResolutionX / 2f, 19 * gameResolutionY / 20f);
+		game.font.draw(game.batch, "Time in S:", gameResolutionX / 2f, 19 * gameResolutionY / 20f);
+		game.font.draw(game.batch,Integer.toString(money), gameResolutionX / 3f + gameResolutionX / 10f, 19 * gameResolutionY / 20f);
+		game.font.draw(game.batch, "Money:", gameResolutionX / 3f + gameResolutionX / 35f, 19 * gameResolutionY / 20f);
 		game.batch.end();
 	}
 
@@ -439,6 +441,9 @@ public class GameScreen implements Screen {
 		}
 	}
 
+	public void paid(int pay){
+		money += pay;
+	}
 	/**
 	 * Checks to see whether escape has been pressed to pause the game
 	 */

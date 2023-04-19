@@ -13,8 +13,8 @@ public class CookingStation extends Station {
 	ParticleEffect[] pES;
 
 	public CookingStation(Vector2 pos, int numberOfSlots, Ingredient[] allowedIngredients, String particlePath,
-			String soundPath) {
-		super(pos, numberOfSlots, false, allowedIngredients, "audio/soundFX/frying.mp3");
+			String soundPath, boolean active) {
+		super(pos, numberOfSlots, false, allowedIngredients, "audio/soundFX/frying.mp3", active);
 		createParticleEmitter(pos, particlePath);
 	}
 

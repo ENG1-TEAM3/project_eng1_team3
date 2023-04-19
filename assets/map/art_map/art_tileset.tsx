@@ -156,25 +156,25 @@
   </tile>
   <tile id="38">
  <properties>
-   <property name="Station" value="Prep"/>
+   <property name="Station" value="Prep_inactive"/>
   </properties>
   <image width="128" height="64" source="art_images/Empty_prep.png"/>
   </tile>
   <tile id="39">
  <properties>
-   <property name="Station" value="Baking"/>
+   <property name="Station" value="Baking_inactive"/>
   </properties>
   <image width="64" height="64" source="art_images/Empty_grill.png"/>
   </tile>
   <tile id="40">
  <properties>
-   <property name="Station" value="Frying"/>
+   <property name="Station" value="Frying_inactive"/>
   </properties>
   <image width="64" height="64" source="art_images/empty_frying.png"/>
   </tile>
   <tile id="41">
  <properties>
-   <property name="Station" value="Chopping"/>
+   <property name="Station" value="Chopping_inactive"/>
   </properties>
   <image width="128" height="64" source="art_images/Cutting_empty.png"/>
   </tile>

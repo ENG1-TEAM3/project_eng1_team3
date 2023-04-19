@@ -38,7 +38,7 @@ public class Recipe extends Ingredient {
 	/**
 	 * How much the menu item will cost.
 	 */
-	public float cost;
+	public int cost;
 
 	/**
 	 * Sets the appropriate recipe properties.
@@ -58,7 +58,7 @@ public class Recipe extends Ingredient {
 	 */
 	public Recipe(String initialSteps, Ingredient initialIngredient, Map<Ingredient, String> ingredientInstructions,
 			String finalSteps, String name, boolean shouldBeOrdered, Vector2 pos, float width, float height,
-			float cost) {
+			int cost) {
 		super(pos, width, height, name, 0, 0);
 		this.initialSteps = initialSteps;
 		this.initialIngredient = initialIngredient;
@@ -158,5 +158,7 @@ public class Recipe extends Ingredient {
 
 		return false;
 	}
-
+	public int cost(){
+		return cost;
+	}
 }

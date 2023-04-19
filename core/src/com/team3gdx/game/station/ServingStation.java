@@ -10,8 +10,9 @@ import com.team3gdx.game.food.Recipe;
 import com.team3gdx.game.screen.GameScreen;
 
 public class ServingStation extends Station {
-
-	String[] possibleOrders = new String[] { "Burger", "Salad" };
+	public int money;
+	
+	String[] possibleOrders = new String[] { "Burger", "Salad","Jacket_potato","Pizza" };
 
 	/**
 	 * Configure allowed ingredient to be those on the menu.
@@ -26,7 +27,7 @@ public class ServingStation extends Station {
 	};
 
 	public ServingStation(Vector2 pos) {
-		super(pos, 1, false, allowedIngredients, "audio/soundFX/money-collect.mp3");
+		super(pos, 1, false, allowedIngredients, "audio/soundFX/money-collect.mp3", true);
 	}
 
 	/**
@@ -44,6 +45,7 @@ public class ServingStation extends Station {
 			if (waitingCustomer == GameScreen.currentWaitingCustomer && !slots.empty()
 					&& slots.peek().equals(Menu.RECIPES.get(waitingCustomer.order))) {
 				slots.pop();
+				GameScreen.money += (Menu.RECIPES.get(waitingCustomer.order)).cost();
 				GameScreen.cc.delCustomer(waitingCustomer);
 				if (GameScreen.currentWave < GameScreen.NUMBER_OF_WAVES){
 					GameScreen.cc.spawnCustomer();
