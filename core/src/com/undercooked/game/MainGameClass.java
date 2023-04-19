@@ -15,10 +15,13 @@ import com.undercooked.game.audio.SoundStateChecker;
 import com.undercooked.game.entity.cook.Cook;
 import com.undercooked.game.files.FileControl;
 import com.undercooked.game.files.SettingsControl;
+import com.undercooked.game.food.Item;
 import com.undercooked.game.map.MapManager;
 import com.undercooked.game.assets.TextureManager;
 import com.undercooked.game.audio.AudioSettings;
 import com.undercooked.game.screen.*;
+import com.undercooked.game.station.Station;
+import com.undercooked.game.station.StationData;
 import com.undercooked.game.station.StationManager;
 import com.undercooked.game.util.CameraController;
 import com.undercooked.game.util.Constants;
@@ -71,10 +74,20 @@ public class MainGameClass extends Game {
 	@Override
 	public void create() {
 
-		// Temporary Testing Code {#0ea,4}
+		// Temp Testing {#782, 14}
 		// ! Temp Testing Code
-		Cook myCook = new Cook(new Vector2(0, 0), 0, textureManager, null);
-		System.out.println(myCook.serial());
+		// 9 myCook = new Cook(new Vector2(0, 0), 0, textureManager, null);
+		// myCook.addItem(new Item("<main>:burger"));
+		// myCook.addItem(new Item("<main>:pizza"));
+		// // myCook.addItem(new Item("Else"));
+		// System.out.println(myCook.serial());
+
+		StationData myStationData = new StationData("<main>:counter");
+		Station myStation = new Station(myStationData);
+		myStation.addItem(new Item("<main>:burger"));
+		myStation.addItem(new Item("<main>:pizza"));
+		System.out.println(myStation.serial());
+
 		Gdx.app.exit();
 
 		// Load the game

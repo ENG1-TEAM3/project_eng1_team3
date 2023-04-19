@@ -26,7 +26,9 @@ import com.undercooked.game.util.CollisionTile;
 import com.undercooked.game.util.Constants;
 import com.undercooked.game.util.Listener;
 import com.undercooked.game.util.Observer;
+import com.undercooked.game.util.json.JsonArray;
 import com.undercooked.game.util.json.JsonObject;
+import com.undercooked.game.util.json.JsonVal;
 
 public class Cook extends MoveableEntity {
 
@@ -548,10 +550,17 @@ public class Cook extends MoveableEntity {
 	 * Return the {@link Cook} as a {@link String}
 	 */
 	public JsonValue serial() {
+		// Get ItemIDs from {@link heldItems}
+		JsonValue theItemIds = new JsonValue(JsonValue.ValueType.array);
+		for (Item item : heldItems) {
+			theItemIds.addChild("", new JsonValue(item.getID()));
+		}
+
+		// Return JsonValue
 		JsonValue cookRoot = new JsonValue(JsonValue.ValueType.object);
 		cookRoot.addChild("x", new JsonValue(pos.x));
 		cookRoot.addChild("y", new JsonValue(pos.y));
-		// cookRoot.addChild("cookno", new JsonValue(cookno));
+		cookRoot.addChild("items", theItemIds);
 		return cookRoot;
 	}
 

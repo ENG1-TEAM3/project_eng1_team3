@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.JsonValue;
 import com.undercooked.game.Input.InputType;
 import com.undercooked.game.MainGameClass;
 import com.undercooked.game.assets.AudioManager;
@@ -51,7 +52,8 @@ public class Station extends MapEntity {
 
 	public void update(float delta) {
 		// Only continue if not disabled
-		if (disabled) return;
+		if (disabled)
+			return;
 		if (lockedCooks.size == 0) {
 			interactControl.update(null);
 			return;
@@ -62,7 +64,8 @@ public class Station extends MapEntity {
 	@Override
 	public InteractResult interact(Cook cook, String keyID, InputType inputType) {
 		// If disabled, stop here
-		if (disabled) return InteractResult.NONE;
+		if (disabled)
+			return InteractResult.NONE;
 
 		if (interactControl == null) {
 			// If it doesn't have an interaction control, then stop.
@@ -73,6 +76,7 @@ public class Station extends MapEntity {
 
 	/**
 	 * Called when the player is trying to buy the {@link Station}.
+	 * 
 	 * @param money {@code int} : The money provided.
 	 */
 	public boolean buy(int money) {
@@ -125,10 +129,11 @@ public class Station extends MapEntity {
 		// Draw the Sprite
 		super.draw(batch);
 		// Then draw the items on top of the station
-		for (int i = 0 ; i < items.size() ; i++) {
+		for (int i = 0; i < items.size(); i++) {
 			Vector2 itemPos = itemPos(i);
 			Item thisItem = items.get(i);
-			thisItem.draw(batch, pos.x + sprite.getWidth()/2f + itemPos.x - thisItem.getWidth()/2f, pos.y + sprite.getHeight()/2f + itemPos.y - thisItem.getHeight()/2f);
+			thisItem.draw(batch, pos.x + sprite.getWidth() / 2f + itemPos.x - thisItem.getWidth() / 2f,
+					pos.y + sprite.getHeight() / 2f + itemPos.y - thisItem.getHeight() / 2f);
 		}
 		// If it's disabled, reset the draw colour and stop
 		if (disabled) {
@@ -166,14 +171,14 @@ public class Station extends MapEntity {
 		updateStationInteractions();
 	}
 
-
 	/**
 	 * Returns whether the {@link Station} has a specific {@link Item}
 	 * (or any {@link Item}) a number of times.
+	 * 
 	 * @param itemID {@link String} : The itemID to check for.
 	 * @param number {@code int} : The number of {@link Item}s needed.
 	 * @return {@code boolean} : {@code true} if it does,
-	 * 							 {@code false} if it does not.
+	 *         {@code false} if it does not.
 	 */
 	public boolean hasItem(String itemID, int number) {
 		// If itemID is null, just compare the size and number
@@ -250,9 +255,10 @@ public class Station extends MapEntity {
 	/**
 	 * Returns {@code true} or {@code false} depending on if the
 	 * {@link Station} has that number of items or not.
+	 * 
 	 * @param number {@code int} : The number of {@link Item}s.
 	 * @return {@code boolean} : {@code true} if it has that many {@link Item}s,
-	 * 							 {@code false} if it does not.
+	 *         {@code false} if it does not.
 	 */
 	public boolean hasItem(int number) {
 		return hasItem(null, number);
@@ -261,8 +267,9 @@ public class Station extends MapEntity {
 	/**
 	 * Returns a {@code boolean} on whether the {@link Station}
 	 * has an item or not.
+	 * 
 	 * @return {@code boolean} : {@code true} if it has an {@link Item},
-	 * 	 * 					     {@code false} if it does not.
+	 *         * {@code false} if it does not.
 	 */
 	public boolean hasItem() {
 		return hasItem(null, 1);
@@ -321,12 +328,12 @@ public class Station extends MapEntity {
 	}
 
 	public void unlockCooks() {
-		for (int i = lockedCooks.size-1 ; i >= 0 ; i--) {
+		for (int i = lockedCooks.size - 1; i >= 0; i--) {
 			unlockCook(lockedCooks.get(i));
 		}
 	}
 
-    public void reset() {
+	public void reset() {
 		// Clear the station
 		clear();
 
@@ -334,10 +341,29 @@ public class Station extends MapEntity {
 		if (hasCookLocked()) {
 			unlockCooks();
 		}
-    }
+	}
 
 	public void stop() {
 		// Stop the interaction
 		interactControl.stop();
+	}
+
+	/**
+	 * Serialize the station class.
+	 */
+	public JsonValue serial() {
+		// Get ItemIDs from the station items
+		JsonValue theItemIds = new JsonValue(JsonValue.ValueType.array);
+		for (Item item : items) {
+			theItemIds.addChild("", new JsonValue(item.getID()));
+		}
+
+		// Return JsonValue
+		JsonValue stationRoot = new JsonValue(JsonValue.ValueType.object);
+		stationRoot.addChild("x", new JsonValue(pos.x));
+		stationRoot.addChild("y", new JsonValue(pos.y));
+		stationRoot.addChild("unlocked", new JsonValue(disabled && price > 0));
+		stationRoot.addChild("items", theItemIds);
+		return stationRoot;
 	}
 }
