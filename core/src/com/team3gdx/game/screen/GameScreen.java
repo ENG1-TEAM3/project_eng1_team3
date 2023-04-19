@@ -122,6 +122,7 @@ public class GameScreen implements Screen {
 		this.ms = ms;
 		this.gameMode = gameMode;
 		this.NUMBER_OF_WAVES = gameMode.getNumberOfWaves();
+		Tutorial.complete = !gameMode.showTutorial();
 		this.calculateBoxMaths();
 		control = new Control();
 		// map = new TmxMapLoader().load("map/art_map/prototype_map.tmx");
