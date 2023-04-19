@@ -14,7 +14,7 @@ public class Menu {
 	 * Maps of ingredients in corresponding recipes and steps on what to do with
 	 * them.
 	 */
-	private static final Map<Ingredient, String> BURGER_STEPS = new HashMap<Ingredient, String>();
+	public static final Map<Ingredient, String> BURGER_STEPS = new HashMap<Ingredient, String>();
 	static {
 		BURGER_STEPS.put(Ingredients.cooked_bun, "Toast");
 		BURGER_STEPS.put(Ingredients.cookedPatty, "Fry");
