@@ -12,7 +12,7 @@ import com.undercooked.game.interactions.steps.cook.*;
 import com.undercooked.game.interactions.steps.cook.input.JustPressedStep;
 import com.undercooked.game.interactions.steps.cook.input.PressedStep;
 import com.undercooked.game.interactions.steps.cook.input.ReleasedStep;
-import com.undercooked.game.station.StationManager;
+import com.undercooked.game.station.StationController;
 import com.undercooked.game.util.Constants;
 import com.undercooked.game.util.DefaultJson;
 import com.undercooked.game.util.json.JsonFormat;
@@ -29,12 +29,12 @@ public class Interactions {
         this.interactions = new ObjectMap<>();
     }
 
-    public void loadInteractionAsset(String assetPath, StationManager stationManager, AudioManager audioManager, Items items) {
+    public void loadInteractionAsset(String assetPath, StationController stationController, AudioManager audioManager, Items items) {
         JsonValue interactionRoot = FileControl.loadJsonAsset(assetPath, "interactions");
         // If it's not null...
         if (interactionRoot != null) {
             // load the interaction
-            loadInteraction(assetPath, interactionRoot, stationManager, audioManager, items);
+            loadInteraction(assetPath, interactionRoot, stationController, audioManager, items);
         }
     }
 
@@ -150,7 +150,7 @@ public class Interactions {
         return interactionStep;
     }
 
-    private void loadInteraction(String interactionID, JsonValue interactionRoot, StationManager stationManager, AudioManager audioManager, Items items) {
+    private void loadInteraction(String interactionID, JsonValue interactionRoot, StationController stationController, AudioManager audioManager, Items items) {
         // Make sure it's formatted correctly
         JsonFormat.formatJson(interactionRoot, DefaultJson.interactionFormat());
         // Check for ID
@@ -179,9 +179,9 @@ public class Interactions {
             }
 
             // Check that the station exists
-            if (stationManager.hasID(interactionRoot.getString("station_id"))) {
+            if (stationController.hasID(interactionRoot.getString("station_id"))) {
                 // If it doesn't, try to load it.
-                if (stationManager.loadStation(interactionRoot.getString("station_id")) == null) {
+                if (stationController.loadStation(interactionRoot.getString("station_id")) == null) {
                     // If it doesn't load successfully, then this interaction can't be loaded.
                     return;
                 }

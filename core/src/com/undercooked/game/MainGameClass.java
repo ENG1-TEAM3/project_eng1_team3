@@ -11,13 +11,12 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.undercooked.game.Input.InputController;
 import com.undercooked.game.assets.AudioManager;
 import com.undercooked.game.audio.SoundStateChecker;
-import com.undercooked.game.files.FileControl;
 import com.undercooked.game.files.SettingsControl;
 import com.undercooked.game.map.MapManager;
 import com.undercooked.game.assets.TextureManager;
 import com.undercooked.game.audio.AudioSettings;
 import com.undercooked.game.screen.*;
-import com.undercooked.game.station.StationManager;
+import com.undercooked.game.station.StationController;
 import com.undercooked.game.util.CameraController;
 import com.undercooked.game.util.Constants;
 
@@ -33,7 +32,7 @@ public class MainGameClass extends Game {
 	public final MapManager mapManager;
 	public final AudioSettings audioSettings;
 	public final SettingsControl settingsControl;
-	public final StationManager stationManager;
+	public final StationController stationController;
 	public static SpriteBatch batch;
 	public static BitmapFont font;
 	public static ShapeRenderer shapeRenderer;
@@ -49,7 +48,7 @@ public class MainGameClass extends Game {
 		textureManager = new TextureManager(assetManager);
 		mapManager = new MapManager(textureManager,audioManager);
 		screenController = new ScreenController(this, assetManager);
-		stationManager = new StationManager();
+		stationController = new StationController();
 	}
 
 	/**

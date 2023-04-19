@@ -15,10 +15,7 @@ import com.undercooked.game.food.Instruction;
 import com.undercooked.game.food.Item;
 import com.undercooked.game.food.Request;
 import com.undercooked.game.load.LoadResult;
-import com.undercooked.game.map.MapCell;
-import com.undercooked.game.map.MapEntity;
-import com.undercooked.game.map.MapManager;
-import com.undercooked.game.map.Register;
+import com.undercooked.game.map.*;
 import com.undercooked.game.screen.GameScreen;
 import com.undercooked.game.util.Constants;
 import com.undercooked.game.util.DefaultJson;
@@ -163,7 +160,7 @@ public class ScenarioLogic extends GameLogic {
         elapsedTime += delta;
 
         // Update the Stations
-        stationManager.update(delta);
+        stationController.update(delta);
 
         // Update cooks.
         cookController.update(delta);
@@ -288,11 +285,11 @@ public class ScenarioLogic extends GameLogic {
 
         // Load all the Interactions
         for (JsonValue interaction : scenarioData.get("interactions")) {
-            interactions.loadInteractionAsset(interaction.asString(), stationManager, audioManager, items);
+            interactions.loadInteractionAsset(interaction.asString(), stationController, audioManager, items);
         }
 
         // Update all the stations to use the interactions
-        stationManager.updateStationInteractions();
+        stationController.updateStationInteractions();
 
         // Set the Customer's speed
         customerController.setCustomerSpeed(scenarioData.getFloat("customer_speed"));

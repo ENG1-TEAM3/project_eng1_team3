@@ -13,12 +13,9 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.undercooked.game.MainGameClass;
 import com.undercooked.game.assets.TextureManager;
-import com.undercooked.game.audio.AudioSettings;
 import com.undercooked.game.audio.AudioSliders;
 import com.undercooked.game.audio.Slider;
-import com.undercooked.game.logic.EndlessLogic;
 import com.undercooked.game.logic.GameLogic;
-import com.undercooked.game.logic.ScenarioLogic;
 import com.undercooked.game.map.Map;
 import com.undercooked.game.render.GameRenderer;
 import com.undercooked.game.util.CameraController;
@@ -92,7 +89,7 @@ public class GameScreen extends Screen {
 	public void setGameLogic(GameLogic gameLogic) {
 		this.gameLogic = gameLogic;
 		gameLogic.setGameScreen(this);
-		gameLogic.setStationManager(game.stationManager);
+		gameLogic.setStationController(game.stationController);
 		// If it has a GameRenderer, update it there
 		if (this.gameRenderer != null) {
 			this.gameLogic.setGameRenderer(this.gameRenderer);

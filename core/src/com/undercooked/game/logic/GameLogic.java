@@ -14,7 +14,7 @@ import com.undercooked.game.map.Map;
 import com.undercooked.game.render.GameRenderer;
 import com.undercooked.game.screen.GameScreen;
 import com.undercooked.game.screen.WinScreen;
-import com.undercooked.game.station.StationManager;
+import com.undercooked.game.station.StationController;
 import com.undercooked.game.util.Constants;
 import com.undercooked.game.util.Listener;
 import com.undercooked.game.util.Observer;
@@ -31,7 +31,7 @@ public abstract class GameLogic {
     Items items;
     CookController cookController;
     CustomerController customerController;
-    StationManager stationManager;
+    StationController stationController;
     GameRenderer gameRenderer;
     TextureManager textureManager;
     AudioManager audioManager;
@@ -98,7 +98,7 @@ public abstract class GameLogic {
      */
     public void stop() {
         // Stop all station interactions (so it stops the sounds)
-        stationManager.stopAll();
+        stationController.stopAll();
     }
 
     /**
@@ -144,7 +144,7 @@ public abstract class GameLogic {
      * @param path {@link String} of the path.
      */
     public final LoadResult loadMap(String path) {
-        map = gameScreen.getMapManager().load(path, stationManager, cookController, interactions, items);
+        map = gameScreen.getMapManager().load(path, stationController, cookController, interactions, items);
         // If the map fails to load, then return that
         if (map == null) {
             return LoadResult.FAILURE;
@@ -237,8 +237,8 @@ public abstract class GameLogic {
         this.gameScreen = gameScreen;
     }
 
-    public void setStationManager(StationManager stationManager) {
-        this.stationManager = stationManager;
+    public void setStationController(StationController stationController) {
+        this.stationController = stationController;
     }
 
     public void setTextureManager(TextureManager textureManager) {
@@ -257,7 +257,7 @@ public abstract class GameLogic {
         map.dispose();
         cookController.dispose();
         customerController.dispose();
-        stationManager.dispose();
+        stationController.dispose();
     }
 
     public Map getMap() {
@@ -303,7 +303,7 @@ public abstract class GameLogic {
         displayCustomer = null;
         customerController.reset();
         cookController.reset();
-        stationManager.reset();
+        stationController.reset();
     }
 
     public void setLeaderboardName(String name) {

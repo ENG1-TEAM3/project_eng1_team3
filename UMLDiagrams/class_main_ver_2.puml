@@ -76,7 +76,7 @@ class GameScreen{
 +TiledMapRenderer 
 +Cook[] cooks
 +CustomerController cc
-+StationManager stationManager
++StationManager stationController
 +void drawHeldItems()
 -void checkCookSwitch()
 +void changeScreen(STATE state1)

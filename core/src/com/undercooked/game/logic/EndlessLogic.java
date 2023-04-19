@@ -65,7 +65,7 @@ public class EndlessLogic extends ScenarioLogic {
         elapsedTime += delta;
 
         // Update the Stations
-        stationManager.update(delta);
+        stationController.update(delta);
 
         // Update cooks.
         cookController.update(delta);

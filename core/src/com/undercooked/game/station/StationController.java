@@ -15,7 +15,7 @@ import com.undercooked.game.util.json.JsonFormat;
  * Deals with the loading and storage of all {@link Station}s
  * and their {@link StationData} within the game.
  */
-public class StationManager {
+public class StationController {
 
 	/**
 	 * An {@link Array} of the {@link Station}s that are in the
@@ -33,11 +33,11 @@ public class StationManager {
 	GameScreen game;
 
 	/**
-	 * Constructor for the {@link StationManager}.
+	 * Constructor for the {@link StationController}.
 	 * This sets up the {@link Array<Station>} for {@link #stations}
 	 * and the {@link ObjectMap<String, StationData>} for {@link #stationData}.
 	 */
-	public StationManager() {
+	public StationController() {
 		this.stations = new Array<>();
 		this.stationData = new ObjectMap<>();
 	}
