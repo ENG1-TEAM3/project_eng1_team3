@@ -12,6 +12,7 @@ import com.team3gdx.game.screen.GameScreen;
 import com.team3gdx.game.screen.LeaderBoard;
 import com.team3gdx.game.screen.MainScreen;
 import com.team3gdx.game.util.AudioController;
+import com.team3gdx.game.util.ScenarioMode;
 
 public class MainGameClass extends Game {
 	public SpriteBatch batch;
@@ -47,7 +48,7 @@ public class MainGameClass extends Game {
 		font.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
 		// ====================================GAME=SCREEN=INITIALISATION================================================
 		mainScreen1 = new MainScreen(this);
-		gameScreen1 = new GameScreen(this, mainScreen1);
+		gameScreen1 = new GameScreen(this, mainScreen1, new ScenarioMode(5, 3));
 		leaderBoardScreen1 = new LeaderBoard(this, mainScreen1);
 		diffictuiltyScreen1 = new DiffictuiltyScreen(this, mainScreen1);
 		this.setScreen(mainScreen1);
@@ -71,7 +72,7 @@ public class MainGameClass extends Game {
 	}
 
 	public void resetGameScreen() {
-		this.gameScreen1 = new GameScreen(this, mainScreen1);
+		this.gameScreen1 = new GameScreen(this, mainScreen1, new ScenarioMode(5, 3));
 	}
 
 	@Override
