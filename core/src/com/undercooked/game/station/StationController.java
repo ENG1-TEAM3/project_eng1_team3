@@ -6,6 +6,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.undercooked.game.files.FileControl;
+import com.undercooked.game.food.Item;
 import com.undercooked.game.map.MapManager;
 import com.undercooked.game.screen.GameScreen;
 import com.undercooked.game.util.DefaultJson;
@@ -239,13 +240,20 @@ public class StationController {
 		// For each station
 		for (JsonValue stationRoot : stationsArrayRoot) {
 			// Get the station data
-			StationData data = getStationData(stationRoot.getInt("station_id"));
+			StationData data = getStationData(stationRoot.getString("station_id"));
 			// If it's not null
 			if (data != null) {
 				// Create a new station
 				Station station = new Station(data);
 				// Deserialize it
-				station.deserial(stationRoot);
+				station.setX(stationRoot.getInt("x"));
+				station.setY(stationRoot.getInt("y"));
+				station.setPrice(stationRoot.getInt("price"));
+				station.setDisabled(stationRoot.getBoolean("unlocked"));
+				JsonValue itemsArray = stationRoot.get("items");
+				for (JsonValue item : itemsArray) {
+					station.addItem(new Item(item.toString()));
+				}
 				// Add it to the stations
 				addStation(station);
 			}

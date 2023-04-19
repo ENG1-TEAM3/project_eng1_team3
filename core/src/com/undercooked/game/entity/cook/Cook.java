@@ -552,6 +552,7 @@ public class Cook extends MoveableEntity {
 	public JsonValue serial() {
 		// Return JsonValue
 		JsonValue cookRoot = new JsonValue(JsonValue.ValueType.object);
+		cookRoot.addChild("cookno", new JsonValue(cookno));
 		cookRoot.addChild("x", new JsonValue(pos.x));
 		cookRoot.addChild("y", new JsonValue(pos.y));
 		cookRoot.addChild("items", heldItems.serial());

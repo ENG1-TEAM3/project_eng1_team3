@@ -33,6 +33,10 @@ public class Station extends MapEntity {
 	private int price;
 	private boolean disabled;
 
+	public void setDisabled(boolean value) {
+		disabled = value;
+	}
+
 	public Station(StationData stationData) {
 		super();
 		setStationData(stationData);
@@ -360,8 +364,10 @@ public class Station extends MapEntity {
 
 		// Return JsonValue
 		JsonValue stationRoot = new JsonValue(JsonValue.ValueType.object);
+		stationRoot.addChild("station_id", new JsonValue(id));
 		stationRoot.addChild("x", new JsonValue(pos.x));
 		stationRoot.addChild("y", new JsonValue(pos.y));
+		stationRoot.addChild("price", new JsonValue(price));
 		stationRoot.addChild("unlocked", new JsonValue(disabled && price > 0));
 		stationRoot.addChild("items", theItemIds);
 		return stationRoot;
