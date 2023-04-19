@@ -6,10 +6,8 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
 import com.undercooked.game.Input.InputController;
 import com.undercooked.game.Input.InputType;
@@ -22,17 +20,11 @@ import com.undercooked.game.interactions.InteractResult;
 import com.undercooked.game.map.Map;
 import com.undercooked.game.map.MapCell;
 import com.undercooked.game.station.Station;
-import com.undercooked.game.util.CollisionTile;
 import com.undercooked.game.util.Constants;
 import com.undercooked.game.util.Listener;
 import com.undercooked.game.util.Observer;
-import com.undercooked.game.util.json.JsonArray;
-import com.undercooked.game.util.json.JsonObject;
-import com.undercooked.game.util.json.JsonVal;
 
 public class Cook extends MoveableEntity {
-
-	private static final int MAX_STACK_SIZE = 5;
 	private static final int FRAME_COLS = 5, FRAME_ROWS = 4;
 
 	private Vector2 direction;
@@ -50,7 +42,9 @@ public class Cook extends MoveableEntity {
 	public Station lockedTo = null;
 	public boolean holding = false;
 	public ItemStack heldItems;
+	
 	Map map;
+	protected float speedMultiplier;
 	protected Listener<Cook> serveListener;
 	protected Listener<MapCell> interactRegisterListener;
 	protected Listener<MapCell> interactPhoneListener;
@@ -69,6 +63,7 @@ public class Cook extends MoveableEntity {
 		this.collision.x = pos.x;
 		this.collision.y = pos.y;
 		this.cookno = cookNum;
+		this.speedMultiplier = 1f;
 
 		this.heldItems = new ItemStack();
 		this.holdLimit = 5;
@@ -285,18 +280,20 @@ public class Cook extends MoveableEntity {
 
 		// Check collision
 		// X
-		if (map.checkCollision(this, collision.x + (moveCalc(dirX, delta)), collision.y)) {
+		if (map.checkCollision(this, collision.x + (moveCalc(dirX * speedMultiplier, delta)), collision.y)) {
+			float sign = Math.signum(dirX);
 			// Move the player as close as possible on the x
-			while (!map.checkCollision(this, collision.x + 0.01F * dirX, collision.y)) {
-				collision.x += 0.01F * dirX;
+			while (!map.checkCollision(this, collision.x + 0.01F * sign, collision.y)) {
+				collision.x += 0.01F * sign;
 			}
-			collision.x -= 0.01F * dirX;
+			collision.x -= 0.01F * sign;
 			pos.x = collision.x - offsetX;
 			dirX = 0;
 		}
 
 		// Y
-		if (map.checkCollision(this, collision.x, collision.y + (moveCalc(dirY, delta)))) {
+		if (map.checkCollision(this, collision.x, collision.y + (moveCalc(dirY * speedMultiplier, delta)))) {
+			float sign = Math.signum(dirX);
 			// Move the player as close as possible on the y
 			while (!map.checkCollision(this, collision.x, collision.y + 0.01F * dirY)) {
 				collision.y += 0.01F * dirY;
@@ -306,8 +303,15 @@ public class Cook extends MoveableEntity {
 			dirY = 0;
 		}
 
+		// If the player is holding more than their limit, then lower their speed
+		float finalSpeedMult = speedMultiplier;
+		if (heldItems.size() > holdLimit) {
+			// Decrease speed by the number of items held, up to a max of 4 times
+			finalSpeedMult -= (0.15f * Math.min(4,heldItems.size()-holdLimit));
+		}
+
 		// Move
-		move(delta);
+		move(dirX * finalSpeedMult, dirY * finalSpeedMult, delta);
 		interactCollision.x = collision.x + collision.width / 2 + (direction.x * 32) - interactCollision.width / 2;
 		interactCollision.y = 64 + collision.y + collision.height / 2 + (direction.y * 32)
 				- interactCollision.width / 2;
@@ -389,6 +393,23 @@ public class Cook extends MoveableEntity {
 			itemIndex++;
 			// }
 		}
+	}
+
+	/**
+	 * Sets the speed multiplier of the {@link Cook}.
+	 * @param multiplier {@code float} : The value to multiply speed by.
+	 */
+	public void setSpeed(float multiplier) {
+		this.speedMultiplier = multiplier;
+	}
+
+	/**
+	 * Sets the maximum number of items the {@link Cook} can hold.
+	 *
+	 * @param maxItems {@code int} : The maximum number of items
+	 */
+	public void setHoldLimit(int maxItems) {
+		this.holdLimit = maxItems;
 	}
 
 	/**
@@ -558,5 +579,4 @@ public class Cook extends MoveableEntity {
 		cookRoot.addChild("items", heldItems.serial());
 		return cookRoot;
 	}
-
 }

@@ -12,8 +12,12 @@ public class MoveableEntity extends Entity {
         return dir * MapManager.gridToPos(speed) * delta;
     }
 
-    public void move (float delta) {
-        pos.x += moveCalc(dirX, delta);
-        pos.y += moveCalc(dirY, delta);
+    public void move(float delta) {
+        move(dirX, dirY, delta);
+    }
+
+    public void move(float x, float y, float delta) {
+        pos.x += moveCalc(x, delta);
+        pos.y += moveCalc(y, delta);
     }
 }

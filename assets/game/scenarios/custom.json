@@ -38,5 +38,13 @@
   "spawn_timer": 0,
   "customer_speed": 3,
   "cook_cost": 200,
-  "duplicate_requests": true
+  "duplicate_requests": true,
+  "power_ups": {
+    "use_time": 1000,
+    "time": 0,
+    "time_min": 10,
+    "time_max": 20,
+    "max": 4,
+    "despawn_time": 10
+  }
 }

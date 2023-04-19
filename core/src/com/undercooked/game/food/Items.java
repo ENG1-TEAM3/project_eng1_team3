@@ -54,11 +54,11 @@ public class Items {
 		return items.get(itemID);
 	}
 
-	public void load(TextureManager textureManager) {
+	public void load(TextureManager textureManager, String textureID) {
 		// Loop through all ingredients and load their textures
 		for (Item item : items.values()) {
 			System.out.println(String.format("Loading texture %s for item %s.", item.getTexturePath(), item.name));
-			textureManager.loadAsset(Constants.GAME_TEXTURE_ID, item.getTexturePath(), "textures");
+			textureManager.loadAsset(textureID, item.getTexturePath(), "textures");
 		}
 	}
 

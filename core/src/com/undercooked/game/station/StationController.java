@@ -50,10 +50,10 @@ public class StationController {
 	 * 
 	 * @param delta
 	 */
-	public void update(float delta) {
+	public void update(float delta, float powerUpMultiplier) {
 		// Update all the stations.
 		for (Station station : stations) {
-			station.update(delta);
+			station.update(delta, powerUpMultiplier);
 		}
 	}
 

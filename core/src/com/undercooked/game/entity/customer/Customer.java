@@ -37,6 +37,7 @@ public class Customer {
 
 	public Request order;
 	public float waitTimer;
+	public float waitSpeed;
 	public boolean waiting;
 
 	private int custNo;
@@ -70,6 +71,7 @@ public class Customer {
 		this.customerController = customerController;
 		this.moveSpeed = 2F;
 		this.waitTimer = -1F;
+		this.waitSpeed = 1F;
 	}
 
 	public void update(float delta) {
@@ -92,7 +94,7 @@ public class Customer {
 			// If waitTimer is not already < 0
 			if (waitTimer >= 0) {
 				// Then decrease the wait timer
-				waitTimer -= delta;
+				waitTimer -= delta * waitSpeed;
 				// If waitTimer reaches 0, and the customer hasn't been served,
 				// then tell the listener
 				if (waitTimer <= 0) {
@@ -223,5 +225,9 @@ public class Customer {
 		customerRoot.addChild("custno", new JsonValue(custNo));
 		customerRoot.addChild("request", order.serial());
 		return customerRoot;
+	}
+
+	public void setWaitSpeed(float waitSpeed) {
+		this.waitSpeed = Math.max(0, waitSpeed);
 	}
 }

@@ -29,7 +29,7 @@ public class CookRemoveStep extends InteractionStep {
     }
 
     @Override
-    public void update(InteractionInstance instance, Cook cook, float delta) {
+    public void update(InteractionInstance instance, Cook cook, float delta, float powerUpMultiplier) {
         finishedLast(instance,cook,null,null);
     }
 }

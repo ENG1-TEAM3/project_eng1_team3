@@ -28,7 +28,7 @@ public class CustomerController {
 
 	Map map;
 	float spawnX, spawnY;
-	float customerSpeed;
+	float customerSpeed, waitSpeed;
 
 	Listener<Customer> getMoney;
 	Listener<Customer> loseReputation;
@@ -63,6 +63,7 @@ public class CustomerController {
 
 		this.targetType = CustomerTarget.FARTHEST;
 		this.customerSpeed = 1F;
+		this.waitSpeed = 1F;
 	}
 
 	public CustomerController(TextureManager textureManager) {
@@ -166,6 +167,7 @@ public class CustomerController {
 
 		// Set speed
 		newCustomer.setMoveSpeed(customerSpeed);
+		newCustomer.setWaitSpeed(waitSpeed);
 
 		// Set their listeners
 		newCustomer.servedListener = getMoney;
@@ -306,6 +308,17 @@ public class CustomerController {
 
 	public void setCustomerSpeed(float customerSpeed) {
 		this.customerSpeed = customerSpeed;
+	}
+
+	public void setCustomerWaitSpeed(float multiplier) {
+		this.waitSpeed = multiplier;
+		// Update for all Customers
+		for (Customer customer : customers) {
+			customer.setWaitSpeed(multiplier);
+		}
+		for (Customer customer : toSpawn) {
+			customer.setWaitSpeed(multiplier);
+		}
 	}
 
 	public void findRegisters() {

@@ -175,6 +175,23 @@ public final class DefaultJson {
         // Whether a request can be selected once or multiple times
         root.addValue(new JsonBool("duplicate_requests", false));
 
+        //// Power Ups
+        JsonObject powerUps = new JsonObject("power_ups");
+
+        // The time it takes for power ups to spawn
+        powerUps.addValue(new JsonFloat("time", -1f));
+        // Optionally, randomised timing
+        powerUps.addValue(new JsonFloat("time_min", -1f));
+        powerUps.addValue(new JsonFloat("time_max", -1f));
+        // The time that the powerups will last
+        powerUps.addValue(new JsonFloat("use_time", 0f));
+        // The maximum number of power ups that can spawn at once
+        powerUps.addValue(new JsonInt("max", 0));
+        // The time it takes for a power up to despawn
+        powerUps.addValue(new JsonFloat("despawn_time", 0f));
+
+        root.addValue(powerUps);
+
         return root;
     }
 

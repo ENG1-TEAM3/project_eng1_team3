@@ -27,8 +27,8 @@ public abstract class InteractionStep {
     protected Cook lastInteractedCook;
 
     /** Update the time value of the instance. */
-    public final void updateTime(InteractionInstance instance, float delta) {
-        instance.elapsedTime += delta;
+    public void updateTime(InteractionInstance instance, float delta, float powerUpMultiplier) {
+        instance.elapsedTime += delta * powerUpMultiplier;
     }
 
     /**
@@ -134,8 +134,20 @@ public abstract class InteractionStep {
      * @param cook {@link Cook} : The {@link Cook} locked to the {@link com.undercooked.game.station.Station},
      *                            from a previous {@link InteractionStep} or {@code null}.
      * @param delta {@code float} : The time since the last frame.
+     * @param
      */
-    public void update(InteractionInstance instance, Cook cook, float delta) { }
+    public void update(InteractionInstance instance, Cook cook, float delta, float powerUpMultiplier) { }
+
+    /**
+     * Function to update the station.
+     * @param instance {@link InteractionInstance} : The interaction instance for a {@link com.undercooked.game.station.Station}.
+     * @param cook {@link Cook} : The {@link Cook} locked to the {@link com.undercooked.game.station.Station},
+     *                            from a previous {@link InteractionStep} or {@code null}.
+     * @param delta {@code float} : The time since the last frame.
+     */
+    public final void update(InteractionInstance instance, Cook cook, float delta) {
+        update(instance, cook, delta, 1);
+    }
 
     /**
      * Called when the previous {@link InteractionStep} just finished,
