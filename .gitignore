@@ -120,3 +120,4 @@ tests/build/reports/tests/test/*.html
 tests/build/tmp/test/*_tmp
 tests/build/test-results/test/*.xml
 tests/build/test-results/test/binary/results.bin
+tests/build/test-results/test/TEST-de.tomgrill.gdxtesting.examples.UnitTestExample.xml
