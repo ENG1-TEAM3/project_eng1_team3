@@ -261,6 +261,10 @@ public class ScenarioLogic extends GameLogic {
             // Make sure the textures are loaded
             request.postLoad(textureManager);
         }
+        for (Request request : requests) {
+            // Make sure the textures are loaded
+            request.postLoad(textureManager);
+        }
 
         // Reset the game
         reset();
