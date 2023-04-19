@@ -54,7 +54,7 @@ public class Menu {
 		RECIPES.put("Salad", new Recipe("", null, SALAD_STEPS, "serve together", "salad", false, null, 32, 32, 0));
 		RECIPES.put("Jacket_potato", new Recipe("cook_potato", Ingredients.potato, JACKET_POTATO_STEPS, "serve together",
 				"Jacket_potato", false, null, 32, 32, 0));
-		RECIPES.put("Raw_pizza",new Recipe("Form dough", Ingredients.unformedDough, PIZZA_STEPS,"serve together", "raw_Pizza", false, null, 32, 32, 0));
+		RECIPES.put("Raw_pizza",new Recipe("Form dough", Ingredients.unformedDough, PIZZA_STEPS,"serve together", "Raw_pizza", false, null, 32, 32, 0));
 	}
 
 	/**
