@@ -191,7 +191,8 @@ public class MainScreen extends Screen {
 		sb.addListener(new ClickListener() {
 			public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
 				super.touchUp(event, x, y, pointer, button);
-				// Go to play screen
+				// Go to play screen, if still on the main screen
+				if (!getScreenController().onScreen(Constants.MAIN_SCREEN_ID)) return;
 				getScreenController().nextScreen(Constants.PLAY_SCREEN_ID);
 			}
 		});

@@ -1,5 +1,6 @@
 package com.undercooked.game.screen;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -31,7 +32,8 @@ public class LoadScreen extends Screen {
 
     @Override
     public void load() {
-
+        // Remove the input processor
+        Gdx.input.setInputProcessor(null);
     }
 
     @Override

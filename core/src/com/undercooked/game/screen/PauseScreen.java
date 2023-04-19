@@ -111,7 +111,8 @@ public class PauseScreen extends Screen {
         menu.addListener(new ClickListener() {
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                // Go to the main menu
+                // Go to the main menu, if still on the pause screen
+                if (!getScreenController().onScreen(Constants.PAUSE_SCREEN_ID)) return;
                 game.screenController.setScreen(Constants.MAIN_SCREEN_ID);
             }
         });
@@ -161,6 +162,7 @@ public class PauseScreen extends Screen {
     }
 
     private void resumeGame() {
+        if (!getScreenController().onScreen(Constants.PAUSE_SCREEN_ID)) return;
         previous();
     }
 
