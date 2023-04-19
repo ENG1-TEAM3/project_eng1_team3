@@ -8,11 +8,14 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.undercooked.game.MainGameClass;
 import com.undercooked.game.assets.TextureManager;
+import com.undercooked.game.audio.AudioSettings;
+import com.undercooked.game.audio.AudioSliders;
 import com.undercooked.game.util.CameraController;
 import com.undercooked.game.util.Constants;
 
@@ -22,6 +25,7 @@ public class PauseScreen extends Screen {
     SpriteBatch batch;
     Stage stage;
     Texture menuBack;
+    AudioSliders audioSliders;
 
     public PauseScreen(MainGameClass game) {
         super(game);
@@ -40,6 +44,8 @@ public class PauseScreen extends Screen {
         textureManager.load(Constants.PAUSE_TEXTURE_ID, "uielements/background.png");
         textureManager.load(Constants.PAUSE_TEXTURE_ID, "uielements/vButton.jpg");
         textureManager.load(Constants.PAUSE_TEXTURE_ID, "uielements/vControl.png");
+        textureManager.load(Constants.PAUSE_TEXTURE_ID, "uielements/background.png");
+        textureManager.load(Constants.PAUSE_TEXTURE_ID, "uielements/vButton.jpg");
 
         // Create Stage
         stage = new Stage(CameraController.getViewport(Constants.UI_CAMERA_ID));
@@ -114,6 +120,9 @@ public class PauseScreen extends Screen {
         stage.addActor(unpause);
         stage.addActor(menu);
 
+        // Add the audio sliders
+        audioSliders = AudioSettings.createAudioSliders(320, 100, stage, textureManager.get("uielements/background.png"), textureManager.get("uielements/vButton.jpg"));
+
         // Finally, set the Gdx inputProcessor to use the stage
         Gdx.input.setInputProcessor(stage);
 
@@ -145,6 +154,9 @@ public class PauseScreen extends Screen {
             stage.act(delta);
         }
         stage.draw();
+        batch.begin();
+        audioSliders.render(game.batch);
+        batch.end();
 
     }
 
