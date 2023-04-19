@@ -17,6 +17,8 @@ public class SettingsControl {
     }
 
     public void loadData() {
+        // it's now loaded
+        loaded = true;
         // Try to load the file
         settingsData = FileControl.loadJsonData(fileLoc);
         // If it failed to load...
@@ -24,15 +26,12 @@ public class SettingsControl {
             // Make new json and save it
             settingsData = new JsonValue(JsonValue.ValueType.object);
             JsonFormat.formatJson(settingsData, DefaultJson.settingsFormat());
-            System.out.println(settingsData);
             // And save the data
             saveData();
         } else {
             // Otherwise just format the json
             JsonFormat.formatJson(settingsData, DefaultJson.settingsFormat());
         }
-        // it's now loaded
-        loaded = true;
     }
 
     public void unload() {
