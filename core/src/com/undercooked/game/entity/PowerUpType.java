@@ -10,7 +10,7 @@ public enum PowerUpType {
     /** Wait timer of the  {@link com.undercooked.game.entity.customer.Customer} slows. */
     CUSTOMER_WAIT_SLOW("<main>:item/onion.png"),
     /** Spawn Timer of the {@link com.undercooked.game.entity.cook.Cook} slows. (ENDLESS) */
-    CUSTOMER_SPAWN_SLOW(""),
+    CUSTOMER_SPAWN_PREVENT(""),
     /** Money is just increased. */
     MONEY_UP(""),
     /** Reputation is just increased. */

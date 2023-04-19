@@ -153,17 +153,14 @@ public class ScenarioLogic extends GameLogic {
         this.gameType = GameType.SCENARIO;
         this.requestTarget = -1;
 
-        // Only create the power up pool if it hasn't already been made
-        if (powerUpPool == null) {
-            this.powerUpPool = new PowerUpType[] {
-                    PowerUpType.COOK_SPEED_UP,
-                    PowerUpType.COOK_ITEM_MAX_UP,
-                    PowerUpType.CUSTOMER_WAIT_SLOW,
-                    PowerUpType.INTERACT_FAST,
-                    /*PowerUpType.MONEY_UP,
-                    PowerUpType.REPUTATION_UP*/
-            };
-        }
+        this.powerUpPool = new PowerUpType[] {
+                PowerUpType.COOK_SPEED_UP,
+                PowerUpType.COOK_ITEM_MAX_UP,
+                PowerUpType.CUSTOMER_WAIT_SLOW,
+                PowerUpType.INTERACT_FAST,
+                /*PowerUpType.MONEY_UP,
+                PowerUpType.REPUTATION_UP*/
+        };
     }
 
     public ScenarioLogic() {
@@ -307,8 +304,6 @@ public class ScenarioLogic extends GameLogic {
         // And add it to the arrays
         gameRenderer.addEntity(newPowerUp);
         powerUps.add(newPowerUp);
-
-        System.out.println(String.format("New power up created at %d, %d", openCell.getX(), openCell.getY()));
     }
 
     public void addEffect(PowerUpType powerUpType) {
@@ -319,7 +314,7 @@ public class ScenarioLogic extends GameLogic {
         addEffect(powerUp.getType(), powerUp);
     }
 
-    private void addEffect(PowerUpType powerUpType, PowerUp powerUp) {
+    protected void addEffect(PowerUpType powerUpType, PowerUp powerUp) {
         switch (powerUpType) {
             case COOK_SPEED_UP:
                 cookController.setCookSpeed(1.5f);
@@ -354,7 +349,7 @@ public class ScenarioLogic extends GameLogic {
         removeEffect(powerUp.getType(), powerUp);
     }
 
-    public void removeEffect(PowerUpType powerUpType, PowerUp powerUp) {
+    protected void removeEffect(PowerUpType powerUpType, PowerUp powerUp) {
         switch (powerUpType) {
             case COOK_SPEED_UP:
                 cookController.setCookSpeed(1f);

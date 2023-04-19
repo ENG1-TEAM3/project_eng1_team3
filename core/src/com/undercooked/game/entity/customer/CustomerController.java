@@ -346,7 +346,6 @@ public class CustomerController {
 			// If it's a register, then add the MapCell to the array
 			registers.add(new Register(thisCell));
 		}
-		System.out.println(registers);
 	}
 
 	public boolean serve(MapCell registerCell, Item item) {

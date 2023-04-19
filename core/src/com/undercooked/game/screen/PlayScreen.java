@@ -68,7 +68,8 @@ public class PlayScreen extends Screen {
             "custom",
             "everything",
             "burger_salad",
-            "serve_quick"
+            "serve_quick",
+            "everything_with_powerups"
     };
 
     public PlayScreen(MainGameClass game) {
