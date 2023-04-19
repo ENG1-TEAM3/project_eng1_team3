@@ -550,17 +550,11 @@ public class Cook extends MoveableEntity {
 	 * Return the {@link Cook} as a {@link String}
 	 */
 	public JsonValue serial() {
-		// Get ItemIDs from {@link heldItems}
-		JsonValue theItemIds = new JsonValue(JsonValue.ValueType.array);
-		for (Item item : heldItems) {
-			theItemIds.addChild("", new JsonValue(item.getID()));
-		}
-
 		// Return JsonValue
 		JsonValue cookRoot = new JsonValue(JsonValue.ValueType.object);
 		cookRoot.addChild("x", new JsonValue(pos.x));
 		cookRoot.addChild("y", new JsonValue(pos.y));
-		cookRoot.addChild("items", theItemIds);
+		cookRoot.addChild("items", heldItems.serial());
 		return cookRoot;
 	}
 

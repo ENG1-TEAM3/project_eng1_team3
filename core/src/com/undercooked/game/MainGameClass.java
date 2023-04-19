@@ -16,6 +16,7 @@ import com.undercooked.game.entity.cook.Cook;
 import com.undercooked.game.files.FileControl;
 import com.undercooked.game.files.SettingsControl;
 import com.undercooked.game.food.Item;
+import com.undercooked.game.food.Request;
 import com.undercooked.game.map.MapManager;
 import com.undercooked.game.assets.TextureManager;
 import com.undercooked.game.audio.AudioSettings;
@@ -74,7 +75,7 @@ public class MainGameClass extends Game {
 	@Override
 	public void create() {
 
-		// Temp Testing {#782, 14}
+		// Temp Testing {#782, 18}
 		// ! Temp Testing Code
 		// 9 myCook = new Cook(new Vector2(0, 0), 0, textureManager, null);
 		// myCook.addItem(new Item("<main>:burger"));
@@ -82,13 +83,17 @@ public class MainGameClass extends Game {
 		// // myCook.addItem(new Item("Else"));
 		// System.out.println(myCook.serial());
 
-		StationData myStationData = new StationData("<main>:counter");
-		Station myStation = new Station(myStationData);
-		myStation.addItem(new Item("<main>:burger"));
-		myStation.addItem(new Item("<main>:pizza"));
-		System.out.println(myStation.serial());
+		// StationData myStationData = new StationData("<main>:counter");
+		// Station myStation = new Station(myStationData);
+		// myStation.addItem(new Item("<main>:burger"));
+		// myStation.addItem(new Item("<main>:pizza"));
+		// System.out.println(myStation.serial());
 
-		Gdx.app.exit();
+		// Request myRequest = new Request("<main>:burger");
+		// myRequest.addInstruction("<main>:item/patty_unformed.png", "Grab Patty");
+		// myRequest.addInstruction("<main>:item/patty.png", "Form Patty at Preparation
+		// Station");
+		// System.out.println(myRequest.serial());
 
 		// Load the game
 		load();

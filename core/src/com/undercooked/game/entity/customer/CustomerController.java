@@ -6,6 +6,7 @@ import java.util.Comparator;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.JsonValue;
 import com.undercooked.game.assets.TextureManager;
 import com.undercooked.game.food.Item;
 import com.undercooked.game.food.Request;
@@ -99,7 +100,7 @@ public class CustomerController {
 			customerOnRegister(waitingCustomer, getOpenRegister());
 		}
 		// Update the Customers
-		for (int index = 0 ; index < customers.size ; index++) {
+		for (int index = 0; index < customers.size; index++) {
 			customers.get(index).update(delta);
 		}
 		// If there are customers to spawn...
@@ -143,7 +144,7 @@ public class CustomerController {
 	}
 
 	public boolean canSpawn() {
-		return !(customerInSquareGrid(spawnX, spawnY) || customerInSquareGrid(spawnX, spawnY+1));
+		return !(customerInSquareGrid(spawnX, spawnY) || customerInSquareGrid(spawnX, spawnY + 1));
 	}
 
 	public void spawnCustomer(Request request) {
@@ -204,7 +205,8 @@ public class CustomerController {
 			}
 		}
 		// If it doesn't find one, return null.
-		if (openRegisters.size ==0) return null;
+		if (openRegisters.size == 0)
+			return null;
 
 		// If it did find one, depending on the CustomerTarget, select a register
 		switch (targetType) {
@@ -287,7 +289,7 @@ public class CustomerController {
 		toSpawn.removeValue(customer, true);
 		drawCustomers.removeValue(customer, true);
 		amountActiveCustomers -= 1;
-		
+
 	}
 
 	public void setReputationListener(Listener<Customer> reputationListener) {
@@ -313,17 +315,20 @@ public class CustomerController {
 		// All valid registers have to be placed there.
 		// Loop from top to bottom, so that they are ordered
 		// top to bottom.
-		for (int y = map.getHeight()-1 ; y >= 0 ; y--) {
+		for (int y = map.getHeight() - 1; y >= 0; y--) {
 			MapCell thisCell = map.getCell(0, y);
 			// Make sure it's not null
-			if (thisCell == null) continue;
+			if (thisCell == null)
+				continue;
 			// Then get the MapEntity.
 			MapEntity thisEntity = thisCell.getMapEntity();
 			// Make sure it's not null
-			if (thisEntity == null) continue;
+			if (thisEntity == null)
+				continue;
 
 			// If it gets here, make sure it's the register
-			if (!thisEntity.getID().equals(Constants.REGISTER_ID)) continue;
+			if (!thisEntity.getID().equals(Constants.REGISTER_ID))
+				continue;
 
 			// If it's a register, then add the MapCell to the array
 			registers.add(new Register(thisCell));
@@ -336,14 +341,17 @@ public class CustomerController {
 		// by getting the register, and making sure the
 		// result isn't null.
 		Register register = getRegister(registerCell);
-		if (register == null) return false;
+		if (register == null)
+			return false;
 
 		// Then get the customer of that register
 		Customer customer = register.getCustomer();
 		// If it's null, then return false
-		if (customer == null) return false;
+		if (customer == null)
+			return false;
 		// Customer must be waiting
-		if (!customer.isWaiting()) return false;
+		if (!customer.isWaiting())
+			return false;
 
 		// Otherwise, check if the order and item matches
 		return customer.serve(item);
@@ -381,7 +389,7 @@ public class CustomerController {
 		return null;
 	}
 
-    public void reset() {
+	public void reset() {
 		// Clear the customer arrays
 		customers.clear();
 		toSpawn.clear();
@@ -391,7 +399,7 @@ public class CustomerController {
 		for (Register register : registers) {
 			register.setCustomer(null);
 		}
-    }
+	}
 
 	public void dispose() {
 		customers.clear();
@@ -401,5 +409,22 @@ public class CustomerController {
 		getMoney = null;
 		loseReputation = null;
 		map = null;
+	}
+
+	public JsonValue serializeCustomers() {
+		// Create the cooks JsonValue
+		JsonValue customersArrayRoot = new JsonValue(JsonValue.ValueType.array);
+
+		// For each Cook, add it to the cooks JsonValue
+		for (Customer customer : customers) {
+			customersArrayRoot.addChild(customer.serial());
+		}
+
+		// JsonValue customersRoot = new JsonValue(JsonValue.ValueType.object);
+		// // Add the cooks JsonValue to the root JsonValue
+		// customersRoot.addChild("customers", customersRoot);
+
+		// return customersRoot;
+		return customersArrayRoot;
 	}
 }

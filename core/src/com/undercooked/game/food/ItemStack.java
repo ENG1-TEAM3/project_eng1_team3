@@ -1,6 +1,7 @@
 package com.undercooked.game.food;
 
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.JsonValue;
 
 import java.util.Iterator;
 
@@ -112,5 +113,15 @@ public class ItemStack implements Iterable<Item> {
 
     public String getStack() {
         return null;
+    }
+
+    public JsonValue serial() {
+        // Get ItemIDs from {@link heldItems}
+        JsonValue theItemIds = new JsonValue(JsonValue.ValueType.array);
+        for (Item item : items) {
+            theItemIds.addChild("", new JsonValue(item.getID()));
+        }
+        // Return the ItemIDs
+        return theItemIds;
     }
 }
