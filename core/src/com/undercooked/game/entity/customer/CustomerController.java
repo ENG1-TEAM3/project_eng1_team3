@@ -427,4 +427,27 @@ public class CustomerController {
 		// return customersRoot;
 		return customersArrayRoot;
 	}
+
+	public void deserializeCustomers(JsonValue jsonValue) {
+		// Clear the customers
+		customers.clear();
+		toSpawn.clear();
+		drawCustomers.clear();
+
+		// Get the cooks JsonValue
+		JsonValue customersArrayRoot = jsonValue.get("customers");
+
+		// Loop through the cooks JsonValue
+		for (JsonValue customerObject = customersArrayRoot.child; customerObject != null; customerObject = customerObject.next) {
+			// Create a new Cook-
+			Customer customer = new Customer(customerObject.getInt("custno"), this, textureManager);
+			// Add the Cook to the cooks array
+			customers.add(customer);
+			// Add the Cook to the toSpawn array
+			toSpawn.add(customer);
+			// Add the Cook to the drawCustomers array
+			// TODO: The below is probably wrong
+			drawCustomers.add(customer);
+		}
+	}
 }

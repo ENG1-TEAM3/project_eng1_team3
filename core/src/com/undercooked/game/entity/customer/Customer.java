@@ -39,6 +39,8 @@ public class Customer {
 	public float waitTimer;
 	public boolean waiting;
 
+	private int custNo;
+
 	/**
 	 * Constructor for customer class
 	 * 
@@ -48,6 +50,7 @@ public class Customer {
 	 */
 	public Customer(int custno, CustomerController customerController, TextureManager textureManager) {
 		TextureManager assetManager = textureManager;
+		custNo = custno;
 		textf = assetManager.get("entities/cust" + custno + "f.png");
 		// textb = assetManager.get("entities/cust" + custno + "b.png");
 		// textr = assetManager.get("entities/cust" + custno + "r.png");
@@ -217,6 +220,7 @@ public class Customer {
 		JsonValue customerRoot = new JsonValue(JsonValue.ValueType.object);
 		customerRoot.addChild("x", new JsonValue(register.getRegisterCell().getX()));
 		customerRoot.addChild("y", new JsonValue(register.getRegisterCell().getY()));
+		customerRoot.addChild("custno", new JsonValue(custNo));
 		customerRoot.addChild("request", order.serial());
 		return customerRoot;
 	}
