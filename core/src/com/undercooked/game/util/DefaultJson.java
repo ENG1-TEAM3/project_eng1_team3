@@ -323,5 +323,19 @@ public final class DefaultJson {
 
         return root;
     }
-    // public static JsonValue
+
+    /**
+     * The formatting for the settings' {@link JsonValue}.
+     *
+     * @return {@link JsonObject} : The Json formatting to use in {@link JsonFormat#formatJson(JsonValue, JsonObject)}.
+     */
+    public static JsonObject settingsFormat() {
+        JsonObject root = new JsonObject();
+
+        // Volumes
+        root.addValue(new JsonFloat("music_volume", 0.5F));
+        root.addValue(new JsonFloat("game_volume", 0.5F));
+
+        return root;
+    }
 }

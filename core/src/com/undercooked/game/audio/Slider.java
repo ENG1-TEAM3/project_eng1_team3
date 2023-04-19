@@ -22,7 +22,9 @@ public class Slider {
     Sprite sliderSprite;
     Button sliderButton;
     float percent, minValue, maxValue;
-    ListenerController<Float> listenerController;
+    float beforeVal;
+    ListenerController<Float> changeListeners;
+    ListenerController<Float> releaseListeners;
     String audioGroup;
 
     public Slider(float x, float y, float value, float minValue, float maxValue, Texture sliderTex, String audioGroup) {
@@ -34,19 +36,27 @@ public class Slider {
         this.minValue = minValue;
         this.maxValue = maxValue;
 
-        this.listenerController = new ListenerController();
+        this.changeListeners = new ListenerController<>();
+        this.releaseListeners = new ListenerController<>();
 
         this.sliderButton.addListener(new ClickListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                beforeVal = percent;
                 interact(x,y);
                 return super.touchDown(event, x, y, pointer, button);
             }
 
             @Override
             public void touchDragged(InputEvent event, float x, float y, int pointer) {
-                interact(x, y);
                 super.touchDragged(event, x, y, pointer);
+                interact(x, y);
+            }
+
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                super.touchUp(event, x, y, pointer, button);
+                releaseListeners.tellListeners(percent - beforeVal);
             }
         });
 
@@ -62,15 +72,23 @@ public class Slider {
 
     public void interact(float x, float y) {
         setPercent((x-sliderSprite.getWidth()/2) / (sliderButton.getWidth() - sliderSprite.getWidth()));
-        listenerController.tellListeners(percent);
+        changeListeners.tellListeners(percent);
     }
 
-    public void addListener(Listener<Float> listener) {
-        listenerController.addListener(listener);
+    public void addChangeListener(Listener<Float> listener) {
+        changeListeners.addListener(listener);
     }
 
-    public void removeListener(Listener<Float> listener) {
-        listenerController.removeListener(listener);
+    public void removeChangeListener(Listener<Float> listener) {
+        changeListeners.removeListener(listener);
+    }
+
+    public void addReleaseListener(Listener<Float> listener) {
+        releaseListeners.addListener(listener);
+    }
+
+    public void removeReleaseListener(Listener<Float> listener) {
+        releaseListeners.removeListener(listener);
     }
 
     public void setSize(float width, float height) {

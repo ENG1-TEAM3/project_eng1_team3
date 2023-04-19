@@ -4,7 +4,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Array;
-import com.undercooked.game.MainGameClass;
 import com.undercooked.game.util.Listener;
 
 /**
@@ -91,7 +90,7 @@ public class AudioSliders {
     public Slider addSlider(Listener<Float> listener, String audioGroup, Texture sliderTexture) {
         Slider newSlider = new Slider(x,y,0.5F,0F,1F,
                 sliderTexture, audioGroup);
-        newSlider.addListener(listener);
+        newSlider.addChangeListener(listener);
         sliders.add(newSlider);
         update();
         return newSlider;

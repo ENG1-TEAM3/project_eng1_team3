@@ -164,6 +164,7 @@ public class FileControl {
     }
 
     public static JsonValue loadJsonData(String fileName) {
+        System.out.println(String.format("Loading json from %s", dirAndName(getDataPath(), fileName)));
         return loadJsonFile(getDataPath(), fileName, false);
     }
 

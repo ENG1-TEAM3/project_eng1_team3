@@ -3,6 +3,7 @@ package com.undercooked.game.audio;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.undercooked.game.MainGameClass;
+import com.undercooked.game.files.SettingsControl;
 import com.undercooked.game.util.Constants;
 import com.undercooked.game.util.Listener;
 
@@ -14,75 +15,106 @@ import com.undercooked.game.util.Listener;
 
 public class AudioSettings {
 
-    static float musicVolume;
-    static float gameVolume;
-    static float soundVolume;
-    public static MainGameClass game;
+    float musicVolume;
+    float gameVolume;
+    float soundVolume;
+    MainGameClass game;
+    SettingsControl settingsControl;
 
+    public AudioSettings(MainGameClass game, SettingsControl settingsControl) {
+        this.game = game;
+        this.settingsControl = settingsControl;
+    }
 
-    public static final Listener MusicVolListener = new Listener<Float>() {
+    public final Listener musicVolListener = new Listener<Float>() {
         @Override
         public void tell(Float value) {
-            musicVolume = value;
-            setMusicVolume(value,Constants.MUSIC_GROUP);
+            setMusicVol(value);
         }
     };
 
-    public static final Listener GameVolListener = new Listener<Float>() {
+    public final Listener gameVolListener = new Listener<Float>() {
         @Override
         public void tell(Float value) {
-            gameVolume = value;
-            setMusicVolume(value,Constants.GAME_SOUND_GROUP);
-            setSoundVolume(value, Constants.GAME_SOUND_GROUP);
+            setGameVol(value);
         }
     };
-    public static final Listener SoundVolListener = new Listener<Float>() {
+    public final Listener saveListener = new Listener<Float>() {
         @Override
-        public void tell(Float value) {
-            soundVolume = value;
-            setSoundVolume(value);
+        public void tell(Float change) {
+            // Only save if there was a change
+            if (change == 0) return;
+            System.out.println(String.format("Test %f", change));
+            saveVolumes();
         }
     };
 
-    public static AudioSliders createAudioSliders(float x, float y, Stage stage, Texture backText, Texture buttonTex) {
+    public AudioSliders createAudioSliders(float x, float y, Stage stage, Texture backText, Texture buttonTex) {
         AudioSliders audioSliders = new AudioSliders(x,y,300,200, backText);
         audioSliders.setSliderWidth(0.18F);
 
-        Slider musicSlider = audioSliders.addSlider(MusicVolListener, buttonTex);
+        Slider musicSlider = audioSliders.addSlider(musicVolListener, buttonTex);
         musicSlider.addToStage(stage);
         musicSlider.setValue(getMusicVolume());
+        musicSlider.addReleaseListener(saveListener);
 
-        Slider gameSlider = audioSliders.addSlider(GameVolListener, buttonTex);
+        Slider gameSlider = audioSliders.addSlider(gameVolListener, buttonTex);
         gameSlider.addToStage(stage);
         gameSlider.setValue(getGameVolume());
+        gameSlider.addReleaseListener(saveListener);
 
         return audioSliders;
     }
 
-    public static void setMusicVolume(float volume, String audioGroup) {
+    public void setMusicVolume(float volume, String audioGroup) {
         game.audioManager.setMusicVolume(volume, audioGroup);
     }
 
-    public static void setMusicVolume(float volume) {
+    public void setMusicVolume(float volume) {
         setMusicVolume(volume, "default");
     }
 
-    public static void setSoundVolume(float volume, String audioGroup) {
+    public void setMusicVol(float volume) {
+        musicVolume = volume;
+        setMusicVolume(volume, Constants.MUSIC_GROUP);
+    }
+
+    public void setGameVol(float volume) {
+        gameVolume = volume;
+        setMusicVolume(volume, Constants.GAME_GROUP);
+        setSoundVolume(volume, Constants.GAME_GROUP);
+    }
+
+    public void saveVolumes() {
+        if (settingsControl == null) return;
+        settingsControl.setMusicVolume(musicVolume);
+        settingsControl.setGameVolume(gameVolume);
+        settingsControl.saveData();
+    }
+
+    public void loadVolumes() {
+        if (settingsControl == null) return;
+        settingsControl.loadIfNotLoaded();
+        musicVolume = settingsControl.getMusicVolume();
+        gameVolume = settingsControl.getGameVolume();
+    }
+
+    public void setSoundVolume(float volume, String audioGroup) {
         game.audioManager.setSoundVolume(volume, audioGroup);
     }
 
-    public static void setSoundVolume(float volume) {
+    public void setSoundVolume(float volume) {
         setSoundVolume(volume, "default");
     }
 
-    public static float getSoundVolume() {
+    public float getSoundVolume() {
         return soundVolume;
     }
 
-    public static float getMusicVolume() {
+    public float getMusicVolume() {
         return musicVolume;
     }
-    public static float getGameVolume() {
+    public float getGameVolume() {
         return gameVolume;
     }
 

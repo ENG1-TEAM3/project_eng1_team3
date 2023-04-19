@@ -200,12 +200,6 @@ public class GameScreen extends Screen {
 		game.gameMusic = game.audioManager.getMusic("audio/music/GameMusic.ogg");
 
 		// =======================================SET=POSITIONS=OF=SLIDERS===============================================
-		float currentMusicVolumeSliderX = (AudioSettings.getMusicVolume() * sliderWidth) + xSliderMin;
-		float currentGameVolumeSliderX = (AudioSettings.getGameVolume() * sliderWidth) + xSliderMin;
-		musSlide.setPosition(currentMusicVolumeSliderX, audioBackgroundy + 4 * audioBackgroundHeight / 6
-				+ musSlideBackgr.getHeight() / 2 - musSlide.getHeight() / 2);
-		volSlide.setPosition(currentGameVolumeSliderX, audioBackgroundy + audioBackgroundHeight / 6
-				+ volSlideBackgr.getHeight() / 2 - volSlide.getHeight() / 2);
 		// ======================================INHERIT=TEXTURES=FROM=MAIN=SCREEN=======================================
 		vButton = game.getTextureManager().get("uielements/vButton.jpg");
 		vControl = game.getTextureManager().get("uielements/vControl.png");

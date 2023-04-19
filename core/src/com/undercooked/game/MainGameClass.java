@@ -11,6 +11,8 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.undercooked.game.Input.InputController;
 import com.undercooked.game.assets.AudioManager;
 import com.undercooked.game.audio.SoundStateChecker;
+import com.undercooked.game.files.FileControl;
+import com.undercooked.game.files.SettingsControl;
 import com.undercooked.game.map.MapManager;
 import com.undercooked.game.assets.TextureManager;
 import com.undercooked.game.audio.AudioSettings;
@@ -29,6 +31,8 @@ public class MainGameClass extends Game {
 	public final AudioManager audioManager;
 	public final TextureManager textureManager;
 	public final MapManager mapManager;
+	public final AudioSettings audioSettings;
+	public final SettingsControl settingsControl;
 	public final StationManager stationManager;
 	public static SpriteBatch batch;
 	public static BitmapFont font;
@@ -37,7 +41,8 @@ public class MainGameClass extends Game {
 	 * Constructor for the Game.
 	 */
 	public MainGameClass(SoundStateChecker soundChecker) {
-		AudioSettings.game = this;
+		settingsControl = new SettingsControl("settings.json");
+		audioSettings = new AudioSettings(this, settingsControl);
 		assetManager = new AssetManager();
 		// assetManager.setLoader(TiledMap.class, new TmxMapLoader(new InternalFileHandleResolver()));
 		audioManager = new AudioManager(assetManager, soundChecker);
@@ -52,8 +57,8 @@ public class MainGameClass extends Game {
 	 * over.
 	 */
 	public void load() {
-		// Load all station paths
-		// stationManager.loadStationPaths();
+		// Load the settings
+		settingsControl.loadData();
 
 		// Load the controls
 		InputController.loadControls();
@@ -77,10 +82,7 @@ public class MainGameClass extends Game {
 		shapeRenderer.setAutoShapeType(true);
 
 		// =============MUSIC=INITIALISATION===========================
-		musicVolumeScale = 0.5F;
-		gameVolumeScale = 0.5F;
-		AudioSettings.setMusicVolume(Constants.DEFAULT_MUSIC_VOLUME, Constants.MUSIC_GROUP);
-		AudioSettings.setMusicVolume(Constants.DEFAULT_SOUND_VOLUME, Constants.GAME_GROUP);
+		audioSettings.loadVolumes();
 
 		// Camera Initialisation
 		CameraController.getCamera(Constants.WORLD_CAMERA_ID);
@@ -123,6 +125,9 @@ public class MainGameClass extends Game {
 	}
 	public TextureManager getTextureManager() {
 		return textureManager;
+	}
+	public AudioSettings getAudioSettings() {
+		return audioSettings;
 	}
 
 	public static SpriteBatch getSpriteBatch() {

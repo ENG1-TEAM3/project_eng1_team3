@@ -219,7 +219,7 @@ public class MainScreen extends Screen {
 		stage.addActor(ad);
 		stage.addActor(eg);
 
-		audioSliders = AudioSettings.createAudioSliders(ad.getX() + 650, ad.getY() - 10, stage, audioEdit, vButton);
+		audioSliders = game.getAudioSettings().createAudioSliders(ad.getX() + 650, ad.getY() - 10, stage, audioEdit, vButton);
 
 		musicSlider = audioSliders.getSlider(0);
 		musicSlider.setTouchable(Touchable.disabled);

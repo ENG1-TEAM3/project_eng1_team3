@@ -122,7 +122,7 @@ public class PauseScreen extends Screen {
         stage.addActor(menu);
 
         // Add the audio sliders
-        audioSliders = AudioSettings.createAudioSliders(320, 100, stage, textureManager.get("uielements/background.png"), textureManager.get("uielements/vButton.jpg"));
+        audioSliders = game.getAudioSettings().createAudioSliders(320, 100, stage, textureManager.get("uielements/background.png"), textureManager.get("uielements/vButton.jpg"));
 
         // Finally, set the Gdx inputProcessor to use the stage
         Gdx.input.setInputProcessor(stage);
