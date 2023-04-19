@@ -1,4 +1,4 @@
-package com.undercooked.game;
+package com.undercooked.game.util;
 
 import com.badlogic.gdx.utils.JsonValue;
 import com.undercooked.game.entity.cook.CookController;
