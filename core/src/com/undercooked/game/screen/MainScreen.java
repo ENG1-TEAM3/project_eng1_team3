@@ -135,13 +135,7 @@ public class MainScreen extends Screen {
 	public void postLoad() {
 		// AudioManager post load
 		game.audioManager.postLoad();
-	}
 
-	/**
-	 * What should be done when the screen is shown
-	 */
-	@Override
-	public void show() {
 		float currentMusicVolumeSliderX = (MainGameClass.musicVolumeScale * sliderWidth) + xSliderMin;
 		float currentGameVolumeSliderX = (MainGameClass.gameVolumeScale * sliderWidth) + xSliderMin;
 		volSlide.setPosition(currentGameVolumeSliderX, 2 * gameResolutionY / 5.0f - buttonheight / 2 + buttonheight / 6
@@ -184,7 +178,11 @@ public class MainScreen extends Screen {
 
 		ad.addListener(new ClickListener() {
 			public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-				state = STATE.audio;
+				if (state == STATE.main) {
+					state = STATE.audio;
+				} else {
+					state = STATE.main;
+				}
 				super.touchUp(event, x, y, pointer, button);
 			}
 		});
@@ -198,21 +196,19 @@ public class MainScreen extends Screen {
 		});
 		lb.addListener(new ClickListener() {
 			public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-				state = STATE.leaderboard;
 				super.touchUp(event, x, y, pointer, button);
+				if (!game.screenController.onScreen(Constants.MAIN_SCREEN_ID)) return;
+				getScreenController().nextScreen(Constants.LEADERBOARD_SCREEN_ID);
 			}
 		});
 		eg.addListener(new ClickListener() {
 			public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-				if (state == STATE.main) {
-					Gdx.app.exit();
-				}
+				Gdx.app.exit();
 				super.touchUp(event, x, y, pointer, button);
 			}
 		});
 
 		stage = new Stage(viewport, game.batch);
-		Gdx.input.setInputProcessor(stage);
 
 		stage.addActor(sb);
 		stage.addActor(lb);
@@ -226,6 +222,14 @@ public class MainScreen extends Screen {
 
 		gameSlider = audioSliders.getSlider(1);
 		gameSlider.setTouchable(Touchable.disabled);
+	}
+
+	/**
+	 * What should be done when the screen is shown
+	 */
+	@Override
+	public void show() {
+		Gdx.input.setInputProcessor(stage);
 	}
 
 	AudioSliders audioSliders;
@@ -261,9 +265,6 @@ public class MainScreen extends Screen {
 	 * @param state - state to change screen to
 	 */
 	public void changeScreen(STATE state) {
-		if (state == STATE.leaderboard) {
-			game.screenController.nextScreen(Constants.LEADERBOARD_SCREEN_ID);
-		}
 		if (state == STATE.audio) {
 
 			musicSlider.setTouchable(Touchable.enabled);
@@ -273,67 +274,10 @@ public class MainScreen extends Screen {
 
 			audioSliders.render(game.batch);
 
-			/*game.batch.draw(audioEdit, (float) gameResolutionX / 2, (float) 2 * gameResolutionY / 5 - buttonheight / 2,
-					buttonwidth / 2, buttonheight);
-
-			game.batch.draw(vControl, volSlideBackgr.getX(), volSlideBackgr.getY(), volSlideBackgr.width,
-					volSlideBackgr.height);
-			game.batch.draw(vButton, volSlide.getX() - volSlide.width / 2, volSlide.getY(), volSlide.width,
-					volSlide.height);
-
-			game.batch.draw(vControl, musSlideBackgr.getX(), musSlideBackgr.getY(), musSlideBackgr.width,
-					musSlideBackgr.height);
-			game.batch.draw(vButton, musSlide.getX() - musSlide.width / 2, musSlide.getY(), musSlide.width,
-					musSlide.height);*/
-
 			game.batch.end();
 		} else {
 			musicSlider.setTouchable(Touchable.disabled);
 			gameSlider.setTouchable(Touchable.disabled);
-		}
-	}
-
-	/**
-	 * Update music volume slider
-	 */
-	public void musicVolumeUpdate() {
-		float fromTopy = Gdx.input.getY();
-		float fromBottomy = gameResolutionY - fromTopy;
-		float x = Gdx.input.getX();
-		boolean change = musSlide.getY() <= fromBottomy & fromBottomy <= musSlide.getY() + musSlide.getHeight();
-		if (Gdx.input.isTouched() & change) {
-			if (x >= musSlideBackgr.getX() & x <= musSlideBackgr.getX() + musSlideBackgr.getWidth()) {
-				musSlide.setPosition(Gdx.input.getX(), musSlide.getY());
-				v = (musSlide.getX() - musSlideBackgr.getX()) / musSlideBackgr.getWidth();
-				if (v < 0.01) {
-					v = 0;
-				}
-				game.mainScreenMusic.setVolume(v);
-				game.gameMusic.setVolume(v);
-				MainGameClass.musicVolumeScale = v;
-			}
-		}
-	}
-
-	/**
-	 * Update game volume slider
-	 */
-	public void gameVolumeUpdate() {
-		float fromTopy = Gdx.input.getY();
-		float fromBottomy = gameResolutionY - fromTopy;
-		float x = Gdx.input.getX();
-		boolean change = volSlide.getY() <= fromBottomy & fromBottomy <= volSlide.getY() + volSlide.getHeight();
-		if (Gdx.input.isTouched() & change) {
-			if (x >= volSlideBackgr.getX() & x <= volSlideBackgr.getX() + volSlideBackgr.getWidth()) {
-				volSlide.setPosition(Gdx.input.getX(), volSlide.getY());
-				s = (volSlide.getX() - volSlideBackgr.getX()) / volSlideBackgr.getWidth();
-				if (s < 0.01) {
-					s = 0;
-				}
-				// game.sound.setVolume(game.soundid, s);
-				MainGameClass.gameVolumeScale = s;
-				MainGameClass.gameVolumeScale = s;
-			}
 		}
 	}
 
