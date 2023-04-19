@@ -94,8 +94,8 @@ public class AudioSettings {
     public void loadVolumes() {
         if (settingsControl == null) return;
         settingsControl.loadIfNotLoaded();
-        musicVolume = settingsControl.getMusicVolume();
-        gameVolume = settingsControl.getGameVolume();
+        setMusicVol(settingsControl.getMusicVolume());
+        setGameVol(settingsControl.getGameVolume());
     }
 
     public void setSoundVolume(float volume, String audioGroup) {

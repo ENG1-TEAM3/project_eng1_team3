@@ -72,10 +72,8 @@ public final class Constants {
     // Music and Sounds
     /** {@link com.undercooked.game.assets.AudioManager} group for the game's Music. */
     public static final String MUSIC_GROUP = "music";
-    /** {@link com.undercooked.game.assets.AudioManager} group for the game's music audio. */
+    /** {@link com.undercooked.game.assets.AudioManager} group for the game's music + sound audio. */
     public static final String GAME_GROUP = "game";
-    /** {@link com.undercooked.game.assets.AudioManager} group for the game's sound audio. */
-    public static final String GAME_SOUND_GROUP = "game_sound";
 
     // Textures
     /**

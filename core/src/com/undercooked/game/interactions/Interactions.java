@@ -132,7 +132,7 @@ public class Interactions {
         interactionStep.setTime(interactionRoot.getFloat("time"));
         interactionStep.setSound(interactionRoot.getString("sound"));
         if (interactionStep.sound != null) {
-            audioManager.loadMusicAsset(interactionStep.sound, Constants.GAME_SOUND_GROUP);
+            audioManager.loadMusicAsset(interactionStep.sound, Constants.GAME_GROUP);
         }
         interactionStep.setValue(interactionRoot.getString("value"));
 
