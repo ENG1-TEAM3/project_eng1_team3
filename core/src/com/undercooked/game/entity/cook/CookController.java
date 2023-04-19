@@ -361,4 +361,8 @@ public class CookController {
         // return cooksRoot;
         return cooksArrayRoot;
     }
+
+    public void deserializeCooks(JsonValue jsonValue, Map map) {
+        loadCooksIntoMap(jsonValue, map, textureManager);
+    }
 }

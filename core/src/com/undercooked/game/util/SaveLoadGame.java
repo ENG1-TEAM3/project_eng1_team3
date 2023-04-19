@@ -1,12 +1,13 @@
-package com.undercooked.game;
+package com.undercooked.game.util;
 
 import com.badlogic.gdx.utils.JsonValue;
 import com.undercooked.game.entity.cook.CookController;
 import com.undercooked.game.entity.customer.CustomerController;
 import com.undercooked.game.files.FileControl;
+import com.undercooked.game.map.Map;
 import com.undercooked.game.station.StationController;
 
-public class SaveGame {
+public class SaveLoadGame {
 	public static JsonValue serializeGame(CookController cookController, StationController stationController,
 			CustomerController customerController) {
 		JsonValue save = new JsonValue(JsonValue.ValueType.object);
@@ -20,5 +21,13 @@ public class SaveGame {
 			CustomerController customerController) {
 		JsonValue save = serializeGame(cookController, stationController, customerController);
 		FileControl.saveJsonData("save.json", save);
+	}
+
+	public static void loadGame(CookController cookController, StationController stationController,
+			CustomerController customerController, Map map) {
+		JsonValue save = FileControl.loadJsonData("save.json");
+		cookController.deserializeCooks(save.get("cooks"), map);
+		stationController.deserializeStations(save.get("stations"));
+		customerController.deserializeCustomers(save.get("customers"));
 	}
 }
