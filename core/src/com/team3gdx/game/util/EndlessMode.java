@@ -10,7 +10,7 @@ public class EndlessMode implements GameMode {
 
     @Override
     public int getNumberOfWaves() {
-        return -1;
+        return -2;
     }
 
     @Override
