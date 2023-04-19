@@ -21,4 +21,12 @@ public class SaveLoadGame {
 		JsonValue save = serializeGame(cookController, stationController, customerController);
 		FileControl.saveJsonData("save.json", save);
 	}
+
+	public static void loadGame(CookController cookController, StationController stationController,
+			CustomerController customerController) {
+		JsonValue save = FileControl.loadJsonData("save.json");
+		cookController.deserializeCooks(save.get("cooks"));
+		stationController.deserializeStations(save.get("stations"));
+		customerController.deserializeCustomers(save.get("customers"));
+	}
 }

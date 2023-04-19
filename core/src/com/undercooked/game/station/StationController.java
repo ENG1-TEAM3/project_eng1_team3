@@ -228,4 +228,27 @@ public class StationController {
 		// return stationsRoot;
 		return stationsArrayRoot;
 	}
+
+	public void deserializeStations(JsonValue jsonValue) {
+		// Clear the stations
+		clear();
+
+		// JsonValue stationsRoot = jsonValue.get("stations");
+		JsonValue stationsArrayRoot = jsonValue;
+
+		// For each station
+		for (JsonValue stationRoot : stationsArrayRoot) {
+			// Get the station data
+			StationData data = getStationData(stationRoot.getInt("station_id"));
+			// If it's not null
+			if (data != null) {
+				// Create a new station
+				Station station = new Station(data);
+				// Deserialize it
+				station.deserial(stationRoot);
+				// Add it to the stations
+				addStation(station);
+			}
+		}
+	}
 }
