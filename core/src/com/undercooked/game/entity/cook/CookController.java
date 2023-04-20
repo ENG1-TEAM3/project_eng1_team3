@@ -326,6 +326,13 @@ public class CookController {
     }
 
     public void reset() {
+        // For each starting cook, check if it's in the array.
+        // If they're not, then add them
+        for (Cook cook : cookStart.keys()) {
+            if (!cooks.contains(cook, true)) {
+                cooks.add(cook);
+            }
+        }
         // For each Cook, check if it has a start position
         for (int i = cooks.size - 1; i >= 0; i--) {
             Cook thisCook = cooks.get(i);

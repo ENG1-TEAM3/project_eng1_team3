@@ -436,6 +436,7 @@ public class ScenarioLogic extends GameLogic {
             resetOnLoad = true;
             return;
         }
+
         // Reset the GameLogic
         super.reset();
 
@@ -469,6 +470,14 @@ public class ScenarioLogic extends GameLogic {
                 duplicateRequests.removeIndex(newIndex);
             }
         }
+
+        // Clear the render entities
+        gameRenderer.getEntities().clear();
+
+        // And then add all the needed ones
+        gameRenderer.addEntities(map.getAllEntities());
+        gameRenderer.addEntities(cookController.getCooks());
+
 
         // And start
         start();
