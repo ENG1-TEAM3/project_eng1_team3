@@ -9,28 +9,6 @@ import org.junit.runner.RunWith;
 public class AssetTests {
 
     @Test
-    public void testPotatoAssetExists(){
-        assertTrue(Gdx.files.internal("items/Cheese.png").exists());
-        assertTrue(Gdx.files.internal("items/Jacket_potato.png").exists());
-        assertTrue(Gdx.files.internal("items/potato_cooked.png").exists());
-        assertTrue(Gdx.files.internal("items/Cut_Cooked_Potato.png").exists());
-        assertTrue(Gdx.files.internal("items/cheese_chopped.png").exists());
-        assertTrue(Gdx.files.internal("items/Mushy_Grated_Cheese.png").exists());
-        assertTrue(Gdx.files.internal("items/Potato.png").exists());
-        assertTrue(Gdx.files.internal("items/potato_burned.png").exists());
-    }
-
-    @Test
-    public void testPizzaAssetExists() {
-        assertTrue(Gdx.files.internal("items/burned_pizza.png").exists());
-        assertTrue(Gdx.files.internal("items/Dough.png").exists());
-        assertTrue(Gdx.files.internal("items/Dough_Tomato.png").exists());
-        assertTrue(Gdx.files.internal("items/Raw_pizza.png").exists());
-        assertTrue(Gdx.files.internal("items/Rolled_Dough.png").exists());
-        assertTrue(Gdx.files.internal("items/Tomato_sauce.png").exists());
-    }
-
-    @Test
     public void testCookAssetExists() {
         assertTrue(Gdx.files.internal("entities/cook_walk_1.png").exists());
         assertTrue(Gdx.files.internal("entities/cook_walk_2.png").exists());

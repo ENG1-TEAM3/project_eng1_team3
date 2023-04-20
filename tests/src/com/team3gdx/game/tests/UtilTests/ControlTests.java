@@ -29,6 +29,13 @@ public class ControlTests extends Control {
         assertTrue(up);
         assertFalse(right);
         assertTrue(left);
+
+        // check unknown key
+        keyDown(Keys.P);
+        assertTrue(down);
+        assertTrue(up);
+        assertFalse(right);
+        assertTrue(left);
     }
 
     @Test
@@ -45,6 +52,13 @@ public class ControlTests extends Control {
         // Raise all keys
         keyUp(Keys.UP);
         keyUp(Keys.A);
+        assertFalse(down);
+        assertFalse(up);
+        assertFalse(right);
+        assertFalse(left);
+
+        // check unknown key
+        keyDown(Keys.P);
         assertFalse(down);
         assertFalse(up);
         assertFalse(right);
