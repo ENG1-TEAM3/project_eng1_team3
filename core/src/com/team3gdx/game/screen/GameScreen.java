@@ -36,6 +36,7 @@ import com.team3gdx.game.entity.Customer;
 import com.team3gdx.game.entity.CustomerController;
 import com.team3gdx.game.entity.Entity;
 import com.team3gdx.game.food.Menu;
+import com.team3gdx.game.station.ServingStation;
 import com.team3gdx.game.station.StationManager;
 import com.team3gdx.game.util.CollisionTile;
 import com.team3gdx.game.util.Control;
@@ -300,6 +301,10 @@ public class GameScreen implements Screen {
 		game.batch.setProjectionMatrix(worldCamera.combined);
 
 		checkCookSwitch();
+
+		if(currentWaitingCustomer != null && currentWaitingCustomer.waitTime() < gameMode.getModeTime()){
+			cc.delCustomer(currentWaitingCustomer);
+		}
 		// =========================================CHECK=GAME=OVER======================================================
 		checkGameOver();
 

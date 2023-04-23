@@ -4,11 +4,13 @@ import com.team3gdx.game.screen.GameScreen;
 
 public class EndlessMode implements GameMode {
     private final int numberOfChefs;
-
-    public EndlessMode(int numberOfChefs) {
+    private final long modeTime;
+    public EndlessMode(int numberOfChefs,long modeTime) {
 
         this.numberOfChefs = numberOfChefs;
+        this.modeTime = modeTime;
     }
+
 
     @Override
     public int getNumberOfWaves() {
@@ -24,6 +26,9 @@ public class EndlessMode implements GameMode {
     public boolean showTutorial() {
         return false;
     }
+
+    @Override
+    public long getModeTime(){return modeTime;}
     @Override
     public int getNumberOfCustmersInAWave() {
         if (GameScreen.currentWave > 5){
