@@ -42,7 +42,10 @@ public class StationManager {
 				if (GameScreen.cook.heldItems.empty()){
 					station.drawBuyBackText(batch);
 					if (GameScreen.control.interact) {
-						station.buyBack();
+						if (GameScreen.money >= 60){
+							station.buyBack();
+							GameScreen.money -= 60;
+						}
 				}
 			}
 			}

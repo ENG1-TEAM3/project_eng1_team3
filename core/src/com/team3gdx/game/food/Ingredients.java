@@ -51,6 +51,27 @@ public class Ingredients {
 	static {
 		potatoChopped.slices = 1;
 	}
+	//mushy vegtables
+	public static Ingredient lettuceMushy = new Ingredient(null, 32, 32, "lettuce_mushy", 1, 0);
+	static {
+		lettuceChopped.slices = 2;
+	}
+	public static Ingredient tomatoMushy = new Ingredient(null, 32, 32, "tomato_mushy", 1, 0);
+	static {
+		tomatoChopped.slices = 2;
+	}
+	public static Ingredient onionMushy = new Ingredient(null, 32, 32, "onion_mushy", 1, 0);
+	static {
+		onionChopped.slices = 2;
+	}
+	public static Ingredient potatoMushy = new Ingredient(null, 32, 32, "Potato_mushy", 1, .5f);
+	static {
+		potatoChopped.slices = 2;
+	}
+
+
+
+
 	// Cooked vegtables.
 	public static Ingredient cookedPotato = new Ingredient(null, 32, 32, "Potato", 1, .5f);
 	static {

@@ -101,7 +101,11 @@ public class Ingredient extends Entity {
 	public boolean slice(SpriteBatch batch, ShapeRenderer shapeRenderer, float dT) {
 
 		shapeRenderer.setProjectionMatrix(batch.getProjectionMatrix());
-
+		if (idealSlices < slices) {
+			slices++;
+			texture = new Texture("items/" + name + "_mushy.png");
+			return true;
+		}
 		if (dT / width * width <= width) {
 			drawStatusBar(shapeRenderer, dT / width, 0, 1);
 		} else {
@@ -143,8 +147,8 @@ public class Ingredient extends Entity {
 				status = Status.COOKED;
 			}
 		} else {
-//			status = Status.BURNED;
-//			texture = new Texture("items/" + name + "_burned.png");
+			status = Status.BURNED;
+			texture = new Texture("items/" + name + "_burned.png");
 		}
 
 		draw(batch);

@@ -12,11 +12,10 @@ import com.team3gdx.game.screen.GameScreen;
 import com.team3gdx.game.util.GameMode;
 
 public class ServingStation extends Station {
-	
-	public int money;
+
 	private final CustomerController customerController;
 	private final GameMode gameMode;
-	String[] possibleOrders = new String[] { "Burger", "Salad" };
+	String[] possibleOrders = new String[] { "Burger", "Salad","Pizza","Jacket_potato" };
 
 	/**
 	 * Configure allowed ingredient to be those on the menu.
@@ -31,7 +30,7 @@ public class ServingStation extends Station {
 	};
 
 	public ServingStation(Vector2 pos, CustomerController customerController, GameMode gameMode) {
-		super(pos, 1, false, allowedIngredients, "audio/soundFX/money-collect.mp3");
+		super(pos, 1, false, allowedIngredients, "audio/soundFX/money-collect.mp3",true);
 		this.customerController = customerController;
 		this.gameMode = gameMode;
 	}
