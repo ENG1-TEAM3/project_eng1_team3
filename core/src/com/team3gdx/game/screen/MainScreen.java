@@ -212,7 +212,7 @@ public class MainScreen implements Screen {
 		}
 		if (state == STATE.leaderboard) {
 			game.mainScreenMusic.dispose();
-			game.setScreen(game.getLeaderBoardScreen());
+			game.setScreen(game.getLeaderBoardSelect());
 		}
 		if (state == STATE.audio) {
 			musicVolumeUpdate();

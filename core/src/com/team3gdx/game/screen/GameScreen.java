@@ -644,8 +644,7 @@ public class GameScreen implements Screen {
 
 	public void checkGameOver() {
 		if (currentWave == NUMBER_OF_WAVES + 1) {
-			game.getLeaderBoardScreen().addLeaderBoardData("PLAYER1",
-					(int) Math.floor((startTime - timeOnStartup) / 1000f));
+			game.getLeaderBoardScreen().addLeaderBoardData("PLAYER1",(int) Math.floor((startTime - timeOnStartup) / 1000f),gameMode);
 			game.resetGameScreen();
 			this.resetStatic();
 			game.setScreen(game.getLeaderBoardScreen());

@@ -15,6 +15,9 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.team3gdx.game.MainGameClass;
+import com.team3gdx.game.util.ScenarioMode;
+import com.team3gdx.game.util.EndlessMode;
+import com.team3gdx.game.util.GameMode;
 //INCORRECT FILE FORMATTING WILL CRASH GAME
 //MAKE SURE ALL LINES IN LEADERBOARD FILE ARE x;y OR JUST s
 //NO NEWLINE AT END OF FILE
@@ -28,15 +31,17 @@ public class LeaderBoard implements Screen, TextInputListener {
 	FitViewport viewport;
 	MainScreen ms;
 	ArrayList<ArrayList<String>> playerData;
+	GameMode gameMode;
 
 	/**
 	 * Constructor for leaderboard screen
 	 * @param game - Entry point class
 	 * @param ms - Main screen class
 	 */
-	public LeaderBoard(MainGameClass game, MainScreen ms) {
+	public LeaderBoard(MainGameClass game, MainScreen ms, GameMode gameMode) {
 		this.game = game;
 		this.ms = ms;
+		this.gameMode = gameMode;
 
 		readPlayerData();
 		sortPlayerData();
@@ -48,28 +53,99 @@ public class LeaderBoard implements Screen, TextInputListener {
 	 * The file starts with "s" and then adds scores
 	 */
 	public void readPlayerData() {
-		playerData = new ArrayList<>();
-		boolean doesPlayerDataExist = Gdx.files.local("leaderboarddata/playerData.txt").exists();
-		if (doesPlayerDataExist) {
-			FileHandle handle = Gdx.files.local("leaderboarddata/playerData.txt");
-			String text = handle.readString();
-			String[] entries = text.split("\\n");
-			for (String s : entries) {
-				if(!s.equals("s")) {
-					String[] parts = s.split(";");
-					String name = parts[0];
-					String stringScore = parts[1].trim();
-					ArrayList<String> sublist = new ArrayList<>();
-					sublist.add(name);
-					sublist.add(stringScore);
-					playerData.add(sublist);
+		if (gameMode.getNumberOfWaves() == 5){
+			playerData = new ArrayList<>();
+			boolean doesPlayerDataExist = Gdx.files.local("leaderboarddata/easyPlayerData.txt").exists();
+				if (doesPlayerDataExist) {
+					FileHandle handle = Gdx.files.local("leaderboarddata/easyPlayerData.txt");
+					String text = handle.readString();
+					String[] entries = text.split("\\n");
+					for (String s : entries) {
+						if(!s.equals("s")) {
+							String[] parts = s.split(";");
+							String name = parts[0];
+							String stringScore = parts[1].trim();
+							ArrayList<String> sublist = new ArrayList<>();
+							sublist.add(name);
+							sublist.add(stringScore);
+							playerData.add(sublist);
+						}
+					}
+				} else {
+					FileHandle file = Gdx.files.local("leaderboarddata/easyPlayerData.txt");
+					file.writeString("s",true);
 				}
-			}
-		} else {
-			FileHandle file = Gdx.files.local("leaderboarddata/playerData.txt");
-			file.writeString("s",true);
 		}
-	}
+		if (gameMode.getNumberOfWaves() == 10){
+			playerData = new ArrayList<>();
+			boolean doesPlayerDataExist = Gdx.files.local("leaderboarddata/mediumPlayerData.txt").exists();
+				if (doesPlayerDataExist) {
+					FileHandle handle = Gdx.files.local("leaderboarddata/mediumPlayerData.txt");
+					String text = handle.readString();
+					String[] entries = text.split("\\n");
+					for (String s : entries) {
+						if(!s.equals("s")) {
+							String[] parts = s.split(";");
+							String name = parts[0];
+							String stringScore = parts[1].trim();
+							ArrayList<String> sublist = new ArrayList<>();
+							sublist.add(name);
+							sublist.add(stringScore);
+							playerData.add(sublist);
+						}
+					}
+				} else {
+					FileHandle file = Gdx.files.local("leaderboarddata/mediumPlayerData.txt");
+					file.writeString("s",true);
+				}
+		}
+		if (gameMode.getNumberOfWaves() == 15){
+			playerData = new ArrayList<>();
+			boolean doesPlayerDataExist = Gdx.files.local("leaderboarddata/hardPlayerData.txt").exists();
+				if (doesPlayerDataExist) {
+					FileHandle handle = Gdx.files.local("leaderboarddata/hardPlayerData.txt");
+					String text = handle.readString();
+					String[] entries = text.split("\\n");
+					for (String s : entries) {
+						if(!s.equals("s")) {
+							String[] parts = s.split(";");
+							String name = parts[0];
+							String stringScore = parts[1].trim();
+							ArrayList<String> sublist = new ArrayList<>();
+							sublist.add(name);
+							sublist.add(stringScore);
+							playerData.add(sublist);
+						}
+					}
+				} else {
+					FileHandle file = Gdx.files.local("leaderboarddata/hardPlayerData.txt");
+					file.writeString("s",true);
+				}
+		}
+		if (gameMode.getNumberOfWaves() == -2){
+			playerData = new ArrayList<>();
+			boolean doesPlayerDataExist = Gdx.files.local("leaderboarddata/endlessPlayerData.txt").exists();
+				if (doesPlayerDataExist) {
+					FileHandle handle = Gdx.files.local("leaderboarddata/endlessPlayerData.txt");
+					String text = handle.readString();
+					String[] entries = text.split("\\n");
+					for (String s : entries) {
+						if(!s.equals("s")) {
+							String[] parts = s.split(";");
+							String name = parts[0];
+							String stringScore = parts[1].trim();
+							ArrayList<String> sublist = new ArrayList<>();
+							sublist.add(name);
+							sublist.add(stringScore);
+							playerData.add(sublist);
+						}
+					}
+				} else {
+					FileHandle file = Gdx.files.local("leaderboarddata/endlessPlayerData.txt");
+					file.writeString("s",true);
+				}
+		}
+}
 
 	/**
 	 * Order leaderboard data
@@ -155,12 +231,35 @@ public class LeaderBoard implements Screen, TextInputListener {
 	 * @param name - name of player
 	 * @param score - score of player
 	 */
-	public void addLeaderBoardData(String name, int score) {
-		String stringscore = Integer.toString(score);
-		FileHandle handle = Gdx.files.local("leaderboarddata/playerData.txt");
-		handle.writeString("\n" + name + ";" + stringscore, true);
-		this.readPlayerData();
-		this.sortPlayerData();
+	public void addLeaderBoardData(String name, int score,GameMode add) {
+		if (add.getNumberOfWaves() == 5){
+			String stringscore = Integer.toString(score);
+			FileHandle handle = Gdx.files.local("leaderboarddata/easyPlayerData.txt");
+			handle.writeString("\n" + name + ";" + stringscore, true);
+			this.readPlayerData();
+			this.sortPlayerData();
+		}
+		if (add.getNumberOfWaves() == 10){
+			String stringscore = Integer.toString(score);
+			FileHandle handle = Gdx.files.local("leaderboarddata/mediumPlayerData.txt");
+			handle.writeString("\n" + name + ";" + stringscore, true);
+			this.readPlayerData();
+			this.sortPlayerData();
+		}
+		if (add.getNumberOfWaves() == 15){
+			String stringscore = Integer.toString(score);
+			FileHandle handle = Gdx.files.local("leaderboarddata/hardPlayerData.txt");
+			handle.writeString("\n" + name + ";" + stringscore, true);
+			this.readPlayerData();
+			this.sortPlayerData();
+		}
+		if (add.getNumberOfWaves() == -2){
+			String stringscore = Integer.toString(score);
+			FileHandle handle = Gdx.files.local("leaderboarddata/endlessPlayerData.txt");
+			handle.writeString("\n" + name + ";" + stringscore, true);
+			this.readPlayerData();
+			this.sortPlayerData();
+		}
 	}
 
 	/**

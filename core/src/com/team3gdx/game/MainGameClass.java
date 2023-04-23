@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.team3gdx.game.screen.DiffictuiltyScreen;
 import com.team3gdx.game.screen.GameScreen;
 import com.team3gdx.game.screen.LeaderBoard;
+import com.team3gdx.game.screen.LeaderBoardSelect;
 import com.team3gdx.game.screen.MainScreen;
 import com.team3gdx.game.util.AudioController;
 import com.team3gdx.game.util.ScenarioMode;
@@ -24,6 +25,7 @@ public class MainGameClass extends Game {
 	private MainScreen mainScreen1;
 	private GameScreen gameScreen1;
 	private LeaderBoard leaderBoardScreen1;
+	private LeaderBoardSelect leaderBoardSelect1;
 	private DiffictuiltyScreen diffictuiltyScreen1;
 	public AudioController sounds;
 	public ShapeRenderer shapeRenderer;
@@ -49,7 +51,8 @@ public class MainGameClass extends Game {
 		// ====================================GAME=SCREEN=INITIALISATION================================================
 		mainScreen1 = new MainScreen(this);
 		gameScreen1 = new GameScreen(this, mainScreen1, new ScenarioMode(5, 3, 1));
-		leaderBoardScreen1 = new LeaderBoard(this, mainScreen1);
+		leaderBoardScreen1 = new LeaderBoard(this, mainScreen1 , new ScenarioMode(5, 3, 1));
+		leaderBoardSelect1 = new LeaderBoardSelect(this , mainScreen1);
 		diffictuiltyScreen1 = new DiffictuiltyScreen(this, mainScreen1);
 		this.setScreen(mainScreen1);
 		// ==============================================================================================================
@@ -65,6 +68,10 @@ public class MainGameClass extends Game {
 
 	public LeaderBoard getLeaderBoardScreen() {
 		return leaderBoardScreen1;
+	}
+
+	public LeaderBoardSelect getLeaderBoardSelect() {
+		return leaderBoardSelect1;
 	}
 
 	public DiffictuiltyScreen getDiffictuiltyScreen() {
