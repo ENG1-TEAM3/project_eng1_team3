@@ -15,4 +15,8 @@ public class TutorialMode implements GameMode {
     public boolean showTutorial() {
         return true;
     }
+    @Override
+    public int getNumberOfCustmersInAWave() {
+        return 1;
+    }
 }

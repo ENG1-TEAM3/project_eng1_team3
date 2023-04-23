@@ -130,7 +130,18 @@ public class GameScreen implements Screen {
 		tiledMapRenderer = new OrthogonalTiledMapRenderer(map1);
 		constructCollisionData(map1);
 		cc = new CustomerController(map1);
-		cc.spawnCustomer();
+		if (gameMode.getNumberOfCustmersInAWave() == 1){
+			cc.spawnCustomer();
+		}
+		if (gameMode.getNumberOfCustmersInAWave() == 2){
+			cc.spawnCustomer();
+			cc.spawnCustomer();
+		}
+		if (gameMode.getNumberOfCustmersInAWave() == 3){
+			cc.spawnCustomer();
+			cc.spawnCustomer();
+			cc.spawnCustomer();
+		}
 	}
 
 	/**
@@ -343,10 +354,14 @@ public class GameScreen implements Screen {
 
 		game.batch.begin();
 		game.font.draw(game.batch, Long.toString((startTime - timeOnStartup) / 1000),
-				gameResolutionX / 2f + gameResolutionX / 10f, 19 * gameResolutionY / 20f);
+				gameResolutionX / 2f + gameResolutionX / 9f, 19 * gameResolutionY / 20f);
 		game.font.draw(game.batch, "Time in S:", gameResolutionX / 2f, 19 * gameResolutionY / 20f);
+
 		game.font.draw(game.batch,Integer.toString(money), gameResolutionX / 3f + gameResolutionX / 10f, 19 * gameResolutionY / 20f);
 		game.font.draw(game.batch, "Money:", gameResolutionX / 3f + gameResolutionX / 35f, 19 * gameResolutionY / 20f);
+
+		game.font.draw(game.batch,Integer.toString(currentWave), gameResolutionX / 5f + gameResolutionX / 9f, 19 * gameResolutionY / 20f);
+		game.font.draw(game.batch, "Served:", gameResolutionX / 5f + gameResolutionX / 35f, 19 * gameResolutionY / 20f);
 		game.batch.end();
 	}
 

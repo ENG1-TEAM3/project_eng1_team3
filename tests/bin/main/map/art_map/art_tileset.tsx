@@ -2,7 +2,7 @@
 <tileset version="1.9" tiledversion="1.9.2" name="art_tileset" tilewidth="128" tileheight="64" tilecount="27" columns="0">
  <grid orientation="orthogonal" width="1" height="1"/>
  <tile id="0">
-  <image width="64" height="64" source="art_images/cnr.png"/>
+  <image width="64" height="64" source="art_images/corner.png"/>
  </tile>
  <tile id="1">
   <image width="64" height="64" source="art_images/ctrfr.png"/>

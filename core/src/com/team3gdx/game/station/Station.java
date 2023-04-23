@@ -168,13 +168,12 @@ public class Station {
 	}
 	public void buyBack() {
 		if (active == false){
-			/** if (money >= 100){money - 100}*/ 
 			active = true;
 		} 
 	}
 	public void drawBuyBackText(SpriteBatch batch){
 		if (active == false){
-			drawText(batch, "Buy back [e]", new Vector2(pos.x * 64, pos.y * 64));
+			drawText(batch, "Buy back for 60 money[e]", new Vector2(pos.x * 64, pos.y * 64));
 		}
 	}
 	public boolean active(){

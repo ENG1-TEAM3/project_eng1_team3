@@ -6,5 +6,7 @@ public interface GameMode {
 
     int getNumberOfChefs();
 
+    int getNumberOfCustmersInAWave();
+
     boolean showTutorial();
 }
