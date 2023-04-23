@@ -88,19 +88,19 @@ public class Ingredients {
 	// Breads.
 	public static Ingredient bun = new Ingredient(new Vector2(0, 0), 32, 32, "burger_bun", 0, .5f);
 	public static Ingredient unformedDough = new Ingredient(null, 32, 32, "unformed_dough", 0, .5f);
-	public static Ingredient formedDough = new Ingredient(null, 32, 32, "dough", 0, .5f);
+	public static Ingredient formedDough = new Ingredient(null, 32, 32, "Dough", 0, .5f);
 	// Toasted breads.
 	public static Ingredient cooked_bun = new Ingredient(new Vector2(0, 0), 32, 32, "burger_bun", 0, .5f);
 	static {
 		cooked_bun.status = Status.COOKED;
 		cooked_bun.flipped = true;
 	}
-	public static Ingredient cookedDough = new Ingredient(null, 32, 32, "dough", 0, .5f);
+	public static Ingredient cookedDough = new Ingredient(null, 32, 32, "Dough", 0, .5f);
 	static {
 		cookedDough.status = Status.COOKED;
 		cookedDough.flipped = true;
 	}
-	public static Ingredient cooked_raw_pizza = new Ingredient(null, 32, 32, "dough", 0, .5f);
+	public static Ingredient cooked_raw_pizza = new Ingredient(null, 32, 32, "Dough", 0, .5f);
 	static {
 		cooked_raw_pizza.status = Status.COOKED;
 	}
