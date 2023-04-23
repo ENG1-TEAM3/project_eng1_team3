@@ -144,7 +144,7 @@
   </tile>
   <tile id="36">
  <properties>
-   <property name="Station" value="dough"/>
+   <property name="Station" value="Dough"/>
   </properties>
   <image width="64" height="64" source="art_images/dough_station.png"/>
   </tile>
