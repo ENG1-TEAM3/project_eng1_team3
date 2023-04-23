@@ -69,7 +69,6 @@ public class MainGameClass extends Game {
 	public LeaderBoard getLeaderBoardScreen() {
 		return leaderBoardScreen1;
 	}
-
 	public LeaderBoardSelect getLeaderBoardSelect() {
 		return leaderBoardSelect1;
 	}

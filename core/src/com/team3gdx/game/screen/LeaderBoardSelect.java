@@ -5,7 +5,6 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
@@ -15,9 +14,10 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.team3gdx.game.MainGameClass;
-import com.team3gdx.game.util.EndlessMode;
 import com.team3gdx.game.util.GameMode;
 import com.team3gdx.game.util.ScenarioMode;
+import com.team3gdx.game.util.EndlessMode;
+
 
 public class LeaderBoardSelect implements Screen{
     final MainGameClass game;
