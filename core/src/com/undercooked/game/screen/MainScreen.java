@@ -124,8 +124,8 @@ public class MainScreen extends Screen {
 		textureManager.load(Constants.MENU_TEXTURE_ID, "uielements/leaderboard1.png");
 		textureManager.load(Constants.MENU_TEXTURE_ID, "uielements/audio.png");
 		textureManager.load(Constants.MENU_TEXTURE_ID, "uielements/background.png");
-		textureManager.load(Constants.MENU_TEXTURE_ID, "uielements/exitgame.png");
-		textureManager.load(Constants.MENU_TEXTURE_ID, "uielements/loadgame.png");
+		textureManager.load(Constants.MENU_TEXTURE_ID, "uielements/game/exit.png");
+		textureManager.load(Constants.MENU_TEXTURE_ID, "uielements/game/load.png");
 
 		game.audioManager.loadMusic("audio/music/MainScreenMusic.ogg", Constants.MUSIC_GROUP);
 	}
@@ -166,14 +166,14 @@ public class MainScreen extends Screen {
 		leaderBoard = textureManager.get("uielements/leaderboard1.png");
 		audio = textureManager.get("uielements/audio.png");
 		audioEdit = textureManager.get("uielements/background.png");
-		exitGame = textureManager.get("uielements/exitgame.png");
+		exitGame = textureManager.get("uielements/game/exit.png");
 
 		sb = new Button(new TextureRegionDrawable(startButton));
 		lb = new Button(new TextureRegionDrawable(leaderBoard));
 		ad = new Button(new TextureRegionDrawable(audio));
 		eg = new Button(new TextureRegionDrawable(exitGame));
 
-		Button loadGameBtn = new Button(new TextureRegionDrawable(textureManager.get("uielements/loadgame.png")));
+		Button loadGameBtn = new Button(new TextureRegionDrawable(textureManager.get("uielements/game/load.png")));
 
 		lb.setSize(buttonwidth, buttonheight);
 		ad.setSize(buttonwidth, buttonheight);

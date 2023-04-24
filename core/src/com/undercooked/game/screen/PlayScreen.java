@@ -90,12 +90,12 @@ public class PlayScreen extends Screen {
         textureManager.load(Constants.PLAY_TEXTURE_ID, "uielements/newgame.png");
         textureManager.load(Constants.PLAY_TEXTURE_ID, "uielements/arrow_left.png");
         textureManager.load(Constants.PLAY_TEXTURE_ID, "uielements/arrow_right.png");
-        textureManager.load(Constants.PLAY_TEXTURE_ID, "uielements/difficulty/easy_mode_off.png");
-        textureManager.load(Constants.PLAY_TEXTURE_ID, "uielements/difficulty/easy_mode_on.png");
-        textureManager.load(Constants.PLAY_TEXTURE_ID, "uielements/difficulty/medium_mode_off.png");
-        textureManager.load(Constants.PLAY_TEXTURE_ID, "uielements/difficulty/medium_mode_on.png");
-        textureManager.load(Constants.PLAY_TEXTURE_ID, "uielements/difficulty/hard_mode_off.png");
-        textureManager.load(Constants.PLAY_TEXTURE_ID, "uielements/difficulty/hard_mode_on.png");
+        textureManager.load(Constants.PLAY_TEXTURE_ID, "uielements/difficulty/easy_off.png");
+        textureManager.load(Constants.PLAY_TEXTURE_ID, "uielements/difficulty/easy_on.png");
+        textureManager.load(Constants.PLAY_TEXTURE_ID, "uielements/difficulty/medium_off.png");
+        textureManager.load(Constants.PLAY_TEXTURE_ID, "uielements/difficulty/medium_on.png");
+        textureManager.load(Constants.PLAY_TEXTURE_ID, "uielements/difficulty/hard_off.png");
+        textureManager.load(Constants.PLAY_TEXTURE_ID, "uielements/difficulty/hard_on.png");
 
         // TEMPORARY
         textureManager.load(Constants.PLAY_TEXTURE_ID, "uielements/scenario.png");
@@ -178,9 +178,9 @@ public class PlayScreen extends Screen {
         Button rightBtn = new Button(new TextureRegionDrawable(textureManager.get("uielements/arrow_right.png")));
         Button playBtn = new Button(new TextureRegionDrawable(textureManager.get("uielements/newgame.png")));
 
-        easyModeBtnDrawable = new TextureRegionDrawable(textureManager.get("uielements/difficulty/easy_mode_off.png"));
-        mediumModeBtnDrawable = new TextureRegionDrawable(textureManager.get("uielements/difficulty/medium_mode_on.png"));
-        hardModeBtnDrawable = new TextureRegionDrawable(textureManager.get("uielements/difficulty/hard_mode_off.png"));
+        easyModeBtnDrawable = new TextureRegionDrawable();
+        mediumModeBtnDrawable = new TextureRegionDrawable();
+        hardModeBtnDrawable = new TextureRegionDrawable();
 
         easyModeBtn = new Button(easyModeBtnDrawable);
         mediumModeBtn = new Button(mediumModeBtnDrawable);
@@ -372,25 +372,25 @@ public class PlayScreen extends Screen {
         switch (currentDifficulty) {
             case Difficulty.EASY:
                 // Easy is active
-                easyModeBtnDrawable.setRegion(new TextureRegion(textureManager.get("uielements/difficulty/easy_mode_on.png")));
-                mediumModeBtnDrawable.setRegion(new TextureRegion(textureManager.get("uielements/difficulty/medium_mode_off.png")));
-                hardModeBtnDrawable.setRegion(new TextureRegion(textureManager.get("uielements/difficulty/hard_mode_off.png")));
+                easyModeBtnDrawable.setRegion(new TextureRegion(textureManager.get("uielements/difficulty/easy_on.png")));
+                mediumModeBtnDrawable.setRegion(new TextureRegion(textureManager.get("uielements/difficulty/medium_off.png")));
+                hardModeBtnDrawable.setRegion(new TextureRegion(textureManager.get("uielements/difficulty/hard_off.png")));
 
                 easyModeBtn.setPosition(easyModeBtn.getX(), easyModeBtn.getY()+30);
                 break;
             case Difficulty.MEDIUM:
                 // Easy is active
-                easyModeBtnDrawable.setRegion(new TextureRegion(textureManager.get("uielements/difficulty/easy_mode_off.png")));
-                mediumModeBtnDrawable.setRegion(new TextureRegion(textureManager.get("uielements/difficulty/medium_mode_on.png")));
-                hardModeBtnDrawable.setRegion(new TextureRegion(textureManager.get("uielements/difficulty/hard_mode_off.png")));
+                easyModeBtnDrawable.setRegion(new TextureRegion(textureManager.get("uielements/difficulty/easy_off.png")));
+                mediumModeBtnDrawable.setRegion(new TextureRegion(textureManager.get("uielements/difficulty/medium_on.png")));
+                hardModeBtnDrawable.setRegion(new TextureRegion(textureManager.get("uielements/difficulty/hard_off.png")));
 
                 mediumModeBtn.setPosition(mediumModeBtn.getX(), mediumModeBtn.getY()+30);
                 break;
             case Difficulty.HARD:
                 // Easy is active
-                easyModeBtnDrawable.setRegion(new TextureRegion(textureManager.get("uielements/difficulty/easy_mode_off.png")));
-                mediumModeBtnDrawable.setRegion(new TextureRegion(textureManager.get("uielements/difficulty/medium_mode_off.png")));
-                hardModeBtnDrawable.setRegion(new TextureRegion(textureManager.get("uielements/difficulty/hard_mode_on.png")));
+                easyModeBtnDrawable.setRegion(new TextureRegion(textureManager.get("uielements/difficulty/easy_off.png")));
+                mediumModeBtnDrawable.setRegion(new TextureRegion(textureManager.get("uielements/difficulty/medium_off.png")));
+                hardModeBtnDrawable.setRegion(new TextureRegion(textureManager.get("uielements/difficulty/hard_on.png")));
 
                 hardModeBtn.setPosition(hardModeBtn.getX(), hardModeBtn.getY()+30);
                 break;

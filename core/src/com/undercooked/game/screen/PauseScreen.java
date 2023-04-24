@@ -40,15 +40,15 @@ public class PauseScreen extends Screen {
         TextureManager textureManager = getTextureManager();
         textureManager.load(Constants.PAUSE_TEXTURE_ID, "uielements/settings.png");
         textureManager.load(Constants.PAUSE_TEXTURE_ID, "uielements/background.png");
-        textureManager.load(Constants.PAUSE_TEXTURE_ID, "uielements/exitmenu.png");
-        textureManager.load(Constants.PAUSE_TEXTURE_ID, "uielements/resume.png");
+        textureManager.load(Constants.PAUSE_TEXTURE_ID, "uielements/game/exit.png");
+        textureManager.load(Constants.PAUSE_TEXTURE_ID, "uielements/game/resume.png");
         textureManager.load(Constants.PAUSE_TEXTURE_ID, "uielements/audio2.png");
         textureManager.load(Constants.PAUSE_TEXTURE_ID, "uielements/background.png");
         textureManager.load(Constants.PAUSE_TEXTURE_ID, "uielements/vButton.jpg");
         textureManager.load(Constants.PAUSE_TEXTURE_ID, "uielements/vControl.png");
         textureManager.load(Constants.PAUSE_TEXTURE_ID, "uielements/background.png");
         textureManager.load(Constants.PAUSE_TEXTURE_ID, "uielements/vButton.jpg");
-        textureManager.load(Constants.PAUSE_TEXTURE_ID, "uielements/save.png");
+        textureManager.load(Constants.PAUSE_TEXTURE_ID, "uielements/game/save.png");
 
         // Create Stage
         stage = new Stage(CameraController.getViewport(Constants.UI_CAMERA_ID));
@@ -92,9 +92,9 @@ public class PauseScreen extends Screen {
         menuBack = textureManager.get("uielements/background.png");
 
         // Create the Buttons
-        Button unpause = new Button(new TextureRegionDrawable(textureManager.get("uielements/resume.png")));
-        Button save = new Button(new TextureRegionDrawable(textureManager.get("uielements/save.png")));
-        Button menu = new Button(new TextureRegionDrawable(textureManager.get("uielements/exitmenu.png")));
+        Button unpause = new Button(new TextureRegionDrawable(textureManager.get("uielements/game/resume.png")));
+        Button save = new Button(new TextureRegionDrawable(textureManager.get("uielements/game/save.png")));
+        Button menu = new Button(new TextureRegionDrawable(textureManager.get("uielements/game/exit.png")));
 
         // Set the Button visuals
         unpause.setSize(200,100);

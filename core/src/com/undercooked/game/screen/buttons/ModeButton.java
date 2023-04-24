@@ -31,17 +31,17 @@ public class ModeButton {
     }
 
     public void load(String textureID) {
-        textureManager.load(textureID, "uielements/scenario.png");
-        textureManager.load(textureID, "uielements/scenario_off.png");
-        textureManager.load(textureID, "uielements/endless.png");
-        textureManager.load(textureID, "uielements/endless_off.png");
+        textureManager.load(textureID, "uielements/mode/scenario.png");
+        textureManager.load(textureID, "uielements/mode/scenario_off.png");
+        textureManager.load(textureID, "uielements/mode/endless.png");
+        textureManager.load(textureID, "uielements/mode/endless_off.png");
     }
 
     public void unload() {
-        textureManager.unloadTexture("uielements/scenario.png");
-        textureManager.unloadTexture("uielements/scenario_off.png");
-        textureManager.unloadTexture("uielements/endless.png");
-        textureManager.unloadTexture("uielements/endless_off.png");
+        textureManager.unloadTexture("uielements/mode/scenario.png");
+        textureManager.unloadTexture("uielements/mode/scenario_off.png");
+        textureManager.unloadTexture("uielements/mode/endless.png");
+        textureManager.unloadTexture("uielements/mode/endless_off.png");
     }
 
     public void postLoad() {
@@ -73,13 +73,13 @@ public class ModeButton {
         switch (currentType) {
             case SCENARIO:
                 // Scenario is active, Endless is not
-                scenarioBtnDrawable.setRegion(new TextureRegion(textureManager.get("uielements/scenario.png")));
-                endlessBtnDrawable.setRegion(new TextureRegion(textureManager.get("uielements/endless_off.png")));
+                scenarioBtnDrawable.setRegion(new TextureRegion(textureManager.get("uielements/mode/scenario.png")));
+                endlessBtnDrawable.setRegion(new TextureRegion(textureManager.get("uielements/mode/endless_off.png")));
                 return;
             case ENDLESS:
                 // Endless is active, Scenario is not
-                endlessBtnDrawable.setRegion(new TextureRegion(textureManager.get("uielements/endless.png")));
-                scenarioBtnDrawable.setRegion(new TextureRegion(textureManager.get("uielements/scenario_off.png")));
+                endlessBtnDrawable.setRegion(new TextureRegion(textureManager.get("uielements/mode/endless.png")));
+                scenarioBtnDrawable.setRegion(new TextureRegion(textureManager.get("uielements/mode/scenario_off.png")));
                 return;
         }
         return;
