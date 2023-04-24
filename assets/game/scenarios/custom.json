@@ -1,7 +1,7 @@
 {
   "map_id": "<main>:everything",
   "name": "Custom",
-  "description": "Complete a scenario with a specified number of random requests.",
+  "description": "Complete a scenario with a specified number of random requests.\nThis can only be played in Scenario mode.",
   "interactions": [
     "<main>:preparation/patty_form",
     "<main>:preparation/burger_make",
