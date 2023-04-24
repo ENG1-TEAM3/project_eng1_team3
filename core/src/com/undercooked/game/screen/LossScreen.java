@@ -28,8 +28,8 @@ public class LossScreen extends Screen {
     public void load() {
         // Load the textures for the buttons
         TextureManager textureManager = getTextureManager();
-        textureManager.load(Constants.LOSS_TEXTURE_ID, "uielements/exittomenu.png");
-        textureManager.load(Constants.LOSS_TEXTURE_ID, "uielements/retry.png");
+        textureManager.load(Constants.LOSS_TEXTURE_ID, "uielements/game/exit.png");
+        textureManager.load(Constants.LOSS_TEXTURE_ID, "uielements/game/retry.png");
 
         // Create the stage
         Viewport viewport = CameraController.getViewport(Constants.UI_CAMERA_ID);
@@ -51,8 +51,8 @@ public class LossScreen extends Screen {
         // Stop the game's music
         game.gameMusic.stop();
         // Create the buttons
-        Button quitBtn = new Button(new TextureRegionDrawable(textureManager.get("uielements/exittomenu.png")));
-        Button retryBtn = new Button(new TextureRegionDrawable(textureManager.get("uielements/retry.png")));
+        Button quitBtn = new Button(new TextureRegionDrawable(textureManager.get("uielements/game/exit.png")));
+        Button retryBtn = new Button(new TextureRegionDrawable(textureManager.get("uielements/game/exit.png")));
 
         // Add listeners to the buttons
         quitBtn.addListener(new ClickListener() {
