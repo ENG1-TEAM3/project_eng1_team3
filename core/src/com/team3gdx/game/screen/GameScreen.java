@@ -131,18 +131,7 @@ public class GameScreen implements Screen {
 		tiledMapRenderer = new OrthogonalTiledMapRenderer(map1);
 		constructCollisionData(map1);
 		cc = new CustomerController(map1);
-		if (gameMode.getNumberOfCustmersInAWave() == 1){
-			cc.spawnCustomer();
-		}
-		if (gameMode.getNumberOfCustmersInAWave() == 2){
-			cc.spawnCustomer();
-			cc.spawnCustomer();
-		}
-		if (gameMode.getNumberOfCustmersInAWave() == 3){
-			cc.spawnCustomer();
-			cc.spawnCustomer();
-			cc.spawnCustomer();
-		}
+		cc.spawnCustomer();
 	}
 
 	/**
@@ -302,8 +291,11 @@ public class GameScreen implements Screen {
 
 		checkCookSwitch();
 
-		if(currentWaitingCustomer != null && currentWaitingCustomer.waitTime() < gameMode.getModeTime()){
+		if(currentWaitingCustomer != null && currentWaitingCustomer.waitTime() > gameMode.getModeTime()){
 			cc.delCustomer(currentWaitingCustomer);
+			System.out.println(currentWaitingCustomer.waitTime() + " wait Time");
+			System.out.println("Mode Time  " + gameMode.getModeTime());
+			cc.spawnCustomer();
 		}
 		// =========================================CHECK=GAME=OVER======================================================
 		checkGameOver();
