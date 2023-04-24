@@ -131,6 +131,8 @@ public class GameScreen implements Screen {
 		tiledMapRenderer = new OrthogonalTiledMapRenderer(map1);
 		constructCollisionData(map1);
 		cc = new CustomerController(map1);
+
+
 		cc.spawnCustomer();
 	}
 
@@ -293,8 +295,6 @@ public class GameScreen implements Screen {
 
 		if(currentWaitingCustomer != null && currentWaitingCustomer.waitTime() > gameMode.getModeTime()){
 			cc.delCustomer(currentWaitingCustomer);
-			System.out.println(currentWaitingCustomer.waitTime() + " wait Time");
-			System.out.println("Mode Time  " + gameMode.getModeTime());
 			cc.spawnCustomer();
 		}
 		// =========================================CHECK=GAME=OVER======================================================
