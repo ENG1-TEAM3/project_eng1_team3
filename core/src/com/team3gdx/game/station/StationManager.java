@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
+import com.team3gdx.game.MainGameClass;
 import com.team3gdx.game.entity.CustomerController;
 import com.team3gdx.game.food.Ingredient;
 import com.team3gdx.game.food.Ingredients;
@@ -32,16 +33,13 @@ public class StationManager {
 	 */
 	public static Map<Vector2, Station> stations = new HashMap<Vector2, Station>();
 
-	SpriteBatch batch;
 
 	/**
 	 * Checks every station for ingredients and updates them accordingly.
 	 * 
 	 * @param batch - SpriteBatch to render ingredient textures.
 	 */
-	public void handleStations(SpriteBatch batch, ShapeRenderer shapeRenderer, float cookingTime, float constructionCost) {
-		this.batch = batch;
-
+	public void handleStations(MainGameClass game, float cookingTime, float constructionCost) {
 		for (Station station : stations.values()) {
 			if (!station.active()) {
 				return;
@@ -54,23 +52,23 @@ public class StationManager {
 					if (station instanceof PrepStation) {
 						currentIngredient.pos = new Vector2(station.pos.x * 64 + 16, i * 8 + station.pos.y * 64);
 						if (((PrepStation) station).lockedCook != null)
-							((PrepStation) station).updateProgress(batch, cookingTime * 2);
+							((PrepStation) station).updateProgress(game.batch, cookingTime * 2);
 					} else {
 						currentIngredient.pos = new Vector2(station.pos.x * 64 + ((i * 32) % 64),
 								Math.floorDiv((i * 32), 64) * 32 + station.pos.y * 64);
 					}
 
 					if (station instanceof CuttingStation && currentIngredient.slicing) {
-						((CuttingStation) station).interact(batch, shapeRenderer, cookingTime * 2);
+						((CuttingStation) station).interact(game.batch, game.shapeRenderer, cookingTime * 2);
 						station.interactSound();
 					}
 
 					if (currentIngredient.cooking && station instanceof CookingStation) {
-						((CookingStation) station).drawParticles(batch, i);
-						currentIngredient.cook(cookingTime * 0.05f, batch, shapeRenderer);
+						((CookingStation) station).drawParticles(game.batch, i);
+						currentIngredient.cook(cookingTime * 0.05f, game.batch, game.shapeRenderer);
 						station.interactSound();
 					} else {
-						currentIngredient.draw(batch);
+						currentIngredient.draw(game.batch);
 					}
 				}
 			}
@@ -83,45 +81,45 @@ public class StationManager {
 	 * @param type The station type.
 	 * @param pos  The position of the tile.
 	 */
-	public void checkInteractedTile(String type, Vector2 pos, CustomerController customerController, GameMode gameMode, float priceMultiplier, float constructionCost) {
+	public void checkInteractedTile(MainGameClass game, String type, Vector2 pos, CustomerController customerController, GameMode gameMode, float priceMultiplier, float constructionCost) {
 		switch (type) {
 		case "Buns":
-			takeIngredientStation(pos, Ingredients.bun);
+			takeIngredientStation(game, pos, Ingredients.bun);
 			break;
 		case "Patties":
-			takeIngredientStation(pos, Ingredients.unformedPatty);
+			takeIngredientStation(game, pos, Ingredients.unformedPatty);
 			break;
 		case "Lettuces":
-			takeIngredientStation(pos, Ingredients.lettuce);
+			takeIngredientStation(game, pos, Ingredients.lettuce);
 			break;
 		case "Tomatoes":
-			takeIngredientStation(pos, Ingredients.tomato);
+			takeIngredientStation(game, pos, Ingredients.tomato);
 			break;
 		case "Onions":
-			takeIngredientStation(pos, Ingredients.onion);
+			takeIngredientStation(game, pos, Ingredients.onion);
 			break;
 		case "cheese":
-			takeIngredientStation(pos, Ingredients.cheese);
+			takeIngredientStation(game, pos, Ingredients.cheese);
 			break;
 		case "sauce":
-			takeIngredientStation(pos, Ingredients.tomato_sauce);
+			takeIngredientStation(game, pos, Ingredients.tomato_sauce);
 			break;
 		case "potato":
-			takeIngredientStation(pos, Ingredients.potato);
+			takeIngredientStation(game, pos, Ingredients.potato);
 			break;
 		case "dough":
-			takeIngredientStation(pos, Ingredients.unformedDough);
+			takeIngredientStation(game, pos, Ingredients.unformedDough);
 			break;
 		case "Frying":
 			checkStationExists(pos, new FryingStation(pos,true));
-			((CookingStation) stations.get(pos)).checkCookingStation(batch);
+			((CookingStation) stations.get(pos)).checkCookingStation(game);
 			((CookingStation) stations.get(pos)).lockCook();
 			break;
 		case "Prep":
 			if (!stations.containsKey(pos)) {
 				stations.put(pos, new PrepStation(pos,true));
 			}
-			placeIngredientStation(pos);
+			placeIngredientStation(game, pos);
 			PrepStation station = ((PrepStation) stations.get(pos));
 			station.lockCook();
 			
@@ -131,31 +129,31 @@ public class StationManager {
 				stations.put(pos, new CuttingStation(pos, 1,true));
 			}
 
-			placeIngredientStation(pos);
+			placeIngredientStation(game, pos);
 			CuttingStation cutStation = ((CuttingStation) stations.get(pos));
 			cutStation.lockCook();
 
 			break;
 		case "Baking":
 			checkStationExists(pos, new BakingStation(pos,true));
-			((CookingStation) stations.get(pos)).checkCookingStation(batch);
+			((CookingStation) stations.get(pos)).checkCookingStation(game);
 			((CookingStation) stations.get(pos)).lockCook();
 			break;
 		case "Frying_inactive":
 			checkStationExists(pos, new FryingStation(pos,false));
-			buyBackStation(pos, batch, constructionCost);
+			buyBackStation(pos, game.batch, constructionCost);
 			break;
 		case "Prep_inactive":
 			checkStationExists(pos, new PrepStation(pos, false));
-			buyBackStation(pos, batch, constructionCost);
+			buyBackStation(pos, game.batch, constructionCost);
 			break;
 		case "Chopping_inactive":
 			checkStationExists(pos, new CuttingStation(pos, 1, false));
-			buyBackStation(pos, batch, constructionCost);
+			buyBackStation(pos, game.batch, constructionCost);
 			break;
 		case "Baking_inactive":
 			checkStationExists(pos, new BakingStation(pos, false));
-			buyBackStation(pos, batch, constructionCost);
+			buyBackStation(pos, game.batch, constructionCost);
 			break;
 
 		case "Service":
@@ -164,20 +162,20 @@ public class StationManager {
 			}
 
 			((ServingStation) stations.get(pos)).serveCustomer(priceMultiplier);
-			placeIngredientStation(pos);
+			placeIngredientStation(game, pos);
 			break;
 		case "Bin":
 			if (!GameScreen.cook.heldItems.empty()) {
-				batch.begin();
-				(new BitmapFont()).draw(batch, "Drop [e]", pos.x * 64, pos.y * 64);
-				batch.end();
+				game.batch.begin();
+				game.font2.draw(game.batch, "Drop [e]", pos.x * 64, pos.y * 64);
+				game.batch.end();
 				if (GameScreen.control.drop) {
 					GameScreen.cook.dropItem();
 				}
 			}
 			break;
 		default:
-			placeIngredientStation(pos);
+			placeIngredientStation(game, pos);
 			break;
 		}
 
@@ -204,10 +202,10 @@ public class StationManager {
 	 * 
 	 * @param pos The position to lookup the station.
 	 */
-	private void placeIngredientStation(Vector2 pos) {
+	private void placeIngredientStation(MainGameClass game, Vector2 pos) {
 		checkStationExists(pos, new Station(pos, 4, false, null, null,true));
-		stations.get(pos).drawTakeText(batch);
-		stations.get(pos).drawDropText(batch);
+		stations.get(pos).drawTakeText(game);
+		stations.get(pos).drawDropText(game);
 		if (GameScreen.control.interact) {
 			if (!stations.get(pos).slots.empty() && !GameScreen.cook.full()) {
 				GameScreen.cook.pickUpItem(stations.get(pos).take());
@@ -228,9 +226,9 @@ public class StationManager {
 	 * @param pos        The position of the station.
 	 * @param ingredient The ingredient that the station holds.
 	 */
-	private void takeIngredientStation(Vector2 pos, Ingredient ingredient) {
+	private void takeIngredientStation(MainGameClass game, Vector2 pos, Ingredient ingredient) {
 		checkStationExists(pos, new IngredientStation(pos, ingredient));
-		stations.get(pos).drawTakeText(batch);
+		stations.get(pos).drawTakeText(game);
 
 		if (GameScreen.control.interact) {
 			GameScreen.cook.pickUpItem(stations.get(pos).take());

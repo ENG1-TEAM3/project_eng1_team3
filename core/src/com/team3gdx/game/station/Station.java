@@ -133,11 +133,11 @@ public class Station {
 	/**
 	 * Display text indicating to take the ingredient.
 	 * 
-	 * @param pos The position to draw at.
+	 * @param game The game state.
 	 */
-	public void drawTakeText(SpriteBatch batch) {
+	public void drawTakeText(MainGameClass game) {
 		if (!slots.empty() && !GameScreen.cook.full()) {
-			drawText(batch, "Take [q]", new Vector2(pos.x * 64, pos.y * 64 - 16));
+			drawText(game, "Take [q]", new Vector2(pos.x * 64, pos.y * 64 - 16));
 		}
 
 	}
@@ -145,11 +145,11 @@ public class Station {
 	/**
 	 * Display text indicating to drop an item in the station's slot.
 	 * 
-	 * @param pos The position of the station.
+	 * @param game The game state.
 	 */
-	public void drawDropText(SpriteBatch batch) {
+	public void drawDropText(MainGameClass game) {
 		if (GameScreen.cook.heldItems.size() > 0 && isAllowed(GameScreen.cook.heldItems.peek())) {
-			drawText(batch, "Drop [e]", new Vector2(pos.x * 64, pos.y * 64));
+			drawText(game, "Drop [e]", new Vector2(pos.x * 64, pos.y * 64));
 		}
 	}
 
@@ -158,10 +158,10 @@ public class Station {
 	 * @param text Text to be drawn.
 	 * @param pos  Position to draw at.
 	 */
-	public void drawText(SpriteBatch batch, String text, Vector2 pos) {
-		batch.begin();
-		(new BitmapFont()).draw(batch, text, pos.x, pos.y);
-		batch.end();
+	public void drawText(MainGameClass game, String text, Vector2 pos) {
+		game.batch.begin();
+		game.font2.draw(game.batch, text, pos.x, pos.y);
+		game.batch.end();
 	}
 
 	public void interactSound() {
@@ -174,9 +174,9 @@ public class Station {
 			active = true;
 		} 
 	}
-	public void drawBuyBackText(SpriteBatch batch, float constructionCost){
+	public void drawBuyBackText(MainGameClass game, float constructionCost){
 		if (active == false){
-			drawText(batch, "Buy back for " + constructionCost + " money [q]", new Vector2(pos.x * 64, pos.y * 64));
+			drawText(game, "Buy back for " + constructionCost + " money [q]", new Vector2(pos.x * 64, pos.y * 64));
 		}
 	}
 	public boolean active(){
