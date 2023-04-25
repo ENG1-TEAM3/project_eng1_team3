@@ -62,13 +62,13 @@ public class StationManager {
 					}
 
 					if (station instanceof CuttingStation && currentIngredient.slicing) {
-						((CuttingStation) station).interact(game.batch, game.shapeRenderer, .1f);
+						((CuttingStation) station).interact(game, .1f);
 						station.interactSound();
 					}
 
 					if (currentIngredient.cooking && station instanceof CookingStation) {
 						((CookingStation) station).drawParticles(game.batch, i);
-						currentIngredient.cook(.0005f, game.batch, game.shapeRenderer);
+						currentIngredient.cook(.0005f, game);
 						station.interactSound();
 					} else {
 						currentIngredient.draw(game.batch);

@@ -337,7 +337,7 @@ public class GameScreen implements Screen {
      */
 	private void drawUI() {
 		if (currentWaitingCustomer != null && currentWaitingCustomer.waitTime() < MAX_WAIT_TIME) {
-			Menu.RECIPES.get(currentWaitingCustomer.order).displayRecipe(game, game.batch, new Vector2(64, 256));
+			Menu.RECIPES.get(currentWaitingCustomer.order).displayRecipe(game, new Vector2(64, 256));
 		}
 		for (int i = 0; i < cooks.length; i++) {
 			if (i == currentCookIndex) {

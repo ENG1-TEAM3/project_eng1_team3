@@ -7,9 +7,11 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
+import com.team3gdx.game.MainGameClass;
 import com.team3gdx.game.entity.Entity;
 import com.team3gdx.game.screen.GameScreen;
 import com.team3gdx.game.screen.GameScreen.STATE;
+import jdk.tools.jmod.Main;
 
 /**
  * Represents an ingredient.
@@ -91,7 +93,6 @@ public class Ingredient extends Entity {
 		return (flipped = true);
 	}
 
-	BitmapFont newFont = new BitmapFont();
 	/**
 	 * Begin process of slicing ingredient and show status.
 	 * 
@@ -99,31 +100,29 @@ public class Ingredient extends Entity {
 	 * @param dT    The amount of time to increment by when slicing.
 	 * @return A boolean representing if a complete slice has occurred.
 	 */
-	public boolean slice(SpriteBatch batch, ShapeRenderer shapeRenderer, float dT) {
+	public boolean slice(MainGameClass game, float dT) {
 
-		shapeRenderer.setProjectionMatrix(batch.getProjectionMatrix());
+		game.shapeRenderer.setProjectionMatrix(game.batch.getProjectionMatrix());
 		if (idealSlices < slices) {
 			slices++;
 			texture = new Texture("items/" + name + "_mushy.png");
 			return true;
 		}
 		if (dT / width * width <= width) {
-			drawStatusBar(shapeRenderer, dT / width, 0, 1);
+			drawStatusBar(game.shapeRenderer, dT / width, 0, 1);
 		} else {
 			slices++;
 			texture = new Texture("items/" + name + "_chopped.png");
 			return true;
 		}
 
-		batch.begin();
-		newFont.draw(batch, String.valueOf(slices), pos.x * 64 + 64 + 8, pos.y * 64 + 64 + 16);
-		batch.end();
+		game.batch.begin();
+		game.font2.draw(game.batch, String.valueOf(slices), pos.x * 64 + 64 + 8, pos.y * 64 + 64 + 16);
+		game.batch.end();
 
 		//draw(batch);
 		return false;
 	}
-
-	BitmapFont flipText = new BitmapFont();
 
 	/**
 	 * Begin process of cooking ingredient and show status.
@@ -132,17 +131,17 @@ public class Ingredient extends Entity {
 	 * @param batch {@link SpriteBatch} to render texture and status.
 	 * @return A double representing the current {@link this#cookedTime}.
 	 */
-	public double cook(float dT, SpriteBatch batch, ShapeRenderer shapeRenderer) {
-		shapeRenderer.setProjectionMatrix(batch.getProjectionMatrix());
+	public double cook(float dT, MainGameClass game) {
+		game.shapeRenderer.setProjectionMatrix(game.batch.getProjectionMatrix());
 		if (!flipped && cookedTime / idealCookedTime * width > idealCookedTime * width * .65f) {
-			batch.begin();
-			flipText.draw(batch, "Flip [f]", pos.x, pos.y);
-			batch.end();
+			game.batch.begin();
+			game.font2.draw(game.batch, "Flip [f]", pos.x, pos.y);
+			game.batch.end();
 		}
 		if (cookedTime / idealCookedTime * width <= width) {
 			if (GameScreen.state1 == STATE.Continue)
 				cookedTime += dT;
-			drawStatusBar(shapeRenderer, cookedTime / idealCookedTime, idealCookedTime * .65f, idealCookedTime * 1.35f);
+			drawStatusBar(game.shapeRenderer, cookedTime / idealCookedTime, idealCookedTime * .65f, idealCookedTime * 1.35f);
 			if (cookedTime / idealCookedTime * width > idealCookedTime * width * .65f) {
 				texture = new Texture("items/" + name + "_cooked.png");
 				status = Status.COOKED;
@@ -152,7 +151,7 @@ public class Ingredient extends Entity {
 			texture = new Texture("items/" + name + "_burned.png");
 		}
 
-		draw(batch);
+		draw(game.batch);
 		return cookedTime;
 	}
 
