@@ -261,7 +261,7 @@ public class GameScreen implements Screen {
 		// =====================================RENDER=TOP=MAP=LAYER=====================================================
 		tiledMapRenderer.render(new int[] { 1 });
 		// =====================================DRAW=COOK=TOP=HALF=======================================================
-		stationManager.handleStations(game.batch, game.shapeRenderer);
+		stationManager.handleStations(game);
 		drawHeldItems();
 		game.batch.begin();
 		for (Cook curCook : cooks)
@@ -331,27 +331,26 @@ public class GameScreen implements Screen {
 
     /**
      * Draw UI elements
+	 *
+	 * CHANGE ALL CALCULATIONS OUT OF HERE
+	 * MAKE THEM INTO CONSTANTS
      */
 	private void drawUI() {
 		if (currentWaitingCustomer != null && currentWaitingCustomer.waitTime() < MAX_WAIT_TIME) {
-			Menu.RECIPES.get(currentWaitingCustomer.order).displayRecipe(game.batch, new Vector2(64, 256));
+			Menu.RECIPES.get(currentWaitingCustomer.order).displayRecipe(game, game.batch, new Vector2(64, 256));
 		}
 		for (int i = 0; i < cooks.length; i++) {
 			if (i == currentCookIndex) {
 				selectedPlayerBox.setAutoShapeType(true);
 				selectedPlayerBox.begin(ShapeType.Line);
-
 				selectedPlayerBox.setColor(Color.GREEN);
-				selectedPlayerBox.rect(Gdx.graphics.getWidth() - 128 * cooks.length + i * 128,
-						Gdx.graphics.getHeight() - 128 - 8, 128, 128);
+				selectedPlayerBox.rect(Gdx.graphics.getWidth() - 128 * cooks.length + i * 128, Gdx.graphics.getHeight() - 128 - 8, 128, 128);
 				selectedPlayerBox.end();
 			}
 			game.batch.begin();
-			cooks[i].draw_top(game.batch, new Vector2(Gdx.graphics.getWidth() - 128 * cooks.length + i * 128,
-					Gdx.graphics.getHeight() - 256));
+			cooks[i].draw_top(game.batch, new Vector2(Gdx.graphics.getWidth() - 128 * cooks.length + i * 128, Gdx.graphics.getHeight() - 256));
 			game.batch.end();
 		}
-
 		game.batch.begin();
 		game.font.draw(game.batch, Long.toString((startTime - timeOnStartup) / 1000),
 				gameResolutionX / 2f + gameResolutionX / 9f, 19 * gameResolutionY / 20f);
@@ -630,10 +629,10 @@ public class GameScreen implements Screen {
 		if (viewedTile != null) {
 			Object stationType = viewedTile.getTile().getProperties().get("Station");
 			if (stationType != null) {
-				stationManager.checkInteractedTile((String) viewedTile.getTile().getProperties().get("Station"),
+				stationManager.checkInteractedTile(game, (String) viewedTile.getTile().getProperties().get("Station"),
 						new Vector2(checkCellX, checkCellY), cc, gameMode);
 			} else {
-				stationManager.checkInteractedTile("", new Vector2(checkCellX, checkCellY), cc, gameMode);
+				stationManager.checkInteractedTile(game, "", new Vector2(checkCellX, checkCellY), cc, gameMode);
 			}
 		}
 		sr.begin(ShapeRenderer.ShapeType.Line);

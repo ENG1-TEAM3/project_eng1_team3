@@ -91,6 +91,7 @@ public class Ingredient extends Entity {
 		return (flipped = true);
 	}
 
+	BitmapFont newFont = new BitmapFont();
 	/**
 	 * Begin process of slicing ingredient and show status.
 	 * 
@@ -115,10 +116,10 @@ public class Ingredient extends Entity {
 		}
 
 		batch.begin();
-		(new BitmapFont()).draw(batch, String.valueOf(slices), pos.x * 64 + 64 + 8, pos.y * 64 + 64 + 16);
+		newFont.draw(batch, String.valueOf(slices), pos.x * 64 + 64 + 8, pos.y * 64 + 64 + 16);
 		batch.end();
 
-		draw(batch);
+		//draw(batch);
 		return false;
 	}
 

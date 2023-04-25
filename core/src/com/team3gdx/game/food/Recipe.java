@@ -7,12 +7,15 @@ import java.util.Stack;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
+import com.team3gdx.game.MainGameClass;
 
 /**
  * Represents a recipe (combination of ingredients and states).
  * 
  */
 public class Recipe extends Ingredient {
+
+	MainGameClass game;
 
 	/**
 	 * Name of the recipe to get texture.
@@ -76,7 +79,8 @@ public class Recipe extends Ingredient {
 	 * @param batch The {@link SpriteBatch} to render the textures.
 	 * @param pos   The (x, y) coordinates for the first instruction.
 	 */
-	public void displayRecipe(SpriteBatch batch, Vector2 pos) {
+
+	public void displayRecipe(MainGameClass game, SpriteBatch batch, Vector2 pos) {
 		String completeRecipe = initialSteps + "\n\n";
 		int i = -1;
 		if (initialIngredient != null) {
@@ -84,31 +88,29 @@ public class Recipe extends Ingredient {
 			Ingredient initial = new Ingredient(initialIngredient);
 			initial.pos = new Vector2(pos);
 			initial.pos.x -= 48;
-			initial.pos.y += --i * 2 * new BitmapFont().getLineHeight() + new BitmapFont().getLineHeight();
+			initial.pos.y += --i * 2 * 18 + 18;
 			initial.draw(batch);
 		}
 		for (Ingredient ingredient : ingredientInstructions.keySet()) {
 			completeRecipe += ingredientInstructions.get(ingredient) + " " + ingredient.name + "\n\n";
 			ingredient.pos = new Vector2(pos);
 			ingredient.pos.x -= 48;
-			ingredient.pos.y += --i * 2 * new BitmapFont().getLineHeight() + new BitmapFont().getLineHeight();
+			ingredient.pos.y += --i * 2 * 18 + 18;
 			ingredient.draw(batch);
-
 		}
-
 		Ingredient result = new Ingredient(this);
 		result.pos = new Vector2(pos);
 		result.pos.x -= 48;
-		result.pos.y += --i * 2 * new BitmapFont().getLineHeight() + new BitmapFont().getLineHeight();
+		result.pos.y += --i * 2 * 18 + 18;
 		result.draw(batch);
 
 		completeRecipe += finalSteps;
+		System.out.println(completeRecipe);
 
 		// Display the instructions.
 		batch.begin();
-		(new BitmapFont()).draw(batch, completeRecipe, pos.x - 16, pos.y);
+		game.font2.draw(batch, completeRecipe, pos.x - 16, pos.y);
 		batch.end();
-
 	}
 
 	/**
