@@ -105,7 +105,6 @@ public class Recipe extends Ingredient {
 		result.draw(game.batch);
 
 		completeRecipe += finalSteps;
-		System.out.println(completeRecipe);
 
 		// Display the instructions.
 		game.batch.begin();
