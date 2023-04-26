@@ -16,7 +16,7 @@ public class PowerUpService {
     private boolean checkTimer(float delta) {
         timer += delta;
 
-        float interval = 5000;
+        float interval = 30;
 
         if (timer < interval) {
             return false;
@@ -41,7 +41,7 @@ public class PowerUpService {
             return;
         }
 
-        switch (random.nextInt(0, 50)) {
+        switch (random.nextInt(0, 6)) {
             case 1:
                 activePowerUps.add(PowerUps.constructionCostReduce());
                 break;
@@ -56,6 +56,7 @@ public class PowerUpService {
                 break;
             case 5:
                 activePowerUps.add(PowerUps.speedBoost());
+                break;
         }
     }
 

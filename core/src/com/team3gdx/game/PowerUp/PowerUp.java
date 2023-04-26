@@ -27,7 +27,7 @@ public class PowerUp extends Entity {
 		this.width = width;
 		this.height = height;
 		this.name = name;
-		this.texture = new Texture("powerUp/" + name + ".png");
+		this.texture = new Texture("PowerUps/" + name + ".png");
 
 	}
 

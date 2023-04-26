@@ -375,11 +375,12 @@ public class GameScreen implements Screen {
 		game.font.draw(game.batch, "Served:", gameResolutionX / 5f + gameResolutionX / 35f, 19 * gameResolutionY / 20f);
 		game.batch.end();
 
-		int startX = Gdx.graphics.getWidth() - 32;
+		int startX = Gdx.graphics.getWidth() - 72;
 		int i = 0;
 
 		for (PowerUp powerup : powerUps.getActivePowerUps()) {
-			powerup.pos = new Vector2(startX - i * 32, 18 * gameResolutionY / 20f);
+			powerup.pos = new Vector2(startX - i * 72, 16 * gameResolutionY / 20f);
+			powerup.draw(game.batch);
 			i++;
 		}
 	}
