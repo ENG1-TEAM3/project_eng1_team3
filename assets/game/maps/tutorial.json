@@ -1,0 +1,165 @@
+{
+  "width": 13,
+  "height": 15,
+  "stations": [
+    {
+      "station_id": "<main>:counter",
+      "x": 3,
+      "y": 11
+    },
+    {
+      "station_id": "<main>:oven",
+      "x": 4,
+      "y": 11
+    },
+    {
+      "station_id": "<main>:counter",
+      "x": 5,
+      "y": 11
+    },
+    {
+      "station_id": "<main>:counter",
+      "x": 6,
+      "y": 14,
+      "base_texture": "<main>:station/cupboard.png"
+    },
+    {
+      "station_id": "<main>:pantry/cheese_pantry",
+      "x": 7,
+      "y": 14,
+      "base_texture": "<main>:station/cupboard.png"
+    },
+    {
+      "station_id": "<main>:pantry/dough_pantry",
+      "x": 8,
+      "y": 14,
+      "base_texture": "<main>:station/cupboard.png"
+    },
+    {
+      "station_id": "<main>:pantry/potato_pantry",
+      "x": 9,
+      "y": 14,
+      "base_texture": "<main>:station/cupboard.png"
+    },
+    {
+      "station_id": "<main>:pantry/lettuce_pantry",
+      "x": 6,
+      "y": 11
+    },
+    {
+      "station_id": "<main>:pantry/tomato_pantry",
+      "x": 7,
+      "y": 11
+    },
+    {
+      "station_id": "<main>:pantry/onion_pantry",
+      "x": 8,
+      "y": 11
+    },
+    {
+      "station_id": "<main>:preparation",
+      "x": 3,
+      "y": 8
+    },
+    {
+      "station_id": "<main>:preparation",
+      "x": 6,
+      "y": 4
+    },
+    {
+      "station_id": "<main>:cutting",
+      "x": 6,
+      "y": 8,
+      "base_texture": "<main>:station/cupboard.png"
+    },
+    {
+      "station_id": "<main>:cutting",
+      "x": 8,
+      "y": 8,
+      "base_texture": "<main>:station/cupboard.png"
+    },
+    {
+      "station_id": "<main>:grill",
+      "x": 3,
+      "y": 5,
+      "base_texture": "<main>:station/cupboard.png"
+    },
+    {
+      "station_id": "<main>:grill",
+      "x": 4,
+      "y": 5,
+      "base_texture": "<main>:station/cupboard.png"
+    },
+    {
+      "station_id": "<main>:pantry/meat_pantry",
+      "x": 6,
+      "y": 5,
+      "base_texture": "<main>:station/cupboard.png"
+    },
+    {
+      "station_id": "<main>:pantry/bun_pantry",
+      "x": 7,
+      "y": 5,
+      "base_texture": "<main>:station/cupboard.png"
+    },
+    {
+      "station_id": "<main>:counter",
+      "x": 8,
+      "y": 5
+    },
+    {
+      "station_id": "<main>:register",
+      "x": 0,
+      "y": 13
+    },
+    {
+      "station_id": "<main>:register",
+      "x": 0,
+      "y": 12
+    },
+    {
+      "station_id": "<main>:register",
+      "x": 0,
+      "y": 11
+    },
+    {
+      "station_id": "<main>:register",
+      "x": 0,
+      "y": 10
+    },
+    {
+      "station_id": "<main>:register",
+      "x": 0,
+      "y": 9
+    },
+    {
+      "station_id": "<main>:bin",
+      "x": 10,
+      "y": 2
+    },
+    {
+      "station_id": "<main>:oven",
+      "x": 4,
+      "y": 0,
+      "price": 65,
+      "base_texture": "<main>:station/blank.png"
+    },
+    {
+      "station_id": "<main>:phone",
+      "x": 0,
+      "y": 1
+    }],
+  "cooks": [
+    {
+      "x": 1,
+      "y": 3
+    },
+    {
+      "x": 3,
+      "y": 6
+    },
+    {
+      "x": 5,
+      "y": 6
+    }]
+}

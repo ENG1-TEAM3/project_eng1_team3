@@ -8,7 +8,6 @@ import com.undercooked.game.Input.InputController;
 import com.undercooked.game.Input.Keys;
 import com.undercooked.game.assets.TextureManager;
 import com.undercooked.game.food.Item;
-import com.undercooked.game.food.ItemStack;
 import com.undercooked.game.food.Items;
 import com.undercooked.game.map.Map;
 import com.undercooked.game.map.MapCell;
@@ -51,6 +50,8 @@ public class CookController {
     float cookSpeed = 1f;
     /** The max number of items the {@link Cook}s can hold. */
     int cookStackMax = 5;
+    /** If input is going to be processed. */
+    private boolean processInput;
 
     /**
      * The constructor for the {@link CookController}.
@@ -63,6 +64,9 @@ public class CookController {
         this.textureManager = textureManager;
         this.cooks = new Array<>();
         this.cookStart = new ObjectMap<>();
+
+        // By default process inputs
+        this.processInput = true;
     }
 
     // =======================================LOGIC======================================================
@@ -96,8 +100,8 @@ public class CookController {
      */
     public void update(float delta) {
 
-        // If there are cooks...
-        if (cooks.size > 0) {
+        // If processing inputs and if there are cooks...
+        if (processInput && cooks.size > 0) {
             // Change between cooks if needed
             if (InputController.isKeyJustPressed(Keys.cook_next)) {
                 currentCook = (currentCook + 1) % cooks.size;
@@ -378,6 +382,10 @@ public class CookController {
 
         // return cooksRoot;
         return cooksArrayRoot;
+    }
+
+    public void setProcessInputs(boolean allowInput) {
+        this.processInput = allowInput;
     }
 
     public void deserializeCooks(JsonValue jsonValue, Items items, Map map) {

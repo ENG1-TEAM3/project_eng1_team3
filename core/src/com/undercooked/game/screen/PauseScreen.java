@@ -29,6 +29,8 @@ public class PauseScreen extends Screen {
     AudioSliders audioSliders;
     GameScreen gameScreen;
 
+    private boolean saveEnabled;
+
     public PauseScreen(MainGameClass game) {
         super(game);
         this.batch = MainGameClass.batch;
@@ -93,17 +95,14 @@ public class PauseScreen extends Screen {
 
         // Create the Buttons
         Button unpause = new Button(new TextureRegionDrawable(textureManager.get("uielements/game/resume.png")));
-        Button save = new Button(new TextureRegionDrawable(textureManager.get("uielements/game/save.png")));
         Button menu = new Button(new TextureRegionDrawable(textureManager.get("uielements/game/exit.png")));
 
         // Set the Button visuals
         unpause.setSize(200,100);
-        save.setSize(200, 100);
         menu.setSize(200,100);
 
         // Set the Button positions
         unpause.setPosition(100, 100);
-        save.setPosition(100, 200);
         menu.setPosition(100, 300);
 
         // Add Button listeners
@@ -111,14 +110,6 @@ public class PauseScreen extends Screen {
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 resumeGame();
-            }
-        });
-
-        save.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                SaveLoadGame.saveGame(gameScreen.gameLogic);
-                quitToMenu();
             }
         });
 
@@ -131,8 +122,29 @@ public class PauseScreen extends Screen {
 
         // Add the Buttons to the Stage
         stage.addActor(unpause);
-        stage.addActor(save);
         stage.addActor(menu);
+
+        // Only make and add the save button if save is enabled
+        if (saveEnabled) {
+            // Make the button
+            Button save = new Button(new TextureRegionDrawable(textureManager.get("uielements/game/save.png")));
+
+            // Set position and size
+            save.setSize(200, 100);
+            save.setPosition(100, 200);
+
+            // Add the save's listener
+            save.addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    SaveLoadGame.saveGame(gameScreen.gameLogic);
+                    quitToMenu();
+                }
+            });
+
+            // Add the button to the stage
+            stage.addActor(save);
+        }
 
         // Add the audio sliders
         audioSliders = game.getAudioSettings().createAudioSliders(320, 100, stage, textureManager.get("uielements/background.png"), textureManager.get("uielements/vButton.jpg"));
@@ -212,5 +224,9 @@ public class PauseScreen extends Screen {
     @Override
     public void dispose() {
 
+    }
+
+    public void setSaveEnabled(boolean canSave) {
+        this.saveEnabled = canSave;
     }
 }

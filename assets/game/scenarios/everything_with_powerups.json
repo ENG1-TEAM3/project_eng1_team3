@@ -1,7 +1,7 @@
 {
   "map_id": "<main>:everything",
   "name": "Power up a bit of everything",
-  "description": "Everything on the menu must be served once, but with a lot of powerups.",
+  "description": "Everything on the menu must be served once, but with a lot of power ups.",
   "interactions": [
     "<main>:preparation/patty_form",
     "<main>:preparation/burger_make",
@@ -34,14 +34,14 @@
     "<main>:jacket_potato",
     "<main>:pizza"
   ],
-  "reputation": 10,
+  "reputation": 2,
   "spawn_timer": 5,
   "customer_speed": 3,
   "cook_cost": 200,
   "power_ups": {
     "use_time": 8,
-    "time": 0.25,
-    "max": 20,
-    "despawn_time": 4
+    "time": 0.1,
+    "max": 50,
+    "despawn_time": 5
   }
 }

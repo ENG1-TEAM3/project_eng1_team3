@@ -118,11 +118,6 @@ public class EndlessLogic extends ScenarioLogic {
         super.addEffect(powerUpType, powerUp);
     }
 
-    @Override
-    protected void removeEffect(PowerUpType powerUpType, PowerUp powerUp) {
-        super.addEffect(powerUpType, powerUp);
-    }
-
     public void updateCustomerLimit() {
         // After 6 minutes, allow spawning 3
         if (elapsedTime > 5) {
@@ -136,6 +131,7 @@ public class EndlessLogic extends ScenarioLogic {
 
     @Override
     public void loadScenarioContents(JsonValue scenarioRoot) {
+        super.loadScenarioContents(scenarioRoot);
         // Set the spawn timer. Anything <= 0 will be an instant spawn.
         spawnTimerStart = scenarioRoot.getFloat("spawn_timer");
     }

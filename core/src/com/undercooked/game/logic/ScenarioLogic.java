@@ -1,5 +1,6 @@
 package com.undercooked.game.logic;
 
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonValue;
@@ -28,7 +29,7 @@ import com.undercooked.game.GameType;
 
 import java.util.Random;
 
-public class ScenarioLogic extends GameLogic {
+public class ScenarioLogic extends ScenarioLoadLogic {
 
     /** The number of requests to serve. */
     protected int requestTarget = 5;
@@ -55,8 +56,6 @@ public class ScenarioLogic extends GameLogic {
 
     public ScenarioLogic(GameScreen game, TextureManager textureManager, AudioManager audioManager) {
         super(game, textureManager, audioManager);
-        requests = new Array<>();
-        requestPool = new Array<>();
         powerUps = new Array<>();
         allowDuplicateRequests = false;
         // Set the listeners for the CustomerController
@@ -107,26 +106,7 @@ public class ScenarioLogic extends GameLogic {
         cookController.setInteractRegisterListener(new Listener<MapCell>() {
             @Override
             public void tell(MapCell value) {
-                // Ask the CustomerController if there is a Customer on this Register
-                Register targetRegister = customerController.getRegisterFromCell(value);
-
-                // Make sure it's a valid register
-                if (targetRegister == null) {
-                    return;
-                }
-
-                // If it's valid, then check if it has a customer
-                if (!targetRegister.hasCustomer()) {
-                    return;
-                }
-
-                // Finally, make sure the customer is waiting
-                if (!targetRegister.getCustomer().isWaiting()) {
-                    return;
-                }
-
-                // If all of the above apply, then set the display customer to that customer
-                displayCustomer = targetRegister.getCustomer();
+                interactRegister(value);
             }
         });
 
@@ -236,42 +216,23 @@ public class ScenarioLogic extends GameLogic {
 
     @Override
     public void load() {
-        // Load the Scenario
-        loadScenario(id);
-        // Load all the items
-        items.load(textureManager, Constants.GAME_TEXTURE_ID);
-        // Load the map's floor textures
-        map.loadFloor(textureManager, Constants.GAME_TEXTURE_ID);
-        // Find the registers on the map for the Customers
-        customerController.load(Constants.GAME_TEXTURE_ID);
-        // Load all the Cook textures
-        cookController.loadAll(Constants.GAME_TEXTURE_ID);
+        super.load();
         // Load all the power up textures
-
+        for (PowerUpType thisType : powerUpPool) {
+            textureManager.loadAsset(Constants.GAME_TEXTURE_ID, thisType.texturePath);
+        }
     }
 
     @Override
     public void postLoad() {
         super.postLoad();
-        // Post Load the CustomerController
-        customerController.postLoad();
-
-        // Loop through the requests
-        for (Request request : requestPool) {
-            // Make sure the textures are loaded
-            request.postLoad(textureManager);
-        }
-        for (Request request : requests) {
-            // Make sure the textures are loaded
-            request.postLoad(textureManager);
-        }
-
         // Reset the game
         reset();
     }
 
     @Override
     public void start() {
+        super.start();
         // Spawn a customer
         spawnCustomer();
     }
@@ -287,8 +248,42 @@ public class ScenarioLogic extends GameLogic {
     }
 
     public void createNewPowerUp() {
-        // Get a random map cell that's open (with nothing blocking)
-        MapCell openCell = map.randomOpenCell(Map.CollisionType.ANY);
+        // Get a random map cell that's open (with nothing blocking, and not
+        // on the same cell as the current cook or another power up)
+        Array<MapCell> openCells = map.openCells(Map.CollisionType.ANY);
+        Cook currentCook = cookController.getCurrentCook();
+        for (int i = openCells.size-1 ; i >= 0 ; i--) {
+            MapCell thisCell = openCells.get(i);
+            Rectangle cellCollision = thisCell.getCellCollision();
+            boolean valid = true;
+            // Check if cook is touching the cell
+            if (currentCook != null) {
+                if (currentCook.isColliding(cellCollision)) {
+                    valid = false;
+                    System.out.println("Cook colliding at " + currentCook.getX() + ", " + currentCook.getY());
+                }
+            }
+
+            // Check against all power ups
+            for (PowerUp powerUp : powerUps) {
+                if (powerUp.isColliding(cellCollision)) {
+                    valid = false;
+                    System.out.println("Power up colliding at " + powerUp.getX() + ", " + powerUp.getY());
+                }
+            }
+
+            // If it's invalid, then remove from the array
+            if (!valid) {
+                openCells.removeIndex(i);
+            }
+            // If it's valid, then leave
+        }
+        // If there are no valid cells, then don't add a power up
+        if (openCells.isEmpty()) {
+            return;
+        }
+
+        MapCell openCell = openCells.random();
 
         // If there's no open cell, don't add a power up
         if (openCell == null) return;
@@ -485,68 +480,19 @@ public class ScenarioLogic extends GameLogic {
 
     @Override
     public void unload() {
-        if (items != null) items.unload(gameScreen.getTextureManager());
-        if (interactions != null) interactions.unload();
-        if (map != null) {
-            map.dispose();
-            map = null;
-        }
-        if (cookController != null) cookController.unload();
-        if (customerController != null) customerController.unload();
-        if (requests != null) requests.clear();
+        super.unload();
     }
 
-    protected LoadResult loadScenario(String scenarioAsset) {
-        JsonValue scenarioData = FileControl.loadJsonAsset(scenarioAsset, "scenarios");
-        if (scenarioData == null) {
-            // It didn't load the scenario, so it's a failure.
-            return LoadResult.FAILURE;
-        }
-        // If it's loaded, then unload in case something is already
-        // loaded.
-        unload();
-
-        // If it loaded, format it correctly
-        JsonFormat.formatJson(scenarioData, DefaultJson.scenarioFormat());
-
-        // Try to load the map
-        // If map fails to load, then return failure
-        if (loadMap(scenarioData.getString("map_id")) == LoadResult.FAILURE) {
-            return LoadResult.FAILURE;
-        }
-
-        // Load all the Interactions
-        for (JsonValue interaction : scenarioData.get("interactions")) {
-            interactions.loadInteractionAsset(interaction.asString(), stationController, audioManager, items);
-        }
-
-        // Update all the stations to use the interactions
-        stationController.updateStationInteractions();
-
-        // Set the Customer's speed
-        customerController.setCustomerSpeed(scenarioData.getFloat("customer_speed"));
-
-        // Load all the requests
-        loadRequests(scenarioData.get("requests"));
-
-        // Set the reputation
-        startReputation = scenarioData.getInt("reputation");
-
-        // Set the leaderboard name, if it's currently null
-        if (leaderboardName == null) {
-            leaderboardName = scenarioData.getString("name");
-        }
-
-        // Set the cook's price
-        cookCost = scenarioData.getInt("cook_cost");
+    @Override
+    public void loadScenarioContents(JsonValue scenarioRoot) {
 
         // Set whether requests can be selected multiple times or not
-        allowDuplicateRequests = scenarioData.getBoolean("duplicate_requests");
+        allowDuplicateRequests = scenarioRoot.getBoolean("duplicate_requests");
 
         // Set the request target, only if requestTarget == -1 currently,
         // which means it hasn't been set yet
         if (requestTarget == -1) {
-            requestTarget = scenarioData.getInt("num_of_requests");
+            requestTarget = scenarioRoot.getInt("num_of_requests");
             // If it's < 0, invalid, then set it to use all requests
             if (requestTarget < 0) {
                 requestTarget = requestPool.size;
@@ -554,7 +500,7 @@ public class ScenarioLogic extends GameLogic {
         }
 
         // Load the Power up data
-        JsonValue powerUpData = scenarioData.get("power_ups");
+        JsonValue powerUpData = scenarioRoot.get("power_ups");
         float time = powerUpData.getFloat("time");
         // Default max to -1f.
         powerUpTimerMax = -1f;
@@ -575,124 +521,6 @@ public class ScenarioLogic extends GameLogic {
 
         // Set the maximum number of power ups that can spawn at a time
         maxPowerups = powerUpData.getInt("max");
-
-        // And call loadScenarioContents
-        loadScenarioContents(scenarioData);
-
-        return LoadResult.SUCCESS;
-    }
-
-    /**
-     * For loading scenario data from the {@link #loadScenario(String)}
-     * {@link JsonValue}.
-     *
-     * @param scenarioRoot {@link JsonValue} : The Json for the scenario.
-     */
-    public void loadScenarioContents(JsonValue scenarioRoot) {
-
-    }
-
-    /**
-     * Loads the requests of the {@link ScenarioLogic}, which the
-     * {@link Customer}s will request
-     * from. Each request will have a limited number of times it can
-     * be requested.
-     * @param requestData
-     */
-    protected void loadRequests(JsonValue requestData) {
-        // Load the request format in case it's needed.
-        // However, the format should only allow the object.
-        JsonObject requestFormat = (JsonObject) DefaultJson.requestFormat(false);
-
-        // This is for requests that have been loaded using the asset system, so that
-        // they don't have to be loaded multiple times.
-        ObjectMap<String, Request> loadedRequests = new ObjectMap<>();
-
-        // Create random
-        Random rand = new Random();
-
-        // Loop through all the requests
-        for (JsonValue request : requestData) {
-            // First check if it's a String or an Object.
-            // If it's a string, it's a path to a request, otherwise
-            // it's a request
-            JsonValue rData;
-            boolean storeRequest = false;
-            if (request.isString()) {
-                // If it's a String, it needs to be loaded from the requests
-                // folder
-
-                // But if it's loaded already, just add it to the list
-                if (loadedRequests.containsKey(request.asString())) {
-                    requestPool.add(loadedRequests.get(request.asString()));
-                    // And then the following can be skipped
-                    continue;
-                }
-                // If it's not loaded yet, load it.
-                rData = FileControl.loadJsonAsset(request.asString(), "requests");
-                // If it's null, skip
-                if (rData == null) {
-                    continue;
-                }
-                // Otherwise, make sure it's formatted correctly
-                JsonFormat.formatJson(rData, requestFormat);
-                // And store the request
-                storeRequest = true;
-            } else {
-                // Otherwise it's just the request
-                rData = request;
-            }
-            // If the addition wasn't successful, then skip
-            if (items.addItemAsset(rData.getString("item_id")) == null) {
-                continue;
-            }
-            // If it was successfully added, then add it to the array
-            Request newRequest = new Request(rData.getString("item_id"));
-            newRequest.setValue(rData.getInt("value"));
-
-            if (storeRequest) {
-                loadedRequests.put(request.asString(), newRequest);
-            }
-
-            // Get the instructions
-            JsonValue instructions = rData.get("instructions");
-            // Loop through the instructions
-            for (JsonValue instruction : instructions) {
-                // Add them to the Request's instructions
-                Instruction newInstruction = newRequest.addInstruction(instruction.getString("texture_path"),
-                        instruction.getString("text"));
-                // As it's going, load the textures for the requests too.
-                newInstruction.load(textureManager, Constants.GAME_TEXTURE_ID);
-            }
-
-            // Set the reputation threat of the request
-            newRequest.setReputationThreat(rData.getInt("reputation_threat"));
-
-            // Check the time value of the request
-            float time = rData.getFloat("time");
-            if (time < 0) {
-                // If the time is invalid, default to -1
-                time = -1;
-                // If it's < 0, then check for time_min and time_max
-                float timeMin = rData.getFloat("time_min"),
-                      timeMax = rData.getFloat("time_max");
-                if (timeMin >= 0 && timeMax >= timeMin) {
-                    // If they're valid, then randomly select time
-                    // in the range
-                    time = rand.nextFloat() * (timeMax - timeMin) + timeMin;
-                }
-                // If either of the two don't apply, it'll just use the default
-                // -1, which is no timer.
-            }
-            // Multiply the time, based on difficulty.
-            // Easy is x2, Medium is x1.5, Hard does nothing
-            time *= getDifficultyMultiplier();
-            // Set the time value
-            newRequest.setTime(time);
-
-            // Finally, add the request to requests
-            requestPool.add(newRequest);
-        }
     }
 
     public void customerServed(Customer customer) {

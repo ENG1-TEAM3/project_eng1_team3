@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.undercooked.game.Input.InputType;
+import com.undercooked.game.assets.TextureManager;
 import com.undercooked.game.entity.cook.Cook;
 import com.undercooked.game.entity.Entity;
 import com.undercooked.game.interactions.InteractResult;
@@ -22,6 +23,12 @@ public class MapEntity extends Entity {
     }
 
     @Override
+    public void postLoad(TextureManager textureManager) {
+        super.postLoad(textureManager);
+        updateSpriteSize();
+    }
+
+    @Override
     public void setX(float x) {
         super.setX(x);
         interactBox.x = x;
@@ -33,10 +40,16 @@ public class MapEntity extends Entity {
         interactBox.y = y;
     }
 
+    public void updateSpriteSize() {
+        if (this.sprite == null) return;
+        this.sprite.setSize(MapManager.gridToPos(width), MapManager.gridToPos(height));
+    }
+
     public void setWidth(int width) {
         this.width = Math.max(1,width);
         this.interactBox.width = Math.max(MapManager.gridToPos(1), MapManager.gridToPos(width));
         this.collision.width = interactBox.width;
+        updateSpriteSize();
         // this.sprite.setSize(width*MapManager.gridToPos(height), this.sprite.getHeight());
     }
 
@@ -44,6 +57,7 @@ public class MapEntity extends Entity {
         this.height = Math.max(1,height);
         this.interactBox.height = Math.max(MapManager.gridToPos(1),MapManager.gridToPos(height));
         this.collision.height = interactBox.height;
+        updateSpriteSize();
         // this.sprite.setSize(this.sprite.getWidth(), height*MapManager.gridToPos(height));
     }
 

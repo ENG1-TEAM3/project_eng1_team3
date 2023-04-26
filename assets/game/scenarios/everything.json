@@ -34,7 +34,6 @@
     "<main>:jacket_potato",
     "<main>:pizza"
   ],
-  "reputation": 10,
   "spawn_timer": 5,
   "customer_speed": 3,
   "cook_cost": 200,

@@ -260,10 +260,12 @@ public class GameScreen extends Screen {
 
 	public void pauseGame() {
 		gameLogic.pause();
-		game.screenController.nextScreen(Constants.PAUSE_SCREEN_ID);
 
 		PauseScreen pauseScreen = (PauseScreen) game.screenController.getScreen(Constants.PAUSE_SCREEN_ID);
 		pauseScreen.gameScreen = this;
+		pauseScreen.setSaveEnabled(gameLogic.canSave());
+
+		game.screenController.nextScreen(Constants.PAUSE_SCREEN_ID);
 	}
 
 	AudioSliders audioSliders;
@@ -293,13 +295,15 @@ public class GameScreen extends Screen {
 		gameLogic.update(delta);
 
 		// Move the camera for the game renderer
-		gameRenderer.moveCamera(delta);
+		gameLogic.moveCamera(delta);
 
-		// Render the game
-		renderScreen(delta);
-		// Draw Pause Button
-		MainGameClass.batch.setProjectionMatrix(uiCamera.combined);
-		stage.draw();
+		// Render the game (if still on this screen)
+		if (getScreenController().onScreen(Constants.GAME_SCREEN_ID)) {
+			renderScreen(delta);
+			// Draw Pause Button
+			MainGameClass.batch.setProjectionMatrix(uiCamera.combined);
+			stage.draw();
+		}
 
 		// =========================================CHECK=GAME=OVER======================================================
 
@@ -307,7 +311,10 @@ public class GameScreen extends Screen {
 
 	@Override
 	public void renderScreen(float delta) {
+		// Render the game
 		gameRenderer.render(delta);
+		// And then render UI
+		gameRenderer.renderUI(delta);
 	}
 
 	public static final float MAX_WAIT_TIME = 1000000; //Customer wait time in ms

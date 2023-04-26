@@ -1,7 +1,7 @@
 {
   "map_id": "<main>:everything",
-  "name": "Custom",
-  "description": "Complete a scenario with a specified number of random requests.\nThis can only be played in Scenario mode.",
+  "name": "Tutorial",
+  "description": "Scenario for the Tutorial.",
   "interactions": [
     "<main>:preparation/patty_form",
     "<main>:preparation/burger_make",
@@ -29,21 +29,10 @@
     "<main>:bin"
   ],
   "requests": [
-    "<main>:burger",
     "<main>:salad",
-    "<main>:jacket_potato",
-    "<main>:pizza"
+    "<main>:burger"
   ],
   "reputation": 3,
-  "spawn_timer": 5,
   "customer_speed": 3,
-  "cook_cost": 200,
-  "duplicate_requests": true,
-  "power_ups": {
-    "use_time": 8,
-    "time_min": 6,
-    "time_max": 14,
-    "max": 4,
-    "despawn_time": 10
-  }
+  "cook_cost": 60
 }
