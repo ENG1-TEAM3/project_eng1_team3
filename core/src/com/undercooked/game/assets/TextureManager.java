@@ -96,8 +96,8 @@ public class TextureManager {
         return load(textureGroup, "game/" + FileControl.toPath(path, assetFolder));
     }
 
-    public boolean loadAsset(String path, String assetFolder) {
-        return loadAsset("default", path, assetFolder);
+    public boolean loadAsset(String textureGroup, String path) {
+        return loadAsset(textureGroup, path, "textures");
     }
 
 

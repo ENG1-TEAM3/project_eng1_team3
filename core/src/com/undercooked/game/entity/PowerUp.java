@@ -1,6 +1,7 @@
 package com.undercooked.game.entity;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.undercooked.game.assets.TextureManager;
 import com.undercooked.game.util.Listener;
 
 public class PowerUp extends Entity {
@@ -13,7 +14,13 @@ public class PowerUp extends Entity {
 
     public PowerUp() {
         super();
-        collision.setSize(20,20);
+        collision.setSize(30,30);
+    }
+
+    @Override
+    public void postLoad(TextureManager textureManager) {
+        super.postLoad(textureManager);
+        sprite.setSize(48,48);
     }
 
     @Override

@@ -247,7 +247,9 @@ public class ScenarioLogic extends GameLogic {
         // Load all the Cook textures
         cookController.loadAll(Constants.GAME_TEXTURE_ID);
         // Load all the power up textures
-
+        for (PowerUpType thisType : powerUpPool) {
+            textureManager.loadAsset(Constants.GAME_TEXTURE_ID, thisType.texturePath);
+        }
     }
 
     @Override
