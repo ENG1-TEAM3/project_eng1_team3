@@ -41,9 +41,7 @@ public class PowerUpService {
             return;
         }
 
-        activePowerUps.add(PowerUps.cookingSpeedReduce());
-
-        switch (random.nextInt(6, 7)) {
+        switch (random.nextInt(50)) {
             case 1:
                 activePowerUps.add(PowerUps.constructionCostReduce());
                 break;
