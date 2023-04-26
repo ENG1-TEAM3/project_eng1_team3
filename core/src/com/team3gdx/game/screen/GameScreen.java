@@ -27,10 +27,13 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.team3gdx.game.MainGameClass;
+import com.team3gdx.game.PowerUp.PowerUp;
+import com.team3gdx.game.PowerUp.PowerUpService;
 import com.team3gdx.game.entity.Cook;
 import com.team3gdx.game.entity.Customer;
 import com.team3gdx.game.entity.CustomerController;
@@ -40,6 +43,8 @@ import com.team3gdx.game.station.StationManager;
 import com.team3gdx.game.util.CollisionTile;
 import com.team3gdx.game.util.Control;
 import com.team3gdx.game.util.GameMode;
+
+import java.util.Random;
 
 public class GameScreen implements Screen {
 
@@ -110,6 +115,8 @@ public class GameScreen implements Screen {
 	public static CustomerController cc;
 	InputMultiplexer multi;
 	StationManager stationManager = new StationManager();
+
+	PowerUpService powerUps = new PowerUpService();
 
 	/**
 	 * Constructor to initialise game screen;
@@ -261,7 +268,11 @@ public class GameScreen implements Screen {
 		// =====================================RENDER=TOP=MAP=LAYER=====================================================
 		tiledMapRenderer.render(new int[] { 1 });
 		// =====================================DRAW=COOK=TOP=HALF=======================================================
+
+
+
 		stationManager.handleStations(game.batch, game.shapeRenderer);
+
 		drawHeldItems();
 		game.batch.begin();
 		for (Cook curCook : cooks)
