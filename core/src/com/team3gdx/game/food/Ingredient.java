@@ -104,8 +104,6 @@ public class Ingredient extends Entity {
 		if (idealSlices < slices) {
 			slices++;
 			texture = new Texture("items/" + name + "_mushy.png");
-			usable = false;
-			return true;
 		}
 		if (dT / width * width <= width) {
 			drawStatusBar(shapeRenderer, dT / width, 0, 1);
@@ -185,7 +183,10 @@ public class Ingredient extends Entity {
 		shapeRenderer.end();
 	}
 	
-	public boolean checkUsable(){
+	public boolean checkUsable(Ingredient I){
+		if (I.idealSlices < I.slices){
+			return false;
+		}
 		return usable;
 	}
 

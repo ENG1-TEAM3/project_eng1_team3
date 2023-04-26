@@ -54,6 +54,8 @@ public class Station {
 	*/
 	public Boolean active;
 
+	public String name;
+
 	/**
 	 * 
 	 * @param pos                The (x, y) coordinates of the station.
@@ -167,13 +169,14 @@ public class Station {
 		interactSound.play();
 	}
 	public void buyBack() {
+
 		if (active == false){
 			active = true;
 		} 
 	}
 	public void drawBuyBackText(SpriteBatch batch){
 		if (active == false){
-			drawText(batch, "Buy back for 60 money[e]", new Vector2(pos.x * 64, pos.y * 64));
+			drawText(batch, "Buy back for 60 money[q]", new Vector2(pos.x * 64, pos.y * 64));
 		}
 	}
 	public boolean active(){

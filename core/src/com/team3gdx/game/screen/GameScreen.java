@@ -50,7 +50,7 @@ public class GameScreen implements Screen {
 	private final GameMode gameMode;
 
 	public static int currentWave = 0;
-	public static int money = 0;
+	public static int money = 320;
 
 	Rectangle volSlideBackgr;
 	Rectangle volSlide;
@@ -102,8 +102,8 @@ public class GameScreen implements Screen {
 	long timeOnStartup;
 	long tempTime, tempThenTime;
 	public static Control control;
-	TiledMapRenderer tiledMapRenderer;
-	public TiledMap map1;
+	public static TiledMapRenderer tiledMapRenderer;
+	public static TiledMap map1;
 	public static Cook[] cooks = { new Cook(new Vector2(64 * 5, 64 * 3), 1), new Cook(new Vector2(64 * 5, 64 * 5), 2) };
 	public static int currentCookIndex = 0;
 	public static Cook cook = cooks[currentCookIndex];
@@ -144,7 +144,14 @@ public class GameScreen implements Screen {
 		}
 	}
 
-	/**
+	public void changeStation(int x,int y){
+
+		TiledMapTileLayer Layer =(TiledMapTileLayer)map1.getLayers().get(2);
+		Cell cell = Layer.getCell(x,y);
+		String text =cell.toString();
+		System.out.println(text);
+	}
+		/**
 	 * Things that should be done while the game screen is shown
 	 */
 	public void show() {
@@ -304,7 +311,9 @@ public class GameScreen implements Screen {
 		checkGameOver();
 
 	}
-
+	public void updateLayer(){
+		tiledMapRenderer.renderObjects((map1.getLayers().get(1)));
+	}
     /**
      * Change selected cook
      */

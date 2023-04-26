@@ -3,6 +3,9 @@ package com.team3gdx.game.station;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.swing.text.Position;
+
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -12,6 +15,15 @@ import com.team3gdx.game.food.Ingredient;
 import com.team3gdx.game.food.Ingredients;
 import com.team3gdx.game.screen.GameScreen;
 import com.team3gdx.game.util.GameMode;
+import com.badlogic.gdx.maps.MapProperties;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
+import com.badlogic.gdx.maps.tiled.TiledMapTile;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
+import com.badlogic.gdx.maps.tiled.TiledMapTileSet;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
+import com.badlogic.gdx.maps.tiled.TmxMapLoader;
+import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 
 /**
  * 
@@ -45,9 +57,14 @@ public class StationManager {
 						if (GameScreen.money >= 60){
 							station.buyBack();
 							GameScreen.money -= 60;
+							TiledMapTileLayer Layer =(TiledMapTileLayer)GameScreen.map1.getLayers().get(1);
+							Cell cell = Layer.getCell((int)station.pos.x,(int)station.pos.y);
+							TiledMapTile tile =cell.getTile();
+							int newId = tile.getId()+10;
+							tile.setId(newId);
+							}
 						}
 				}
-			}
 			}
 			else if (!station.slots.empty() && !station.infinite) {
 				for (int i = 0; i < station.slots.size(); i++) {
