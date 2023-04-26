@@ -131,6 +131,7 @@ public class EndlessLogic extends ScenarioLogic {
 
     @Override
     public void loadScenarioContents(JsonValue scenarioRoot) {
+        super.loadScenarioContents(scenarioRoot);
         // Set the spawn timer. Anything <= 0 will be an instant spawn.
         spawnTimerStart = scenarioRoot.getFloat("spawn_timer");
     }

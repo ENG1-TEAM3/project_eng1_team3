@@ -29,21 +29,21 @@ import com.undercooked.game.util.StringUtil;
 import java.util.Comparator;
 
 public class GameRenderer {
-    private GameLogic logic;
-    private SpriteBatch batch;
-    private ShapeRenderer shape;
-    private BitmapFont font;
-    private Array<Entity> renderEntities;
+    protected GameLogic logic;
+    protected SpriteBatch batch;
+    protected ShapeRenderer shape;
+    protected BitmapFont font;
+    protected Array<Entity> renderEntities;
 
-    private OrthographicCamera worldCamera;
+    protected OrthographicCamera worldCamera;
 
-    private OrthographicCamera uiCamera;
-    private GlyphLayout text;
-    private Sprite interactSprite;
-    private Texture moneyTex;
-    private Texture reputationTex;
+    protected OrthographicCamera uiCamera;
+    protected GlyphLayout text;
+    protected Sprite interactSprite;
+    protected Texture moneyTex;
+    protected Texture reputationTex;
 
-    private Comparator<Entity> entityCompare = new Comparator<Entity>() {
+    private final Comparator<Entity> entityCompare = new Comparator<Entity>() {
         @Override
         public int compare(Entity o1, Entity o2) {
             if (o1.getY() > o2.getY()) {
@@ -88,20 +88,36 @@ public class GameRenderer {
         this.shape = shape;
     }
 
-    public void moveCamera(float delta) {
-        CookController cookController = logic.getCookController();
-        if (cookController.getCurrentCook() != null) {
-            if (Math.abs(worldCamera.position.x - cookController.getCurrentCook().collision.x) < 2
-                    && Math.abs(worldCamera.position.y - cookController.getCurrentCook().collision.y) < 2) {
-                worldCamera.position.x = cookController.getCurrentCook().collision.x;
-                worldCamera.position.y = cookController.getCurrentCook().collision.y;
-            } else {
-                Vector3 target = new Vector3(cookController.getCurrentCook().collision.x, cookController.getCurrentCook().collision.y, 0);
-                worldCamera.position.lerp(target, .9f * delta * 2);
-            }
+    public void moveCamera(float delta, float x, float y) {
+        if (Math.abs(worldCamera.position.x - x) < 2
+                && Math.abs(worldCamera.position.y - y) < 2) {
+            worldCamera.position.x = x;
+            worldCamera.position.y = y;
+        } else {
+            Vector3 target = new Vector3(x, y, 0);
+            worldCamera.position.lerp(target, .9f * delta * 2);
         }
+
     }
 
+    public void moveCamera(float delta, Entity targetEntity) {
+        if (targetEntity == null) return;
+        // If the target is null, just ignore
+        moveCamera(delta, targetEntity.collision.x, targetEntity.collision.y);
+    }
+
+    /**
+     * A function to be overridden by children
+     * @param entity {@link Entity} : The {@link Entity} to render.
+     */
+    public void renderEntity(Entity entity) {
+
+    }
+
+    /**
+     * Function called to render the world.
+     * @param delta {@code float} : The time since the last frame
+     */
     public void render(float delta) {
         // Clear the Screen
         ScreenUtils.clear(0, 0, 0, 0);
@@ -181,6 +197,9 @@ public class GameRenderer {
                 batch.begin();
                 interactSprite.draw(batch);
                 batch.end();
+
+                // Call the render entity function
+                this.renderEntity(renderEntity);
             }
 
             shape.begin(ShapeRenderer.ShapeType.Filled);
@@ -213,13 +232,13 @@ public class GameRenderer {
         // Draw debug
         // renderDebug(delta);
 
+    }
 
-
-
-
-
-        // Following that, render the UI
-        shape.setProjectionMatrix(uiCamera.combined);
+    /**
+     * Function called to render the ui.
+     * @param delta {@code float} : The time since the last frame
+     */
+    public void renderUI(float delta) {shape.setProjectionMatrix(uiCamera.combined);
         batch.setProjectionMatrix(uiCamera.combined);
 
         //// Render the Cook's heads in the top right of the screen

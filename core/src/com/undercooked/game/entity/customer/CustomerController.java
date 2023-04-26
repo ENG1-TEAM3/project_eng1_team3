@@ -168,7 +168,7 @@ public class CustomerController {
 		return !(customerInSquareGrid(spawnX, spawnY) || customerInSquareGrid(spawnX, spawnY + 1));
 	}
 
-	public void spawnCustomer(Request request) {
+	public Customer spawnCustomer(Request request) {
 		Customer newCustomer = new Customer(3, this, textureManager);
 		// Add the customer if it's valid. If not, add to the "to spawn" array
 		// If toSpawn already has something in it, then add it to the end
@@ -195,6 +195,7 @@ public class CustomerController {
 		// Try to put the customer on a register
 		customerOnRegister(newCustomer, getOpenRegister());
 		amountActiveCustomers += 1;
+		return newCustomer;
 	}
 
 	protected void setCustomersListeners(Customer customer) {
