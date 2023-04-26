@@ -176,7 +176,7 @@ public class Station {
 	}
 	public void drawBuyBackText(SpriteBatch batch, float constructionCost){
 		if (active == false){
-			drawText(batch, "Buy back for " + constructionCost + " money [e]", new Vector2(pos.x * 64, pos.y * 64));
+			drawText(batch, "Buy back for " + constructionCost + " money [q]", new Vector2(pos.x * 64, pos.y * 64));
 		}
 	}
 	public boolean active(){

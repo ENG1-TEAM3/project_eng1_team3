@@ -113,6 +113,7 @@ public class GameScreen implements Screen {
 	public static int currentCookIndex = 0;
 	public static Cook cook = cooks[currentCookIndex];
 	public static CustomerController cc;
+	public static int reputationPoints = 3;
 	InputMultiplexer multi;
 	StationManager stationManager = new StationManager();
 
@@ -347,7 +348,7 @@ public class GameScreen implements Screen {
 		control.shift = false;
 	}
 
-	public static final float MAX_WAIT_TIME = 1000000; //Customer wait time in ms
+	public static final float MAX_WAIT_TIME = 1000000;
 
     /**
      * Draw UI elements
@@ -373,8 +374,10 @@ public class GameScreen implements Screen {
 		}
 
 		game.batch.begin();
-		game.font.draw(game.batch, Long.toString((startTime - timeOnStartup) / 1000),
-				gameResolutionX / 2f + gameResolutionX / 9f, 19 * gameResolutionY / 20f);
+		game.font.draw(game.batch,Integer.toString(reputationPoints), gameResolutionX / 2.3f + gameResolutionX / 3f ,19 * gameResolutionY / 20f);
+		game.font.draw(game.batch, "Reputation:", gameResolutionX / 1.95f + gameResolutionX / 7f , 19 * gameResolutionY / 20f);
+
+		game.font.draw(game.batch, Long.toString((startTime - timeOnStartup) / 1000),gameResolutionX / 2f + gameResolutionX / 9f, 19 * gameResolutionY / 20f);
 		game.font.draw(game.batch, "Time in S:", gameResolutionX / 2f, 19 * gameResolutionY / 20f);
 
 		game.font.draw(game.batch,Integer.toString(money), gameResolutionX / 3f + gameResolutionX / 10f, 19 * gameResolutionY / 20f);
@@ -678,6 +681,12 @@ public class GameScreen implements Screen {
 			game.resetGameScreen();
 			this.resetStatic();
 			game.setScreen(game.getLeaderBoardScreen());
+		}
+		if (reputationPoints == 0){
+			game.resetGameScreen();
+			this.resetStatic();
+			reputationPoints +=3;
+			game.setScreen(game.getMainScreen());
 		}
 	}
 

@@ -16,7 +16,7 @@ public class ServingStation extends Station {
 	private final CustomerController customerController;
 	private final GameMode gameMode;
 	String[] possibleOrders = new String[] { "Burger", "Salad","Pizza","Jacket_potato" };
-
+	public float waitTime = 30000;
 	/**
 	 * Configure allowed ingredient to be those on the menu.
 	 */
@@ -46,6 +46,15 @@ public class ServingStation extends Station {
 				waitingCustomer.order = possibleOrders[new Random().nextInt(possibleOrders.length)];
 				waitingCustomer.arrived();
 				GameScreen.currentWaitingCustomer = waitingCustomer;
+			}
+			if (waitingCustomer.waitTime() >= waitTime){
+				customerController.delCustomer(waitingCustomer);
+				if (GameScreen.currentWave < gameMode.getNumberOfWaves()){
+					customerController.spawnCustomer();
+				}
+				waitingCustomer.locked = false;
+				GameScreen.currentWaitingCustomer = null;
+				GameScreen.reputationPoints --;
 			}
 			if (waitingCustomer == GameScreen.currentWaitingCustomer && !slots.empty()
 					&& slots.peek().equals(Menu.RECIPES.get(waitingCustomer.order))) {
