@@ -1,3 +1,7 @@
+img {
+    position : center;
+}
+
 body {
     background-color:  #fffce8;
 }
@@ -22,6 +26,7 @@ button{
     font-size: 20px;
     margin: 10px;
     padding: 10px;
+    position: center;
 }
 button:hover{
     background-color: rgb(255, 189, 33);
@@ -33,10 +38,11 @@ button2{
     color: white;
     text-align: center;
     text-decoration: none;
-    display: center;
+    display: inline-block;
     font-size: 20px;
     margin: 10px;
     padding: 10px;
+    position: relative;
 }
 button2:hover{
     background-color: rgb(183, 183, 183);
