@@ -1,11 +1,13 @@
 package com.team3gdx.game.PowerUp;
 
 import com.badlogic.gdx.utils.Array;
-import com.team3gdx.game.util.GameMode;
+
+import java.util.Random;
 
 public class PowerUpService {
     private float timer;
     private final Array<PowerUp> activePowerUps = new Array<>();
+    private final Random random = new Random();
 
     public PowerUpService() {
 
@@ -39,9 +41,26 @@ public class PowerUpService {
             return;
         }
 
-
+        switch (random.nextInt(0, 50)) {
+            case 1:
+                activePowerUps.add(PowerUps.constructionCostReduce());
+                break;
+            case 2:
+                activePowerUps.add(PowerUps.cookingSpeedReduce());
+                break;
+            case 3:
+                activePowerUps.add(PowerUps.customerTimeIncrease());
+                break;
+            case 4:
+                activePowerUps.add(PowerUps.increasePay());
+                break;
+            case 5:
+                activePowerUps.add(PowerUps.speedBoost());
+        }
     }
 
-
+    public Array<PowerUp> getActivePowerUps() {
+        return activePowerUps;
+    }
 
 }

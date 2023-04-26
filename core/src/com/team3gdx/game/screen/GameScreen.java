@@ -120,7 +120,7 @@ public class GameScreen implements Screen {
 
 	/**
 	 * Constructor to initialise game screen;
-	 * 
+	 *
 	 * @param game - Main entry point class
 	 * @param ms   - Title screen class
 	 */
@@ -243,7 +243,7 @@ public class GameScreen implements Screen {
 
 	/**
 	 * Render method for main game
-	 * 
+	 *
 	 * @param delta - some change in time
 	 */
 
@@ -269,7 +269,7 @@ public class GameScreen implements Screen {
 		tiledMapRenderer.render(new int[] { 1 });
 		// =====================================DRAW=COOK=TOP=HALF=======================================================
 
-
+		powerUps.render(delta);
 
 		stationManager.handleStations(game.batch, game.shapeRenderer);
 
@@ -374,6 +374,14 @@ public class GameScreen implements Screen {
 		game.font.draw(game.batch,Integer.toString(currentWave), gameResolutionX / 5f + gameResolutionX / 9f, 19 * gameResolutionY / 20f);
 		game.font.draw(game.batch, "Served:", gameResolutionX / 5f + gameResolutionX / 35f, 19 * gameResolutionY / 20f);
 		game.batch.end();
+
+		int startX = Gdx.graphics.getWidth() - 32;
+		int i = 0;
+
+		for (PowerUp powerup : powerUps.getActivePowerUps()) {
+			powerup.pos = new Vector2(startX - i * 32, 18 * gameResolutionY / 20f);
+			i++;
+		}
 	}
 
     /**
@@ -419,7 +427,7 @@ public class GameScreen implements Screen {
 
 	/**
 	 * Changes game window state
-	 * 
+	 *
 	 * @param state1 - the state to change to
 	 */
 	public void changeScreen(STATE state1) {
@@ -475,6 +483,7 @@ public class GameScreen implements Screen {
 	public void paid(int pay){
 		money += pay;
 	}
+
 	/**
 	 * Checks to see whether escape has been pressed to pause the game
 	 */
@@ -580,7 +589,7 @@ public class GameScreen implements Screen {
 
 	/**
 	 * Construct an array of CollisionTile objects for collision detection
-	 * 
+	 *
 	 * @param mp- game tilemap
 	 */
 	public static void constructCollisionData(TiledMap mp) {
@@ -623,7 +632,7 @@ public class GameScreen implements Screen {
 
 	/**
 	 * Check the tile the cook is looking at for interaction
-	 * 
+	 *
 	 * @param ck - Selected cook
 	 * @param sr - ShapeRenderer to draw the coloured box
 	 */
@@ -668,7 +677,7 @@ public class GameScreen implements Screen {
 
 	/**
 	 * Resize game screen - Not used in fullscreen mode
-	 * 
+	 *
 	 * @param width  - width to resize to
 	 * @param height - height to resize to
 	 */
