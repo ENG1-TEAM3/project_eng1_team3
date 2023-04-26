@@ -1,5 +1,6 @@
 package com.undercooked.game.logic;
 
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonValue;
 import com.undercooked.game.assets.AudioManager;
@@ -18,12 +19,8 @@ import com.undercooked.game.render.GameRenderer;
 import com.undercooked.game.screen.GameScreen;
 import com.undercooked.game.screen.WinScreen;
 import com.undercooked.game.station.StationController;
-import com.undercooked.game.util.Constants;
-import com.undercooked.game.util.Listener;
-import com.undercooked.game.util.Observer;
-import com.undercooked.game.util.StringUtil;
+import com.undercooked.game.util.*;
 import com.undercooked.game.GameType;
-import com.undercooked.game.util.leaderboard.LeaderboardController;
 
 /**
  * A class to extend from that indicates the logic of the
@@ -74,6 +71,9 @@ public abstract class GameLogic {
         this.startReputation = 3;
         this.resetOnLoad = true;
 
+        this.requests = new Array<>();
+        this.requestPool = new Array<>();
+
         this.cookController = new CookController(textureManager);
         this.customerController = new CustomerController(textureManager);
         this.interactions = new Interactions();
@@ -116,7 +116,13 @@ public abstract class GameLogic {
      * Called when the game starts
      */
     public void start() {
-
+        // Move the camera to the start cook, if there is one.
+        Cook currentCook = cookController.getCurrentCook();
+        if (currentCook != null) {
+            OrthographicCamera camera = CameraController.getCamera(Constants.WORLD_CAMERA_ID);
+            camera.position.x = currentCook.getX();
+            camera.position.y = currentCook.getY();
+        }
     }
 
     /**
@@ -131,7 +137,7 @@ public abstract class GameLogic {
         // Get the WinScreen
         WinScreen winScreen = (WinScreen) gameScreen.getScreenController().getScreen(Constants.WIN_SCREEN_ID);
         // Go to win screen
-        gameScreen.getScreenController().setScreen(winScreen);
+        gameScreen.getScreenController().setScreen(Constants.WIN_SCREEN_ID);
         // Set the leaderboard type and id
         winScreen.setLeaderboardID(leaderboardId + "-" + Difficulty.toString(difficulty));
         winScreen.setLeaderboardType(gameType);
@@ -422,5 +428,13 @@ public abstract class GameLogic {
 
     public GameRenderer getGameRenderer() {
         return gameRenderer;
+    }
+
+    public boolean canSave() {
+        return true;
+    }
+
+    public void moveCamera(float delta) {
+        gameRenderer.moveCamera(delta, cookController.getCurrentCook());
     }
 }

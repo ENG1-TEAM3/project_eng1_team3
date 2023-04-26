@@ -17,6 +17,7 @@ public class MapCell {
     /** The floor tile to draw underneath. */
     Texture belowTile;
     MapEntity mapEntity;
+    protected Rectangle collision;
 
     public MapCell(boolean collidable, boolean interactable, boolean base) {
         this.collidable = collidable;
@@ -26,6 +27,8 @@ public class MapCell {
         this.y = 0;
         this.width = 64;
         this.height = 64;
+        this.collision = new Rectangle();
+        this.collision.setSize(MapManager.gridToPos(1));
     }
 
     public MapCell() {
@@ -67,6 +70,7 @@ public class MapCell {
         if (this.mapEntity != null) {
             mapEntity.setX(x);
         }
+        this.collision.setX(x);
         this.displayX = x;
     }
 
@@ -79,6 +83,7 @@ public class MapCell {
         if (this.mapEntity != null) {
             mapEntity.setY(y);
         }
+        this.collision.setY(y);
         this.displayY = y;
     }
 
@@ -173,8 +178,12 @@ public class MapCell {
 
     public Rectangle getCollision() {
         if (mapEntity == null) {
-            return new Rectangle(x,y, 0, 0);
+            return getCellCollision();
         }
         return mapEntity.collision;
+    }
+
+    public Rectangle getCellCollision() {
+        return this.collision;
     }
 }

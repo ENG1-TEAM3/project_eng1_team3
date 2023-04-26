@@ -16,19 +16,15 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.undercooked.game.GameType;
 import com.undercooked.game.assets.TextureManager;
-import com.undercooked.game.audio.AudioSettings;
 import com.undercooked.game.audio.AudioSliders;
 import com.undercooked.game.MainGameClass;
 import com.undercooked.game.audio.Slider;
-import com.undercooked.game.logic.Difficulty;
-import com.undercooked.game.logic.EndlessLogic;
-import com.undercooked.game.logic.GameLogic;
-import com.undercooked.game.logic.ScenarioLogic;
+import com.undercooked.game.logic.*;
 import com.undercooked.game.render.GameRenderer;
+import com.undercooked.game.render.TutorialRenderer;
 import com.undercooked.game.util.CameraController;
 import com.undercooked.game.util.Constants;
 import com.undercooked.game.util.SaveLoadGame;
-import jdk.internal.org.jline.utils.DiffHelper;
 
 public class MainScreen extends Screen {
 	float v = 0;
@@ -45,27 +41,15 @@ public class MainScreen extends Screen {
 
 	float sliderWidth;
 
-	Button sb;
-	Button lb;
-	Button ad;
-	Button eg;
-
 	Rectangle volSlide;
 	Rectangle volSlideBackgr;
 	Rectangle musSlide;
 	Rectangle musSlideBackgr;
 
+	Texture background;
+
 	OrthographicCamera camera;
 	Viewport viewport;
-
-	Texture vButton;
-	Texture vControl;
-	Texture background;
-	Texture startButton;
-	Texture leaderBoard;
-	Texture exitGame;
-	Texture audio;
-	Texture audioEdit;
 
 	Stage stage;
 
@@ -118,7 +102,6 @@ public class MainScreen extends Screen {
 	public void load() {
 		TextureManager textureManager = game.getTextureManager();
 		textureManager.load(Constants.MENU_TEXTURE_ID, "uielements/vButton.jpg");
-		textureManager.load(Constants.MENU_TEXTURE_ID, "uielements/vControl.png");
 		textureManager.load(Constants.MENU_TEXTURE_ID, "uielements/newgame.png");
 		textureManager.load(Constants.MENU_TEXTURE_ID, "uielements/MainScreenBackground.jpg");
 		textureManager.load(Constants.MENU_TEXTURE_ID, "uielements/leaderboard1.png");
@@ -126,6 +109,7 @@ public class MainScreen extends Screen {
 		textureManager.load(Constants.MENU_TEXTURE_ID, "uielements/background.png");
 		textureManager.load(Constants.MENU_TEXTURE_ID, "uielements/game/exit.png");
 		textureManager.load(Constants.MENU_TEXTURE_ID, "uielements/game/load.png");
+		textureManager.load(Constants.MENU_TEXTURE_ID, "uielements/tutorial.png");
 
 		game.audioManager.loadMusic("audio/music/MainScreenMusic.ogg", Constants.MUSIC_GROUP);
 	}
@@ -159,35 +143,37 @@ public class MainScreen extends Screen {
 		game.mainScreenMusic = game.audioManager.getMusic("audio/music/MainScreenMusic.ogg");
 
 		final TextureManager textureManager = game.getTextureManager();
-		vButton = textureManager.get("uielements/vButton.jpg");
-		vControl = textureManager.get("uielements/vControl.png");
-		startButton = textureManager.get("uielements/newgame.png");
+		Texture vButton = textureManager.get("uielements/vButton.jpg");
+		Texture startBtnTex = textureManager.get("uielements/newgame.png");
 		background = textureManager.get("uielements/MainScreenBackground.jpg");
-		leaderBoard = textureManager.get("uielements/leaderboard1.png");
-		audio = textureManager.get("uielements/audio.png");
-		audioEdit = textureManager.get("uielements/background.png");
-		exitGame = textureManager.get("uielements/game/exit.png");
+		Texture leaderboardBtnTex = textureManager.get("uielements/leaderboard1.png");
+		Texture audioBtnTex = textureManager.get("uielements/audio.png");
+		Texture audioEdit = textureManager.get("uielements/background.png");
+		Texture exitBtnTex = textureManager.get("uielements/game/exit.png");
 
-		sb = new Button(new TextureRegionDrawable(startButton));
-		lb = new Button(new TextureRegionDrawable(leaderBoard));
-		ad = new Button(new TextureRegionDrawable(audio));
-		eg = new Button(new TextureRegionDrawable(exitGame));
+		Button startBtn = new Button(new TextureRegionDrawable(startBtnTex));
+		Button leaderboardBtn = new Button(new TextureRegionDrawable(leaderboardBtnTex));
+		Button audioBtn = new Button(new TextureRegionDrawable(audioBtnTex));
+		Button exitBtn = new Button(new TextureRegionDrawable(exitBtnTex));
 
 		Button loadGameBtn = new Button(new TextureRegionDrawable(textureManager.get("uielements/game/load.png")));
+		Button tutorialBtn = new Button(new TextureRegionDrawable(textureManager.get("uielements/tutorial.png")));
 
-		lb.setSize(buttonwidth, buttonheight);
-		ad.setSize(buttonwidth, buttonheight);
-		eg.setSize(buttonwidth, buttonheight);
-		sb.setSize(buttonwidth, buttonheight);
+		leaderboardBtn.setSize(buttonwidth, buttonheight);
+		audioBtn.setSize(buttonwidth, buttonheight);
+		exitBtn.setSize(buttonwidth, buttonheight);
+		startBtn.setSize(buttonwidth, buttonheight);
 		loadGameBtn.setSize(buttonwidth, buttonheight);
+		tutorialBtn.setSize(buttonwidth, buttonheight);
 
-		sb.setPosition(gameResolutionX / 10.0f, 4 * gameResolutionY / 5.0f - buttonheight / 2);
-		lb.setPosition(gameResolutionX / 10.0f, 3 * gameResolutionY / 5.0f - buttonheight / 2);
-		ad.setPosition(gameResolutionX / 10.0f, 2 * gameResolutionY / 5.0f - buttonheight / 2);
-		eg.setPosition(gameResolutionX / 10.0f, gameResolutionY / 5.0f - buttonheight / 2);
-		loadGameBtn.setPosition(gameResolutionX / 10.0f + sb.getWidth() + 50, 4 * gameResolutionY / 5.0f - buttonheight / 2);
+		startBtn.setPosition(gameResolutionX / 10.0f, 4 * gameResolutionY / 5.0f - buttonheight / 2);
+		leaderboardBtn.setPosition(gameResolutionX / 10.0f, 3 * gameResolutionY / 5.0f - buttonheight / 2);
+		audioBtn.setPosition(gameResolutionX / 10.0f, 2 * gameResolutionY / 5.0f - buttonheight / 2);
+		exitBtn.setPosition(gameResolutionX / 10.0f, gameResolutionY / 5.0f - buttonheight / 2);
+		loadGameBtn.setPosition(gameResolutionX / 10.0f + startBtn.getWidth() + 50, 4 * gameResolutionY / 5.0f - buttonheight / 2);
+		tutorialBtn.setPosition(gameResolutionX / 10.0f + startBtn.getWidth() + 50, 3 * gameResolutionY / 5.0f - buttonheight / 2);
 
-		ad.addListener(new ClickListener() {
+		audioBtn.addListener(new ClickListener() {
 			public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
 				if (state == STATE.main) {
 					state = STATE.audio;
@@ -197,7 +183,7 @@ public class MainScreen extends Screen {
 				super.touchUp(event, x, y, pointer, button);
 			}
 		});
-		sb.addListener(new ClickListener() {
+		startBtn.addListener(new ClickListener() {
 			public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
 				super.touchUp(event, x, y, pointer, button);
 				// Go to play screen, if still on the main screen
@@ -205,14 +191,14 @@ public class MainScreen extends Screen {
 				getScreenController().nextScreen(Constants.PLAY_SCREEN_ID);
 			}
 		});
-		lb.addListener(new ClickListener() {
+		leaderboardBtn.addListener(new ClickListener() {
 			public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
 				super.touchUp(event, x, y, pointer, button);
 				if (!game.screenController.onScreen(Constants.MAIN_SCREEN_ID)) return;
 				getScreenController().nextScreen(Constants.LEADERBOARD_SCREEN_ID);
 			}
 		});
-		eg.addListener(new ClickListener() {
+		exitBtn.addListener(new ClickListener() {
 			public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
 				Gdx.app.exit();
 				super.touchUp(event, x, y, pointer, button);
@@ -221,19 +207,37 @@ public class MainScreen extends Screen {
 		loadGameBtn.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
+				if (!game.screenController.onScreen(Constants.MAIN_SCREEN_ID)) return;
 				loadGame();
+			}
+		});
+		tutorialBtn.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				if (!game.screenController.onScreen(Constants.MAIN_SCREEN_ID)) return;
+				GameScreen gameScreen = (GameScreen) getScreenController().getScreen(Constants.GAME_SCREEN_ID);
+				TutorialLogic tutorialLogic = new TutorialLogic(gameScreen, textureManager, getAudioManager());
+				TutorialRenderer tutorialRenderer = new TutorialRenderer(tutorialLogic);
+
+				gameScreen.setGameLogic(tutorialLogic);
+				gameScreen.setGameRenderer(tutorialRenderer);
+
+				tutorialLogic.setDifficulty(Difficulty.EASY);
+
+				game.screenController.setScreen(Constants.GAME_SCREEN_ID);
 			}
 		});
 
 		stage = new Stage(viewport, game.batch);
 
-		stage.addActor(sb);
-		stage.addActor(lb);
-		stage.addActor(ad);
-		stage.addActor(eg);
+		stage.addActor(startBtn);
+		stage.addActor(leaderboardBtn);
+		stage.addActor(audioBtn);
+		stage.addActor(exitBtn);
 		stage.addActor(loadGameBtn);
+		stage.addActor(tutorialBtn);
 
-		audioSliders = game.getAudioSettings().createAudioSliders(ad.getX() + 650, ad.getY() - 10, stage, audioEdit, vButton);
+		audioSliders = game.getAudioSettings().createAudioSliders(audioBtn.getX() + 650, audioBtn.getY() - 10, stage, audioEdit, vButton);
 
 		musicSlider = audioSliders.getSlider(0);
 		musicSlider.setTouchable(Touchable.disabled);

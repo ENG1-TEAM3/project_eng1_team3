@@ -14,10 +14,6 @@ import java.util.Collections;
 /**
  * This static class contains all methods relating to file handling
  * for this game.
- *
- * // TODO: JAVA DOCS
- *
- * // TODO: COMPLETE THIS CLASS
  */
 
 public class FileControl {
@@ -27,8 +23,11 @@ public class FileControl {
     }
 
     public static String getDataPath(String endsWith) {
+        // ? OLD CODE, should remove soon
         if (System.getProperty("os.name").equals("Linux")) {
-            return "\\data\\" + Constants.DATA_FILE + endsWith;
+            // return "\\data\\" + Constants.DATA_FILE + endsWith;
+            return System.getProperty("user.dir") + "/data/" + Constants.DATA_FILE + endsWith;
+            // return "/data/" + Constants.DATA_FILE + endsWith;
         } else if (System.getProperty("os.name").startsWith("Windows")) {
             return System.getenv("APPDATA") + "/" + Constants.DATA_FILE + endsWith;
         }
@@ -49,7 +48,7 @@ public class FileControl {
         File file = new File(dirAndName(dir, fileName));
         try {
             if (!directory.exists()) {
-                directory.mkdir();
+                directory.mkdirs();
             }
             if (!file.exists()) {
                 file.createNewFile();
@@ -57,6 +56,8 @@ public class FileControl {
             Files.write(file.toPath(), Collections.singleton(data), StandardCharsets.UTF_8);
         } catch (IOException e) {
             e.printStackTrace();
+            System.out.println(e.toString());
+            System.out.println(System.getProperty("user.dir"));
         }
     }
 
@@ -75,7 +76,7 @@ public class FileControl {
         // create the directory.
         if (!directory.isDirectory() && !internal) {
             System.out.println("Directory doesn't exist: " + directory);
-            directory.file().mkdir();
+            directory.file().mkdirs();
         }
         FileHandle file;
         if (internal) {
