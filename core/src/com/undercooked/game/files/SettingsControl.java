@@ -5,10 +5,16 @@ import com.badlogic.gdx.utils.JsonValue;
 import com.undercooked.game.util.DefaultJson;
 import com.undercooked.game.util.json.JsonFormat;
 
+/**
+ * A class to control the settings of the game.
+ */
 public class SettingsControl {
 
+    /** loaded = True if this class has loaded its data. False otherwise. */
     boolean loaded;
+    /** Location of settings file. */
     String fileLoc;
+    /** json containing the settings. */
     JsonValue settingsData;
 
     public SettingsControl(String fileLoc) {
@@ -43,19 +49,22 @@ public class SettingsControl {
 
     public void loadIfNotLoaded() {
         // Only load if it's not loaded.
-        if (loaded) return;
+        if (loaded)
+            return;
         loadData();
     }
 
     public void saveData() {
         // Only save if it's loaded
-        if (!loaded) return;
+        if (!loaded)
+            return;
         FileControl.saveJsonData(fileLoc, settingsData);
     }
 
     private void setFloatValue(String key, float val) {
         // If the json is not null
-        if (settingsData == null) return;
+        if (settingsData == null)
+            return;
         // Then set the value
         settingsData.get(key).set(val, key);
     }
