@@ -53,7 +53,7 @@ public class ItemStack implements Iterable<Item> {
      */
     public boolean hasID(String itemID) {
         for (Item item : items) {
-            if (item.getID() == itemID) {
+            if (item.getID().equals(itemID)) {
                 return true;
             }
         }
