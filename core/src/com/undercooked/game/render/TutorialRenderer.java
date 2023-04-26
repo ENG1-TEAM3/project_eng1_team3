@@ -19,7 +19,6 @@ import com.undercooked.game.util.Constants;
 public class TutorialRenderer extends GameRenderer {
 
     TutorialLogic logic;
-
     public TutorialRenderer(TutorialLogic logic, SpriteBatch batch, ShapeRenderer shape, BitmapFont font, Array renderEntities) {
         super(logic, batch, shape, font, renderEntities);
         this.logic = logic;
@@ -42,13 +41,6 @@ public class TutorialRenderer extends GameRenderer {
     }
 
     @Override
-    public void render(float delta) {
-        // Render the base
-        super.render(delta);
-
-    }
-
-    @Override
     public void renderUI(float delta) {
         // Render the base
         super.renderUI(delta);
@@ -61,18 +53,18 @@ public class TutorialRenderer extends GameRenderer {
         // Only if it has text, draw it to the screen
         if (!tutorialStep.hasText()) return;
 
-        float boxLeft = 600,
-                boxWidth = 800;
-
-        text.setText(font, tutorialStep.getDisplayText(), 0, tutorialStep.getDisplayText().length(), Color.WHITE, boxWidth-20, Align.left, true, null);
+        float boxWidth = 800;
+        float boxHeight = 260;
+        float boxLeft = 600;
+        text.setText(font, tutorialStep.getDisplayText(), 0, tutorialStep.getDisplayText().length(), Color.WHITE, boxWidth -20, Align.left, true, null);
 
         shape.begin(ShapeRenderer.ShapeType.Filled);
         // Draw the background
-        shape.rect(boxLeft,30,boxWidth,400);
+        shape.rect(boxLeft,30, boxWidth,boxHeight);
         shape.end();
         // The the text
         batch.begin();
-        font.draw(batch, text, boxLeft+10, 350);
+        font.draw(batch, text, boxLeft+10, boxHeight+5);
         batch.end();
 
     }

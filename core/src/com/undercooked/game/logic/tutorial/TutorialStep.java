@@ -69,6 +69,9 @@ public class TutorialStep {
                 sinceLastText -= textSpeed;
                 displayText += text.charAt(textIndex);
                 textIndex++;
+                if (textIndex >= text.length()) {
+                    break;
+                }
             }
         }
     }
@@ -98,6 +101,14 @@ public class TutorialStep {
     }
     public void setCanSkip(boolean skippable) {
         this.skippable = skippable;
+    }
+
+    public void setHasText(boolean hasText) {
+        this.hasText = hasText;
+    }
+
+    public void setEndListener(Listener<TutorialStep> endListener) {
+        this.endListener = endListener;
     }
 
     public float getX() {
@@ -130,9 +141,5 @@ public class TutorialStep {
 
     public boolean hasText() {
         return hasText;
-    }
-
-    public void setEndListener(Listener<TutorialStep> endListener) {
-        this.endListener = endListener;
     }
 }

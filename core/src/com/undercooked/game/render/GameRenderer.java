@@ -145,6 +145,11 @@ public class GameRenderer {
             interactTarget = currentCook.getInteractTarget();
         }
 
+        MapCell registerCell = null;
+        if (logic.getDisplayCustomer() != null) {
+            registerCell = logic.getDisplayCustomer().getRegister().getRegisterCell();
+        }
+
         // Render the entities in order, highest Y to lowest Y
         renderEntities.sort(entityCompare);
         for (Entity renderEntity : renderEntities) {
@@ -188,19 +193,27 @@ public class GameRenderer {
                         font.draw(batch, text, drawX, drawY);
                         batch.end();
                     }
-                }
-                else {
+                } else {
                     interactSprite.setColor(Color.YELLOW);
                 }
-                interactSprite.setSize(interactBox.width,interactBox.height);
+                interactSprite.setSize(interactBox.width, interactBox.height);
                 interactSprite.setPosition(interactBox.x, interactBox.y);
                 batch.begin();
                 interactSprite.draw(batch);
                 batch.end();
-
-                // Call the render entity function
-                this.renderEntity(renderEntity);
             }
+            // If it's not that, then check if it's the displayCustomer register cell
+            // Draw the select_box for displayCustomer
+            if (registerCell != null && registerCell.getMapEntity() == renderEntity) {
+                interactSprite.setColor(Color.PURPLE);
+                Rectangle registerBox = registerCell.getMapEntity().getInteractBox();
+                interactSprite.setSize(registerBox.width, registerBox.height);
+                interactSprite.setPosition(registerBox.x, registerBox.y);
+                batch.begin();
+                interactSprite.draw(batch);
+                batch.end();
+            }
+
 
             shape.begin(ShapeRenderer.ShapeType.Filled);
             renderEntity.draw(shape);
@@ -208,19 +221,12 @@ public class GameRenderer {
             batch.begin();
             renderEntity.drawPost(batch);
             batch.end();
+
+            // Call the render entity function
+            renderEntity(renderEntity);
         }
 
         batch.begin();
-        // Draw the select_box for displayCustomer
-        if (logic.getDisplayCustomer() != null) {
-            MapCell registerCell = logic.getDisplayCustomer().getRegister().getRegisterCell();
-            interactSprite.setColor(Color.PURPLE);
-            Rectangle registerBox = registerCell.getMapEntity().getInteractBox();
-            interactSprite.setSize(registerBox.width, registerBox.height);
-            interactSprite.setPosition(registerBox.x, registerBox.y);
-            interactSprite.draw(batch);
-        }
-
         // Render the Customers
         logic.getCustomerController().draw(batch);
         batch.end();

@@ -1,5 +1,6 @@
 package com.undercooked.game.logic.tutorial;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -10,8 +11,8 @@ public class TutorialHighlightEntityStep extends TutorialFollowEntityStep {
     protected Entity highlightEntity;
     protected Texture highlightTexture;
 
-    public TutorialHighlightEntityStep(String text, float textSpeed, Entity followEntity, Entity highlightEntity) {
-        super(text, textSpeed, followEntity);
+    public TutorialHighlightEntityStep(String text, float textSpeed, Entity highlightEntity) {
+        super(text, textSpeed, highlightEntity);
         this.highlightEntity = highlightEntity;
     }
 
@@ -31,11 +32,13 @@ public class TutorialHighlightEntityStep extends TutorialFollowEntityStep {
     public void render(SpriteBatch batch, Entity entity) {
         super.render(batch, entity);
         // If it's not the highlight entity, ignore
-        if (entity != highlightEntity) {
-            return;
-        }
+        if (entity != highlightEntity) return;
+
+        if (highlightTexture == null) return;
         // Render the highlight texture over the entity's sprite
         Sprite entitySprite = highlightEntity.getSprite();
-        batch.draw(highlightTexture, entitySprite.getX(), entitySprite.getY(), entitySprite.getWidth(), entitySprite.getHeight());
+        batch.setColor(Color.PINK);
+        batch.draw(highlightTexture, entity.getX(), entity.getY(), entitySprite.getWidth(), entitySprite.getHeight());
+        batch.setColor(Color.WHITE);
     }
 }
