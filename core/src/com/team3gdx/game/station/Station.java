@@ -174,9 +174,9 @@ public class Station {
 			active = true;
 		} 
 	}
-	public void drawBuyBackText(SpriteBatch batch){
+	public void drawBuyBackText(SpriteBatch batch, float constructionCost){
 		if (active == false){
-			drawText(batch, "Buy back for 60 money[q]", new Vector2(pos.x * 64, pos.y * 64));
+			drawText(batch, "Buy back for " + constructionCost + " money [e]", new Vector2(pos.x * 64, pos.y * 64));
 		}
 	}
 	public boolean active(){

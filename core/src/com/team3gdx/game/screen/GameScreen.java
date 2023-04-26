@@ -27,10 +27,13 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.team3gdx.game.MainGameClass;
+import com.team3gdx.game.PowerUp.PowerUp;
+import com.team3gdx.game.PowerUp.PowerUpService;
 import com.team3gdx.game.entity.Cook;
 import com.team3gdx.game.entity.Customer;
 import com.team3gdx.game.entity.CustomerController;
@@ -40,6 +43,8 @@ import com.team3gdx.game.station.StationManager;
 import com.team3gdx.game.util.CollisionTile;
 import com.team3gdx.game.util.Control;
 import com.team3gdx.game.util.GameMode;
+
+import java.util.Random;
 
 public class GameScreen implements Screen {
 
@@ -111,9 +116,11 @@ public class GameScreen implements Screen {
 	InputMultiplexer multi;
 	StationManager stationManager = new StationManager();
 
+	PowerUpService powerUps = new PowerUpService();
+
 	/**
 	 * Constructor to initialise game screen;
-	 * 
+	 *
 	 * @param game - Main entry point class
 	 * @param ms   - Title screen class
 	 */
@@ -243,7 +250,7 @@ public class GameScreen implements Screen {
 
 	/**
 	 * Render method for main game
-	 * 
+	 *
 	 * @param delta - some change in time
 	 */
 
@@ -268,7 +275,11 @@ public class GameScreen implements Screen {
 		// =====================================RENDER=TOP=MAP=LAYER=====================================================
 		tiledMapRenderer.render(new int[] { 1 });
 		// =====================================DRAW=COOK=TOP=HALF=======================================================
-		stationManager.handleStations(game.batch, game.shapeRenderer);
+
+		powerUps.render(delta);
+
+		stationManager.handleStations(game.batch, game.shapeRenderer, powerUps.totalCookingSpeed(delta), powerUps.totalConstructionCost(60));
+
 		drawHeldItems();
 		game.batch.begin();
 		for (Cook curCook : cooks)
@@ -278,7 +289,7 @@ public class GameScreen implements Screen {
 		// ==================================MOVE=COOK===================================================================
 		tempTime = System.currentTimeMillis();
 		if (!cook.locked && Tutorial.complete)
-			cook.update(control, (tempTime - tempThenTime), CLTiles);
+			cook.update(control, powerUps.totalSpeed(tempTime - tempThenTime), CLTiles);
 		tempThenTime = tempTime;
 		checkInteraction(cook, game.shapeRenderer);
 		// =====================================SET=MATRIX=FOR=UI=ELEMENTS===============================================
@@ -372,6 +383,15 @@ public class GameScreen implements Screen {
 		game.font.draw(game.batch,Integer.toString(currentWave), gameResolutionX / 5f + gameResolutionX / 9f, 19 * gameResolutionY / 20f);
 		game.font.draw(game.batch, "Served:", gameResolutionX / 5f + gameResolutionX / 35f, 19 * gameResolutionY / 20f);
 		game.batch.end();
+
+		int startX = Gdx.graphics.getWidth() - 72;
+		int i = 0;
+
+		for (PowerUp powerup : powerUps.getActivePowerUps()) {
+			powerup.pos = new Vector2(startX - i * 72, 16 * gameResolutionY / 20f);
+			powerup.draw(game.batch);
+			i++;
+		}
 	}
 
     /**
@@ -417,7 +437,7 @@ public class GameScreen implements Screen {
 
 	/**
 	 * Changes game window state
-	 * 
+	 *
 	 * @param state1 - the state to change to
 	 */
 	public void changeScreen(STATE state1) {
@@ -473,6 +493,7 @@ public class GameScreen implements Screen {
 	public void paid(int pay){
 		money += pay;
 	}
+
 	/**
 	 * Checks to see whether escape has been pressed to pause the game
 	 */
@@ -578,7 +599,7 @@ public class GameScreen implements Screen {
 
 	/**
 	 * Construct an array of CollisionTile objects for collision detection
-	 * 
+	 *
 	 * @param mp- game tilemap
 	 */
 	public static void constructCollisionData(TiledMap mp) {
@@ -621,7 +642,7 @@ public class GameScreen implements Screen {
 
 	/**
 	 * Check the tile the cook is looking at for interaction
-	 * 
+	 *
 	 * @param ck - Selected cook
 	 * @param sr - ShapeRenderer to draw the coloured box
 	 */
@@ -640,9 +661,9 @@ public class GameScreen implements Screen {
 			Object stationType = viewedTile.getTile().getProperties().get("Station");
 			if (stationType != null) {
 				stationManager.checkInteractedTile((String) viewedTile.getTile().getProperties().get("Station"),
-						new Vector2(checkCellX, checkCellY), cc, gameMode);
+						new Vector2(checkCellX, checkCellY), cc, gameMode, powerUps.getPriceMultiplier());
 			} else {
-				stationManager.checkInteractedTile("", new Vector2(checkCellX, checkCellY), cc, gameMode);
+				stationManager.checkInteractedTile("", new Vector2(checkCellX, checkCellY), cc, gameMode, powerUps.getPriceMultiplier());
 			}
 		}
 		sr.begin(ShapeRenderer.ShapeType.Line);
@@ -666,7 +687,7 @@ public class GameScreen implements Screen {
 
 	/**
 	 * Resize game screen - Not used in fullscreen mode
-	 * 
+	 *
 	 * @param width  - width to resize to
 	 * @param height - height to resize to
 	 */

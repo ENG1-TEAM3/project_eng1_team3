@@ -47,22 +47,21 @@ public class StationManager {
 	 * 
 	 * @param batch - SpriteBatch to render ingredient textures.
 	 */
-	public void handleStations(SpriteBatch batch, ShapeRenderer shapeRenderer) {
+	public void handleStations(SpriteBatch batch, ShapeRenderer shapeRenderer, float cookingTime, float constructionCost) {
 		this.batch = batch;
 		for (Station station : stations.values()) {
 			if (station.active() == false){
 				if (GameScreen.cook.heldItems.empty()){
-					station.drawBuyBackText(batch);
+					station.drawBuyBackText(batch, constructionCost);
 					if (GameScreen.control.interact) {
-						if (GameScreen.money >= 60){
+						if (GameScreen.money >= constructionCost){
 							station.buyBack();
-							GameScreen.money -= 60;
+							GameScreen.money -= constructionCost;
 							TiledMapTileLayer Layer =(TiledMapTileLayer)GameScreen.map1.getLayers().get(1);
 							Cell cell = Layer.getCell((int)station.pos.x,(int)station.pos.y);
 							TiledMapTile tile =cell.getTile();
 							int newId = tile.getId()+10;
 							tile.setId(newId);
-							}
 						}
 				}
 			}
@@ -73,20 +72,20 @@ public class StationManager {
 					if (station instanceof PrepStation) {
 						currentIngredient.pos = new Vector2(station.pos.x * 64 + 16, i * 8 + station.pos.y * 64);
 						if (((PrepStation) station).lockedCook != null)
-							((PrepStation) station).updateProgress(batch, .01f);
+							((PrepStation) station).updateProgress(batch, cookingTime * 2);
 					} else {
 						currentIngredient.pos = new Vector2(station.pos.x * 64 + ((i * 32) % 64),
 								Math.floorDiv((i * 32), 64) * 32 + station.pos.y * 64);
 					}
 
 					if (station instanceof CuttingStation && currentIngredient.slicing) {
-						((CuttingStation) station).interact(batch, shapeRenderer, .1f);
+						((CuttingStation) station).interact(batch, shapeRenderer, cookingTime * 2);
 						station.interactSound();
 					}
 
 					if (currentIngredient.cooking && station instanceof CookingStation) {
 						((CookingStation) station).drawParticles(batch, i);
-						currentIngredient.cook(.0005f, batch, shapeRenderer);
+						currentIngredient.cook(cookingTime * 0.05f, batch, shapeRenderer);
 						station.interactSound();
 					} else {
 						currentIngredient.draw(batch);
@@ -95,6 +94,7 @@ public class StationManager {
 			}
 		}
 	}
+}
 
 	/**
 	 * Check the currently looked at tile for a station.
@@ -102,7 +102,7 @@ public class StationManager {
 	 * @param type The station type.
 	 * @param pos  The position of the tile.
 	 */
-	public void checkInteractedTile(String type, Vector2 pos, CustomerController customerController, GameMode gameMode) {
+	public void checkInteractedTile(String type, Vector2 pos, CustomerController customerController, GameMode gameMode, float priceMultiplier) {
 		switch (type) {
 		case "Buns":
 			takeIngredientStation(pos, Ingredients.bun);
@@ -195,7 +195,7 @@ public class StationManager {
 				stations.put(pos, new ServingStation(pos, customerController, gameMode));
 			}
 
-			((ServingStation) stations.get(pos)).serveCustomer();
+			((ServingStation) stations.get(pos)).serveCustomer(priceMultiplier);
 			placeIngredientStation(pos);
 			break;
 		case "Bin":

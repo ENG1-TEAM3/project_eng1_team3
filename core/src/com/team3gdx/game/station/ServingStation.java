@@ -39,7 +39,7 @@ public class ServingStation extends Station {
 	 * Check if there is a customer waiting, get their order and check if the
 	 * serving station contains it.
 	 */
-	public void serveCustomer() {
+	public void serveCustomer(float priceMultiplier) {
 		Customer waitingCustomer = customerController.isCustomerAtPos(new Vector2(pos.x - 1, pos.y));
 		if (waitingCustomer != null && waitingCustomer.locked) {
 			if (GameScreen.currentWaitingCustomer == null) {
@@ -50,7 +50,7 @@ public class ServingStation extends Station {
 			if (waitingCustomer == GameScreen.currentWaitingCustomer && !slots.empty()
 					&& slots.peek().equals(Menu.RECIPES.get(waitingCustomer.order))) {
 				slots.pop();
-				GameScreen.money += (Menu.RECIPES.get(waitingCustomer.order)).cost();
+				GameScreen.money += (Menu.RECIPES.get(waitingCustomer.order)).cost() * priceMultiplier;
 				customerController.delCustomer(waitingCustomer);
 				if (GameScreen.currentWave < gameMode.getNumberOfWaves()){
 					customerController.spawnCustomer();
