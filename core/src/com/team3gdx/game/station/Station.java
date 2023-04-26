@@ -54,6 +54,8 @@ public class Station {
 	*/
 	public Boolean active;
 
+	public String name;
+
 	/**
 	 * 
 	 * @param pos                The (x, y) coordinates of the station.
@@ -167,6 +169,7 @@ public class Station {
 		interactSound.play();
 	}
 	public void buyBack() {
+
 		if (active == false){
 			active = true;
 		} 

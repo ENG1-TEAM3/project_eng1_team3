@@ -131,7 +131,7 @@ public class Recipe extends Ingredient {
 		}
 
 		for (Ingredient ingredient : givenIngredients) {
-			if (contains(ingredient, toCheck) && ingredient.checkUsable() == true) {
+			if (contains(ingredient, toCheck) && ingredient.checkUsable(ingredient) == true) {
 				toCheck.remove(ingredient);
 			}
 		}
@@ -151,11 +151,9 @@ public class Recipe extends Ingredient {
 	 */
 	public boolean contains(Ingredient checkIngredient, ArrayList<Ingredient> ingredients) {
 		for (Ingredient ingredient : ingredientInstructions.keySet()) {
-			if (ingredient.equals(checkIngredient)) {
-				if (ingredient.checkUsable() == true)
+			if (ingredient.equals(checkIngredient) && ingredient.checkUsable(checkIngredient) == true)
 					return true;
 			}
-		}
 
 		return false;
 	}

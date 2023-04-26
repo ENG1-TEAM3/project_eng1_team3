@@ -46,29 +46,11 @@
  <tile id="19">
   <image width="64" height="64" source="art_images/oventopmes.png"/>
  </tile>
- <tile id="20">
-  <properties>
-   <property name="Station" value="Frying"/>
-  </properties>
-  <image width="64" height="64" source="art_images/ovtopcln.png"/>
- </tile>
- <tile id="21">
-  <properties>
-   <property name="Station" value="Prep"/>
-  </properties>
-  <image width="128" height="64" source="art_images/Salad_top.png"/>
- </tile>
  <tile id="22">
   <properties>
    <property name="name" value="floortile"/>
   </properties>
   <image width="64" height="64" source="art_images/Floor tile.png"/>
- </tile>
- <tile id="23">
-  <properties>
-   <property name="Station" value="Baking"/>
-  </properties>
-  <image width="128" height="64" source="art_images/burgercrafter.png"/>
  </tile>
  <tile id="24">
   <properties>
@@ -112,23 +94,11 @@
   </properties>
   <image width="64" height="64" source="art_images/customer tile 3.png"/>
  </tile>
- <tile id="31">
-  <properties>
-   <property name="Station" value="Chopping"/>
-  </properties>
-  <image width="128" height="64" source="art_images/chopping.png"/>
- </tile>
  <tile id="32">
   <properties>
    <property name="Station" value="Bin"/>
   </properties>
   <image width="64" height="64" source="art_images/Trash can.png"/>
- </tile>
- <tile id="33">
-  <properties>
-   <property name="Station" value="Baking"/>
-  </properties>
-  <image width="64" height="64" source="art_images/emptygrill.png"/>
  </tile>
  <tile id="34">
  <properties>
@@ -177,5 +147,29 @@
    <property name="Station" value="Chopping_inactive"/>
   </properties>
   <image width="128" height="64" source="art_images/Cutting_empty.png"/>
+  </tile>
+  <tile id="48">
+ <properties>
+   <property name="Station" value="Prep"/>
+  </properties>
+  <image width="128" height="64" source="art_images/prep.png"/>
+  </tile>
+  <tile id="49">
+ <properties>
+   <property name="Station" value="Baking"/>
+  </properties>
+  <image width="64" height="64" source="art_images/grill.png"/>
+  </tile>
+  <tile id="50">
+ <properties>
+   <property name="Station" value="Frying"/>
+  </properties>
+  <image width="64" height="64" source="art_images/frying.png"/>
+  </tile>
+  <tile id="51">
+ <properties>
+   <property name="Station" value="Chopping"/>
+  </properties>
+  <image width="128" height="64" source="art_images/cutting.png"/>
   </tile>
 </tileset>
