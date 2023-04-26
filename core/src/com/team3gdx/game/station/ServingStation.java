@@ -1,7 +1,10 @@
 package com.team3gdx.game.station;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.math.Vector2;
 import com.team3gdx.game.entity.Customer;
 import com.team3gdx.game.entity.CustomerController;
@@ -15,22 +18,25 @@ public class ServingStation extends Station {
 
 	private final CustomerController customerController;
 	private final GameMode gameMode;
-	String[] possibleOrders = new String[] { "Burger", "Salad","Pizza","Jacket_potato" };
+	String[] possibleOrders = new String[]{"Burger", "Salad", "Pizza", "Jacket_potato"};
 
 	/**
 	 * Configure allowed ingredient to be those on the menu.
 	 */
 	static Ingredient[] allowedIngredients = new Ingredient[Menu.RECIPES.size()];
+
 	static {
 		int i = 0;
 		for (Recipe recipe : Menu.RECIPES.values()) {
 			allowedIngredients[i] = new Ingredient(recipe);
 			i++;
 		}
-	};
+	}
+
+	;
 
 	public ServingStation(Vector2 pos, CustomerController customerController, GameMode gameMode) {
-		super(pos, 1, false, allowedIngredients, "audio/soundFX/money-collect.mp3",true);
+		super(pos, 1, false, allowedIngredients, "audio/soundFX/money-collect.mp3", true);
 		this.customerController = customerController;
 		this.gameMode = gameMode;
 	}
@@ -39,29 +45,102 @@ public class ServingStation extends Station {
 	 * Check if there is a customer waiting, get their order and check if the
 	 * serving station contains it.
 	 */
-	public void serveCustomer() {
-		Customer waitingCustomer = customerController.isCustomerAtPos(new Vector2(pos.x - 1, pos.y));
-		if (waitingCustomer != null && waitingCustomer.locked) {
-			if (GameScreen.currentWaitingCustomer == null) {
-				waitingCustomer.order = possibleOrders[new Random().nextInt(possibleOrders.length)];
-				waitingCustomer.arrived();
-				GameScreen.currentWaitingCustomer = waitingCustomer;
-			}
-			if (waitingCustomer == GameScreen.currentWaitingCustomer && !slots.empty()
-					&& slots.peek().equals(Menu.RECIPES.get(waitingCustomer.order))) {
+//	public void serveCustomer() {
+//		Customer waitingCustomer = customerController.isCustomerAtPos(new Vector2(pos.x - 1, pos.y));
+//		if (waitingCustomer != null && waitingCustomer.locked) {
+//			if (GameScreen.currentWaitingCustomer == null) {
+//				waitingCustomer.order = possibleOrders[new Random().nextInt(possibleOrders.length)];
+//				waitingCustomer.arrived();
+//				GameScreen.currentWaitingCustomer = waitingCustomer;
+//			}
+//			if (waitingCustomer == GameScreen.currentWaitingCustomer && !slots.empty()
+//					&& slots.peek().equals(Menu.RECIPES.get(waitingCustomer.order))) {
+//				slots.pop();
+//				GameScreen.money += (Menu.RECIPES.get(waitingCustomer.order)).cost();
+//				customerController.delCustomer(waitingCustomer);
+//				if (GameScreen.currentWave < gameMode.getNumberOfWaves()) {
+//					customerController.spawnCustomer();
+//				}
+//				GameScreen.currentWave++;
+//				waitingCustomer.locked = false;
+//				GameScreen.currentWaitingCustomer = null;
+//			}
+//
+//		}
+//
+//	}
+
+	// NEW VERSION 꼼수
+		public void serveCustomer() {
+			Customer waitingCustomer = customerController.isCustomerAtPos(new Vector2(pos.x - 1, pos.y));
+			Customer waitingCustomer2 = customerController.isCustomerAtPos(new Vector2(pos.x - 1, pos.y - 1));
+
+
+			if (waitingCustomer != null && waitingCustomer.locked) {
+				if (GameScreen.currentWaitingCustomer == null) {
+					waitingCustomer.order = possibleOrders[new Random().nextInt(possibleOrders.length)];
+					GameScreen.currentWaitingCustomer = waitingCustomer;
+					waitingCustomer.arrived();
+					System.out.println("1  "+waitingCustomer.order);}
+
+				if (waitingCustomer == GameScreen.currentWaitingCustomer && !slots.empty() && slots.peek().equals(Menu.RECIPES.get(waitingCustomer.order))) {
 				slots.pop();
-				GameScreen.money += (Menu.RECIPES.get(waitingCustomer.order)).cost();
-				customerController.delCustomer(waitingCustomer);
-				if (GameScreen.currentWave < gameMode.getNumberOfWaves()){
-					customerController.spawnCustomer();
+					GameScreen.money += (Menu.RECIPES.get(waitingCustomer.order)).cost();
+					customerController.delCustomer(waitingCustomer);
+					if (GameScreen.currentWave < gameMode.getNumberOfWaves()) {
+						if(gameMode.getNumberOfCustmersInAWave() == 2 ){
+							//customerController.spawnMedium();
+						}
+					}
+
+					GameScreen.currentWave++;
+					waitingCustomer.locked = false;
+					GameScreen.currentWaitingCustomer = null;}
+
+
+			}
+			if (waitingCustomer2 != null && waitingCustomer2.locked) {
+				if (GameScreen.currentWaitingCustomer2 == null) {
+					waitingCustomer2.order = possibleOrders[new Random().nextInt(possibleOrders.length)];
+					GameScreen.currentWaitingCustomer2 = waitingCustomer2;
+					waitingCustomer2.arrived();
+					System.out.println("2  "+waitingCustomer2.order);
 				}
-				GameScreen.currentWave++;
-				waitingCustomer.locked = false;
-				GameScreen.currentWaitingCustomer = null;
+				if (waitingCustomer2 == GameScreen.currentWaitingCustomer2 && !slots.empty() && slots.peek().equals(Menu.RECIPES.get(waitingCustomer2.order))) {
+					slots.pop();
+					GameScreen.money += (Menu.RECIPES.get(waitingCustomer2.order)).cost();
+					customerController.delCustomer(waitingCustomer2);
+					if (GameScreen.currentWave < gameMode.getNumberOfWaves()) {
+						if(gameMode.getNumberOfCustmersInAWave() == 2 ){
+							//customerController.spawnMedium();
+						}
+					}
+
+					GameScreen.currentWave++;
+					waitingCustomer2.locked = false;
+					GameScreen.currentWaitingCustomer2 = null;}
+
+
 			}
 
+
+			}
 		}
 
-	}
-	
-}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -19,6 +19,7 @@ public class CustomerController {
 	public int amountActiveCustomers;
 	ArrayList<ArrayList<Integer>> customerCells;
 	public Customer[] customers = new Customer[5];
+	public Customer[] mediumCustomers = new Customer[10];
 	Customer[] leavingcustomers = new Customer[5];
 	TiledMap gameMap;
 	int top;
@@ -114,11 +115,31 @@ public class CustomerController {
 	public void spawnCustomer() {
 		for (int i = 0; i < this.customers.length; i++) {
 			if (customers[i] == null) {
-				customers[i] = new Customer(this.xCoordinate, this.bottom, this.top - i, 3);
+				customers[i] = new Customer(this.xCoordinate, this.bottom, this.top - i, 2);
 				amountActiveCustomers += 1;
 				break;
 			}
+
 		}
+	}
+
+	public void spawnMedium() {
+
+
+			customers[1] = new Customer(this.xCoordinate, this.bottom, this.top , 2);
+			customers[2] = new Customer(this.xCoordinate, this.bottom -2 , this.top - 1, 1);
+			amountActiveCustomers += 2;
+
+
+	}
+
+	public void spawnHard() {
+		customers[1] = new Customer(this.xCoordinate, this.bottom, this.top , 2);
+		customers[2] = new Customer(this.xCoordinate, this.bottom -2 , this.top - 1, 1);
+		customers[3] = new Customer(this.xCoordinate, this.bottom -3 , this.top - 2, 3);
+		amountActiveCustomers += 3;
+
+
 	}
 
 	public void delCustomer(int num) {

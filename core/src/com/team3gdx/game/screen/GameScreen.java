@@ -41,6 +41,10 @@ import com.team3gdx.game.station.StationManager;
 import com.team3gdx.game.util.CollisionTile;
 import com.team3gdx.game.util.Control;
 import com.team3gdx.game.util.GameMode;
+import com.team3gdx.game.util.ScenarioMode;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class GameScreen implements Screen {
 
@@ -79,6 +83,7 @@ public class GameScreen implements Screen {
 	OrthographicCamera uiCamera;
 	public static OrthographicCamera worldCamera;
 
+	public static Customer currentWaitingCustomer2 = null;
 	public static Customer currentWaitingCustomer = null;
 
 	public enum STATE {
@@ -126,14 +131,25 @@ public class GameScreen implements Screen {
 		Tutorial.complete = !gameMode.showTutorial();
 		this.calculateBoxMaths();
 		control = new Control();
-		// map = new TmxMapLoader().load("map/art_map/prototype_map.tmx");
+
 		map1 = new TmxMapLoader().load("map/art_map/customertest.tmx");
 		tiledMapRenderer = new OrthogonalTiledMapRenderer(map1);
 		constructCollisionData(map1);
 		cc = new CustomerController(map1);
 
+		if (gameMode.getNumberOfCustmersInAWave() == 1){
+			cc.spawnCustomer();
+		}
+		if (gameMode.getNumberOfCustmersInAWave() == 2){
+			cc.spawnMedium();
+		}
+		if (gameMode.getNumberOfCustmersInAWave() == 3){
+			cc.spawnCustomer();
+			cc.spawnCustomer();
+			cc.spawnCustomer();
+		}
 
-		cc.spawnCustomer();
+
 	}
 
 	/**
@@ -233,6 +249,7 @@ public class GameScreen implements Screen {
 	 */
 
 	public void render(float delta) {
+
 		// =====================================CLEAR=SCREEN=============================================================
 		ScreenUtils.clear(0, 0, 0, 0);
 		Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
@@ -293,10 +310,12 @@ public class GameScreen implements Screen {
 
 		checkCookSwitch();
 
-		if(currentWaitingCustomer != null && currentWaitingCustomer.waitTime() > gameMode.getModeTime()){
+		if((currentWaitingCustomer != null && currentWaitingCustomer.waitTime() > gameMode.getModeTime())  ){
 			cc.delCustomer(currentWaitingCustomer);
-			cc.spawnCustomer();
+			cc.delCustomer(currentWaitingCustomer2);
+			//|| (currentWaitingCustomer2 != null && currentWaitingCustomer2.waitTime() > gameMode.getModeTime())
 		}
+
 		// =========================================CHECK=GAME=OVER======================================================
 		checkGameOver();
 
@@ -332,6 +351,10 @@ public class GameScreen implements Screen {
 	private void drawUI() {
 		if (currentWaitingCustomer != null && currentWaitingCustomer.waitTime() < MAX_WAIT_TIME) {
 			Menu.RECIPES.get(currentWaitingCustomer.order).displayRecipe(game.batch, new Vector2(64, 256));
+		}
+		// 꼼수 아싸리 같ㅎ ㅣ해버리는것도 나쁘지 않은듯
+		if (currentWaitingCustomer2 != null && currentWaitingCustomer2.waitTime() < MAX_WAIT_TIME) {
+			Menu.RECIPES.get(currentWaitingCustomer2.order).displayRecipe(game.batch, new Vector2(64, 456));
 		}
 		for (int i = 0; i < cooks.length; i++) {
 			if (i == currentCookIndex) {
