@@ -11,6 +11,7 @@ import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 public class DesktopLauncher {
 	/**
 	 * The main method for the entire program.
+	 * 
 	 * @param arg {@link String} : The arguments for the program.
 	 */
 	public static void main(String[] arg) {
@@ -19,6 +20,7 @@ public class DesktopLauncher {
 		config.setTitle("eng1team3game");
 		// config.setWindowedMode(1920,1080);
 		// config.setFullscreenMode(Lwjgl3ApplicationConfiguration.getDisplayMode());
-		new Lwjgl3Application(new MainGameClass(new ALStateChecker()), config);
+		new Lwjgl3Application(new MainGameClass(), config);
+		// new Lwjgl3Application(new MainGameClass(new ALStateChecker()), config);
 	}
 }

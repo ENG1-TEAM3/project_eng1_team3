@@ -44,19 +44,20 @@ public class AudioManager {
             paths.removeValue(path, false);
         }
     }
+
     ObjectMap<String, VolumeGroup> musicVolumes;
     ObjectMap<String, VolumeGroup> soundVolumes;
     AssetManager assetManager;
-    SoundStateChecker soundStateChecker;
+    // SoundStateChecker soundStateChecker;
 
     /**
      * Constructor to set up the Maps for music, sound and volumes.
      */
-    public AudioManager(AssetManager assetManager, SoundStateChecker soundStateChecker) {
+    public AudioManager(AssetManager assetManager) { // , SoundStateChecker soundStateChecker) {
         musicVolumes = new ObjectMap<>();
         soundVolumes = new ObjectMap<>();
         this.assetManager = assetManager;
-        this.soundStateChecker = soundStateChecker;
+        // this.soundStateChecker = soundStateChecker;
         load();
     }
 
@@ -65,11 +66,11 @@ public class AudioManager {
      *
      * @param soundID The {@code soundID} as an {@code int}.
      * @return {@code boolean} : {@code True} if the {@link Sound} is playing,
-     *                           {@code False} if not.
+     *         {@code False} if not.
      */
-    public boolean soundIsPlaying(long soundID) {
-        return soundStateChecker.isPlaying((int) soundID);
-    }
+    // public boolean soundIsPlaying(long soundID) {
+    // return soundStateChecker.isPlaying((int) soundID);
+    // }
 
     /**
      * Loads the default assets for the music and sound for if they
@@ -123,7 +124,7 @@ public class AudioManager {
          *
          * It should then update all the audio sounds by looping through
          * the Maps in another function AFTER everything is loaded.
-         * */
+         */
         try {
             assetManager.load(path, Music.class);
         } catch (GdxRuntimeException e) {
@@ -266,9 +267,10 @@ public class AudioManager {
 
     /**
      * Unloads all paths in an audio group from the {@link AssetManager}.
-     * @param audioGroup A {@link String} of the {@code audioGroup}'s name.
+     * 
+     * @param audioGroup  A {@link String} of the {@code audioGroup}'s name.
      * @param forgetGroup {@code boolean} for if the group should be deleted
-     *                                   from the map afterwards or not
+     *                    from the map afterwards or not
      */
     public void unload(String audioGroup, boolean forgetGroup) {
         // Check if the group exists
@@ -281,7 +283,7 @@ public class AudioManager {
         // as for multiple Screens needing it), then it'll stay loaded for them.
         VolumeGroup group = musicVolumes.get(audioGroup);
         Array<String> pathsRemoved = new Array<>();
-        for (int i = group.paths.size-1 ; i >= 0 ; i--) {
+        for (int i = group.paths.size - 1; i >= 0; i--) {
             String path = group.paths.get(i);
             // Only continue if the current path hasn't been removed.
             if (!pathsRemoved.contains(path, false)) {

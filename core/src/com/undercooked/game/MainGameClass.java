@@ -43,12 +43,13 @@ public class MainGameClass extends Game {
 	/**
 	 * Constructor for the Game.
 	 */
-	public MainGameClass(SoundStateChecker soundChecker) {
+	public MainGameClass() { // SoundStateChecker soundChecker) {
 		settingsControl = new SettingsControl("settings.json");
 		audioSettings = new AudioSettings(this, settingsControl);
 		assetManager = new AssetManager();
-		// assetManager.setLoader(TiledMap.class, new TmxMapLoader(new InternalFileHandleResolver()));
-		audioManager = new AudioManager(assetManager, soundChecker);
+		// assetManager.setLoader(TiledMap.class, new TmxMapLoader(new
+		// InternalFileHandleResolver()));
+		audioManager = new AudioManager(assetManager); // , soundChecker);
 		textureManager = new TextureManager(assetManager);
 		mapManager = new MapManager(textureManager, audioManager);
 		screenController = new ScreenController(this, assetManager);
