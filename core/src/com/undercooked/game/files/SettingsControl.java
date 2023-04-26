@@ -22,7 +22,7 @@ public class SettingsControl {
         this.loaded = false;
     }
 
-    public void loadData() {
+    public boolean loadData() {
         // it's now loaded
         loaded = true;
         // Try to load the file
@@ -38,6 +38,7 @@ public class SettingsControl {
             // Otherwise just format the json
             JsonFormat.formatJson(settingsData, DefaultJson.settingsFormat());
         }
+        return loaded;
     }
 
     public void unload() {
@@ -47,11 +48,11 @@ public class SettingsControl {
         loaded = false;
     }
 
-    public void loadIfNotLoaded() {
+    public boolean loadIfNotLoaded() {
         // Only load if it's not loaded.
         if (loaded)
-            return;
-        loadData();
+            return true;
+        return loadData();
     }
 
     public void saveData() {

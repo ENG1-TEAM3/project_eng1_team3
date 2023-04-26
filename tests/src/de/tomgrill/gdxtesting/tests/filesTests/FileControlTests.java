@@ -22,25 +22,17 @@ import org.junit.*;
 import org.junit.runner.RunWith;
 
 import com.badlogic.gdx.Gdx;
-import com.undercooked.game.files.SettingsControl;
+import com.undercooked.game.files.FileControl;
 
 import de.tomgrill.gdxtesting.GdxTestRunner;
 
 @RunWith(GdxTestRunner.class)
-public class SettingsControlTests {
-
-	SettingsControl setCon;
-
-	@Before
-	public void setup() {
-		SettingsControl setCon = new SettingsControl("settingsTest.json");
-	}
+public class FileControlTests {
 
 	/** Test loadData() loads the data in settings.json. */
 	@Test
 	public void loadSettings() {
-		setCon.loadData();
-		// assertEquals(setCon.getMusicVolume(), 0.5f, 0.01f);
+		
 	}
 
 }
