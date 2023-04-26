@@ -118,11 +118,6 @@ public class EndlessLogic extends ScenarioLogic {
         super.addEffect(powerUpType, powerUp);
     }
 
-    @Override
-    protected void removeEffect(PowerUpType powerUpType, PowerUp powerUp) {
-        super.addEffect(powerUpType, powerUp);
-    }
-
     public void updateCustomerLimit() {
         // After 6 minutes, allow spawning 3
         if (elapsedTime > 5) {
