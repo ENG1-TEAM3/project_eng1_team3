@@ -352,6 +352,45 @@ public class Map {
      */
     public MapCell randomOpenCellRange(int x, int y, int width, int height, CollisionType collisionType) {
         // Make an array of open cells
+        Array<MapCell> openCells = openCellsRangeFull(x, y, width, height, collisionType);
+        // If the array is empty, return nothing
+        if (openCells.size == 0) return null;
+
+        // Otherwise return a random cell
+        return openCells.random();
+    }
+    public MapCell randomOpenCell() {
+        return randomOpenCell(CollisionType.ANY);
+    }
+    public MapCell randomOpenCell(CollisionType collisionType) {
+        return randomOpenCellRange(offsetX, offsetY, width-1, height-1, collisionType);
+    }
+
+    public MapCell randomOpenCellFull() {
+        return randomOpenCellFull(CollisionType.ANY);
+    }
+
+    public MapCell randomOpenCellFull(CollisionType collisionType) {
+        return randomOpenCellRange(0,0,fullWidth,fullHeight, collisionType);
+    }
+
+    public Array<MapCell> openCells() {
+        return openCells(CollisionType.ANY);
+    }
+
+    public Array<MapCell> openCells(CollisionType collisionType) {
+        return openCellsRangeFull(offsetX, offsetY, width-1, height-1, collisionType);
+    }
+
+    public Array<MapCell> openCellsFull() {
+        return openCells(CollisionType.ANY);
+    }
+
+    public Array<MapCell> openCellsFull(CollisionType collisionType) {
+        return openCellsRangeFull(0, 0, fullWidth, fullHeight, collisionType);
+    }
+
+    public Array<MapCell> openCellsRangeFull(int x, int y, int width, int height, CollisionType collisionType) {// Make an array of open cells
         Array<MapCell> openCells = new Array<>();
         // Loop through the locations, and add them to the array if they're open cells
         // (Those being cells with no collision)
@@ -377,27 +416,9 @@ public class Map {
                 }
             }
         }
-        // If the array is empty, return nothing
-        if (openCells.size == 0) return null;
-
-        // Otherwise return a random cell
-        return openCells.random();
+        // Return the array
+        return openCells;
     }
-    public MapCell randomOpenCell() {
-        return randomOpenCell(CollisionType.ANY);
-    }
-    public MapCell randomOpenCell(CollisionType collisionType) {
-        return randomOpenCellRange(offsetX, offsetY, width-1, height-1, collisionType);
-    }
-
-    public MapCell randomOpenCellFull() {
-        return randomOpenCellFull(CollisionType.ANY);
-    }
-
-    public MapCell randomOpenCellFull(CollisionType collisionType) {
-        return randomOpenCellRange(0,0,fullWidth,fullHeight, collisionType);
-    }
-
 
 
     public enum CollisionType {

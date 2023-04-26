@@ -289,8 +289,42 @@ public class ScenarioLogic extends GameLogic {
     }
 
     public void createNewPowerUp() {
-        // Get a random map cell that's open (with nothing blocking)
-        MapCell openCell = map.randomOpenCell(Map.CollisionType.ANY);
+        // Get a random map cell that's open (with nothing blocking, and not
+        // on the same cell as the current cook or another power up)
+        Array<MapCell> openCells = map.openCells(Map.CollisionType.ANY);
+        Cook currentCook = cookController.getCurrentCook();
+        for (int i = openCells.size-1 ; i >= 0 ; i--) {
+            MapCell thisCell = openCells.get(i);
+            Rectangle cellCollision = thisCell.getCellCollision();
+            boolean valid = true;
+            // Check if cook is touching the cell
+            if (currentCook != null) {
+                if (currentCook.isColliding(cellCollision)) {
+                    valid = false;
+                    System.out.println("Cook colliding at " + currentCook.getX() + ", " + currentCook.getY());
+                }
+            }
+
+            // Check against all power ups
+            for (PowerUp powerUp : powerUps) {
+                if (powerUp.isColliding(cellCollision)) {
+                    valid = false;
+                    System.out.println("Power up colliding at " + powerUp.getX() + ", " + powerUp.getY());
+                }
+            }
+
+            // If it's invalid, then remove from the array
+            if (!valid) {
+                openCells.removeIndex(i);
+            }
+            // If it's valid, then leave
+        }
+        // If there are no valid cells, then don't add a power up
+        if (openCells.isEmpty()) {
+            return;
+        }
+
+        MapCell openCell = openCells.random();
 
         // If there's no open cell, don't add a power up
         if (openCell == null) return;
