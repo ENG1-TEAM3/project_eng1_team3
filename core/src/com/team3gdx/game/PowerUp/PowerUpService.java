@@ -41,7 +41,9 @@ public class PowerUpService {
             return;
         }
 
-        switch (random.nextInt(0, 6)) {
+        activePowerUps.add(PowerUps.cookingSpeedReduce());
+
+        switch (random.nextInt(6, 7)) {
             case 1:
                 activePowerUps.add(PowerUps.constructionCostReduce());
                 break;
@@ -64,4 +66,45 @@ public class PowerUpService {
         return activePowerUps;
     }
 
+    public float totalConstructionCost(float initial) {
+        for (PowerUp powerup : activePowerUps) {
+            if (powerup.name == "construction_cost_reduce") {
+                initial *= 0.85;
+            }
+        }
+
+        return initial;
+    }
+
+    public float totalCookingSpeed(float initial) {
+        for (PowerUp powerup : activePowerUps) {
+            if (powerup.name == "cooking_speed_reduce") {
+                initial *= 1.5;
+            }
+        }
+
+        return initial;
+    }
+
+    public float getPriceMultiplier() {
+        float multiplier = 1;
+
+        for (PowerUp powerup : activePowerUps) {
+            if (powerup.name == "Increase_pay") {
+                multiplier *= 2;
+            }
+        }
+
+        return multiplier;
+    }
+
+    public float totalSpeed(float initial) {
+        for (PowerUp powerup : activePowerUps) {
+            if (powerup.name == "speed_boost") {
+                initial *= 2;
+            }
+        }
+
+        return initial;
+    }
 }

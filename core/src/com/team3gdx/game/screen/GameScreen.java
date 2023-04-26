@@ -271,7 +271,7 @@ public class GameScreen implements Screen {
 
 		powerUps.render(delta);
 
-		stationManager.handleStations(game.batch, game.shapeRenderer);
+		stationManager.handleStations(game.batch, game.shapeRenderer, powerUps.totalCookingSpeed(delta), powerUps.totalConstructionCost(60));
 
 		drawHeldItems();
 		game.batch.begin();
@@ -282,7 +282,7 @@ public class GameScreen implements Screen {
 		// ==================================MOVE=COOK===================================================================
 		tempTime = System.currentTimeMillis();
 		if (!cook.locked && Tutorial.complete)
-			cook.update(control, (tempTime - tempThenTime), CLTiles);
+			cook.update(control, powerUps.totalSpeed(tempTime - tempThenTime), CLTiles);
 		tempThenTime = tempTime;
 		checkInteraction(cook, game.shapeRenderer);
 		// =====================================SET=MATRIX=FOR=UI=ELEMENTS===============================================
@@ -652,9 +652,9 @@ public class GameScreen implements Screen {
 			Object stationType = viewedTile.getTile().getProperties().get("Station");
 			if (stationType != null) {
 				stationManager.checkInteractedTile((String) viewedTile.getTile().getProperties().get("Station"),
-						new Vector2(checkCellX, checkCellY), cc, gameMode);
+						new Vector2(checkCellX, checkCellY), cc, gameMode, powerUps.getPriceMultiplier());
 			} else {
-				stationManager.checkInteractedTile("", new Vector2(checkCellX, checkCellY), cc, gameMode);
+				stationManager.checkInteractedTile("", new Vector2(checkCellX, checkCellY), cc, gameMode, powerUps.getPriceMultiplier());
 			}
 		}
 		sr.begin(ShapeRenderer.ShapeType.Line);
