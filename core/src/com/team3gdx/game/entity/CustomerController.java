@@ -20,7 +20,7 @@ public class CustomerController {
 	ArrayList<ArrayList<Integer>> customerCells;
 	public Customer[] customers = new Customer[5];
 	public Customer[] mediumCustomers = new Customer[10];
-	Customer[] leavingcustomers = new Customer[5];
+	public Customer[] leavingcustomers = new Customer[5];
 	TiledMap gameMap;
 	int top;
 	int bottom;
@@ -127,7 +127,9 @@ public class CustomerController {
 
 
 			customers[1] = new Customer(this.xCoordinate, this.bottom, this.top , 2);
-			customers[2] = new Customer(this.xCoordinate, this.bottom -2 , this.top - 1, 1);
+
+			customers[2] = new Customer(this.xCoordinate, this.bottom -2 , this.top - 3, 1);
+			//System.out.println(this.top);
 			amountActiveCustomers += 2;
 
 
@@ -141,6 +143,7 @@ public class CustomerController {
 
 
 	}
+
 
 	public void delCustomer(int num) {
 		if (this.customers[num].locked) {

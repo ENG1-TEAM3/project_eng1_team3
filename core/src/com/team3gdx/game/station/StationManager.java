@@ -179,6 +179,8 @@ public class StationManager {
 			}
 
 			((ServingStation) stations.get(pos)).serveCustomer();
+
+
 			placeIngredientStation(pos);
 			break;
 		case "Bin":

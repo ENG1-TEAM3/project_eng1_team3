@@ -310,11 +310,12 @@ public class GameScreen implements Screen {
 
 		checkCookSwitch();
 
-		if((currentWaitingCustomer != null && currentWaitingCustomer.waitTime() > gameMode.getModeTime())  ){
-			cc.delCustomer(currentWaitingCustomer);
-			cc.delCustomer(currentWaitingCustomer2);
-			//|| (currentWaitingCustomer2 != null && currentWaitingCustomer2.waitTime() > gameMode.getModeTime())
-		}
+//		if((currentWaitingCustomer != null && currentWaitingCustomer.waitTime() > gameMode.getModeTime()) || (currentWaitingCustomer2 != null && currentWaitingCustomer2.waitTime() > gameMode.getModeTime()) ){
+//			cc.delcuscus(currentWaitingCustomer);
+//			cc.delcuscus(currentWaitingCustomer2);
+//
+//
+//		}
 
 		// =========================================CHECK=GAME=OVER======================================================
 		checkGameOver();
@@ -349,13 +350,17 @@ public class GameScreen implements Screen {
      * Draw UI elements
      */
 	private void drawUI() {
-		if (currentWaitingCustomer != null && currentWaitingCustomer.waitTime() < MAX_WAIT_TIME) {
+
+		if ((currentWaitingCustomer != null && currentWaitingCustomer.waitTime() < MAX_WAIT_TIME) ) {
 			Menu.RECIPES.get(currentWaitingCustomer.order).displayRecipe(game.batch, new Vector2(64, 256));
 		}
+
+			// why does this start as anyone goes to it
+
 		// 꼼수 아싸리 같ㅎ ㅣ해버리는것도 나쁘지 않은듯
-		if (currentWaitingCustomer2 != null && currentWaitingCustomer2.waitTime() < MAX_WAIT_TIME) {
-			Menu.RECIPES.get(currentWaitingCustomer2.order).displayRecipe(game.batch, new Vector2(64, 456));
-		}
+
+
+
 		for (int i = 0; i < cooks.length; i++) {
 			if (i == currentCookIndex) {
 				selectedPlayerBox.setAutoShapeType(true);
@@ -709,4 +714,9 @@ public class GameScreen implements Screen {
 	public void dispose() {
 		// TODO Auto-generated method stub
 	}
+
+//	public boolean isDisplayed(){
+//		if
+//		return true;
+//	}
 }
