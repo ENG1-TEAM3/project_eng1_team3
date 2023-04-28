@@ -256,6 +256,8 @@ public class CookController {
                 }
             }
 
+            addCook(newCook);
+
             cookNo = Math.max(1, (cookNo + 1) % (COOK_TEXTURES + 1));
 
             if (addToStartCooks) cookStart.put(newCook, new Vector2(cookPos));
