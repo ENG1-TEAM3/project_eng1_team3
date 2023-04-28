@@ -1,9 +1,6 @@
 package com.undercooked.game.assets;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -11,6 +8,9 @@ import com.badlogic.gdx.utils.ObjectMap;
 import com.undercooked.game.files.FileControl;
 import com.undercooked.game.util.Constants;
 
+/**
+ * A class to manage the {@link Texture}s within the game.
+ */
 public class TextureManager {
 
     /**
@@ -20,8 +20,14 @@ public class TextureManager {
      * in one function call.
      */
     ObjectMap<String, Array<String>> textures;
+
+    /** The {@link AssetManager} that will be used to load, get and unload the {@link Texture}s. */
     AssetManager assetManager;
 
+    /**
+     * Constructor to set up the {@link ObjectMap} for the {@link #textures}.
+     * @param assetManager {@link AssetManager} : The {@link AssetManager} to use.
+     */
     public TextureManager (AssetManager assetManager) {
         this.assetManager = assetManager;
         this.textures = new ObjectMap<>();
@@ -42,6 +48,12 @@ public class TextureManager {
         }
     }
 
+    /**
+     * Returns the {@link Texture} at the path provided, if it has been loaded.
+     * <br>If not loaded, it returns the default texture.
+     * @param path {@link String} : The path of the {@link Texture}.
+     * @return {@link Texture} : The {@link Texture} loaded from the path.
+     */
     public Texture get(String path) {
         System.out.println("Getting Texture: " + path);
         if (assetManager.isLoaded(path)) {
@@ -58,15 +70,28 @@ public class TextureManager {
         }
     }
 
+    /**
+     * Gets a {@link Texture} from an asset path.
+     * @param path {@link String} : The asset path of the {@link Texture}.
+     * @return {@link Texture} : The {@link Texture} loaded from the path.
+     */
     public Texture getAsset(String path) {
         // Only try if it's not null
         if (path == null) {
             return get(null);
         }
-        path = "game/" + FileControl.toPath(path, "textures");
+        path = FileControl.getAssetPath(path, "textures");
         return get(path);
     }
 
+    /**
+     * Loads a {@link Texture} from a path.
+     * @param textureGroup {@link String} : The texture group to load it to.
+     * @param path {@link String} : The path of the {@link Texture}.
+     * @return {@code boolean} : {@code true} if it was able to add it to be loaded
+     *                           by the {@link AssetManager},
+     *                           {@code false} if not.
+     */
     public boolean load(String textureGroup, String path) {
         System.out.println("Loading Texture: " + path);
         try {
@@ -88,19 +113,43 @@ public class TextureManager {
         return true;
     }
 
+    /**
+     * Loads a {@link Texture} from an asset path.
+     * @param textureGroup {@link String} : The texture group to load it to.
+     * @param path {@link String} : The asset path of the {@link Texture}.
+     * @param assetFolder {@link String} : The folder the asset is in.
+     * @return {@code boolean} : {@code true} if it was able to add it to be loaded
+     *                           by the {@link AssetManager},
+     *                           {@code false} if not.
+     */
     public boolean loadAsset(String textureGroup, String path, String assetFolder) {
         // Only try if it's not null
         if (path == null) {
             return false;
         }
-        return load(textureGroup, "game/" + FileControl.toPath(path, assetFolder));
+        return load(textureGroup, FileControl.getAssetPath(path, assetFolder));
     }
 
+
+    /**
+     * Loads a {@link Texture} from an asset path.
+     * @param textureGroup {@link String} : The texture group to load it to.
+     * @param path {@link String} : The asset path of the {@link Texture}.
+     * @return {@code boolean} : {@code true} if it was able to add it to be loaded
+     *                           by the {@link AssetManager},
+     *                           {@code false} if not.
+     */
     public boolean loadAsset(String textureGroup, String path) {
         return loadAsset(textureGroup, path, "textures");
     }
 
-
+    /**
+     * Loads a {@link Texture} from a path, putting it in a default group.
+     * @param path {@link String} : The path of the {@link Texture}.
+     * @return {@code boolean} : {@code true} if it was able to add it to be loaded
+     *                           by the {@link AssetManager},
+     *                           {@code false} if not.
+     */
     public boolean load(String path) {
         return load("default", path);
     }
@@ -156,7 +205,7 @@ public class TextureManager {
     public void unloadTexture(String texture) {
         for (String key : textures.keys()) {
             Array<String> paths = textures.get(key);
-            int pathIndex = paths.indexOf(key, false);
+            int pathIndex = paths.indexOf(texture, false);
             if (pathIndex != -1) {
                 paths.removeIndex(pathIndex);
             }
