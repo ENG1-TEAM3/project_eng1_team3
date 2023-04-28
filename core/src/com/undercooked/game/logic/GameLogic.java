@@ -13,7 +13,6 @@ import com.undercooked.game.entity.customer.Customer;
 import com.undercooked.game.food.Items;
 import com.undercooked.game.food.Request;
 import com.undercooked.game.interactions.Interactions;
-import com.undercooked.game.load.LoadResult;
 import com.undercooked.game.map.Map;
 import com.undercooked.game.render.GameRenderer;
 import com.undercooked.game.screen.GameScreen;
@@ -242,11 +241,11 @@ public abstract class GameLogic {
      *
      * @param path {@link String} of the path.
      */
-    public final LoadResult loadMap(String path) {
+    public final void loadMap(String path) {
         map = gameScreen.getMapManager().load(path, stationController, cookController, interactions, items);
         // If the map fails to load, then return that
         if (map == null) {
-            return LoadResult.FAILURE;
+            return;
         }
 
         customerController.setMap(map);
@@ -261,13 +260,13 @@ public abstract class GameLogic {
             gameRenderer.addEntity(cook);
             // cook.load(textureManager);
         }
-        return LoadResult.SUCCESS;
     }
 
     /**
      * Update the {@link GameLogic}. Move {@link Cook}s,
      * update {@link com.undercooked.game.station.Station}s,
      * spawn {@link Customer}s, etc.
+     * @param delta {@code float} : The time since the last frame.
      */
     public abstract void update(float delta);
 
@@ -561,7 +560,7 @@ public abstract class GameLogic {
     /**
      * Function called by the {@link GameRenderer} to move the {@link OrthographicCamera}.
      * <br>It is here so that it can be overridden if the functionality needed is different.
-     * @param delta
+     * @param delta {@code float} : The time since the last frame.
      */
     public void moveCamera(float delta) {
         gameRenderer.moveCamera(delta, cookController.getCurrentCook());

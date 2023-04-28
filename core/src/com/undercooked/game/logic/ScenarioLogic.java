@@ -17,7 +17,6 @@ import com.undercooked.game.files.FileControl;
 import com.undercooked.game.food.Instruction;
 import com.undercooked.game.food.Item;
 import com.undercooked.game.food.Request;
-import com.undercooked.game.load.LoadResult;
 import com.undercooked.game.map.*;
 import com.undercooked.game.screen.GameScreen;
 import com.undercooked.game.util.Constants;

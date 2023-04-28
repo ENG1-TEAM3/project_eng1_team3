@@ -8,7 +8,6 @@ import com.undercooked.game.entity.customer.Customer;
 import com.undercooked.game.files.FileControl;
 import com.undercooked.game.food.Instruction;
 import com.undercooked.game.food.Request;
-import com.undercooked.game.load.LoadResult;
 import com.undercooked.game.map.MapCell;
 import com.undercooked.game.map.Register;
 import com.undercooked.game.screen.GameScreen;
@@ -94,11 +93,11 @@ abstract class ScenarioLoadLogic extends GameLogic {
         if (requests != null) requests.clear();
     }
 
-    protected LoadResult loadScenario(String scenarioAsset) {
+    protected void loadScenario(String scenarioAsset) {
         JsonValue scenarioData = FileControl.loadJsonAsset(scenarioAsset, "scenarios");
         if (scenarioData == null) {
             // It didn't load the scenario, so it's a failure.
-            return LoadResult.FAILURE;
+            return;
         }
         // If it's loaded, then unload in case something is already
         // loaded.
@@ -108,10 +107,8 @@ abstract class ScenarioLoadLogic extends GameLogic {
         JsonFormat.formatJson(scenarioData, DefaultJson.scenarioFormat());
 
         // Try to load the map
-        // If map fails to load, then return failure
-        if (loadMap(scenarioData.getString("map_id")) == LoadResult.FAILURE) {
-            return LoadResult.FAILURE;
-        }
+        // If map fails to load
+        loadMap(scenarioData.getString("map_id"));
 
         // Load all the Interactions
         for (JsonValue interaction : scenarioData.get("interactions")) {
@@ -140,8 +137,6 @@ abstract class ScenarioLoadLogic extends GameLogic {
 
         // And call loadScenarioContents
         loadScenarioContents(scenarioData);
-
-        return LoadResult.SUCCESS;
     }
 
     /**
