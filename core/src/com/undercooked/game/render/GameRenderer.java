@@ -28,22 +28,50 @@ import com.undercooked.game.util.StringUtil;
 
 import java.util.Comparator;
 
+/**
+ * The class used to render the game visually.
+ */
 public class GameRenderer {
+    /** The {@link GameLogic} to render. */
     protected GameLogic logic;
+
+    /** The {@link SpriteBatch} to use for {@link Texture} rendering. */
     protected SpriteBatch batch;
+
+    /** The {@link ShapeRenderer} to use for shape rendering. */
     protected ShapeRenderer shape;
+
+    /** The {@link BitmapFont} to use for font rendering. */
     protected BitmapFont font;
+
+    /** An {@link Array} of all {@link Entity}s to render in the game. */
     protected Array<Entity> renderEntities;
 
+    /** The {@link OrthographicCamera} to draw to the world. */
     protected OrthographicCamera worldCamera;
 
+    /** The {@link OrthographicCamera} to draw to the UI.  */
     protected OrthographicCamera uiCamera;
+
+    /** The {@link GlyphLayout} for the text display. */
     protected GlyphLayout text;
+
+    /** The {@link Sprite} for the select box image. */
     protected Sprite interactSprite;
+
+    /** The {@link Texture} for the money icon in the bottom right. */
     protected Texture moneyTex;
+
+    /** The {@link Texture} for the reputation icon in the bottom right. */
     protected Texture reputationTex;
+
+    /** Camera {@link Vector3} for calculations, to avoid creating an instance every frame. */
     protected Vector3 cameraVector;
 
+    /**
+     * The comparator for drawing the {@link Entity}s in the {@link #renderEntities}
+     * earlier if they're higher up so they visually appear lower.
+     */
     private final Comparator<Entity> entityCompare = new Comparator<Entity>() {
         @Override
         public int compare(Entity o1, Entity o2) {
@@ -57,7 +85,18 @@ public class GameRenderer {
         }
     };
 
-    public GameRenderer(GameLogic logic, SpriteBatch batch, ShapeRenderer shape, BitmapFont font, Array renderEntities) {
+    /**
+     * Constructor for the {@link GameRenderer} that sets up
+     * the variables, and stores the provided arguments.
+     * @param logic {@link GameLogic} : The {@link GameLogic} to render.
+     * @param batch {@link SpriteBatch} : The {@link SpriteBatch} to use.
+     * @param shape {@link ShapeRenderer} : The {@link ShapeRenderer} to use.
+     * @param font {@link BitmapFont} : The {@link BitmapFont} to use.
+     * @param renderEntities {@link Array<Entity>} : An {@link Array} of the {@link Entity}s
+     *                                               to have as the {@link #renderEntities}
+     *                                               at the start.
+     */
+    public GameRenderer(GameLogic logic, SpriteBatch batch, ShapeRenderer shape, BitmapFont font, Array<Entity> renderEntities) {
         this.logic = logic;
         this.batch = batch;
         this.shape = shape;
@@ -70,26 +109,59 @@ public class GameRenderer {
         this.uiCamera = CameraController.getCamera(Constants.UI_CAMERA_ID);
     }
 
+    /**
+     * Constructor for the {@link GameRenderer} with no arguments.
+     * <br>Uses the default {@link MainGameClass#batch}, {@link MainGameClass#shapeRenderer}
+     * and {@link MainGameClass#font}.
+     */
     public GameRenderer() {
         this(null, MainGameClass.batch, MainGameClass.shapeRenderer, MainGameClass.font);
     }
 
+    /**
+     * Constructor for the {@link GameRenderer} with no {@code renderEntities} parameter.
+     * @param logic {@link GameLogic} : The {@link GameLogic} to render.
+     * @param batch {@link SpriteBatch} : The {@link SpriteBatch} to use.
+     * @param shape {@link ShapeRenderer} : The {@link ShapeRenderer} to use.
+     * @param font {@link BitmapFont} : The {@link BitmapFont} to use.
+     */
     public GameRenderer(GameLogic logic, SpriteBatch batch, ShapeRenderer shape, BitmapFont font) {
         this(logic, batch, shape, font, new Array<Entity>());
     }
 
+    /**
+     * Set the {@link GameLogic} that the {@link GameRenderer} will draw.
+     * @param logic {@link GameLogic} : The {@link GameLogic} to render.
+     */
     public void setLogic(GameLogic logic) {
         this.logic = logic;
     }
 
+    /**
+     * Set the {@link SpriteBatch} that the {@link GameRenderer} will use
+     * to draw {@link Texture}s.
+     * @param batch {@link SpriteBatch} : The {@link SpriteBatch} to use.
+     */
     public void setSpriteBatch(SpriteBatch batch) {
         this.batch = batch;
     }
 
+    /**
+     * Set the {@link ShapeRenderer} that the {@link GameRenderer} will use
+     * to draw shapes.
+     * @param shape {@link ShapeRenderer} : The {@link ShapeRenderer} to use.
+     */
     public void setShapeRenderer(ShapeRenderer shape) {
         this.shape = shape;
     }
 
+    /**
+     * Move the {@link #worldCamera} towards the target
+     * {@code x} and {@code y}.
+     * @param delta {@code float} : The time since the last frame.
+     * @param x {@code x} : The {@code x} target of the camera.
+     * @param y {@code y} : The {@code y} target of the camera.
+     */
     public void moveCamera(float delta, float x, float y) {
         if (Math.abs(worldCamera.position.x - x) < 2
                 && Math.abs(worldCamera.position.y - y) < 2) {
@@ -115,6 +187,12 @@ public class GameRenderer {
 
     }
 
+    /**
+     * Move the {@link #worldCamera} towards the target
+     * {@link Entity}.
+     * @param delta {@code float} : The time since the last frame.
+     * @param targetEntity {@link Entity} : The {@link Entity} to target.
+     */
     public void moveCamera(float delta, Entity targetEntity) {
         if (targetEntity == null) return;
         // If the target is null, just ignore
@@ -349,8 +427,8 @@ public class GameRenderer {
         String timerText = "Time: " + StringUtil.formatSeconds(logic.getElapsedTime());
         font.getData().setScale(1F);
         text.setText(font, timerText);
-        float timerX = Constants.V_WIDTH/2;
-        float textStart = timerX - text.width/2;
+        float timerX = Constants.V_WIDTH/2f;
+        float textStart = timerX - text.width/2f;
 
         shape.setColor(Color.DARK_GRAY);
         shape.begin(ShapeRenderer.ShapeType.Filled);
@@ -363,7 +441,14 @@ public class GameRenderer {
         batch.end();
     }
 
-    public void drawInstruction(Texture texture, GlyphLayout text, float y, float size) {
+    /**
+     * Function to draw an instruction on the bottom right of the screen.
+     * @param texture {@link Texture} : The instruction's icon.
+     * @param text {@link String} : The text to display.
+     * @param y {@code float} : The {@code y} to draw at.
+     * @param size {@link float} : The size of the sprite.
+     */
+    protected void drawInstruction(Texture texture, GlyphLayout text, float y, float size) {
         font.getData().setScale(0.8F);
         font.draw(batch, text, size + 16, y + 42);
         if (texture != null) {
@@ -371,6 +456,10 @@ public class GameRenderer {
         }
     }
 
+    /**
+     * Render the debug of the {@link GameLogic}.
+     * @param delta {@code float} : The time since the last frame.
+     */
     public void renderDebug(float delta) {
         shape.begin();
         logic.getMap().drawDebug(shape);
@@ -382,12 +471,20 @@ public class GameRenderer {
         shape.end();
     }
 
-    public void load(TextureManager textureManager) {
-        textureManager.load("interactions/select_box.png");
-        textureManager.load("uielements/reputation.png");
-        textureManager.load("uielements/money.png");
+    /**
+     * Load the {@link GameRenderer}'s {@link Texture}s.
+     * @param textureManager {@link TextureManager} : The {@link TextureManager} to use.
+     */
+    public void load(String textureGroup, TextureManager textureManager) {
+        textureManager.load(textureGroup, "interactions/select_box.png");
+        textureManager.load(textureGroup, "uielements/reputation.png");
+        textureManager.load(textureGroup, "uielements/money.png");
     }
 
+    /**
+     * Post load the {@link GameRenderer}'s {@link Texture}s.
+     * @param textureManager {@link TextureManager} : The {@link TextureManager} to use.
+     */
     public void postLoad(TextureManager textureManager) {
         interactSprite = new Sprite(textureManager.get("interactions/select_box.png"));
         moneyTex = textureManager.get("uielements/money.png");
@@ -395,10 +492,20 @@ public class GameRenderer {
         text = new GlyphLayout();
     }
 
+    /**
+     * Unload all of the {@link Texture}s of the {@link GameRenderer}.
+     * @param textureManager {@link TextureManager} : The {@link TextureManager} to use.
+     */
     public void unload(TextureManager textureManager) {
-        textureManager.unload("interactions/select_box.png");
+        textureManager.unloadTexture("interactions/select_box.png");
+        textureManager.unloadTexture("uielements/reputation.png");
+        textureManager.unloadTexture("uielements/money.png");
     }
 
+    /**
+     * Add an {@link Entity} to be drawn by the {@link GameRenderer}.
+     * @param entity {@link Entity} : The {@link Entity} to add.
+     */
     public void addEntity(Entity entity) {
         // Only add the entity if it's not there already
         if (!renderEntities.contains(entity, true)) {
@@ -406,23 +513,40 @@ public class GameRenderer {
         }
     }
 
+    /**
+     * Add an {@link Array} of {@link Entity}s to be drawn by the {@link GameRenderer}.
+     * @param entities {@link Array} : An {@link Array} of {@link Entity}s to add.
+     */
     public void addEntities(Array<?> entities) {
         for (Object entityToRemove : entities) {
             addEntity((Entity) entityToRemove);
         }
     }
 
+    /**
+     * Remove an {@link Entity} from the {@link #renderEntities} {@link Array}.
+     * @param entity {@link Entity} : The {@link Entity} to remove.
+     */
     public void removeEntity(Entity entity) {
         if (entity == null) return;
         renderEntities.removeValue(entity,true);
     }
 
-    public void removeEntities(Array<Entity> removedEntities) {
-        for (Entity entityToRemove : removedEntities) {
+    /**
+     * Remove all {@link Entity} in an {@link Array} from the {@link #renderEntities}.
+     * @param removeEntities {@link Array} : An {@link Array} of {@link Entity}s to remove.
+     */
+    public void removeEntities(Array<Entity> removeEntities) {
+        for (Entity entityToRemove : removeEntities) {
             removeEntity(entityToRemove);
         }
     }
 
+    /**
+     * Get all of the {@link Entity}s in the {@link #renderEntities}
+     * {@link Array}.
+     * @return {@link Array<Entity>} : An array of all {@link Entity}s being rendered.
+     */
     public Array<Entity> getEntities() {
         return renderEntities;
     }

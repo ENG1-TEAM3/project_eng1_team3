@@ -140,7 +140,7 @@ public class GameScreen extends Screen {
 		gameLogic.setTextureManager(textureManager);
 		gameLogic.setAudioManager(getAudioManager());
 		gameLogic.load();
-		gameRenderer.load(textureManager);
+		gameRenderer.load(Constants.GAME_TEXTURE_ID, textureManager);
 		// Add the map entities to the GameRenderer
 
 	}
