@@ -2,12 +2,15 @@ package com.undercooked.game.logic;
 
 import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.ObjectMap;
+import com.undercooked.game.assets.AudioManager;
+import com.undercooked.game.assets.TextureManager;
 import com.undercooked.game.entity.customer.Customer;
 import com.undercooked.game.files.FileControl;
 import com.undercooked.game.food.Instruction;
 import com.undercooked.game.food.Request;
 import com.undercooked.game.map.MapCell;
 import com.undercooked.game.map.Register;
+import com.undercooked.game.screen.GameScreen;
 import com.undercooked.game.util.Constants;
 import com.undercooked.game.util.DefaultJson;
 import com.undercooked.game.util.json.JsonFormat;
@@ -20,6 +23,16 @@ import java.util.Random;
  * to load the data of scenario files to use for the game.
  */
 abstract class ScenarioLoadLogic extends GameLogic {
+
+    /**
+     * @param game {@link GameScreen} : The {@link GameScreen} that will
+     *                               use the {@link ScenarioLoadLogic}
+     * @param textureManager {@link TextureManager} : The {@link TextureManager} to use.
+     * @param audioManager {@link AudioManager} : The {@link AudioManager} to use.
+     */
+    public ScenarioLoadLogic(GameScreen game, TextureManager textureManager, AudioManager audioManager) {
+        super(game, textureManager, audioManager);
+    }
 
     @Override
     public void load() {
