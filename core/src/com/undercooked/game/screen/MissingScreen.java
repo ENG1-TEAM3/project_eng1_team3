@@ -2,7 +2,6 @@ package com.undercooked.game.screen;
 
 import com.undercooked.game.MainGameClass;
 import com.undercooked.game.util.Constants;
-import jdk.vm.ci.meta.Constant;
 
 public class MissingScreen extends Screen {
     float timeCount;

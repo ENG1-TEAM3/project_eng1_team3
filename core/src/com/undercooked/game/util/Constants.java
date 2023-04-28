@@ -80,7 +80,7 @@ public final class Constants {
      * The number of {@link com.undercooked.game.entity.cook.Cook} {@link com.badlogic.gdx.graphics.Texture}s
      * in the asset folder.
      */
-    public static final int NUM_COOK_TEXTURES = 3;;
+    public static final int NUM_COOK_TEXTURES = 3;
     /**
      * The number of {@link com.undercooked.game.entity.customer.Customer} {@link com.badlogic.gdx.graphics.Texture}s
      * in the asset folder.

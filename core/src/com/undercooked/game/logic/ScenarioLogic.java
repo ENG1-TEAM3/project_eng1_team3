@@ -593,7 +593,7 @@ public class ScenarioLogic extends ScenarioLoadLogic {
     }
 
     @Override
-    JsonValue seralise(JsonValue gameRoot) {
+    protected JsonValue seralise(JsonValue gameRoot) {
         gameRoot.addChild("customer_target", new JsonValue(requestTarget));
         return super.seralise(gameRoot);
     }
