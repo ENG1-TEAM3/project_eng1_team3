@@ -190,7 +190,7 @@ public class CookController {
      * {@link com.badlogic.gdx.graphics.Texture}s,
      * if all of them are needed.
      * <br>
-     * Needed for the {@link com.undercooked.game.logic.Endless} mode.
+     * Needed for the {@link com.undercooked.game.logic.EndlessLogic} mode.
      * 
      * @param textureGroup {@link String} : The group to add the textures to.
      */

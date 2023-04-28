@@ -274,7 +274,7 @@ public abstract class GameLogic {
      * The GameLogic should load the game assets in this function.
      * For example, a {@link ScenarioLogic} would only need to load the
      * {@link Items} that
-     * will be available, while {@link Endless} mode should load all the game's food
+     * will be available, while {@link EndlessLogic} mode should load all the game's food
      * {@link Items}.
      */
     public abstract void load();
