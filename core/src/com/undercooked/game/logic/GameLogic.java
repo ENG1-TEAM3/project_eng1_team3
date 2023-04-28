@@ -529,7 +529,7 @@ public abstract class GameLogic {
     /**
      * Returns the multiplier for {@link Customer} wait time based
      * on the current difficulty.
-     * @return {@opde float} : The difficulty multiplier.
+     * @return {@code float} : The difficulty multiplier.
      */
     public float getDifficultyMultiplier() {
         switch (difficulty) {
