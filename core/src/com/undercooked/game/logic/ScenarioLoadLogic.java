@@ -2,15 +2,12 @@ package com.undercooked.game.logic;
 
 import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.ObjectMap;
-import com.undercooked.game.assets.AudioManager;
-import com.undercooked.game.assets.TextureManager;
 import com.undercooked.game.entity.customer.Customer;
 import com.undercooked.game.files.FileControl;
 import com.undercooked.game.food.Instruction;
 import com.undercooked.game.food.Request;
 import com.undercooked.game.map.MapCell;
 import com.undercooked.game.map.Register;
-import com.undercooked.game.screen.GameScreen;
 import com.undercooked.game.util.Constants;
 import com.undercooked.game.util.DefaultJson;
 import com.undercooked.game.util.json.JsonFormat;
@@ -18,11 +15,11 @@ import com.undercooked.game.util.json.JsonObject;
 
 import java.util.Random;
 
+/**
+ * A class that extends the {@link GameLogic} that has the functionality
+ * to load the data of scenario files to use for the game.
+ */
 abstract class ScenarioLoadLogic extends GameLogic {
-
-    public ScenarioLoadLogic(GameScreen game, TextureManager textureManager, AudioManager audioManager) {
-        super(game, textureManager, audioManager);
-    }
 
     @Override
     public void load() {
@@ -56,6 +53,13 @@ abstract class ScenarioLoadLogic extends GameLogic {
         }
     }
 
+    /**
+     * Called whenever a {@link com.undercooked.game.entity.cook.Cook}
+     * has interacted with a {@link Register}.
+     * <br>Will display the {@link Customer}'s request if successful.
+     * @param mapCell {@link MapCell} : The {@link MapCell} of the {@link Register}.
+     * @return {@code boolean} : Whether the interaction was successful or not.
+     */
     public boolean interactRegister(MapCell mapCell) {
         // Ask the CustomerController if there is a Customer on this Register
         Register targetRegister = customerController.getRegisterFromCell(mapCell);
@@ -93,6 +97,11 @@ abstract class ScenarioLoadLogic extends GameLogic {
         if (requests != null) requests.clear();
     }
 
+    /**
+     * Load the scenario from the asset location provided
+     * @param scenarioAsset {@link String} : The asset path to the
+     *                                       scenario file.
+     */
     protected void loadScenario(String scenarioAsset) {
         JsonValue scenarioData = FileControl.loadJsonAsset(scenarioAsset, "scenarios");
         if (scenarioData == null) {
@@ -154,7 +163,8 @@ abstract class ScenarioLoadLogic extends GameLogic {
      * {@link Customer}s will request
      * from. Each request will have a limited number of times it can
      * be requested.
-     * @param requestData
+     * @param requestData {@link JsonValue} : The {@link Request}s data
+     *                                        in Json format.
      */
     protected void loadRequests(JsonValue requestData) {
         // Load the request format in case it's needed.
