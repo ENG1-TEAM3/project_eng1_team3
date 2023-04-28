@@ -25,10 +25,6 @@ public class AudioManager {
             this.volume = volume;
         }
 
-        public VolumeGroup() {
-            this(1);
-        }
-
         public Array<String> getPaths() {
             return paths;
         }
@@ -45,13 +41,18 @@ public class AudioManager {
         }
     }
 
+    /** The volume of the music groups */
     ObjectMap<String, VolumeGroup> musicVolumes;
+
+    /** The volume of the sound groups. */
     ObjectMap<String, VolumeGroup> soundVolumes;
+
+    /** The {@link AssetManager} that will be used to load, get and unload the audio. */
     AssetManager assetManager;
-    // SoundStateChecker soundStateChecker;
 
     /**
      * Constructor to set up the Maps for music, sound and volumes.
+     * @param assetManager {@link AssetManager} : The {@link AssetManager} to use.
      */
     public AudioManager(AssetManager assetManager) { // , SoundStateChecker soundStateChecker) {
         musicVolumes = new ObjectMap<>();
@@ -89,10 +90,24 @@ public class AudioManager {
         }
     }
 
+    /**
+     * Returns whether the asset path is or is not loaded.
+     * @param path {@link String} : The path to the asset.
+     * @return {@code boolean} : {@code true} if it is loaded,
+     *                           {@code false} if it is not.
+     */
     public boolean assetLoaded(String path) {
-        return assetManager.isLoaded(path);
+        return assetManager.isLoaded("game/" + FileControl.toPath(path, "sounds"));
     }
 
+    /**
+     * Returns the {@link Music} if it has been loaded,
+     * or the default music if it has not.
+     * @param path {@link String} : The link to the {@link Music} file.
+     * @return {@link Music} : The {@link Music} if it has been loaded,
+     *                         or the {@link Constants#DEFAULT_MUSIC} file
+     *                         if not.
+     */
     public Music getMusic(String path) {
         // Try to get the music
         if (assetManager.isLoaded(path)) {
@@ -109,22 +124,32 @@ public class AudioManager {
         }
     }
 
+    /**
+     * Returns the {@link Music} asset if it has been loaded,
+     * or the default music if it has not.
+     * @param path {@link String} : The asset path to the {@link Music} file.
+     * @return {@link Music} : The {@link Music} if it has been loaded,
+     *                         or the {@link Constants#DEFAULT_MUSIC} file
+     *                         if not.
+     */
     public Music getMusicAsset(String path) {
         if (path == null) {
-            return getMusic(Constants.DEFAULT_SOUND);
+            return getMusic(Constants.DEFAULT_MUSIC);
         }
-        return getMusic("game/" + FileControl.toPath(path, "sounds"));
+        return getMusic(FileControl.getAssetPath(path, "sounds"));
     }
 
-    public boolean loadMusic(String path, String audioGroup) {
-        /**
-         * TEMPORARY CODE
-         * Should instead make it put the file to load, and then add it
-         * to the volumes.
-         *
-         * It should then update all the audio sounds by looping through
-         * the Maps in another function AFTER everything is loaded.
-         */
+    /**
+     * Adds the {@link Music} file at the {@code path} to be
+     * loaded by the {@link AssetManager}.
+     * @param path {@link String} : The path to the music.
+     * @param musicVolumeGroup {@link String} : The volume group for the {@link Music}
+     *                                    to be a part of.
+     * @return {@code boolean} : {@code true} if it was able to successfully add the file
+     *                           to be loaded by the {@link AssetManager},
+     *                           {@code false} if it was not.
+     */
+    public boolean loadMusic(String path, String musicVolumeGroup) {
         try {
             assetManager.load(path, Music.class);
         } catch (GdxRuntimeException e) {
@@ -133,24 +158,40 @@ public class AudioManager {
             return false;
         }
         // Check if the audioGroup doesn't have a volume yet
-        if (!musicVolumes.containsKey(audioGroup)) {
+        if (!musicVolumes.containsKey(musicVolumeGroup)) {
             // If it doesn't, set it to the default
-            musicVolumes.put(audioGroup, new VolumeGroup(Constants.DEFAULT_MUSIC_VOLUME));
+            musicVolumes.put(musicVolumeGroup, new VolumeGroup(Constants.DEFAULT_MUSIC_VOLUME));
         }
         // Get the VolumeGroup
-        VolumeGroup thisGroup = musicVolumes.get(audioGroup);
+        VolumeGroup thisGroup = musicVolumes.get(musicVolumeGroup);
         // Add this path to it
         thisGroup.addPath(path);
         return true;
     }
 
-    public boolean loadMusicAsset(String path, String musicSoundGroup) {
+
+    /**
+     * Adds the {@link Music} file at the {@code path} to be
+     * loaded by the {@link AssetManager}.
+     * @param path {@link String} : The asset path to the music.
+     * @param musicVolumeGroup {@link String} : The volume group for the {@link Music}
+     *                                         to be a part of.
+     * @return {@code boolean} : {@code true} if it was able to successfully add the file
+     *                           to be loaded by the {@link AssetManager},
+     *                           {@code false} if it was not.
+     */
+    public boolean loadMusicAsset(String path, String musicVolumeGroup) {
         if (path == null) {
-            return loadMusic(Constants.DEFAULT_SOUND, musicSoundGroup);
+            return loadMusic(Constants.DEFAULT_SOUND, musicVolumeGroup);
         }
-        return loadMusic("game/" + FileControl.toPath(path, "sounds"), musicSoundGroup);
+        return loadMusic(FileControl.getAssetPath(path, "sounds"), musicVolumeGroup);
     }
 
+    /**
+     * Unloads the {@link Music} {@code path} from the {@link AssetManager}, and removes it from
+     * the volume groups.
+     * @param path {@link String} : The path to unload.
+     */
     public void unloadMusic(String path) {
         // Only go through the unload process if it's actually loaded
         if (assetManager.isLoaded(path)) {
@@ -163,6 +204,11 @@ public class AudioManager {
         }
     }
 
+    /**
+     * Unloads the {@link Sound} {@code path} from the {@link AssetManager}, and removes it from
+     * the volume groups.
+     * @param path {@link String} : The path to unload.
+     */
     public Sound getSound(String path) {
         // Try to get the music
         if (assetManager.isLoaded(path)) {
@@ -179,14 +225,32 @@ public class AudioManager {
         }
     }
 
+    /**
+     * Returns the {@link Sound} asset if it has been loaded,
+     * or the default music if it has not.
+     * @param path {@link String} : The asset path to the {@link Sound} file.
+     * @return {@link Sound} : The {@link Sound} if it has been loaded,
+     *                         or the {@link Constants#DEFAULT_MUSIC} file
+     *                         if not.
+     */
     public Sound getSoundAsset(String path) {
         if (path == null) {
             return getSound(Constants.DEFAULT_SOUND);
         }
-        return getSound("game/" + FileControl.toPath(path, "sounds"));
+        return getSound(FileControl.getAssetPath(path, "sounds"));
     }
 
-    public boolean loadSound(String path, String audioGroup) {
+    /**
+     * Adds the {@link Sound} file at the {@code path} to be
+     * loaded by the {@link AssetManager}.
+     * @param path {@link String} : The path to the music.
+     * @param soundVolumeGroup {@link String} : The volume group for the {@link Sound}
+     *                                    to be a part of.
+     * @return {@code boolean} : {@code true} if it was able to successfully add the file
+     *                           to be loaded by the {@link AssetManager},
+     *                           {@code false} if it was not.
+     */
+    public boolean loadSound(String path, String soundVolumeGroup) {
         // Try to load the sound
         try {
             assetManager.load(path, Sound.class);
@@ -196,20 +260,31 @@ public class AudioManager {
             return false;
         }
         // Check if the audioGroup doesn't have a volume yet
-        if (!soundVolumes.containsKey(audioGroup)) {
+        if (!soundVolumes.containsKey(soundVolumeGroup)) {
             // If it doesn't, set it to the default
-            soundVolumes.put(audioGroup, new VolumeGroup(Constants.DEFAULT_SOUND_VOLUME));
+            soundVolumes.put(soundVolumeGroup, new VolumeGroup(Constants.DEFAULT_SOUND_VOLUME));
         }
         // Get the VolumeGroup
-        VolumeGroup thisGroup = soundVolumes.get(audioGroup);
+        VolumeGroup thisGroup = soundVolumes.get(soundVolumeGroup);
         // Add this path to it
         thisGroup.addPath(path);
         // Return true as it has been loaded.
         return true;
     }
 
-    public boolean loadSoundAsset(String path, String audioGroup) {
-        return loadSound("game/" + FileControl.toPath(path, "sounds"), audioGroup);
+
+    /**
+     * Adds the {@link Sound} file at the {@code path} to be
+     * loaded by the {@link AssetManager}.
+     * @param path {@link String} : The asset path to the music.
+     * @param soundVolumeGroup {@link String} : The volume group for the {@link Sound}
+     *                                         to be a part of.
+     * @return {@code boolean} : {@code true} if it was able to successfully add the file
+     *                           to be loaded by the {@link AssetManager},
+     *                           {@code false} if it was not.
+     */
+    public boolean loadSoundAsset(String path, String soundVolumeGroup) {
+        return loadSound(FileControl.getAssetPath(path, "sounds"), soundVolumeGroup);
     }
 
     /**
@@ -222,12 +297,17 @@ public class AudioManager {
         }
     }
 
-    public void updateMusicVolumes(String audioGroup) {
+    /**
+     * Update all of the {@link Music}s' volumes for the group specified to the
+     * value set in {@link #setMusicVolume(float, String)}.
+     * @param musicVolumeGroup {@link String} : The group to update the volume of.
+     */
+    public void updateMusicVolumes(String musicVolumeGroup) {
         // First check that the audioGroup exists
-        if (!musicVolumes.containsKey(audioGroup)) {
+        if (!musicVolumes.containsKey(musicVolumeGroup)) {
             return;
         }
-        VolumeGroup vGroup = musicVolumes.get(audioGroup);
+        VolumeGroup vGroup = musicVolumes.get(musicVolumeGroup);
         for (String path : vGroup.paths) {
             // Loop through the paths, get the music and update
             // their volumes.
@@ -240,27 +320,39 @@ public class AudioManager {
         }
     }
 
-    public void setMusicVolume(float volume, String audioGroup) {
+    /**
+     * Set the volume of the {@link Music}s for the specified volume group.
+     * @param volume {@link float} : The volume to set it to (0.0 - 1.0).
+     * @param musicVolumeGroup {@link String} : The volume group to set it for.
+     */
+    public void setMusicVolume(float volume, String musicVolumeGroup) {
+        volume = Math.min(Math.max(volume, 0), 1);
         // Check if the VolumeGroup exists
-        if (!musicVolumes.containsKey(audioGroup)) {
+        if (!musicVolumes.containsKey(musicVolumeGroup)) {
             // If it doesn't, then add it
-            musicVolumes.put(audioGroup, new VolumeGroup(volume));
+            musicVolumes.put(musicVolumeGroup, new VolumeGroup(volume));
             return;
         }
         // If it does, then set it to the volume input
-        musicVolumes.get(audioGroup).volume = volume;
-        updateMusicVolumes(audioGroup);
+        musicVolumes.get(musicVolumeGroup).volume = volume;
+        updateMusicVolumes(musicVolumeGroup);
     }
 
-    public void setSoundVolume(float volume, String audioGroup) {
+    /**
+     * Set the volume of the {@link Sound}s for the specified volume group.
+     * @param volume {@link float} : The volume to set it to (0.0 - 1.0).
+     * @param soundVolumeGroup {@link String} : The volume group to set it for.
+     */
+    public void setSoundVolume(float volume, String soundVolumeGroup) {
+        volume = Math.min(Math.max(volume, 0), 1);
         // Check if the VolumeGroup exists
-        if (!soundVolumes.containsKey(audioGroup)) {
+        if (!soundVolumes.containsKey(soundVolumeGroup)) {
             // If it doesn't, then add it
-            soundVolumes.put(audioGroup, new VolumeGroup(volume));
+            soundVolumes.put(soundVolumeGroup, new VolumeGroup(volume));
             return;
         }
         // If it does, then set it to the volume input
-        soundVolumes.get(audioGroup).volume = volume;
+        soundVolumes.get(soundVolumeGroup).volume = volume;
         // Update the volume for that audioGroup
         // updateVolume("sound/" + audioGroup)
     }
@@ -301,8 +393,12 @@ public class AudioManager {
         }
     }
 
-    public void unload(String audioGroup) {
-        unload(audioGroup, false);
+    /**
+     * Unload all of the {@link Music} in the specified music volume group.
+     * @param musicVolumeGroup {@link String} : The music volume group to unload.
+     */
+    public void unload(String musicVolumeGroup) {
+        unload(musicVolumeGroup, false);
     }
 
     /**
