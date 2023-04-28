@@ -275,7 +275,7 @@ public class Customer {
 		// Move to the left path
 		this.x -= MapManager.gridToPos(1);
 		// Update the texture
-		curTexture = textb;
+		curTexture = textf;
 	}
 
 	/**
