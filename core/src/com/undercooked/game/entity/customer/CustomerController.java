@@ -2,6 +2,7 @@ package com.undercooked.game.entity.customer;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Random;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -79,10 +80,12 @@ public class CustomerController {
 		// Finds the registers
 		findRegisters();
 		// Load all the customer textures
-		textureManager.load(textureGroup, "entities/cust3f.png");
-		textureManager.load(textureGroup, "entities/cust3b.png");
-		textureManager.load(textureGroup, "entities/cust3r.png");
-		textureManager.load(textureGroup, "entities/cust3l.png");
+		for (int custNo = 1 ; custNo <= Constants.NUM_CUSTOMER_TEXTURES ; custNo++) {
+			textureManager.load(textureGroup, "entities/cust" + custNo + "f.png");
+			textureManager.load(textureGroup, "entities/cust" + custNo + "b.png");
+			textureManager.load(textureGroup, "entities/cust" + custNo + "r.png");
+			textureManager.load(textureGroup, "entities/cust" + custNo + "l.png");
+		}
 		// Load any customers that are already in the arrays
 		for (Customer customer : customers) {
 			customer.load(textureManager, textureGroup);
@@ -169,7 +172,13 @@ public class CustomerController {
 	}
 
 	public Customer spawnCustomer(Request request) {
-		Customer newCustomer = new Customer(3, this, textureManager);
+		// Randomly choose a customer number
+		Random random = new Random();
+		int custNo = random.nextInt(1,Constants.NUM_CUSTOMER_TEXTURES+1);
+
+		// Create the new customer
+		Customer newCustomer = new Customer(custNo, this, textureManager);
+
 		// Add the customer if it's valid. If not, add to the "to spawn" array
 		// If toSpawn already has something in it, then add it to the end
 		// of that, as it can't be added before.

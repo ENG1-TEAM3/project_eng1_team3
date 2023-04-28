@@ -21,11 +21,10 @@ public class Customer {
 	Texture textr;
 	Texture textl;
 
-	TextureRegion[][] custpartsf;
-	TextureRegion[][] custpartsb;
-	TextureRegion[][] custpartsr;
-	TextureRegion[][] custpartsl;
-	TextureRegion[][] currentcustparts;
+	/** The current {@link Texture} that the {@link Customer} should draw. */
+	Texture curTexture;
+
+	/** How far the {@link Customer} moves per second. */
 	float moveSpeed;
 	public boolean leaving;
 
@@ -53,6 +52,10 @@ public class Customer {
 		TextureManager assetManager = textureManager;
 		custNo = custno;
 		textf = assetManager.get("entities/cust" + custno + "f.png");
+		textb = assetManager.get("entities/cust" + custno + "b.png");
+		textr = assetManager.get("entities/cust" + custno + "r.png");
+
+		curTexture = textb;
 		// textb = assetManager.get("entities/cust" + custno + "b.png");
 		// textr = assetManager.get("entities/cust" + custno + "r.png");
 		// textl = assetManager.get("entities/cust" + custno + "l.png");
@@ -118,6 +121,7 @@ public class Customer {
 			float targetY = register.getRegisterCell().getDisplayY() - MapManager.gridToPos(0.3F);
 			if (y >= targetY) {
 				waiting = true;
+				curTexture = textr;
 				y = targetY;
 			}
 			return;
@@ -144,7 +148,8 @@ public class Customer {
 
 	public void draw(SpriteBatch batch) {
 		batch.setColor(1, 1, 1, visibility);
-		batch.draw(textf, x, y, 64, 128);
+		// Draw a different texture depending on which direction the Customer is facing
+		batch.draw(curTexture, x, y, 64, 128);
 		batch.setColor(1, 1, 1, 1);
 	}
 
@@ -191,6 +196,8 @@ public class Customer {
 		customerController.customerOffRegister(register);
 		// Move to the left path
 		this.x -= MapManager.gridToPos(1);
+		// Update the texture
+		curTexture = textb;
 	}
 
 	public void setRequest(Request request) {
