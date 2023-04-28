@@ -1,6 +1,5 @@
 package com.undercooked.game.entity.customer;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Random;
 
@@ -11,32 +10,67 @@ import com.badlogic.gdx.utils.JsonValue;
 import com.undercooked.game.assets.TextureManager;
 import com.undercooked.game.food.Item;
 import com.undercooked.game.food.Request;
-import com.undercooked.game.logic.GameLogic;
 import com.undercooked.game.map.*;
 import com.undercooked.game.util.Constants;
 import com.undercooked.game.util.Listener;
 
+/**
+ * The class used to control the {@link Customer}s, their spawning, which
+ * {@link Register}s they go to and the order they're drawn in.
+ */
 public class CustomerController {
-	int lockout;
-	int amountActiveCustomers;
-	ArrayList<ArrayList<Integer>> customerCells;
+
+	/** The {@link TextureManager} to load and get {@link com.badlogic.gdx.graphics.Texture}s from. */
 	TextureManager textureManager;
+
 	/** An array of all {@link Customer}s, sorted in the order they are spawned. */
 	Array<Customer> customers;
+
 	/** The {@link #customers} array, but it is sorted based on Y level. */
 	Array<Customer> drawCustomers;
+
+	/** An {@link Array} of the {@link Customer}s that need to be spawned.*/
 	Array<Customer> toSpawn;
+
+	/** An {@link Array} of the {@link Register}s on the {@link #map}*/
 	Array<Register> registers;
 
+	/** The {@link Map} to use for finding {@link Register}s. */
 	Map map;
-	float spawnX, spawnY;
-	float customerSpeed, waitSpeed;
 
+	/** The {@code x} position that the {@link Customer}s spawn at. */
+	float spawnX;
+
+	/** The {@code y} position that the {@link Customer}s spawn at. */
+	float spawnY;
+
+	/** The number of {@link MapCell}s that the {@link Customer}s move every second. */
+	float customerSpeed;
+
+	/** The speed at which the {@link Customer}'s {@link Customer#waitTimer} decreases. */
+	float waitSpeed;
+
+	/** The {@link Listener} that the {@link Customer}s call when they are served successfully. */
 	Listener<Customer> getMoney;
+
+	/** The {@link Listener} that the {@link Customer}s call when they are not served successfully. */
 	Listener<Customer> loseReputation;
+
+	/**
+	 * The {@link Comparator} for sorting the {@link Customer}s in the
+	 * {@link #drawCustomers} {@link Array} so that they can be drawn in
+	 * the correct order.
+	 */
 	Comparator<Customer> customerDrawComparator;
+
+	/** How the {@link Register}s are picked when finding an open one. */
 	CustomerTarget targetType;
 
+	/**
+	 * The constructor for the {@link CustomerController}.
+	 * <br>Sets up all the variables of the variables to be used.
+	 * @param textureManager {@link TextureManager} : The {@link TextureManager} to use.
+	 */
 	public CustomerController(TextureManager textureManager, Map map) {
 		this.textureManager = textureManager;
 		this.map = map;
@@ -45,8 +79,6 @@ public class CustomerController {
 		this.toSpawn = new Array<>();
 		this.registers = new Array<>();
 		// computeCustomerZone(gameMap);
-		amountActiveCustomers = 0;
-		lockout = 0;
 
 		this.spawnX = 3;
 		this.spawnY = -1;
@@ -68,14 +100,26 @@ public class CustomerController {
 		this.waitSpeed = 1F;
 	}
 
+	/**
+	 * The constructor for the {@link CustomerController}, without the {@link Map}.
+	 * @param textureManager {@link TextureManager} : The {@link TextureManager} to use.
+	 */
 	public CustomerController(TextureManager textureManager) {
 		this(textureManager, null);
 	}
 
+	/**
+	 * Set the map to be used.
+	 * @param map {@link Map} : The {@link Map} to use.
+	 */
 	public void setMap(Map map) {
 		this.map = map;
 	}
 
+	/**
+	 * Load all of the {@link Customer}s, and their {@link com.badlogic.gdx.graphics.Texture}s.
+	 * @param textureGroup {@link String} : The texture group to load to.
+	 */
 	public void load(String textureGroup) {
 		// Finds the registers
 		findRegisters();
@@ -95,6 +139,9 @@ public class CustomerController {
 		}
 	}
 
+	/**
+	 * Post load all of the {@link Customer}s.
+	 */
 	public void postLoad() {
 		// Post load any customers that are already in the arrays
 		for (Customer customer : customers) {
@@ -105,14 +152,23 @@ public class CustomerController {
 		}
 	}
 
+	/**
+	 * Unload all of the {@link Customer}s {@link com.badlogic.gdx.graphics.Texture}s.
+	 */
 	public void unload() {
-		// Unload the texture
-		textureManager.unloadTexture("entities/cust3f.png");
-		textureManager.unloadTexture("entities/cust3b.png");
-		textureManager.unloadTexture("entities/cust3r.png");
-		textureManager.unloadTexture("entities/cust3l.png");
+		// Unload the textures
+		for (int custNo = 1 ; custNo <= Constants.NUM_CUSTOMER_TEXTURES ; custNo++) {
+			textureManager.unloadTexture("entities/cust" + custNo + "f.png");
+			textureManager.unloadTexture("entities/cust" + custNo + "b.png");
+			textureManager.unloadTexture("entities/cust" + custNo + "r.png");
+			textureManager.unloadTexture("entities/cust" + custNo + "l.png");
+		}
 	}
 
+	/**
+	 * Update all of the {@link Customer}s.
+	 * @param delta {@code float} : The time since the last frame.
+	 */
 	public void update(float delta) {
 		// Check if there is a Customer waiting for
 		// an open space
@@ -137,6 +193,11 @@ public class CustomerController {
 		}
 	}
 
+
+	/**
+	 * Draw all of the {@link Customer}s' {@link com.badlogic.gdx.graphics.Texture}s.
+	 * @param batch {@link SpriteBatch} : The {@link SpriteBatch} to use.
+	 */
 	public void draw(SpriteBatch batch) {
 		// First sort the draw array
 		drawCustomers.sort(customerDrawComparator);
@@ -146,6 +207,10 @@ public class CustomerController {
 		}
 	}
 
+	/**
+	 * Draw all of the {@link Customer}s' shapes.
+	 * @param shape {@link ShapeRenderer} : The {@link ShapeRenderer} to use.
+	 */
 	public void draw(ShapeRenderer shape) {
 		// First sort the draw array
 		drawCustomers.sort(customerDrawComparator);
@@ -155,6 +220,12 @@ public class CustomerController {
 		}
 	}
 
+	/**
+	 * Returns the first {@link Customer} that does not have a
+	 * {@link Register} linked to them.
+	 * @return {@link Customer} : The first {@link Customer} not linked to
+	 * 							  a {@link Register}, or {@code null}.
+	 */
 	public Customer customerWaiting() {
 		// Check through the customers, and if there is one
 		// that doesn't have a register set, then that means
@@ -167,10 +238,21 @@ public class CustomerController {
 		return null;
 	}
 
+	/**
+	 * Returns whether a {@link Customer} can currently be spawned or not.
+	 * @return {@code boolean} : {@code true} if a {@link Customer} can be spawned,
+	 * 							 {@code false} if not.
+	 */
 	public boolean canSpawn() {
 		return !(customerInSquareGrid(spawnX, spawnY) || customerInSquareGrid(spawnX, spawnY + 1));
 	}
 
+	/**
+	 * Spawns a new {@link Customer} with the {@link Request} provided.
+	 * @param request {@link Request} : The {@link Request} for the
+	 * 									{@link Customer} to have.
+	 * @return {@link Customer} : The new {@link Customer} spawned.
+	 */
 	public Customer spawnCustomer(Request request) {
 		// Randomly choose a customer number
 		Random random = new Random();
@@ -203,15 +285,25 @@ public class CustomerController {
 		newCustomer.setRequest(request);
 		// Try to put the customer on a register
 		customerOnRegister(newCustomer, getOpenRegister());
-		amountActiveCustomers += 1;
 		return newCustomer;
 	}
 
+	/**
+	 * Set the {@link Listener}s of a {@link Customer}.
+	 * @param customer {@link Customer} : The {@link Customer} to set the
+	 *                                    {@link Listener}s for.
+	 */
 	protected void setCustomersListeners(Customer customer) {
 		customer.servedListener = getMoney;
 		customer.failedListener = loseReputation;
 	}
 
+	/**
+	 * A {@code y} comparator for the {@link Register}s, to be used
+	 * to sort them in {@link #getOpenRegister()} for the
+	 * {@link CustomerTarget#CLOSEST} and {@link CustomerTarget#FARTHEST}
+	 * targeting types.
+	 */
 	Comparator<Register> registerYComparator = new Comparator<Register>() {
 		@Override
 		public int compare(Register o1, Register o2) {
@@ -230,6 +322,12 @@ public class CustomerController {
 		}
 	};
 
+	/**
+	 * Gets a {@link Register} that has no {@link Customer} on it,
+	 * changing which one is selected depending on the {@link #targetType}.
+	 * @return {@link Register} : A {@link Register} with no {@link Customer},
+	 * 							  or null if there isn't one.
+	 */
 	public Register getOpenRegister() {
 		// Loop through the registers, and add them to an array
 		// if they have no customer on them
@@ -260,6 +358,15 @@ public class CustomerController {
 		return null;
 	}
 
+	/**
+	 * Returns whether there is a {@link Customer} in the {@link MapCell} at
+	 * the position provided, ignoring the {@link Customer} provided.
+	 * @param x {@code float} : The x position.
+	 * @param y {@code float} : The y position.
+	 * @param ignoredCustomer {@link Customer} : The {@link Customer} to ignore.
+	 * @return {@code boolean} : {@code true} if there is a {@link Customer},
+	 * 						     {@code false} if there is not.
+	 */
 	public boolean customerInSquareGrid(float x, float y, Customer ignoredCustomer) {
 		x = (int) x;
 		y = (int) y;
@@ -277,18 +384,49 @@ public class CustomerController {
 		return false;
 	}
 
+	/**
+	 * Returns whether there is a {@link Customer} in the {@link MapCell} at the position
+	 * provided.
+	 * @param x {@code float} : The x position.
+	 * @param y {@code float} : The y position.
+	 * @return {@code boolean} : {@code true} if there is a {@link Customer},
+	 * 						     {@code false} if there is not.
+	 */
 	public boolean customerInSquareGrid(float x, float y) {
 		return customerInSquareGrid(x, y, null);
 	}
 
+
+	/**
+	 * Returns whether there is a {@link Customer} in the {@link MapCell} that the
+	 * float values match to.
+	 * @param x {@code float} : The x position.
+	 * @param y {@code float} : The y position.
+	 * @return {@code boolean} : {@code true} if there is a {@link Customer},
+	 * 						     {@code false} if there is not.
+	 */
 	public boolean customerInSquarePos(float x, float y) {
 		return customerInSquareGrid(MapManager.posToGrid(x), MapManager.posToGrid(y), null);
 	}
 
+	/**
+	 * Returns whether there is a {@link Customer} in the {@link MapCell} that the
+	 * float values match to, ignoring the {@link Customer} provided.
+	 * @param x {@code float} : The x position.
+	 * @param y {@code float} : The y position.
+	 * @param ignoredCustomer {@link Customer} : The {@link Customer} to ignore.
+	 * @return {@code boolean} : {@code true} if there is a {@link Customer},
+	 * 						     {@code false} if there is not.
+	 */
 	public boolean customerInSquarePos(float x, float y, Customer ignoredCustomer) {
 		return customerInSquareGrid(MapManager.posToGrid(x), MapManager.posToGrid(y), ignoredCustomer);
 	}
 
+	/**
+	 * Links a {@link Customer} to a {@link Register}.
+	 * @param customer {@link Customer} : The {@link Customer} to link.
+	 * @param register {@link Register} : The {@link Register} to link.
+	 */
 	public void customerOnRegister(Customer customer, Register register) {
 		// Make sure the register is not null
 		if (register == null) {
@@ -307,6 +445,11 @@ public class CustomerController {
 		customer.setRegister(register);
 	}
 
+	/**
+	 * Removes a {@link Customer} from a {@link Register}.
+	 * @param register {@link Register} : The {@link Register} to remove
+	 *                                    the {@link Customer} from.
+	 */
 	public void customerOffRegister(Register register) {
 		// Make sure the register is not null
 		if (register == null) {
@@ -320,30 +463,60 @@ public class CustomerController {
 		register.setCustomer(null);
 	}
 
+	/**
+	 * Deletes a {@link Customer} from all {@link Array}s.
+	 * @param customer {@link Customer} : The {@link Customer} to remove.
+	 */
 	protected void deleteCustomer(Customer customer) {
 		customers.removeValue(customer, true);
 		toSpawn.removeValue(customer, true);
 		drawCustomers.removeValue(customer, true);
-		amountActiveCustomers -= 1;
-
 	}
 
+	/**
+	 * Set the {@link Customer}s' {@link Customer#servedListener}, which
+	 * they call when they not have been served successfully.
+	 * @param reputationListener {@link Listener<Customer>} : The {@link Listener}
+	 *                                         for the {@link Customer}s to use.
+	 */
 	public void setReputationListener(Listener<Customer> reputationListener) {
 		this.loseReputation = reputationListener;
 	}
 
+	/**
+	 * Set the {@link Customer}s' {@link Customer#servedListener}, which
+	 * they call when they have been served successfully.
+	 * @param servedListener {@link Listener<Customer>} : The {@link Listener}
+	 *                                         for the {@link Customer}s to use.
+	 */
 	public void setServedListener(Listener<Customer> servedListener) {
 		this.getMoney = servedListener;
 	}
 
+	/**
+	 * Set what type of {@link CustomerTarget} should be used when spawning
+	 * the {@link Customer}s. Depending on the {@link CustomerTarget}, they
+	 * may head towards different {@link Register}s before others are used.
+	 * @param targetType {@link CustomerTarget} : The type of targeting method
+	 *                                            to use.
+	 */
 	public void setTargetType(CustomerTarget targetType) {
 		this.targetType = targetType;
 	}
 
+	/**
+	 * Set the movement speed of all of the {@link Customer}s.
+	 * @param customerSpeed {@code float} : The number of cells to move
+	 *                                   	per second.
+	 */
 	public void setCustomerSpeed(float customerSpeed) {
 		this.customerSpeed = customerSpeed;
 	}
 
+	/**
+	 * Set the wait speed of all of the {@link Customer}s.
+	 * @param multiplier {@code float} : The speed to wait at.
+	 */
 	public void setCustomerWaitSpeed(float multiplier) {
 		this.waitSpeed = multiplier;
 		// Update for all Customers
@@ -355,6 +528,10 @@ public class CustomerController {
 		}
 	}
 
+	/**
+	 * Finds all {@link Register} {@link MapCell}s on the {@link Map},
+	 * and adds them to the {@link #registers} array.
+	 */
 	public void findRegisters() {
 		// Clear the register array
 		registers.clear();
@@ -382,11 +559,20 @@ public class CustomerController {
 		}
 	}
 
+	/**
+	 * Attempts to serve an {@link Item} to a {@link Customer} that
+	 * is waiting at a {@link Register} {@link MapCell}.
+	 * @param registerCell {@link MapCell} : The {@link MapCell} interacted
+	 *                                    	 with.
+	 * @param item {@link Item} : The {@link Item} served.
+	 * @return {@code boolean} : {@code true} if the {@link Item} was served successfully,
+	 * 							 {@code false} if not.
+	 */
 	public boolean serve(MapCell registerCell, Item item) {
 		// Make sure that the target is a valid register
 		// by getting the register, and making sure the
 		// result isn't null.
-		Register register = getRegister(registerCell);
+		Register register = getRegisterFromCell(registerCell);
 		if (register == null)
 			return false;
 
@@ -403,26 +589,14 @@ public class CustomerController {
 		return customer.serve(item);
 	}
 
-	public boolean isRegister(MapCell cell) {
-		// Loop through the registers and check
-		for (Register register : registers) {
-			if (register.getRegisterCell() == cell) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	private Register getRegister(MapCell cell) {
-		// Loop through the registers and check
-		for (Register register : registers) {
-			if (register.getRegisterCell() == cell) {
-				return register;
-			}
-		}
-		return null;
-	}
-
+	/**
+	 * Returns whether a {@link Register} is at the {@code x} and
+	 * {@code y} specified.
+	 * @param x {@code int} : The {@code x} to check.
+	 * @param y {@code int} : The {@code y} to check.
+	 * @return {@code boolean} : {@code true} if there is a {@link Register},
+	 * 							 {@code false} if there is not.
+	 */
 	public Register getRegisterAtPos(int x, int y) {
 		// Check through all registers
 		for (Register register : registers) {
@@ -435,6 +609,14 @@ public class CustomerController {
 		return null;
 	}
 
+	/**
+	 * Get a {@link Register} from a {@link MapCell}.
+	 * <br>If there is no {@link Register} on that {@link MapCell}, then
+	 * it will return {@code null}.
+	 * @param mapCell {@link MapCell} : The {@link MapCell} to use.
+	 * @return {@link Register} : The {@link Register} on that cell,
+	 * 						      or {@code null} if there isn't one.
+ 	 */
 	public Register getRegisterFromCell(MapCell mapCell) {
 		// Check through all registers
 		for (Register register : registers) {
@@ -447,6 +629,10 @@ public class CustomerController {
 		return null;
 	}
 
+	/**
+	 * Reset the {@link CustomerController} by removing all spawned
+	 * {@link Customer}s.
+	 */
 	public void reset() {
 		// Clear the customer arrays
 		customers.clear();
@@ -459,6 +645,9 @@ public class CustomerController {
 		}
 	}
 
+	/**
+	 * Clear all variables that should be disposed.
+	 */
 	public void dispose() {
 		customers.clear();
 		toSpawn.clear();
@@ -469,6 +658,12 @@ public class CustomerController {
 		map = null;
 	}
 
+	/**
+	 * Serialize all of the {@link Customer}s in {@link JsonValue}s,
+	 * apart from {@link Customer}s who are leaving, and return them
+	 * as a {@link JsonValue} array.
+	 * @return {@link JsonValue} : The serialized data.
+	 */
 	public JsonValue serializeCustomers() {
 		// Create the cooks JsonValue
 		JsonValue customersArrayRoot = new JsonValue(JsonValue.ValueType.array);
@@ -490,7 +685,12 @@ public class CustomerController {
 		return customersArrayRoot;
 	}
 
-	public void deserializeCustomers(GameLogic logic, JsonValue jsonValue) {
+	/**
+	 * Deserialize a {@link JsonValue} for {@link Customer}s, and add them
+	 * to everything they need to be.
+	 * @param jsonValue {@link JsonValue} : The {@link JsonValue} to deserialize.
+	 */
+	public void deserializeCustomers(JsonValue jsonValue) {
 		// Clear the customers
 		customers.clear();
 		toSpawn.clear();
@@ -507,7 +707,6 @@ public class CustomerController {
 			customer.moveSpeed = customerObject.getFloat("move_speed");
 			customer.visibility = 1f;
 			setCustomersListeners(customer);
-			amountActiveCustomers += 1;
 			if (customerObject.getBoolean("to_spawn")) {
 				// Add the Cook to the toSpawn array
 				toSpawn.add(customer);
