@@ -26,7 +26,12 @@ public abstract class InteractionStep {
     /** The last {@link Cook} to interact. */
     protected Cook lastInteractedCook;
 
-    /** Update the time value of the instance. */
+    /**
+     * Update the time value of the instance.
+     * @param instance {@link InteractionInstance} : The interaction instance.
+     * @param delta {@code float} : The time since the last frame.
+     * @param powerUpMultiplier {@code float} : The multiplier via power up.
+     */
     public void updateTime(InteractionInstance instance, float delta, float powerUpMultiplier) {
         instance.elapsedTime += delta * powerUpMultiplier;
     }
@@ -134,7 +139,7 @@ public abstract class InteractionStep {
      * @param cook {@link Cook} : The {@link Cook} locked to the {@link com.undercooked.game.station.Station},
      *                            from a previous {@link InteractionStep} or {@code null}.
      * @param delta {@code float} : The time since the last frame.
-     * @param
+     * @param powerUpMultiplier {@code float} : The multiplier for the power up.
      */
     public void update(InteractionInstance instance, Cook cook, float delta, float powerUpMultiplier) { }
 
