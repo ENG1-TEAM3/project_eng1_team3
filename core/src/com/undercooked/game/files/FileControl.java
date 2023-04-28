@@ -321,4 +321,33 @@ public class FileControl {
         return args[0] + "/";
     }
 
+    /**
+     * Returns the path of the asset path.
+     * @param assetPath {@link String} : The path to the asset.
+     * @param folderName {@link String} : The folder that the asset resides in.
+     * @return {@link String} : The exact path to the asset.
+     */
+    public static String getAssetPath(String assetPath, String folderName) {
+        boolean internal = assetPath.startsWith("<main>:");
+        String rootFolder = "";
+
+        //If it contains ":", then it is split into at least 2 parts.
+        if (!internal && assetPath.contains(":")) {
+            String[] args = assetPath.split(":", 2);
+            rootFolder = formatDir(args[0]);
+        }
+
+        String pathToAsset = toPath(assetPath, folderName);
+
+        String finalPath;
+        if (internal) {
+            finalPath = "";
+        } else {
+            finalPath = getDataPath();
+        }
+        finalPath += "game/" + rootFolder + pathToAsset;
+
+        return finalPath;
+    }
+
 }
