@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
@@ -16,61 +15,48 @@ import com.undercooked.game.assets.TextureManager;
 import com.undercooked.game.audio.AudioSliders;
 import com.undercooked.game.audio.Slider;
 import com.undercooked.game.logic.GameLogic;
-import com.undercooked.game.map.Map;
 import com.undercooked.game.render.GameRenderer;
 import com.undercooked.game.util.CameraController;
-import com.undercooked.game.util.CollisionTile;
 import com.undercooked.game.util.Constants;
 
 /**
- * Responsible for handling all the rendering related tasks.
- * For game logic, see {@link GameLogic}.
+ * Responsible for the pause button, and for combining the {@link GameLogic}
+ * and {@link GameRenderer}.
  */
 public class GameScreen extends Screen {
+
+	/** The {@link GameLogic} that the game will use. */
     GameLogic gameLogic;
+
+	/** The {@link GameRenderer} that the game will use. */
 	GameRenderer gameRenderer;
 
-	Rectangle volSlideBackgr;
-	Rectangle volSlide;
-	Rectangle musSlideBackgr;
-	Rectangle musSlide;
-	Rectangle audioBackground;
-	Rectangle optionsBackground;
-	Texture ESC;
-	Texture MENU;
-	Texture BACKTOMAINSCREEN;
-	Texture RESUME;
-	Texture AUDIO;
-	Texture audioEdit;
-	Texture vControl;
-	Texture vButton;
-	Button mn;
-	Button rs;
-	Button ad;
-	Button btms;
-	/** The map tiles with collision. */
-	public static CollisionTile[][] CLTiles;
+	/** The {@link Texture} for the {@link #pauseBtn}. */
+	Texture pauseBtnTexture;
+
+	/** The {@link Button} for going to the {@link PauseScreen}. */
+	Button pauseBtn;
+
+	/** The {@link Viewport} for the {@link #uiCamera}. */
 	Viewport uiViewport;
+
+	/** The {@link Viewport} for the {@link #worldCamera}. */
 	Viewport worldViewport;
+
+	/** The {@link Stage} for the {@link #pauseBtn}. */
 	Stage stage;
-	Stage stage2;
+
+	/** The {@link OrthographicCamera} for the UI. */
 	OrthographicCamera uiCamera;
-	public static OrthographicCamera worldCamera;
 
-	int gameResolutionX;
-	int gameResolutionY;
-	float buttonwidth;
-	float buttonheight;
-	float xSliderMax;
-	float xSliderMin;
-	float sliderWidth;
+	/** The {@link OrthographicCamera} for the world. */
+	OrthographicCamera worldCamera;
 
-	float audioBackgroundWidth;
-	float audioBackgroundHeight;
-	float audioBackgroundx;
-	float audioBackgroundy;
-	boolean paused;
-	public Map map;
+	/** The width of the buttons. */
+	float buttonWidth;
+
+	/** The height of the buttons. */
+	float buttonHeight;
 
 	/**
 	 * Constructor to initialise game screen;
@@ -79,7 +65,8 @@ public class GameScreen extends Screen {
 	 */
 	public GameScreen(MainGameClass game) {
 		super(game);
-		this.calculateBoxMaths();
+		this.buttonWidth = Constants.V_WIDTH / 10.0f;
+		this.buttonHeight = Constants.V_HEIGHT / 20.0f;
 	}
 
 	/**
@@ -119,29 +106,22 @@ public class GameScreen extends Screen {
 	@Override
 	public void load() {
 		TextureManager textureManager = game.getTextureManager();
-		textureManager.load(Constants.GAME_TEXTURE_ID, "entities/cook_walk_1.png");
-		textureManager.load(Constants.GAME_TEXTURE_ID, "entities/cook_walk_2.png");
-		textureManager.load(Constants.GAME_TEXTURE_ID, "entities/cook_walk_hands_1.png");
-		textureManager.load(Constants.GAME_TEXTURE_ID, "entities/cook_walk_hands_2.png");
-		// cc.load(Constants.GAME_TEXTURE_ID);
-		textureManager.load(Constants.GAME_TEXTURE_ID, "entities/cust3f.png");
-		textureManager.load(Constants.GAME_TEXTURE_ID, "entities/cust3b.png");
-		textureManager.load(Constants.GAME_TEXTURE_ID, "entities/cust3r.png");
-		textureManager.load(Constants.GAME_TEXTURE_ID, "entities/cust3l.png");
-		textureManager.load(Constants.GAME_TEXTURE_ID, "uielements/settings.png");
+		textureManager.load(Constants.GAME_TEXTURE_ID, "uielements/pause.png");
 
 		game.audioManager.loadMusic("audio/music/GameMusic.ogg", Constants.MUSIC_GROUP);
+
+		/*
 		game.audioManager.loadMusic("audio/soundFX/cash-register-opening.mp3", Constants.GAME_GROUP);
 		game.audioManager.loadMusic("audio/soundFX/chopping.mp3", Constants.GAME_GROUP);
 		game.audioManager.loadMusic("audio/soundFX/frying.mp3", Constants.GAME_GROUP);
 		game.audioManager.loadMusic("audio/soundFX/money-collect.mp3", Constants.GAME_GROUP);
 		game.audioManager.loadMusic("audio/soundFX/timer-bell-ring.mp3", Constants.GAME_GROUP);
+		*/
 
 		gameLogic.setTextureManager(textureManager);
 		gameLogic.setAudioManager(getAudioManager());
 		gameLogic.load();
 		gameRenderer.load(Constants.GAME_TEXTURE_ID, textureManager);
-		// Add the map entities to the GameRenderer
 
 	}
 
@@ -156,21 +136,15 @@ public class GameScreen extends Screen {
 		game.audioManager.unload(Constants.GAME_GROUP);
 		game.audioManager.unload(Constants.MUSIC_GROUP);
 		stage.dispose();
-		stage2.dispose();
 
 		gameLogic.dispose();
 		gameRenderer.unload(textureManager);
 	}
 
-	/**
-	 * When the GameScreen is shown.
-	 */
 	@Override
 	public void show() {
 		// When this screen is shown, reset the input processor
 		Gdx.input.setInputProcessor(stage);
-		// As it's showing, it's not paused
-		paused = false;
 	}
 
 	/**
@@ -185,67 +159,37 @@ public class GameScreen extends Screen {
 		gameLogic.reset();
 	}
 
-	/**
-	 * Things that should be done when the GameScreen has finished
-	 * loading.
-	 */
 	@Override
 	public void postLoad() {
 
 		// Get the game music
 		game.gameMusic = game.audioManager.getMusic("audio/music/GameMusic.ogg");
 
-		// =======================================SET=POSITIONS=OF=SLIDERS===============================================
-		// ======================================INHERIT=TEXTURES=FROM=MAIN=SCREEN=======================================
-		vButton = game.getTextureManager().get("uielements/vButton.jpg");
-		vControl = game.getTextureManager().get("uielements/vControl.png");
 		// ======================================START=CAMERAS===========================================================
 		worldCamera = CameraController.getCamera(Constants.WORLD_CAMERA_ID);
 		uiCamera = CameraController.getCamera(Constants.UI_CAMERA_ID);
-		// ======================================SET=INITAL=STATE========================================================
-
 		// ======================================START=VIEWPORTS=========================================================
 		worldViewport = CameraController.getViewport(Constants.WORLD_CAMERA_ID);
 		uiViewport = CameraController.getViewport(Constants.UI_CAMERA_ID);
 		// ======================================START=STAGES============================================================
 		stage = new Stage(uiViewport);
-		stage2 = new Stage(uiViewport);
 		// ======================================LOAD=TEXTURES===========================================================
 		TextureManager textureManager = game.getTextureManager();
-		MENU = textureManager.get("uielements/settings.png");
-		ESC = textureManager.get("uielements/background.png");
-		BACKTOMAINSCREEN = textureManager.get("uielements/exitmenu.png");
-		RESUME = textureManager.get("uielements/resume.png");
-		AUDIO = textureManager.get("uielements/audio2.png");
-		audioEdit = textureManager.get("uielements/background.png");
+		pauseBtnTexture = textureManager.get("uielements/pause.png");
 		// ======================================CREATE=BUTTONS==========================================================
-		mn = new Button(new TextureRegionDrawable(MENU));
-		ad = new Button(new TextureRegionDrawable(AUDIO));
-		rs = new Button(new TextureRegionDrawable(RESUME));
-		btms = new Button(new TextureRegionDrawable(BACKTOMAINSCREEN));
+		pauseBtn = new Button(new TextureRegionDrawable(pauseBtnTexture));
 		// ======================================POSITION=AND=SCALE=BUTTONS==============================================
-		mn.setPosition(gameResolutionX / 40.0f, 18 * gameResolutionY / 20.0f);
-		mn.setSize(buttonwidth, buttonheight);
-		rs.setPosition(gameResolutionX / 40.0f, 18 * gameResolutionY / 20.0f);
-		rs.setSize(buttonwidth, buttonheight);
-		ad.setPosition(rs.getX() + rs.getWidth() + 2 * (gameResolutionX / 40.0f - gameResolutionX / 50.0f), rs.getY());
-		ad.setSize(buttonwidth, buttonheight);
-		btms.setPosition(ad.getX() + ad.getWidth() + 2 * (gameResolutionX / 40.0f - gameResolutionX / 50.0f),
-				ad.getY());
-		btms.setSize(buttonwidth, buttonheight);
+		pauseBtn.setPosition(Constants.V_WIDTH / 40.0f, 18 * Constants.V_HEIGHT / 20.0f);
+		pauseBtn.setSize(buttonWidth, buttonHeight);
 		// ======================================ADD=LISTENERS=TO=BUTTONS================================================
-		final GameScreen gs = this;
-		mn.addListener(new ClickListener() {
+		pauseBtn.addListener(new ClickListener() {
 			public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
 				super.touchUp(event, x, y, pointer, button);
 				pauseGame();
 			}
 		});
 		// ======================================ADD=BUTTONS=TO=STAGES===================================================
-		stage.addActor(mn);
-		stage2.addActor(rs);
-		stage2.addActor(btms);
-		stage2.addActor(ad);
+		stage.addActor(pauseBtn);
 
 		// GameLogic post load
 		gameLogic.postLoad();
@@ -258,7 +202,14 @@ public class GameScreen extends Screen {
 
 	}
 
+	/**
+	 * If on the {@link GameScreen}, changes the current screen to
+	 * the {@link PauseScreen}.
+	 */
 	public void pauseGame() {
+		// Make sure it's on the GameScreen
+		if (!getScreenController().onScreen(this)) return;
+
 		gameLogic.pause();
 
 		PauseScreen pauseScreen = (PauseScreen) game.screenController.getScreen(Constants.PAUSE_SCREEN_ID);
@@ -268,25 +219,19 @@ public class GameScreen extends Screen {
 		game.screenController.nextScreen(Constants.PAUSE_SCREEN_ID);
 	}
 
-	AudioSliders audioSliders;
-	Slider musicSlider, gameSlider;
-
-	/**
-	 * Render method for main game
-	 *
-	 * @param delta - some change in time
-	 */
-
+	@Override
 	public void render(float delta) {
 
 		// Pause the game before anything else
 		stage.act();
-		if (!paused && Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+		if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
 			pauseGame();
 			return;
 		}
-		// If the game is paused, then don't continue
-		if (paused) return;
+		// If it's not on the GameScreen, stop here
+		if (!getScreenController().onScreen(this)) {
+			return;
+		}
 
 		// Play Game Music
 		game.gameMusic.play();
@@ -298,7 +243,7 @@ public class GameScreen extends Screen {
 		gameLogic.moveCamera(delta);
 
 		// Render the game (if still on this screen)
-		if (getScreenController().onScreen(Constants.GAME_SCREEN_ID)) {
+		if (getScreenController().onScreen(this)) {
 			renderScreen(delta);
 			// Draw Pause Button
 			MainGameClass.batch.setProjectionMatrix(uiCamera.combined);
@@ -317,68 +262,6 @@ public class GameScreen extends Screen {
 		gameRenderer.renderUI(delta);
 	}
 
-	public static final float MAX_WAIT_TIME = 1000000; //Customer wait time in ms
-
-	long nowTime = 0;
-	long thenTime = 0;
-
-	/**
-	 * Calculates coordinates for UI element scaling;
-	 */
-	private void calculateBoxMaths() {
-		this.gameResolutionX = Constants.V_WIDTH;
-		this.gameResolutionY = Constants.V_HEIGHT;
-		this.buttonwidth = gameResolutionX / 10.0f;
-		this.buttonheight = gameResolutionY / 20.0f;
-
-		this.audioBackgroundWidth = gameResolutionX / 6.0f;
-		this.audioBackgroundHeight = gameResolutionY / 6.0f;
-
-		this.audioBackgroundx = gameResolutionX / 40.0f + buttonwidth
-				+ 2 * (gameResolutionX / 40.0f - gameResolutionX / 50.0f);
-		this.audioBackgroundy = 7 * gameResolutionY / 10.0f;
-
-		this.optionsBackground = new Rectangle();
-		optionsBackground.setPosition(gameResolutionX / 50.0f, 35 * gameResolutionY / 40.0f);
-		optionsBackground.width = 3 * (buttonwidth + 2 * (gameResolutionX / 40.0f - gameResolutionX / 50.0f));
-		optionsBackground.height = 4 * gameResolutionY / 40.0f;
-
-		this.audioBackground = new Rectangle();
-		audioBackground.setPosition(audioBackgroundx, audioBackgroundy);
-		audioBackground.width = audioBackgroundWidth;
-		audioBackground.height = audioBackgroundHeight;
-
-		this.volSlide = new Rectangle();
-		volSlide.width = audioBackgroundHeight / 4.0f;
-		volSlide.height = audioBackgroundHeight / 4.0f;
-
-		this.volSlideBackgr = new Rectangle();
-		volSlideBackgr.width = 2 * audioBackgroundWidth / 3.0f;
-		volSlideBackgr.height = audioBackgroundHeight / 6.0f;
-		volSlideBackgr.setPosition(audioBackgroundx + audioBackgroundWidth / 6,
-				audioBackgroundy + audioBackgroundHeight / 6);
-
-		this.musSlide = new Rectangle();
-		musSlide.width = audioBackgroundHeight / 4.0f;
-		musSlide.height = audioBackgroundHeight / 4.0f;
-
-		this.musSlideBackgr = new Rectangle();
-		musSlideBackgr.width = 2 * audioBackgroundWidth / 3.0f;
-		musSlideBackgr.height = audioBackgroundHeight / 6.0f;
-		musSlideBackgr.setPosition(audioBackgroundx + audioBackgroundWidth / 6,
-				audioBackgroundy + 4 * audioBackgroundHeight / 6);
-
-		this.xSliderMin = audioBackgroundx + audioBackgroundWidth / 6;
-		this.xSliderMax = xSliderMin + volSlideBackgr.width;
-		this.sliderWidth = volSlideBackgr.width;
-	}
-
-	/**
-	 * Resize game screen
-	 *
-	 * @param width  - width to resize to
-	 * @param height - height to resize to
-	 */
 	@Override
 	public void resize(int width, int height) {
 	}

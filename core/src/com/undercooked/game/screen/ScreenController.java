@@ -139,4 +139,8 @@ public class ScreenController {
         }
         return screenStack.peek() == screens.get(ID);
     }
+
+    public boolean onScreen(Screen screen) {
+        return screenStack.peek() == screen;
+    }
 }
