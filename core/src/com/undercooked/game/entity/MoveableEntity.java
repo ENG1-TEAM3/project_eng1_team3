@@ -41,12 +41,6 @@ public class MoveableEntity extends Entity {
         collidedX = false;
         collidedY = false;
 
-        float moveX = Math.signum(x) * collision.width;
-        float moveY = Math.signum(y) * collision.height;
-
-        boolean xPositive = Math.signum(x) >= 0;
-        boolean yPositive = Math.signum(y) >= 0;
-
         x = moveCalc(x, delta);
         y = moveCalc(y, delta);
 
@@ -56,21 +50,20 @@ public class MoveableEntity extends Entity {
         // Repeat until x and y are finished
         while (!xFinished || !yFinished) {
 
+            float moveX = Math.min(collision.width, Math.signum(x) * speed);
+            float moveY = Math.min(collision.height, Math.signum(y) * speed);
+
             // Change moveX and moveY depending on distance
-            float nextX = x - moveX;
-            if ((nextX <= 0 && xPositive) || (nextX >= 0 && !xPositive)) {
+            if (Math.abs(x - moveX) >= Math.abs(0 - x)) {
                 moveX = x;
-                nextX = 0;
             }
-            float nextY = y - moveY;
-            if ((nextY <= 0 && yPositive) || (nextY >= 0 && !yPositive)) {
+            if (Math.abs(y - moveY) >= Math.abs(0 - y)) {
                 moveY = y;
-                nextY = 0;
             }
 
             // Check collision
             // X
-            if (!xFinished && map.checkCollision(this, collision.x + moveX, collision.y)) {
+            if (map.checkCollision(this, collision.x + moveX, collision.y)) {
                 float moveDist = 0.01F * Math.signum(moveX);
                 // Move the player as close as possible on the x
                 while (!map.checkCollision(this, collision.x + moveDist, collision.y)) {
@@ -83,7 +76,7 @@ public class MoveableEntity extends Entity {
             }
 
             // Y
-            if (!yFinished && map.checkCollision(this, collision.x, collision.y + moveY)) {
+            if (map.checkCollision(this, collision.x, collision.y + moveY)) {
                 float moveDist = 0.01F * Math.signum(moveY);
                 // Move the player as close as possible on the y
                 while (!map.checkCollision(this, collision.x, collision.y + moveDist)) {
@@ -99,8 +92,8 @@ public class MoveableEntity extends Entity {
             collision.y += moveY;
 
             // Update x and y, if the move distance isn't 0
-            if (moveX != 0) x = nextX;
-            if (moveY != 0) y = nextY;
+            x -= moveX;
+            y -= moveY;
 
             // Update xFinished and yFinished
             xFinished = (moveX==0);
