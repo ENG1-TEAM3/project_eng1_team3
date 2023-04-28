@@ -135,18 +135,16 @@ public class GameScreen implements Screen {
 		map1 = new TmxMapLoader().load("map/art_map/customertest.tmx");
 		tiledMapRenderer = new OrthogonalTiledMapRenderer(map1);
 		constructCollisionData(map1);
-		cc = new CustomerController(map1);
+		cc = new CustomerController(map1,gameMode);
 
 		if (gameMode.getNumberOfCustmersInAWave() == 1){
 			cc.spawnCustomer();
 		}
 		if (gameMode.getNumberOfCustmersInAWave() == 2){
-			cc.spawnMedium();
+			cc.spawnStartMedium();
 		}
 		if (gameMode.getNumberOfCustmersInAWave() == 3){
-			cc.spawnCustomer();
-			cc.spawnCustomer();
-			cc.spawnCustomer();
+			cc.spawnHard();
 		}
 
 
@@ -310,13 +308,17 @@ public class GameScreen implements Screen {
 
 		checkCookSwitch();
 
-		if((currentWaitingCustomer != null && currentWaitingCustomer.waitTime() > gameMode.getModeTime() ) ){
-			cc.delCustomer(currentWaitingCustomer);
-			cc.spawnMedium();
-			GameScreen.currentWave++;
-			GameScreen.currentWaitingCustomer = null;
-
+		if (gameMode.getNumberOfCustmersInAWave() == 1){
+			cc.spawnCustomer();
 		}
+		if (gameMode.getNumberOfCustmersInAWave() == 2){
+			delMedium();
+		}
+		if (gameMode.getNumberOfCustmersInAWave() == 3){
+			delHard();
+		}
+
+		delMedium();
 
 		// =========================================CHECK=GAME=OVER======================================================
 		checkGameOver();
@@ -716,8 +718,27 @@ public class GameScreen implements Screen {
 		// TODO Auto-generated method stub
 	}
 
-//	public boolean isDisplayed(){
-//		if
-//		return true;
-//	}
+	public void delMedium(){
+		if((currentWaitingCustomer != null && currentWaitingCustomer.waitTime() > gameMode.getModeTime() ) ){
+			cc.delCustomer(currentWaitingCustomer);
+			if ( cc.amountActiveCustomers >= 5){
+
+			}else{
+				cc.spawnMedium();
+			}
+
+			GameScreen.currentWave++;
+			GameScreen.currentWaitingCustomer = null;
+
+		}
+	}
+	public void delHard(){
+		if((currentWaitingCustomer != null && currentWaitingCustomer.waitTime() > gameMode.getModeTime() ) ){
+			cc.delCustomer(currentWaitingCustomer);
+			cc.spawnHard();
+			GameScreen.currentWave++;
+			GameScreen.currentWaitingCustomer = null;
+
+		}
+	}
 }

@@ -13,6 +13,7 @@ import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 import com.badlogic.gdx.math.Vector2;
+import com.team3gdx.game.util.GameMode;
 
 public class CustomerController {
 	public int lockout;
@@ -22,12 +23,16 @@ public class CustomerController {
 	public Customer[] mediumCustomers = new Customer[10];
 	public Customer[] leavingcustomers = new Customer[5];
 	TiledMap gameMap;
+	private GameMode gameMode;
 	int top;
 	int bottom;
 	int xCoordinate;
+	int countnonNull;
 
-	public CustomerController(TiledMap map) {
+
+	public CustomerController(TiledMap map, GameMode gameMode) {
 		this.gameMap = map;
+		this.gameMode = gameMode;
 		computeCustomerZone(gameMap);
 		amountActiveCustomers = 0;
 		lockout = 0;
@@ -123,26 +128,94 @@ public class CustomerController {
 		}
 	}
 
-	public void spawnMedium() {
-		for(int i =0 ; i < this.customers.length -1; i++) {
+	public void spawnStartMedium() {
+		//this.top is the one for serving station position
+		for( int i = 0; i< gameMode.getNumberOfCustmersInAWave(); i++) {
 			if (customers[i] == null) {
-				customers[i] = new Customer(this.xCoordinate, this.bottom, this.top-1, 2);
-				customers[i + 1] = new Customer(this.xCoordinate, this.bottom - 2, this.top - 3, 1);
+				customers[i] = new Customer(this.xCoordinate, this.bottom - i, this.top - i, 1);
 				amountActiveCustomers += 1;
-				break;
+				System.out.println(" I activated ");
+
+			}
+//			for (int j = 0; j < customers.length ; j++){
+//				if ( customers[j] != null  ){
+//					countnonNull++;
+//				}
+//			}
+		}}
+
+//	public void spawnMedium() {
+//		//this.top is the one for serving station position
+//			for( int i = 0; i< gameMode.getNumberOfCustmersInAWave()+1; i++) {
+//			if (customers[i] == null) {
+//				customers[i] = new Customer(this.xCoordinate, this.bottom - i, this.top - i, 1);
+//				amountActiveCustomers += 1;
+//				System.out.println(" I activated ");
+//			}
+//		}
+//	}
+	public void spawnMedium() {
+		for (int i = 0; i < customers.length; i++) {
+			if (customers[i] != null) {
+				countnonNull++;
+				System.out.println(countnonNull);
 			}
 		}
-	}
-
-
+		if (countnonNull == 0) {
+			for (int i = 0; i < gameMode.getNumberOfCustmersInAWave(); i++) {
+				if (customers[i] == null) {
+					customers[i] = new Customer(this.xCoordinate, this.bottom - i, this.top - i, 1);
+					amountActiveCustomers += 1;
+					System.out.println("count 0 ");
+				}
+			}
+		}else if(countnonNull == 1){
+			for (int i = 0; i < gameMode.getNumberOfCustmersInAWave() + 1; i++) {
+				if (customers[i] == null) {
+					customers[i] = new Customer(this.xCoordinate, this.bottom - i, this.top - i, 1);
+					amountActiveCustomers += 1;
+					System.out.println("count 1 ");
+				}
+			}
+		}else if(countnonNull == 2){
+			for (int i = 0; i < gameMode.getNumberOfCustmersInAWave() + 2; i++) {
+				if (customers[i] == null) {
+					customers[i] = new Customer(this.xCoordinate, this.bottom - i, this.top - i, 2);
+					amountActiveCustomers += 1;
+					System.out.println("count 2 ");
+				}
+			}
+		}else if(countnonNull == 3){
+			for (int i = 0; i < gameMode.getNumberOfCustmersInAWave() + 2; i++) {
+				if (customers[i] == null) {
+					customers[i] = new Customer(this.xCoordinate, this.bottom - i, this.top - i, 3);
+					amountActiveCustomers += 1;
+					System.out.println("count 3 ");
+				}
+			}
+//		}else if(countnonNull == 4){
+//			for (int i = 0; i < gameMode.getNumberOfCustmersInAWave() + 4; i++) {
+//				if (customers[i] == null) {
+//					customers[i] = new Customer(this.xCoordinate, this.bottom - i, this.top - i, 1);
+//					amountActiveCustomers += 1;
+//					System.out.println("count 4 ");
+//				}
+//			}
+//		}else if(countnonNull == 5){
+//			for (int i = 0; i < gameMode.getNumberOfCustmersInAWave() + 5; i++) {
+//				if (customers[i] == null) {
+//					customers[i] = new Customer(this.xCoordinate, this.bottom - i, this.top - i, 2);
+//					amountActiveCustomers += 1;
+//					System.out.println("count 5 ");
+//				}
+//			}
+//		}
+	}}
 	public void spawnHard() {
-		for(int i =0 ; i < this.customers.length -2; i++) {
+		for(int i =0 ; i < gameMode.getNumberOfCustmersInAWave(); i++) {
 			if (customers[i] == null) {
-				customers[i] = new Customer(this.xCoordinate, this.bottom, this.top-1, 2);
-				customers[i + 1] = new Customer(this.xCoordinate, this.bottom - 2, this.top - 3, 1);
-				customers[i + 2] = new Customer(this.xCoordinate, this.bottom - 2, this.top - 3, 3);
+				customers[i] = new Customer(this.xCoordinate, this.bottom-i, this.top-i, 2);
 				amountActiveCustomers += 1;
-				break;
 			}
 		}
 
@@ -164,7 +237,6 @@ public class CustomerController {
 		for (int i = 0; i < this.customers.length; i++) {
 			if (customers[i] == customer) {
 				delCustomer(i);
-				System.out.println(customers[i]);
 				return;
 			}
 		}

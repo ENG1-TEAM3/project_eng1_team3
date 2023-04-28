@@ -15,6 +15,8 @@ import com.team3gdx.game.food.Recipe;
 import com.team3gdx.game.screen.GameScreen;
 import com.team3gdx.game.util.GameMode;
 
+
+
 public class ServingStation extends Station {
 
 	private final CustomerController customerController;
@@ -95,7 +97,15 @@ public class ServingStation extends Station {
 				GameScreen.money += (Menu.RECIPES.get(waitingCustomer.order)).cost();
 				customerController.delCustomer(waitingCustomer);
 				if (GameScreen.currentWave < gameMode.getNumberOfWaves()) {
-					customerController.spawnCustomer();
+					if (gameMode.getNumberOfCustmersInAWave() == 1){
+						customerController.spawnCustomer();
+					}
+					if (gameMode.getNumberOfCustmersInAWave() == 2){
+						customerController.spawnMedium();
+					}
+					if (gameMode.getNumberOfCustmersInAWave() == 3){
+						customerController.spawnHard();
+					}
 				}
 				GameScreen.currentWave++;
 				waitingCustomer.locked = false;
