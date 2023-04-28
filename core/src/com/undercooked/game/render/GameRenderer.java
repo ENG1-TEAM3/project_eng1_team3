@@ -42,6 +42,7 @@ public class GameRenderer {
     protected Sprite interactSprite;
     protected Texture moneyTex;
     protected Texture reputationTex;
+    protected Vector3 cameraVector;
 
     private final Comparator<Entity> entityCompare = new Comparator<Entity>() {
         @Override
@@ -63,6 +64,7 @@ public class GameRenderer {
         this.font = font;
         this.renderEntities = renderEntities;
         this.interactSprite = null;
+        this.cameraVector = new Vector3();
 
         this.worldCamera = CameraController.getCamera(Constants.WORLD_CAMERA_ID);
         this.uiCamera = CameraController.getCamera(Constants.UI_CAMERA_ID);
@@ -94,8 +96,21 @@ public class GameRenderer {
             worldCamera.position.x = x;
             worldCamera.position.y = y;
         } else {
-            Vector3 target = new Vector3(x, y, 0);
-            worldCamera.position.lerp(target, .9f * delta * 2);
+            cameraVector.x = x;
+            cameraVector.y = y;
+            float startX = worldCamera.position.x;
+            float startY = worldCamera.position.y;
+            worldCamera.position.lerp(cameraVector, .9f * delta * 2);
+
+            //// Check if the camera overshot
+            // X
+            if (Math.abs(worldCamera.position.x - startX) >= Math.abs(cameraVector.x - startX)) {
+                worldCamera.position.x = x;
+            }
+            // Y
+            if (Math.abs(worldCamera.position.y - startY) >= Math.abs(cameraVector.y - startY)) {
+                worldCamera.position.y = y;
+            }
         }
 
     }
