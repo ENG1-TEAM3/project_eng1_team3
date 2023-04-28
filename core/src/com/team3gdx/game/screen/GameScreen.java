@@ -310,12 +310,12 @@ public class GameScreen implements Screen {
 
 		checkCookSwitch();
 
-//		if((currentWaitingCustomer != null && currentWaitingCustomer.waitTime() > gameMode.getModeTime()) || (currentWaitingCustomer2 != null && currentWaitingCustomer2.waitTime() > gameMode.getModeTime()) ){
-//			cc.delcuscus(currentWaitingCustomer);
-//			cc.delcuscus(currentWaitingCustomer2);
-//
-//
-//		}
+		if((currentWaitingCustomer != null && currentWaitingCustomer.waitTime() > gameMode.getModeTime() && currentWaitingCustomer.locked) ||  (currentWaitingCustomer2 != null && currentWaitingCustomer2.waitTime() > gameMode.getModeTime()) ){
+			GameScreen.currentWave++;
+			GameScreen.currentWaitingCustomer = null;
+			cc.delCustomer(currentWaitingCustomer);
+
+		}
 
 		// =========================================CHECK=GAME=OVER======================================================
 		checkGameOver();

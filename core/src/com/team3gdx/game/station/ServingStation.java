@@ -75,7 +75,7 @@ public class ServingStation extends Station {
 
 	// NEW VERSION 꼼수
 	public void serveCustomer() {
-		Customer waitingCustomer = customerController.isCustomerAtPos(new Vector2(pos.x - 1, pos.y));
+		Customer waitingCustomer = customerController.isCustomerAtPos(new Vector2(pos.x - 1, pos.y ));
 
 
 		//Customer waitingCustomer2 = customerController.isCustomerAtPos(new Vector2(pos.x - 1, pos.y - 3));
@@ -109,39 +109,37 @@ public class ServingStation extends Station {
 		}
 
 
+//		Customer waitingCustomer2 = customerController.isCustomerAtPos(new Vector2(pos.x - 1, pos.y ));
+//		if (waitingCustomer2 != null && waitingCustomer2.locked ) {
+//			if (GameScreen.currentWaitingCustomer2 == null) {
+//				waitingCustomer2.order = possibleOrders[new Random().nextInt(possibleOrders.length)];
+//				System.out.println(" ---");
+//				System.out.println(" W2 " + waitingCustomer2.order);
+//				System.out.println("waitingCustomer2 function activated");
+//				System.out.println(waitingCustomer2.posy);
+//				System.out.println(" ---");
+//				waitingCustomer2.arrived();
+//				GameScreen.currentWaitingCustomer2 = waitingCustomer2;
+//			}
+//			if (waitingCustomer2 == GameScreen.currentWaitingCustomer2 && !slots.empty() && slots.peek().equals(Menu.RECIPES.get(waitingCustomer2.order))) {
+//				slots.pop();
+//				System.out.println("sibal");
+//				GameScreen.money += (Menu.RECIPES.get(waitingCustomer2.order)).cost();
+//				customerController.delCustomer(waitingCustomer2);
+//				if (GameScreen.currentWave < gameMode.getNumberOfWaves()) {
+//					customerController.spawnCustomer();
+//				}
+//				GameScreen.currentWave++;
+//				waitingCustomer2.locked = false;
+//				GameScreen.currentWaitingCustomer2 = null;
+//			}
+//		}
+//
+//	}
 
-
-		Customer waitingCustomer2 = customerController.isCustomerAtPos(new Vector2(pos.x - 1, pos.y - 3));
-		if (waitingCustomer2 != null && waitingCustomer2.locked ) {
-			if (GameScreen.currentWaitingCustomer2 == null) {
-				waitingCustomer2.order = possibleOrders[new Random().nextInt(possibleOrders.length)];
-				System.out.println(" ---");
-				System.out.println(" W2 " + waitingCustomer2.order);
-				System.out.println("waitingCustomer2 function activated");
-				System.out.println(waitingCustomer2.posy);
-				System.out.println(" ---");
-				waitingCustomer2.arrived();
-				GameScreen.currentWaitingCustomer2 = waitingCustomer2;
-			}
-			if (waitingCustomer2 == GameScreen.currentWaitingCustomer2 && !slots.empty() && slots.peek().equals(Menu.RECIPES.get(waitingCustomer2.order))) {
-				slots.pop();
-				System.out.println("sibal");
-				GameScreen.money += (Menu.RECIPES.get(waitingCustomer2.order)).cost();
-				customerController.delCustomer(waitingCustomer2);
-				if (GameScreen.currentWave < gameMode.getNumberOfWaves()) {
-					customerController.spawnCustomer();
-				}
-				GameScreen.currentWave++;
-				waitingCustomer2.locked = false;
-				GameScreen.currentWaitingCustomer2 = null;
-			}
-		}
 
 	}
-
-
 }
-
 
 
 

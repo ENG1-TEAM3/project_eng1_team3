@@ -125,12 +125,13 @@ public class CustomerController {
 
 	public void spawnMedium() {
 
-
-			customers[1] = new Customer(this.xCoordinate, this.bottom, this.top , 2);
-
-			customers[2] = new Customer(this.xCoordinate, this.bottom -2 , this.top - 3, 1);
-			//System.out.println(this.top);
+		for(int i =0 ; i < this.customers.length; i++){
+			if(customers[i] == null)
+			customers[i] = new Customer(this.xCoordinate, this.bottom, this.top , 2);
+			customers[i+1] = new Customer(this.xCoordinate, this.bottom -2 , this.top - 3, 1);
 			amountActiveCustomers += 2;
+			break;
+		}
 
 
 	}
@@ -146,13 +147,14 @@ public class CustomerController {
 
 
 	public void delCustomer(int num) {
-		if (this.customers[num].locked) {
+		if (this.customers[num].locked ) {
 			amountActiveCustomers -= 1;
 			this.leavingcustomers[num] = this.customers[num];
 			this.leavingcustomers[num].setTargetsquare(-1);
 			this.customers[num] = null;
 		}
 	}
+
 
 	public void delCustomer(Customer customer) {
 		for (int i = 0; i < this.customers.length; i++) {
