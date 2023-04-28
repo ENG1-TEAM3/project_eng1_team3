@@ -310,10 +310,11 @@ public class GameScreen implements Screen {
 
 		checkCookSwitch();
 
-		if((currentWaitingCustomer != null && currentWaitingCustomer.waitTime() > gameMode.getModeTime() && currentWaitingCustomer.locked) ||  (currentWaitingCustomer2 != null && currentWaitingCustomer2.waitTime() > gameMode.getModeTime()) ){
+		if((currentWaitingCustomer != null && currentWaitingCustomer.waitTime() > gameMode.getModeTime() ) ){
+			cc.delCustomer(currentWaitingCustomer);
+			cc.spawnMedium();
 			GameScreen.currentWave++;
 			GameScreen.currentWaitingCustomer = null;
-			cc.delCustomer(currentWaitingCustomer);
 
 		}
 

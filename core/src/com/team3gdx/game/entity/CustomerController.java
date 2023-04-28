@@ -124,30 +124,34 @@ public class CustomerController {
 	}
 
 	public void spawnMedium() {
-
-		for(int i =0 ; i < this.customers.length; i++){
-			if(customers[i] == null)
-			customers[i] = new Customer(this.xCoordinate, this.bottom, this.top , 2);
-			customers[i+1] = new Customer(this.xCoordinate, this.bottom -2 , this.top - 3, 1);
-			amountActiveCustomers += 2;
-			break;
+		for(int i =0 ; i < this.customers.length -1; i++) {
+			if (customers[i] == null) {
+				customers[i] = new Customer(this.xCoordinate, this.bottom, this.top-1, 2);
+				customers[i + 1] = new Customer(this.xCoordinate, this.bottom - 2, this.top - 3, 1);
+				amountActiveCustomers += 1;
+				break;
+			}
 		}
-
-
 	}
 
+
 	public void spawnHard() {
-		customers[1] = new Customer(this.xCoordinate, this.bottom, this.top , 2);
-		customers[2] = new Customer(this.xCoordinate, this.bottom -2 , this.top - 1, 1);
-		customers[3] = new Customer(this.xCoordinate, this.bottom -3 , this.top - 2, 3);
-		amountActiveCustomers += 3;
+		for(int i =0 ; i < this.customers.length -2; i++) {
+			if (customers[i] == null) {
+				customers[i] = new Customer(this.xCoordinate, this.bottom, this.top-1, 2);
+				customers[i + 1] = new Customer(this.xCoordinate, this.bottom - 2, this.top - 3, 1);
+				customers[i + 2] = new Customer(this.xCoordinate, this.bottom - 2, this.top - 3, 3);
+				amountActiveCustomers += 1;
+				break;
+			}
+		}
 
 
 	}
 
 
 	public void delCustomer(int num) {
-		if (this.customers[num].locked ) {
+		if (this.customers[num] != null &&this.customers[num].locked ) {
 			amountActiveCustomers -= 1;
 			this.leavingcustomers[num] = this.customers[num];
 			this.leavingcustomers[num].setTargetsquare(-1);
@@ -160,6 +164,7 @@ public class CustomerController {
 		for (int i = 0; i < this.customers.length; i++) {
 			if (customers[i] == customer) {
 				delCustomer(i);
+				System.out.println(customers[i]);
 				return;
 			}
 		}
