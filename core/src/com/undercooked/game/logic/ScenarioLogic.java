@@ -28,6 +28,9 @@ import com.undercooked.game.GameType;
 
 import java.util.Random;
 
+/**
+ * The class for running the scenario mode logic of the game.
+ */
 public class ScenarioLogic extends ScenarioLoadLogic {
 
     /** The number of requests to serve. */
@@ -39,20 +42,44 @@ public class ScenarioLogic extends ScenarioLoadLogic {
     protected boolean allowDuplicateRequests;
 
     // Power up spawning
+    /** The maximum number of {@link PowerUp}s that can be in the game at once. */
     protected int maxPowerups;
+
+    /** The maximum time before then ext {@link PowerUp} spawn. */
     protected float powerUpTimerMin;
+
+    /** The maximum time before then ext {@link PowerUp} spawn. */
     protected float powerUpTimerMax;
+
+    /** The time left until the next {@link PowerUp} spawn. */
     protected float powerUpTimer;
+
+    /** The time that a {@link PowerUp} lasts before it runs out. */
     protected float powerUpUseTime;
+
+    /** The time before a {@link PowerUp} despawns. */
     protected float powerUpDespawnTime;
+
+    /** The {@link Listener} for when a {@link PowerUp} is removed from the game. */
     protected Listener<PowerUp> powerUpRemoveListener;
+
+    /** An {@link Array} of the {@link PowerUp}s currently in the game. */
     protected Array<PowerUp> powerUps;
+
+    /** The possible {@link PowerUpType}s that can be spawned.*/
     protected PowerUpType[] powerUpPool;
 
     // Power Up variables
+    /** The multiplier for the speed of the {@link com.undercooked.game.interactions.Interactions}. */
     protected float interactSpeedMultiplier = 1f;
 
-
+    /**
+     * Constructs the {@link ScenarioLogic}, setting up all the
+     * variables that will be needed during the game.
+     * @param game {@link GameScreen} : The {@link GameScreen} using the {@link ScenarioLogic}.
+     * @param textureManager {@link TextureManager} : The {@link TextureManager} to use.
+     * @param audioManager {@link AudioManager} : The {@link AudioManager} to use.
+     */
     public ScenarioLogic(GameScreen game, TextureManager textureManager, AudioManager audioManager) {
         super(game, textureManager, audioManager);
         powerUps = new Array<>();
@@ -136,10 +163,11 @@ public class ScenarioLogic extends ScenarioLoadLogic {
         };
     }
 
-    public ScenarioLogic() {
-        this(null, null, null);
-    }
-
+    /**
+     * Checks if the game has reached an end.
+     * @return {@code boolean} : {@code true} if the game has ended,
+     *                           {@code false} if it has not.
+     */
     public boolean checkGameOver() {
         // First check for win condition
         if (requestsComplete == requestTarget) {
@@ -152,11 +180,8 @@ public class ScenarioLogic extends ScenarioLoadLogic {
             lose();
             return true;
         }
-
         return false;
     }
-
-
 
     @Override
     public void update(float delta) {
@@ -182,6 +207,12 @@ public class ScenarioLogic extends ScenarioLoadLogic {
         checkGameOver();
     }
 
+    /**
+     * Spawns more {@link PowerUp}s, updates all of the {@link PowerUp}s in the game,
+     * and also checks if the currently selected {@link Cook} has collected a
+     * {@link PowerUp} to get its effect.
+     * @param delta {@code float} : The time since the last frame.
+     */
     public void updatePowerUps(float delta) {
         // Update the active power ups
         Cook currentCook = cookController.getCurrentCook();
@@ -236,6 +267,10 @@ public class ScenarioLogic extends ScenarioLoadLogic {
         spawnCustomer();
     }
 
+    /**
+     * Removes the effects of all {@link PowerUpType}s, and then
+     * resets the {@link #powerUpTimer}.
+     */
     public void resetPowerUps() {
         // Remove all power up effects
         for (PowerUpType powerUpType : powerUpPool) {
@@ -246,6 +281,10 @@ public class ScenarioLogic extends ScenarioLoadLogic {
         updatePowerUpTimer();
     }
 
+    /**
+     * Creates a new {@link PowerUp} in a random, open {@link MapCell} that doesn't have
+     * a {@link PowerUp} already inside, or the currently selected {@link Cook}.
+     */
     public void createNewPowerUp() {
         // Get a random map cell that's open (with nothing blocking, and not
         // on the same cell as the current cook or another power up)
@@ -308,14 +347,20 @@ public class ScenarioLogic extends ScenarioLoadLogic {
         powerUps.add(newPowerUp);
     }
 
-    public void addEffect(PowerUpType powerUpType) {
-        addEffect(powerUpType, null);
-    }
-
+    /**
+     * Adds a {@link PowerUp}'s effect.
+     * @param powerUp {@link PowerUp} : The {@link PowerUp} providing the effect.
+     */
     public void addEffect(PowerUp powerUp) {
         addEffect(powerUp.getType(), powerUp);
     }
 
+    /**
+     * Adds a {@link PowerUp}'s effect.
+     * @param powerUpType {@link PowerUpType} : The {@link PowerUpType} to add the
+     *                                          effect of.
+     * @param powerUp {@link PowerUp} : The {@link PowerUp} providing the effect.
+     */
     protected void addEffect(PowerUpType powerUpType, PowerUp powerUp) {
         switch (powerUpType) {
             case COOK_SPEED_UP:
@@ -341,16 +386,32 @@ public class ScenarioLogic extends ScenarioLoadLogic {
                 removePowerUp(powerUp, false);
                 return;
         }
+        throw new RuntimeException("PowerUpType not accounted for: " + powerUpType.name());
     }
 
+    /**
+     * Removes a {@link PowerUp}'s effect.
+     * @param powerUpType {@link PowerUpType} : The {@link PowerUpType} to remove the
+     *                                          effect of.
+     */
     public void removeEffect(PowerUpType powerUpType) {
         removeEffect(powerUpType, null);
     }
 
+    /**
+     * Removes a {@link PowerUp}'s effect.
+     * @param powerUp {@link PowerUp} : The {@link PowerUp} that provided the effect.
+     */
     public void removeEffect(PowerUp powerUp) {
         removeEffect(powerUp.getType(), powerUp);
     }
 
+    /**
+     * Removes a {@link PowerUp}'s effect.
+     * @param powerUpType {@link PowerUpType} : The {@link PowerUpType} to remove the
+     *                                          effect of.
+     * @param powerUp {@link PowerUp} : The {@link PowerUp} that provided the effect.
+     */
     protected void removeEffect(PowerUpType powerUpType, PowerUp powerUp) {
         switch (powerUpType) {
             case COOK_SPEED_UP:
@@ -368,6 +429,14 @@ public class ScenarioLogic extends ScenarioLoadLogic {
         }
     }
 
+    /**
+     * Uses a {@link PowerUp}, adding the effect and stopping it
+     * from being rendered.
+     * <br>In addition, if another power up of the same type is already
+     * active, then it removes the one that was already providing the
+     * effect and sets up the new one to do so instead.
+     * @param powerUp {@link PowerUp} : The {@link PowerUp} to use.
+     */
     public void usePowerup(PowerUp powerUp) {
         PowerUpType powerUpType = powerUp.getType();
         // If there's a power up of the same type already, remove it
@@ -393,6 +462,12 @@ public class ScenarioLogic extends ScenarioLoadLogic {
         addEffect(powerUp);
     }
 
+    /**
+     * Removes a {@link PowerUp} {@link com.undercooked.game.entity.Entity} from the game.
+     * @param powerUp {@link PowerUp} : The {@link PowerUp} to remove.
+     * @param removeEffect {@code boolean} : Whether the effect of the {@link PowerUp}
+     *                                       should also be removed, or not.
+     */
     public void removePowerUp(PowerUp powerUp, boolean removeEffect) {
         // Remove it from the game
         gameRenderer.removeEntity(powerUp);
@@ -404,6 +479,10 @@ public class ScenarioLogic extends ScenarioLoadLogic {
         }
     }
 
+    /**
+     * Updates the {@link #powerUpTimer} if the timer for it
+     * is valid.
+     */
     public void updatePowerUpTimer() {
         // If timer max and / or min < 0 then just set to -1 and stop
         if (powerUpTimerMin < 0) {
@@ -522,6 +601,11 @@ public class ScenarioLogic extends ScenarioLoadLogic {
         maxPowerups = powerUpData.getInt("max");
     }
 
+    /**
+     * Called when a {@link Customer} has been served.
+     * @param customer {@link Customer} : The {@link Customer} that was
+     *                                    served successfully.
+     */
     public void customerServed(Customer customer) {
         // Set number completed += 1
         requestsComplete += 1;
@@ -531,6 +615,11 @@ public class ScenarioLogic extends ScenarioLoadLogic {
         customerGone(customer);
     }
 
+    /**
+     * Called when a {@link Customer} has failed to be served.
+     * @param customer {@link Customer} : The {@link Customer} that was
+     *                                    not served successfully.
+     */
     public void customerFailed(Customer customer) {
         Request request = customer.getRequest();
         // Just add it to the list of requests again
@@ -541,6 +630,11 @@ public class ScenarioLogic extends ScenarioLoadLogic {
         customerGone(customer);
     }
 
+    /**
+     * Called when a {@link Customer} has just started leaving.
+     * @param customer {@link Customer} : The {@link Customer} that
+     *                                    has just started leaving.
+     */
     public void customerGone(Customer customer) {
         // If it's the display customer, remove it
         if (customer == displayCustomer) {
@@ -550,6 +644,9 @@ public class ScenarioLogic extends ScenarioLoadLogic {
         spawnCustomer();
     }
 
+    /**
+     * Spawns a {@link Customer} with a random request.
+     */
     public void spawnCustomer() {
         // Spawn the next customer, if there is more to serve
         if (requests.size > 0) {
@@ -559,6 +656,10 @@ public class ScenarioLogic extends ScenarioLoadLogic {
         }
     }
 
+    /**
+     * Attempts to buy a {@link Cook}, only doing so successfully if
+     * there is enough money, and if {@link #cookCost} is 0 or higher.
+     */
     public void buyCook() {
         // If the cook price > 0...
         if (cookCost < 0) return;
@@ -583,10 +684,11 @@ public class ScenarioLogic extends ScenarioLoadLogic {
 
     }
 
-    public void setAllowDuplicateRequests(boolean allowDuplicateRequests) {
-        this.allowDuplicateRequests = allowDuplicateRequests;
-    }
-
+    /**
+     * Sets the number of requests that must be served before the
+     * game finishes.
+     * @param customNumber {@code int} : The number of customers to serve.
+     */
     public void setRequestTarget(int customNumber) {
         this.requestTarget = Math.max(0, customNumber);
     }
