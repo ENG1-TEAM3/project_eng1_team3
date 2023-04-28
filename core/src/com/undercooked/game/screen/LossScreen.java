@@ -52,7 +52,7 @@ public class LossScreen extends Screen {
         game.gameMusic.stop();
         // Create the buttons
         Button quitBtn = new Button(new TextureRegionDrawable(textureManager.get("uielements/game/exit.png")));
-        Button retryBtn = new Button(new TextureRegionDrawable(textureManager.get("uielements/game/exit.png")));
+        Button retryBtn = new Button(new TextureRegionDrawable(textureManager.get("uielements/game/retry.png")));
 
         // Add listeners to the buttons
         quitBtn.addListener(new ClickListener() {
