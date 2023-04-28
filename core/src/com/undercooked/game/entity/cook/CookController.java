@@ -21,11 +21,6 @@ import com.undercooked.game.util.Observer;
  */
 public class CookController {
 
-    private class CookData {
-        public Cook cook;
-        public Vector2 startPos;
-    }
-
     // =======================================CookController
     // ATTRIBUTES======================================================
     /** The array containing all the cooks in the game. */
@@ -167,7 +162,7 @@ public class CookController {
     /**
      * Loads all of the {@link Cook}'s {@link com.badlogic.gdx.graphics.Texture}s.
      * 
-     * @param textureGroup
+     * @param textureGroup {@link String} : The group to add the textures to.
      */
     public void load(String textureGroup) {
         // Load all the cooks
@@ -197,7 +192,7 @@ public class CookController {
      * <br>
      * Needed for the {@link com.undercooked.game.logic.Endless} mode.
      * 
-     * @param textureGroup
+     * @param textureGroup {@link String} : The group to add the textures to.
      */
     public void loadAll(String textureGroup) {
         // Load all the Cook textures
@@ -229,6 +224,8 @@ public class CookController {
      * the {@link Map}
      * 
      * @param mapRoot        {@link JsonValue} : The {@link Map}'s JSON.
+     * @param items          {@link Items} : The {@link Items} to load item information to
+     *                                       if the {@link Cook} is holding any items.
      * @param map            {@link Map} : The {@link Map} to add the {@link Cook}s
      *                       to.
      * @param textureManager {@link TextureManager} : The {@link TextureManager} to
@@ -236,8 +233,10 @@ public class CookController {
      *                       {@link Cook}'s
      *                       {@link com.badlogic.gdx.graphics.Texture}s
      *                       to.
+     * @param addToStartCooks {@code boolean} : If the {@link Cook} should be added to the
+     *                                          {@link #cookStart} {@link ObjectMap}.
      */
-    public void loadCooksIntoMap(JsonValue mapRoot, Items items, Map map, TextureManager textureManager, boolean addToMap, boolean addToStartCooks) {
+    public void loadCooksIntoMap(JsonValue mapRoot, Items items, Map map, TextureManager textureManager, boolean addToStartCooks) {
         // Get the cooks Json data
         JsonValue cookArray = mapRoot.get("cooks");
         currentCook = 0;
@@ -256,8 +255,6 @@ public class CookController {
                     }
                 }
             }
-
-            if (addToMap) addCook(newCook);
 
             cookNo = Math.max(1, (cookNo + 1) % (COOK_TEXTURES + 1));
 
@@ -283,6 +280,12 @@ public class CookController {
         }
     }
 
+    /**
+     * Sets the {@link #interactPhone} used by the {@link Cook}s, to tell the
+     * game if a register has been interacted with.
+     * @param mapCellListener {@link Listener<Integer>} : A {@link Listener} that
+     *                                     is told which cell the register was on.
+     */
     public void setInteractRegisterListener(Listener<MapCell> mapCellListener) {
         this.interactRegister = mapCellListener;
         // Make sure to update it for all cooks
@@ -291,6 +294,12 @@ public class CookController {
         }
     }
 
+    /**
+     * Sets the {@link #interactPhone} used by the {@link Cook}s, to tell the
+     * game if a phone has been interacted with.
+     * @param mapCellListener {@link Listener<Integer>} : A {@link Listener} that
+     *                                     is told which cell the phone was on.
+     */
     public void setInteractPhoneListener(Listener<MapCell> mapCellListener) {
         this.interactPhone = mapCellListener;
         // Make sure to update it for all cooks
@@ -299,6 +308,12 @@ public class CookController {
         }
     }
 
+    /**
+     * Sets the {@link #moneyUsedListener} used by the {@link Cook}s, to tell the
+     * game if money has been used.
+     * @param moneyUsedListener {@link Listener<Integer>} : A {@link Listener} that
+     *                                     is told how much money has been used.
+     */
     public void setMoneyUsedListener(Listener<Integer> moneyUsedListener) {
         this.moneyUsedListener = moneyUsedListener;
         // Make sure to update it for all cooks
@@ -307,6 +322,12 @@ public class CookController {
         }
     }
 
+    /**
+     * Set the {@link #moneyObserver} used by the {@link Cook}s, to check if there
+     * is enough money for an interaction.
+     * @param moneyObserver {@link Observer<Integer>} : An {@link Observer} that
+     *                                     returns how much money the player has.
+     */
     public void setMoneyObserver(Observer<Integer> moneyObserver) {
         this.moneyObserver = moneyObserver;
         // Make sure to update it for all cooks
@@ -315,6 +336,10 @@ public class CookController {
         }
     }
 
+    /**
+     * Sets the speed multiplier for the {@link Cook}s.
+     * @param multiplier {@code float} : The multiplier for the {@link Cook}s' speed.
+     */
     public void setCookSpeed(float multiplier) {
         cookSpeed = multiplier;
         for (Cook cook : cooks) {
@@ -322,6 +347,11 @@ public class CookController {
         }
     }
 
+    /**
+     * Sets the hold limit for all of the {@link Cook}s.
+     * @param maxItems {@code int} : The maximum items that the {@link Cook}s can
+     *                               hold.
+     */
     public void setCookHoldLimit(int maxItems) {
         cookStackMax = maxItems;
         for (Cook cook : cooks) {
@@ -329,6 +359,14 @@ public class CookController {
         }
     }
 
+    /**
+     * Resets the {@link Cook}s on the map, removing any
+     * {@link Cook}s not added to the {@link #cookStart} {@link ObjectMap}
+     * from the {@link #cooks} {@link Array} when the game was loaded,
+     * and adding any {@link Cook}s in the {@link #cookStart} {@link ObjectMap}
+     * that aren't yet in the {@link #cooks} {@link Array}.
+     *
+     */
     public void reset() {
         // For each starting cook, check if it's in the array.
         // If they're not, then add them
@@ -358,6 +396,9 @@ public class CookController {
         currentCook = 0;
     }
 
+    /**
+     * Dispose all data.
+     */
     public void dispose() {
         // Clear all data
         cooks.clear();
@@ -365,7 +406,16 @@ public class CookController {
     }
 
     /**
-     * Serialises the {@link Cook}s to a {@link JsonValue}.
+     * Set whether inputs will be processed or not.
+     * @param allowInput {@code boolean} : True or False.
+     */
+    public void setProcessInputs(boolean allowInput) {
+        this.processInput = allowInput;
+    }
+
+    /**
+     * Serializes the {@link Cook}s to a {@link JsonValue}.
+     * @param map {@link Map} : The map of the game.
      */
     public JsonValue serializeCooks(Map map) {
         // Create the cooks JsonValue
@@ -384,11 +434,15 @@ public class CookController {
         return cooksArrayRoot;
     }
 
-    public void setProcessInputs(boolean allowInput) {
-        this.processInput = allowInput;
-    }
-
+    /**
+     * Deserializes the {@link Cook}s into
+     * @param jsonValue {@link JsonValue} : The Json to load from.
+     * @param items {@link Items} : The {@link Items} to load {@link Item}s to
+     *                              if the {@link Cook} is holding any.
+     * @param map {@link Map} : The {@link Map} for the {@link Cook}s to use
+     *                          for collision.
+     */
     public void deserializeCooks(JsonValue jsonValue, Items items, Map map) {
-        loadCooksIntoMap(jsonValue, items, map, textureManager, true, false);
+        loadCooksIntoMap(jsonValue, items, map, textureManager, false);
     }
 }
