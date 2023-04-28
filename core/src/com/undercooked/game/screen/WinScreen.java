@@ -16,6 +16,7 @@ public class WinScreen extends Screen {
     public float score;
     private GlyphLayout scoreText;
     private GlyphLayout nameGlyph;
+    private GlyphLayout text;
     private GameType gameType;
     private String leaderboardID;
     private String leaderboardName;
@@ -26,6 +27,7 @@ public class WinScreen extends Screen {
 
     @Override
     public void load() {
+
     }
 
     @Override
@@ -42,6 +44,8 @@ public class WinScreen extends Screen {
         this.nameInput = "";
         // Make name glyph
         this.nameGlyph = new GlyphLayout();
+        // Make basic text glyph
+        this.text = new GlyphLayout();
         // And update it
         updateNameGlyph();
     }
@@ -120,10 +124,17 @@ public class WinScreen extends Screen {
 
         game.batch.begin();
         // Draw the score text in the middle of the Screen
-        game.font.draw(game.batch, scoreText, Constants.V_WIDTH/2-scoreText.width/2, Constants.V_HEIGHT/2);
+        game.font.draw(game.batch, scoreText, Constants.V_WIDTH/2f-scoreText.width/2, Constants.V_HEIGHT/2f);
 
+        // Draw "Enter Name"
+        text.setText(game.font, "Enter Name:");
+        game.font.draw(game.batch, text, Constants.V_WIDTH/2f-text.width/2, Constants.V_HEIGHT/2f-60);
         // And below that, draw the name underneath
-        game.font.draw(game.batch, nameGlyph, Constants.V_WIDTH/2-nameGlyph.width/2, Constants.V_HEIGHT/2-30);
+        game.font.draw(game.batch, nameGlyph, Constants.V_WIDTH/2f-nameGlyph.width/2, Constants.V_HEIGHT/2f-100);
+
+        // And below that, put "Submit with ENTER"
+        text.setText(game.font, "Submit with ENTER");
+        game.font.draw(game.batch, text, Constants.V_WIDTH/2f-text.width/2, Constants.V_HEIGHT/2f-200);
 
         game.batch.end();
     }
