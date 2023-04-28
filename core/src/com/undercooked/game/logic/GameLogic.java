@@ -28,15 +28,37 @@ import com.undercooked.game.GameType;
  */
 public abstract class GameLogic {
 
+    /** The {@link GameScreen} that is using the {@link GameLogic}. */
     GameScreen gameScreen;
+
+    /** The {@link Items} for the game.*/
     Items items;
+
+    /** The {@link CookController} for the game.*/
     CookController cookController;
+
+    /** The {@link CustomerController} for the game.*/
     CustomerController customerController;
+
+    /** The {@link StationController} for the game.*/
     StationController stationController;
+
+    /** The renderer of the game. */
     GameRenderer gameRenderer;
+
+    /** The {@link TextureManager} to load and get {@link com.badlogic.gdx.graphics.Texture}s. */
     TextureManager textureManager;
+
+    /**
+     * The {@link AudioManager} to load and get
+     * {@link com.badlogic.gdx.audio.Sound} and {@link com.badlogic.gdx.audio.Music}.
+     */
     AudioManager audioManager;
+
+    /** The {@link Interactions} of the game. */
     Interactions interactions;
+
+    /** The {@link Map} that the game uses. */
     Map map;
     float elapsedTime;
     /** How much reputation the player has. */
@@ -50,18 +72,63 @@ public abstract class GameLogic {
 
     /** The number of requests that have been served correctly. */
     protected int requestsComplete = 0;
+
+    /**
+     * The requests that will be given to the player.
+     */
     protected Array<Request> requests;
+
+    /**
+     * An array containing a list of possible {@link Request}s that
+     * can be made throughout the game.
+     * <br>Not used to take requests from, but to load into {@link #requests}.
+     */
     protected Array<Request> requestPool;
 
+    /**
+     * The {@link Customer} that should have their request displayed.
+     */
     protected Customer displayCustomer;
 
+    /**
+     * The id of the game / scenario.
+     */
     protected String id;
+
+    /**
+     * The id of the {@link com.undercooked.game.util.leaderboard.Leaderboard} for
+     * the leaderboards.json file.
+     */
     protected String leaderboardId;
+
+    /**
+     * The {@link GameType} of the game, so that the
+     * {@link com.undercooked.game.util.leaderboard.LeaderboardController} knows
+     * which leaderboard type the {@link com.undercooked.game.util.leaderboard.Leaderboard}
+     * should be saved to.
+     */
     protected GameType gameType;
+
+    /**
+     * The name of the {@link com.undercooked.game.util.leaderboard.Leaderboard} to save the
+     * player's score to.
+     */
     protected String leaderboardName;
+
+    /** The difficulty of the game. */
     protected int difficulty;
+
+    /** Whether the game should reset on loading or not. */
     public boolean resetOnLoad;
 
+    /**
+     * Constructor for the game. Sets up all variables and class instances
+     * that are used by the {@link GameLogic}.
+     * @param game {@link GameScreen} : The {@link GameScreen} that will use
+     *                                  the {@link GameLogic}.
+     * @param textureManager {@link TextureManager} : The {@link TextureManager} to use.
+     * @param audioManager {@link AudioManager} : The {@link AudioManager} to use
+     */
     public GameLogic(GameScreen game, TextureManager textureManager, AudioManager audioManager) {
         this.gameScreen = game;
         this.items = new Items();
@@ -96,10 +163,22 @@ public abstract class GameLogic {
         });
     }
 
+    /**
+     * Constructor for the game. Takes no inputs, and defaults everything
+     * to {@code null}, requiring use of the setter functions for
+     * {@link GameScreen}, {@link TextureManager} and {@link AudioManager}.
+     * @param game {@link GameScreen} : The {@link GameScreen} that will use
+     *                                  the {@link GameLogic}.
+     */
     public GameLogic(GameScreen game) {
         this(game, null, null);
     }
 
+    /**
+     * Constructor for the game. Takes no inputs, and defaults everything
+     * to {@code null}, requiring use of the setter functions for
+     * {@link GameScreen}, {@link TextureManager} and {@link AudioManager}.
+     */
     public GameLogic() {
         this(null, null, null);
     }
@@ -246,46 +325,11 @@ public abstract class GameLogic {
         cookController.stopMovement();
         // Stop the game, as it's paused
         stop();
-    };
-
-    public float getDifficultyMultiplier() {
-        switch (difficulty) {
-            case Difficulty.EASY:
-                return 2f;
-            case Difficulty.MEDIUM:
-                return 1.5f;
-        }
-        return 1f;
     }
 
-    public CookController getCookController() {
-        return cookController;
-    }
-
-    public float getElapsedTime() {
-        return elapsedTime;
-    }
-
-    public void setGameScreen(GameScreen gameScreen) {
-        this.gameScreen = gameScreen;
-    }
-
-    public void setStationController(StationController stationController) {
-        this.stationController = stationController;
-    }
-
-    public void setTextureManager(TextureManager textureManager) {
-        this.textureManager = textureManager;
-    }
-
-    public void setGameRenderer(GameRenderer gameRenderer) {
-        this.gameRenderer = gameRenderer;
-    }
-
-    public void setAudioManager(AudioManager audioManager) {
-        this.audioManager = audioManager;
-    }
-
+    /**
+     * Dispose the game.
+     */
     public void dispose() {
         map.dispose();
         cookController.dispose();
@@ -293,42 +337,49 @@ public abstract class GameLogic {
         stationController.dispose();
     }
 
-    public Map getMap() {
-        return map;
+    /**
+     * Set the {@link GameScreen} that will use this {@link GameLogic}.
+     * @param gameScreen {@link GameScreen} : The {@link GameScreen} to use.
+     */
+    public void setGameScreen(GameScreen gameScreen) {
+        this.gameScreen = gameScreen;
     }
 
-    public CustomerController getCustomerController() {
-        return customerController;
+    /**
+     * Set the {@link StationController} that the game will use.
+     * @param stationController {@link StationController} : The {@link StationController} to use.
+     */
+    public void setStationController(StationController stationController) {
+        this.stationController = stationController;
     }
 
-    public Customer getDisplayCustomer() {
-        return displayCustomer;
+    /**
+     * Set the {@link TextureManager} that the game will use.
+     * @param textureManager {@link TextureManager} : The {@link TextureManager} to use.
+     */
+    public void setTextureManager(TextureManager textureManager) {
+        this.textureManager = textureManager;
     }
 
-    public Items getItems() {
-        return items;
+    /**
+     * Set the {@link GameRenderer} that the game will use.
+     * @param gameRenderer {@link GameRenderer} : The {@link GameRenderer} to use.
+     */
+    public void setGameRenderer(GameRenderer gameRenderer) {
+        this.gameRenderer = gameRenderer;
     }
 
-    public float getScore() {
-        return elapsedTime;
+    /**
+     * Set the {@link AudioManager} that the game will use.
+     * @param audioManager {@link AudioManager} : The {@link AudioManager} to use.
+     */
+    public void setAudioManager(AudioManager audioManager) {
+        this.audioManager = audioManager;
     }
 
-    public String getScoreString() {
-        return StringUtil.formatSeconds(elapsedTime);
-    }
-
-    public int getReputation() {
-        return reputation;
-    }
-
-    public int getMoney() {
-        return money;
-    }
-
-    public int getCookCost() {
-        return cookCost;
-    }
-
+    /**
+     * Resets the state of the game.
+     */
     public void reset() {
         if (!resetOnLoad) {
             resetOnLoad = true;
@@ -343,10 +394,20 @@ public abstract class GameLogic {
         stationController.reset();
     }
 
+    /**
+     * Sets the name that the {@link com.undercooked.game.util.leaderboard.Leaderboard}
+     * will use, if it doesn't have one already.
+     * @param name {@link String} : The name of the {@link com.undercooked.game.util.leaderboard.Leaderboard}
+     */
     public void setLeaderboardName(String name) {
         this.leaderboardName = name;
     }
 
+    /**
+     * Sets the id of the game. This is used for setting which Scenario
+     * should be used.
+     * @param id {@link String} : The id to use.
+     */
     public void setId(String id) {
         this.id = id;
         // If it's null, or the same, set leaderboardId to use it to
@@ -355,15 +416,164 @@ public abstract class GameLogic {
         }
     }
 
+    /**
+     * Sets the difficulty of the game.
+     * <br>These can be found in {@link Difficulty} as public
+     * constants.
+     * @param difficulty {@code int} : The difficulty to set to.
+     */
     public void setDifficulty(int difficulty) {
-        this.difficulty = difficulty;
+        this.difficulty = Math.min(Math.max(difficulty, Difficulty.EASY), Difficulty.HARD);
     }
 
+    /**
+     * Sets the {@link #leaderboardId}, the id of the {@link com.undercooked.game.util.leaderboard.Leaderboard}
+     * for scores to be saved to.
+     * @param id {@link String} : The leaderboard id.
+     */
     public void setLeaderboardId(String id) {
         this.leaderboardId = id;
     }
 
-    JsonValue seralise(JsonValue gameRoot) {
+    /**
+     * @return {@link Map} : The game's {@link Map}.
+     */
+    public Map getMap() {
+        return map;
+    }
+
+    /**
+     * @return {@link CustomerController} : The {@link CustomerController} for
+     *                                      the game.
+     */
+    public CustomerController getCustomerController() {
+        return customerController;
+    }
+
+    /**
+     * @return {@link CookController} : The {@link CookController} for the game.
+     */
+    public CookController getCookController() {
+        return cookController;
+    }
+
+    /**
+     * @return {@link Customer} : The {@link Customer} to display the
+     *                            {@link Request} for.
+     */
+    public Customer getDisplayCustomer() {
+        return displayCustomer;
+    }
+
+    /**
+     * @return {@link Items} : The {@link Items} instance for the game.
+     */
+    public Items getItems() {
+        return items;
+    }
+
+    /**
+     * @return {@code float} : The player's score.
+     */
+    public float getScore() {
+        return elapsedTime;
+    }
+
+    /**
+     * @return {@link String} : The player's score as a {@link String}.
+     */
+    public String getScoreString() {
+        return StringUtil.formatSeconds(elapsedTime);
+    }
+
+    /**
+     * @return {@code int} : The reputation that the player has left.
+     */
+    public int getReputation() {
+        return reputation;
+    }
+
+    /**
+     * @return {@code int} : The amount of money that the player has.
+     */
+    public int getMoney() {
+        return money;
+    }
+
+    /**
+     * Returns the amount of money needed to be able to add
+     * a {@link Cook} o the game via a phone cell.
+     * @return {@code int} : The cost for a {@link Cook} to be added to
+     *                       the game.
+     */
+    public int getCookCost() {
+        return cookCost;
+    }
+
+    /**
+     * Returns the {@link Difficulty} of the game.
+     * @return {@code int} : The game's {@link Difficulty}.
+     */
+    public int getDifficulty() {
+        return this.difficulty;
+    }
+
+    /**
+     * Returns the {@link GameRenderer} that the game renders using.
+     * @return {@link GameRenderer} : The game's renderer.
+     */
+    public GameRenderer getGameRenderer() {
+        return gameRenderer;
+    }
+
+    /**
+     * Returns the multiplier for {@link Customer} wait time based
+     * on the current difficulty.
+     * @return {@opde float} : The difficulty multiplier.
+     */
+    public float getDifficultyMultiplier() {
+        switch (difficulty) {
+            case Difficulty.EASY:
+                return 2f;
+            case Difficulty.MEDIUM:
+                return 1.5f;
+        }
+        return 1f;
+    }
+
+    /**
+     * Returns the elapsed time that the game has been going on for.
+     * @return {@link float} : The elapsed time.
+     */
+    public float getElapsedTime() {
+        return elapsedTime;
+    }
+
+    /**
+     * Returns whether the {@link GameLogic} can or can't be saved.
+     * @return {@code boolean} : {@code true} if it can be saved,
+     *                           {@code false} if it cannot.
+     */
+    public boolean canSave() {
+        return true;
+    }
+
+    /**
+     * Function called by the {@link GameRenderer} to move the {@link OrthographicCamera}.
+     * <br>It is here so that it can be overridden if the functionality needed is different.
+     * @param delta
+     */
+    public void moveCamera(float delta) {
+        gameRenderer.moveCamera(delta, cookController.getCurrentCook());
+    }
+
+    /**
+     * Updates the {@link JsonValue} for the entire game.
+     * <br>This one is to be overridden in children classes.
+     * @param gameRoot {@link JsonValue} : The game's current {@link JsonValue}.
+     * @return {@link JsonValue} : The game's updated {@link JsonValue}.
+     */
+    protected JsonValue seralise(JsonValue gameRoot) {
         gameRoot.addChild("scenario_id", new JsonValue(id));
         gameRoot.addChild("leaderboard_id", new JsonValue(leaderboardId));
         gameRoot.addChild("leaderboard_name", new JsonValue(leaderboardName));
@@ -387,10 +597,19 @@ public abstract class GameLogic {
         return gameRoot;
     }
 
-    public JsonValue serialise() {
+    /**
+     * Returns the {@link JsonValue} serialised for the entire game.
+     * @return {@link JsonValue} : The game as a {@link JsonValue}.
+     */
+    public final JsonValue serialise() {
         return seralise(new JsonValue(JsonValue.ValueType.object));
     }
 
+    /**
+     * Takes a {@link JsonValue} serialized save of the game, and uses it to
+     * load the entire game.
+     * @param gameRoot {@link JsonValue} : The Json to use.
+     */
     public void deserialise(JsonValue gameRoot) {
 
         for (JsonValue request : gameRoot.get("requests")) {
@@ -419,22 +638,6 @@ public abstract class GameLogic {
         stationController.deserializeStations(this, gameRoot.get("stations"), audioManager, interactions, items, map);
 
         // Loads the customers
-        customerController.deserializeCustomers(this, gameRoot.get("customers"));
-    }
-
-    public double getDifficulty() {
-        return this.difficulty;
-    }
-
-    public GameRenderer getGameRenderer() {
-        return gameRenderer;
-    }
-
-    public boolean canSave() {
-        return true;
-    }
-
-    public void moveCamera(float delta) {
-        gameRenderer.moveCamera(delta, cookController.getCurrentCook());
+        customerController.deserializeCustomers(gameRoot.get("customers"));
     }
 }
