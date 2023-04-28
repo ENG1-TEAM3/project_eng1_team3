@@ -139,6 +139,11 @@ public class LeaderboardScreen extends Screen {
 	}
 
 	@Override
+	public void postLoad() {
+		getAudioManager().postLoad();
+	}
+
+	@Override
 	public void unload() {
 		game.getTextureManager().unload(Constants.LEADERBOARD_TEXTURE_ID, true);
 
