@@ -279,31 +279,6 @@ public class Cook extends MoveableEntity {
 		// Update super
 		super.update(delta);
 
-		// Check collision
-		// X
-		if (map.checkCollision(this, collision.x + (moveCalc(dirX * speedMultiplier, delta)), collision.y)) {
-			float sign = Math.signum(dirX);
-			// Move the player as close as possible on the x
-			while (!map.checkCollision(this, collision.x + 0.01F * sign, collision.y)) {
-				collision.x += 0.01F * sign;
-			}
-			collision.x -= 0.01F * sign;
-			pos.x = collision.x - offsetX;
-			dirX = 0;
-		}
-
-		// Y
-		if (map.checkCollision(this, collision.x, collision.y + (moveCalc(dirY * speedMultiplier, delta)))) {
-			float sign = Math.signum(dirX);
-			// Move the player as close as possible on the y
-			while (!map.checkCollision(this, collision.x, collision.y + 0.01F * dirY)) {
-				collision.y += 0.01F * dirY;
-			}
-			collision.y -= 0.01F * dirY;
-			pos.y = collision.y - offsetY;
-			dirY = 0;
-		}
-
 		// If the player is holding more than their limit, then lower their speed
 		float finalSpeedMult = speedMultiplier;
 		if (heldItems.size() > holdLimit) {
@@ -312,7 +287,14 @@ public class Cook extends MoveableEntity {
 		}
 
 		// Move
-		move(dirX * finalSpeedMult, dirY * finalSpeedMult, delta);
+		moveAndCollide(map, dirX * finalSpeedMult, dirY * finalSpeedMult, delta);
+		if (collidedX) {
+			dirX = 0;
+		}
+		if (collidedY) {
+			dirY = 0;
+		}
+
 		interactCollision.x = collision.x + collision.width / 2 + (direction.x * 32) - interactCollision.width / 2;
 		interactCollision.y = 64 + collision.y + collision.height / 2 + (direction.y * 32)
 				- interactCollision.width / 2;
