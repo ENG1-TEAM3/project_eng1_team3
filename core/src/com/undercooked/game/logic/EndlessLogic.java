@@ -11,15 +11,32 @@ import com.undercooked.game.food.Request;
 import com.undercooked.game.screen.GameScreen;
 import com.undercooked.game.GameType;
 
+/**
+ * The class for running the endless mode logic of the game.
+ */
 public class EndlessLogic extends ScenarioLogic {
+
+    /** The number of {@link Customer}s currently spawned. */
     int numOfCustomers;
+
+    /** The maximum number of {@link Customer}s that can be spawned at once. */
     int customerLimit;
+
+    /** The time before the next {@link Customer} can spawn. */
     float spawnTimer;
+
+    /** Where the {@link #spawnTimer} starts counting down from. */
     float spawnTimerStart;
 
     // Power Up variables
-    boolean failNextSpawn = false;
 
+    /**
+     * Constructs the {@link ScenarioLogic}, setting up all the
+     * variables that will be needed during the game.
+     * @param game {@link GameScreen} : The {@link GameScreen} using the {@link ScenarioLogic}.
+     * @param textureManager {@link TextureManager} : The {@link TextureManager} to use.
+     * @param audioManager {@link AudioManager} : The {@link AudioManager} to use.
+     */
     public EndlessLogic(GameScreen game, TextureManager textureManager, AudioManager audioManager) {
         super(game, textureManager, audioManager);
 
@@ -34,11 +51,12 @@ public class EndlessLogic extends ScenarioLogic {
                 PowerUpType.CUSTOMER_WAIT_SLOW,
                 PowerUpType.CUSTOMER_SPAWN_PREVENT,
                 PowerUpType.INTERACT_FAST,
-                PowerUpType.MONEY_UP,
-                PowerUpType.REPUTATION_UP
+                PowerUpType.MONEY_UP
+                // PowerUpType.REPUTATION_UP
         };
     }
 
+    @Override
     public boolean checkGameOver() {
         // Check for the game ending condition.
         if (reputation <= 0) {
@@ -97,7 +115,6 @@ public class EndlessLogic extends ScenarioLogic {
             if (spawnTimer <= 0) {
                 spawnCustomer();
                 resetTimer();
-                failNextSpawn = false;
             }
         }
 
@@ -118,9 +135,13 @@ public class EndlessLogic extends ScenarioLogic {
         super.addEffect(powerUpType, powerUp);
     }
 
-    public void updateCustomerLimit() {
+    /**
+     * Updates the {@link #customerLimit} for how many {@link Customer}s
+     * can be spawned at one time.
+     */
+    protected void updateCustomerLimit() {
         // After 6 minutes, allow spawning 3
-        if (elapsedTime > 5) {
+        if (elapsedTime > 60*6) {
             customerLimit = 3;
         }
         // After 3 minutes, allow spawning 3
@@ -147,7 +168,6 @@ public class EndlessLogic extends ScenarioLogic {
 
     @Override
     public void spawnCustomer() {
-        if (failNextSpawn) return;
         // Spawn the next customer, if there is more to serve
         if (requests.size > 0) {
             Request newRequest = requests.random();
@@ -156,6 +176,9 @@ public class EndlessLogic extends ScenarioLogic {
         }
     }
 
+    /**
+     * Resets the {@link #spawnTimer} of the {@link Customer}s.
+     */
     public void resetTimer() {
         spawnTimer = spawnTimerStart;
     }
