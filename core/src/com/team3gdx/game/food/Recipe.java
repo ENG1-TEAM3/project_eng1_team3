@@ -111,6 +111,7 @@ public class Recipe extends Ingredient {
 
 	}
 
+
 	/**
 	 * Check if there is a recipe with the given ingredients.
 	 * 

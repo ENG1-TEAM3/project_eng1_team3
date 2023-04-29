@@ -19,4 +19,7 @@ public class TutorialMode implements GameMode {
     public int getNumberOfCustmersInAWave() {
         return 1;
     }
+
+    @Override
+    public long getModeTime(){return 60000;}
 }

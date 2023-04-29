@@ -115,28 +115,28 @@ public class DiffictuiltyScreen implements Screen{
 		easy.addListener(new ClickListener() {
 			public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
 				state = STATE.new_game;
-				gameMode = new ScenarioMode(5, 3,1);
+				gameMode = new ScenarioMode(5, 3,1,60000);
 				super.touchUp(event, x, y, pointer, button);
 			}
 		});
 		mediaum.addListener(new ClickListener() {
 			public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
 				state = STATE.new_game;
-				gameMode = new ScenarioMode(10, 3,2);
+				gameMode = new ScenarioMode(10, 3,2,45000);
 				super.touchUp(event, x, y, pointer, button);
 			}
 		});
 		hard.addListener(new ClickListener() {
 			public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
 				state = STATE.new_game;
-				gameMode = new ScenarioMode(15, 3,3);
+				gameMode = new ScenarioMode(15, 3,3,30000);
 				super.touchUp(event, x, y, pointer, button);
 			}
 		});
 		endless.addListener(new ClickListener() {
 			public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
 				state = STATE.new_game;
-				gameMode = new EndlessMode(3);
+				gameMode = new EndlessMode(3,30000);
 				super.touchUp(event, x, y, pointer, button);
 			}
 		});

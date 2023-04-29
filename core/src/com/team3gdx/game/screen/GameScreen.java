@@ -39,10 +39,15 @@ import com.team3gdx.game.entity.Customer;
 import com.team3gdx.game.entity.CustomerController;
 import com.team3gdx.game.entity.Entity;
 import com.team3gdx.game.food.Menu;
+import com.team3gdx.game.station.ServingStation;
 import com.team3gdx.game.station.StationManager;
 import com.team3gdx.game.util.CollisionTile;
 import com.team3gdx.game.util.Control;
 import com.team3gdx.game.util.GameMode;
+import com.team3gdx.game.util.ScenarioMode;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import java.util.Random;
 
@@ -83,6 +88,7 @@ public class GameScreen implements Screen {
 	OrthographicCamera uiCamera;
 	public static OrthographicCamera worldCamera;
 
+	public static Customer currentWaitingCustomer2 = null;
 	public static Customer currentWaitingCustomer = null;
 
 	public enum STATE {
@@ -109,7 +115,7 @@ public class GameScreen implements Screen {
 	public static Control control;
 	public static TiledMapRenderer tiledMapRenderer;
 	public static TiledMap map1;
-	public static Cook[] cooks = { new Cook(new Vector2(64 * 5, 64 * 3), 1), new Cook(new Vector2(64 * 5, 64 * 5), 2) };
+	public static Cook[] cooks = { new Cook(new Vector2(64 * 5, 64 * 3), 1), new Cook(new Vector2(64 * 5, 64 * 5), 2),new Cook(new Vector2(64 * 5, 64 * 7), 3) };
 	public static int currentCookIndex = 0;
 	public static Cook cook = cooks[currentCookIndex];
 	public static CustomerController cc;
@@ -133,23 +139,23 @@ public class GameScreen implements Screen {
 		Tutorial.complete = !gameMode.showTutorial();
 		this.calculateBoxMaths();
 		control = new Control();
-		// map = new TmxMapLoader().load("map/art_map/prototype_map.tmx");
+
 		map1 = new TmxMapLoader().load("map/art_map/customertest.tmx");
 		tiledMapRenderer = new OrthogonalTiledMapRenderer(map1);
 		constructCollisionData(map1);
-		cc = new CustomerController(map1);
+		cc = new CustomerController(map1,gameMode);
+
 		if (gameMode.getNumberOfCustmersInAWave() == 1){
-			cc.spawnCustomer();
+			cc.spawnStarteasy();
 		}
 		if (gameMode.getNumberOfCustmersInAWave() == 2){
-			cc.spawnCustomer();
-			cc.spawnCustomer();
+			cc.spawnStartMedium();
 		}
 		if (gameMode.getNumberOfCustmersInAWave() == 3){
-			cc.spawnCustomer();
-			cc.spawnCustomer();
-			cc.spawnCustomer();
+			cc.spawnStartHard();
 		}
+
+
 	}
 
 	public void changeStation(int x,int y){
@@ -256,6 +262,7 @@ public class GameScreen implements Screen {
 	 */
 
 	public void render(float delta) {
+
 		// =====================================CLEAR=SCREEN=============================================================
 		ScreenUtils.clear(0, 0, 0, 0);
 		Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
@@ -319,6 +326,20 @@ public class GameScreen implements Screen {
 		game.batch.setProjectionMatrix(worldCamera.combined);
 
 		checkCookSwitch();
+
+		if (gameMode.getNumberOfCustmersInAWave() == 1){
+			cc.spawnCustomer();
+		}
+		if (gameMode.getNumberOfCustmersInAWave() == 2){
+			delMedium();
+
+		}
+		if (gameMode.getNumberOfCustmersInAWave() == 3){
+			delHard();
+		}
+
+		delMedium();
+
 		// =========================================CHECK=GAME=OVER======================================================
 		checkGameOver();
 
@@ -354,9 +375,17 @@ public class GameScreen implements Screen {
      * Draw UI elements
      */
 	private void drawUI() {
-		if (currentWaitingCustomer != null && currentWaitingCustomer.waitTime() < MAX_WAIT_TIME) {
+
+		if ((currentWaitingCustomer != null && currentWaitingCustomer.waitTime() < MAX_WAIT_TIME) ) {
 			Menu.RECIPES.get(currentWaitingCustomer.order).displayRecipe(game.batch, new Vector2(64, 256));
 		}
+
+			// why does this start as anyone goes to it
+
+		// 꼼수 아싸리 같ㅎ ㅣ해버리는것도 나쁘지 않은듯
+
+
+
 		for (int i = 0; i < cooks.length; i++) {
 			if (i == currentCookIndex) {
 				selectedPlayerBox.setAutoShapeType(true);
@@ -727,5 +756,67 @@ public class GameScreen implements Screen {
 	@Override
 	public void dispose() {
 		// TODO Auto-generated method stub
+	}
+
+	public void deleasy(){
+		if((currentWaitingCustomer != null && currentWaitingCustomer.waitTime() > gameMode.getModeTime() ) ){
+			cc.delCustomer(currentWaitingCustomer);
+			cc.amountActiveCustomers--;
+			if(GameScreen.currentWave == gameMode.getNumberOfWaves()-1){
+				checkGameOver();
+			}
+
+			if ( cc.amountActiveCustomers < 5) {
+				// serving station more than 5
+				cc.spawnCustomer();
+			}
+
+
+			GameScreen.currentWave++;
+			System.out.println("CURRENT WAVE " + currentWave);
+			GameScreen.currentWaitingCustomer = null;
+
+		}
+	}
+
+	public void delMedium(){
+		if((currentWaitingCustomer != null && currentWaitingCustomer.waitTime() > gameMode.getModeTime() ) ){
+			cc.delCustomer(currentWaitingCustomer);
+			cc.amountActiveCustomers--;
+			if(GameScreen.currentWave == gameMode.getNumberOfWaves()-1){
+				checkGameOver();
+			}
+
+			if ( cc.amountActiveCustomers < 5) {
+				// serving station more than 5
+				cc.spawnMedium();
+			}
+
+
+			GameScreen.currentWave++;
+			System.out.println("CURRENT WAVE " + currentWave);
+			GameScreen.currentWaitingCustomer = null;
+
+		}
+	}
+	public void delHard(){
+		if((currentWaitingCustomer != null && currentWaitingCustomer.waitTime() > gameMode.getModeTime() ) ){
+			cc.delCustomer(currentWaitingCustomer);
+			cc.amountActiveCustomers--;
+			if(GameScreen.currentWave == gameMode.getNumberOfWaves()-1){
+				checkGameOver();
+			}
+
+			if ( cc.amountActiveCustomers < 5) {
+				// serving station more than 5
+				cc.spawnHard();
+			}
+
+
+			GameScreen.currentWave++;
+			System.out.println("CURRENT WAVE hard " + currentWave);
+			GameScreen.currentWaitingCustomer = null;
+
+		}
 	}
 }

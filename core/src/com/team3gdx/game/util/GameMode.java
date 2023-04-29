@@ -8,5 +8,7 @@ public interface GameMode {
 
     int getNumberOfCustmersInAWave();
 
+    long getModeTime();
+
     boolean showTutorial();
 }

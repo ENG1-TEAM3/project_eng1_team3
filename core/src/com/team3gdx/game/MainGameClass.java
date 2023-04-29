@@ -33,8 +33,8 @@ public class MainGameClass extends Game {
 	@Override
 	public void create() {
 		// ====================================MUSIC=INITIALISATION======================================================
-		musicVolumeScale = 0.4f;
-		gameVolumeScale = 0.4f;
+		musicVolumeScale = 0.0f;
+		gameVolumeScale = 0.0f;
 		mainScreenMusic = Gdx.audio.newMusic(Gdx.files.internal("uielements/MainScreenMusic.ogg"));
 		gameMusic = Gdx.audio.newMusic(Gdx.files.internal("uielements/GameMusic.ogg"));
 		mainScreenMusic.setLooping(false);
@@ -50,8 +50,8 @@ public class MainGameClass extends Game {
 		font.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
 		// ====================================GAME=SCREEN=INITIALISATION================================================
 		mainScreen1 = new MainScreen(this);
-		gameScreen1 = new GameScreen(this, mainScreen1, new ScenarioMode(5, 3, 1));
-		leaderBoardScreen1 = new LeaderBoard(this, mainScreen1 , new ScenarioMode(5, 3, 1));
+		gameScreen1 = new GameScreen(this, mainScreen1, new ScenarioMode(5, 3, 1,60000));
+		leaderBoardScreen1 = new LeaderBoard(this, mainScreen1 , new ScenarioMode(5, 3, 1,60000));
 		leaderBoardSelect1 = new LeaderBoardSelect(this , mainScreen1);
 		diffictuiltyScreen1 = new DiffictuiltyScreen(this, mainScreen1);
 		this.setScreen(mainScreen1);
@@ -78,7 +78,7 @@ public class MainGameClass extends Game {
 	}
 
 	public void resetGameScreen() {
-		this.gameScreen1 = new GameScreen(this, mainScreen1, new ScenarioMode(5, 3, 1));
+		this.gameScreen1 = new GameScreen(this, mainScreen1, new ScenarioMode(5, 3, 1,60000));
 	}
 
 	@Override
