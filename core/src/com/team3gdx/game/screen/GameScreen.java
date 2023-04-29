@@ -41,6 +41,7 @@ import com.team3gdx.game.entity.Entity;
 import com.team3gdx.game.food.Menu;
 import com.team3gdx.game.save.ChefInfo;
 import com.team3gdx.game.save.GameInfo;
+import com.team3gdx.game.save.ModeInfo;
 import com.team3gdx.game.save.SaveService;
 import com.team3gdx.game.station.ServingStation;
 import com.team3gdx.game.station.StationManager;
@@ -260,7 +261,7 @@ public class GameScreen implements Screen {
 			public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
 
 				try {
-					save.saveGame(new GameInfo(money, 15f,
+					save.saveGame(new GameInfo(money, 15f, new ModeInfo(gameMode),
 							Arrays.stream(cooks)
 									.map(cook -> new ChefInfo(cook.getX(), cook.getY()))
 									.toArray(ChefInfo[]::new)));
