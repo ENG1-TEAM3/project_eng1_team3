@@ -24,7 +24,7 @@ public class Ingredient extends Entity {
 	private int idealSlices;
 	private float cookedTime = 0;
 	private float idealCookedTime;
-
+	private boolean usable = true;
 	public Status status = Status.RAW;
 
 	/**
@@ -104,7 +104,6 @@ public class Ingredient extends Entity {
 		if (idealSlices < slices) {
 			slices++;
 			texture = new Texture("items/" + name + "_mushy.png");
-			return true;
 		}
 		if (dT / width * width <= width) {
 			drawStatusBar(shapeRenderer, dT / width, 0, 1);
@@ -149,6 +148,7 @@ public class Ingredient extends Entity {
 		} else {
 			status = Status.BURNED;
 			texture = new Texture("items/" + name + "_burned.png");
+			usable = false;
 		}
 
 		draw(batch);
@@ -181,6 +181,13 @@ public class Ingredient extends Entity {
 		shapeRenderer.rect(pos.x - width / 2 + optimumUpper * width * 2, pos.y + height + height / 10, height / 10,
 				2 * height / 5);
 		shapeRenderer.end();
+	}
+	
+	public boolean checkUsable(Ingredient I){
+		if (I.idealSlices < I.slices){
+			return false;
+		}
+		return usable;
 	}
 
 	@Override

@@ -4,9 +4,19 @@ import com.badlogic.gdx.math.Vector2;
 
 public class PowerUps {
     
-    public static PowerUp construction_cost_reduce = new PowerUp(null, 32, 32, "construction_cost_reduce");
-	public static PowerUp cooking_speed_reduce = new PowerUp(null, 32, 32, "cooking_speed_reduce");
-	public static PowerUp Costumer_time_increase = new PowerUp(null, 32, 32, "Costumer_time_increase");
-    public static PowerUp Increase_pay = new PowerUp(null, 32, 32, "Increase_pay");
-    public static PowerUp speed_boost = new PowerUp(null, 32, 32, "speed_boost");
+    public static PowerUp constructionCostReduce() {
+        return new PowerUp(null, 64, 64, "construction_cost_reduce", 60);
+    }
+	public static PowerUp cookingSpeedReduce(){
+        return new PowerUp(null, 64, 64, "cooking_speed_reduce", 60);
+    }
+	public static PowerUp customerTimeIncrease() {
+        return new PowerUp(null, 64, 64, "Customer_time_increase", 60);
+    }
+    public static PowerUp increasePay() {
+        return new PowerUp(null, 64, 64, "Increase_pay", 60);
+    }
+    public static PowerUp speedBoost() {
+        return new PowerUp(null, 64, 64, "speed_boost", 60);
+    }
 }

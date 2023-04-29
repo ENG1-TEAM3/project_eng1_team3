@@ -23,7 +23,6 @@ public class ServingStation extends Station {
 	private final GameMode gameMode;
 	String[] possibleOrders = new String[]{"Burger", "Salad", "Pizza", "Jacket_potato"};
 
-
 	/**
 	 * Configure allowed ingredient to be those on the menu.
 	 */
@@ -49,35 +48,8 @@ public class ServingStation extends Station {
 	 * Check if there is a customer waiting, get their order and check if the
 	 * serving station contains it.
 	 */
-//	public void serveCustomer() {
-//		Customer waitingCustomer = customerController.isCustomerAtPos(new Vector2(pos.x - 1, pos.y));
-//		if (waitingCustomer != null && waitingCustomer.locked) {
-//			if (GameScreen.currentWaitingCustomer == null) {
-//				waitingCustomer.order = possibleOrders[new Random().nextInt(possibleOrders.length)];
-//				waitingCustomer.arrived();
-//				GameScreen.currentWaitingCustomer = waitingCustomer;
-//			}
-//
-//			if (waitingCustomer == GameScreen.currentWaitingCustomer && !slots.empty()
-//					&& slots.peek().equals(Menu.RECIPES.get(waitingCustomer.order))) {
-//				slots.pop();
-//				GameScreen.money += (Menu.RECIPES.get(waitingCustomer.order)).cost();
-//				customerController.delCustomer(waitingCustomer);
-//				if (GameScreen.currentWave < gameMode.getNumberOfWaves()) {
-//					customerController.spawnCustomer();
-//				}
-//				GameScreen.currentWave++;
-//				waitingCustomer.locked = false;
-//				GameScreen.currentWaitingCustomer = null;
-//			}
-//
-//		}
-//
-//	}}
-
-	// NEW VERSION 꼼수
-	public void serveCustomer() {
-		Customer waitingCustomer = customerController.isCustomerAtPos(new Vector2(pos.x - 1, pos.y ));
+	public void serveCustomer(float priceMultiplier) {
+		Customer waitingCustomer = customerController.isCustomerAtPos(new Vector2(pos.x - 1, pos.y));
 		if (waitingCustomer != null && waitingCustomer.locked) {
 
 			if (GameScreen.currentWaitingCustomer == null) {
@@ -94,7 +66,7 @@ public class ServingStation extends Station {
 			if (waitingCustomer == GameScreen.currentWaitingCustomer && !slots.empty() && slots.peek().equals(Menu.RECIPES.get(waitingCustomer.order))) {
 				slots.pop();
 				System.out.println("hello ");
-				GameScreen.money += (Menu.RECIPES.get(waitingCustomer.order)).cost();
+				GameScreen.money += (Menu.RECIPES.get(waitingCustomer.order)).cost() * priceMultiplier;
 				customerController.delCustomer(waitingCustomer);
 				if (GameScreen.currentWave < gameMode.getNumberOfWaves()) {
 					if (gameMode.getNumberOfCustmersInAWave() == 1){

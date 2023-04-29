@@ -27,10 +27,13 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.team3gdx.game.MainGameClass;
+import com.team3gdx.game.PowerUp.PowerUp;
+import com.team3gdx.game.PowerUp.PowerUpService;
 import com.team3gdx.game.entity.Cook;
 import com.team3gdx.game.entity.Customer;
 import com.team3gdx.game.entity.CustomerController;
@@ -46,6 +49,8 @@ import com.team3gdx.game.util.ScenarioMode;
 import java.util.ArrayList;
 import java.util.List;
 
+import java.util.Random;
+
 public class GameScreen implements Screen {
 
 	public int NUMBER_OF_WAVES = 5;
@@ -55,7 +60,7 @@ public class GameScreen implements Screen {
 	private final GameMode gameMode;
 
 	public static int currentWave = 0;
-	public static int money = 0;
+	public static int money = 320;
 
 	Rectangle volSlideBackgr;
 	Rectangle volSlide;
@@ -108,18 +113,21 @@ public class GameScreen implements Screen {
 	long timeOnStartup;
 	long tempTime, tempThenTime;
 	public static Control control;
-	TiledMapRenderer tiledMapRenderer;
-	public TiledMap map1;
+	public static TiledMapRenderer tiledMapRenderer;
+	public static TiledMap map1;
 	public static Cook[] cooks = { new Cook(new Vector2(64 * 5, 64 * 3), 1), new Cook(new Vector2(64 * 5, 64 * 5), 2),new Cook(new Vector2(64 * 5, 64 * 7), 3) };
 	public static int currentCookIndex = 0;
 	public static Cook cook = cooks[currentCookIndex];
 	public static CustomerController cc;
+	public static int reputationPoints = 3;
 	InputMultiplexer multi;
 	StationManager stationManager = new StationManager();
 
+	PowerUpService powerUps = new PowerUpService();
+
 	/**
 	 * Constructor to initialise game screen;
-	 * 
+	 *
 	 * @param game - Main entry point class
 	 * @param ms   - Title screen class
 	 */
@@ -150,7 +158,14 @@ public class GameScreen implements Screen {
 
 	}
 
-	/**
+	public void changeStation(int x,int y){
+
+		TiledMapTileLayer Layer =(TiledMapTileLayer)map1.getLayers().get(2);
+		Cell cell = Layer.getCell(x,y);
+		String text =cell.toString();
+		System.out.println(text);
+	}
+		/**
 	 * Things that should be done while the game screen is shown
 	 */
 	public void show() {
@@ -242,7 +257,7 @@ public class GameScreen implements Screen {
 
 	/**
 	 * Render method for main game
-	 * 
+	 *
 	 * @param delta - some change in time
 	 */
 
@@ -268,7 +283,11 @@ public class GameScreen implements Screen {
 		// =====================================RENDER=TOP=MAP=LAYER=====================================================
 		tiledMapRenderer.render(new int[] { 1 });
 		// =====================================DRAW=COOK=TOP=HALF=======================================================
-		stationManager.handleStations(game.batch, game.shapeRenderer);
+
+		powerUps.render(delta);
+
+		stationManager.handleStations(game.batch, game.shapeRenderer, powerUps.totalCookingSpeed(delta), powerUps.totalConstructionCost(60));
+
 		drawHeldItems();
 		game.batch.begin();
 		for (Cook curCook : cooks)
@@ -278,7 +297,7 @@ public class GameScreen implements Screen {
 		// ==================================MOVE=COOK===================================================================
 		tempTime = System.currentTimeMillis();
 		if (!cook.locked && Tutorial.complete)
-			cook.update(control, (tempTime - tempThenTime), CLTiles);
+			cook.update(control, powerUps.totalSpeed(tempTime - tempThenTime), CLTiles);
 		tempThenTime = tempTime;
 		checkInteraction(cook, game.shapeRenderer);
 		// =====================================SET=MATRIX=FOR=UI=ELEMENTS===============================================
@@ -325,7 +344,9 @@ public class GameScreen implements Screen {
 		checkGameOver();
 
 	}
-
+	public void updateLayer(){
+		tiledMapRenderer.renderObjects((map1.getLayers().get(1)));
+	}
     /**
      * Change selected cook
      */
@@ -348,7 +369,7 @@ public class GameScreen implements Screen {
 		control.shift = false;
 	}
 
-	public static final float MAX_WAIT_TIME = 1000000; //Customer wait time in ms
+	public static final float MAX_WAIT_TIME = 1000000;
 
     /**
      * Draw UI elements
@@ -382,8 +403,10 @@ public class GameScreen implements Screen {
 		}
 
 		game.batch.begin();
-		game.font.draw(game.batch, Long.toString((startTime - timeOnStartup) / 1000),
-				gameResolutionX / 2f + gameResolutionX / 9f, 19 * gameResolutionY / 20f);
+		game.font.draw(game.batch,Integer.toString(reputationPoints), gameResolutionX / 2.3f + gameResolutionX / 3f ,19 * gameResolutionY / 20f);
+		game.font.draw(game.batch, "Reputation:", gameResolutionX / 1.95f + gameResolutionX / 7f , 19 * gameResolutionY / 20f);
+
+		game.font.draw(game.batch, Long.toString((startTime - timeOnStartup) / 1000),gameResolutionX / 2f + gameResolutionX / 9f, 19 * gameResolutionY / 20f);
 		game.font.draw(game.batch, "Time in S:", gameResolutionX / 2f, 19 * gameResolutionY / 20f);
 
 		game.font.draw(game.batch,Integer.toString(money), gameResolutionX / 3f + gameResolutionX / 10f, 19 * gameResolutionY / 20f);
@@ -392,6 +415,15 @@ public class GameScreen implements Screen {
 		game.font.draw(game.batch,Integer.toString(currentWave), gameResolutionX / 5f + gameResolutionX / 9f, 19 * gameResolutionY / 20f);
 		game.font.draw(game.batch, "Served:", gameResolutionX / 5f + gameResolutionX / 35f, 19 * gameResolutionY / 20f);
 		game.batch.end();
+
+		int startX = Gdx.graphics.getWidth() - 72;
+		int i = 0;
+
+		for (PowerUp powerup : powerUps.getActivePowerUps()) {
+			powerup.pos = new Vector2(startX - i * 72, 16 * gameResolutionY / 20f);
+			powerup.draw(game.batch);
+			i++;
+		}
 	}
 
     /**
@@ -437,7 +469,7 @@ public class GameScreen implements Screen {
 
 	/**
 	 * Changes game window state
-	 * 
+	 *
 	 * @param state1 - the state to change to
 	 */
 	public void changeScreen(STATE state1) {
@@ -493,6 +525,7 @@ public class GameScreen implements Screen {
 	public void paid(int pay){
 		money += pay;
 	}
+
 	/**
 	 * Checks to see whether escape has been pressed to pause the game
 	 */
@@ -598,7 +631,7 @@ public class GameScreen implements Screen {
 
 	/**
 	 * Construct an array of CollisionTile objects for collision detection
-	 * 
+	 *
 	 * @param mp- game tilemap
 	 */
 	public static void constructCollisionData(TiledMap mp) {
@@ -641,7 +674,7 @@ public class GameScreen implements Screen {
 
 	/**
 	 * Check the tile the cook is looking at for interaction
-	 * 
+	 *
 	 * @param ck - Selected cook
 	 * @param sr - ShapeRenderer to draw the coloured box
 	 */
@@ -660,9 +693,9 @@ public class GameScreen implements Screen {
 			Object stationType = viewedTile.getTile().getProperties().get("Station");
 			if (stationType != null) {
 				stationManager.checkInteractedTile((String) viewedTile.getTile().getProperties().get("Station"),
-						new Vector2(checkCellX, checkCellY), cc, gameMode);
+						new Vector2(checkCellX, checkCellY), cc, gameMode, powerUps.getPriceMultiplier());
 			} else {
-				stationManager.checkInteractedTile("", new Vector2(checkCellX, checkCellY), cc, gameMode);
+				stationManager.checkInteractedTile("", new Vector2(checkCellX, checkCellY), cc, gameMode, powerUps.getPriceMultiplier());
 			}
 		}
 		sr.begin(ShapeRenderer.ShapeType.Line);
@@ -678,6 +711,12 @@ public class GameScreen implements Screen {
 			this.resetStatic();
 			game.setScreen(game.getLeaderBoardScreen());
 		}
+		if (reputationPoints == 0){
+			game.resetGameScreen();
+			this.resetStatic();
+			reputationPoints +=3;
+			game.setScreen(game.getMainScreen());
+		}
 	}
 
 	public void resetStatic() {
@@ -686,7 +725,7 @@ public class GameScreen implements Screen {
 
 	/**
 	 * Resize game screen - Not used in fullscreen mode
-	 * 
+	 *
 	 * @param width  - width to resize to
 	 * @param height - height to resize to
 	 */

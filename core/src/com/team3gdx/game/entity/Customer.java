@@ -52,7 +52,8 @@ public class Customer {
 		posy = y * 64;
 		startposx = posx;
 		locked = false;
-	}
+
+		}
 
 	/**
 	 * Set arrival time as cook has arrived
