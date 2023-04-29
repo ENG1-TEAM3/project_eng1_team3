@@ -39,6 +39,9 @@ import com.team3gdx.game.entity.Customer;
 import com.team3gdx.game.entity.CustomerController;
 import com.team3gdx.game.entity.Entity;
 import com.team3gdx.game.food.Menu;
+import com.team3gdx.game.save.ChefInfo;
+import com.team3gdx.game.save.GameInfo;
+import com.team3gdx.game.save.SaveService;
 import com.team3gdx.game.station.ServingStation;
 import com.team3gdx.game.station.StationManager;
 import com.team3gdx.game.util.CollisionTile;
@@ -49,6 +52,7 @@ import com.team3gdx.game.util.ScenarioMode;
 import java.util.ArrayList;
 import java.util.List;
 
+import java.util.Arrays;
 import java.util.Random;
 
 public class GameScreen implements Screen {
@@ -124,6 +128,8 @@ public class GameScreen implements Screen {
 	StationManager stationManager = new StationManager();
 
 	PowerUpService powerUps = new PowerUpService();
+
+	SaveService save = new SaveService();
 
 	/**
 	 * Constructor to initialise game screen;
@@ -210,15 +216,22 @@ public class GameScreen implements Screen {
 		ad = new Button(new TextureRegionDrawable(AUDIO));
 		rs = new Button(new TextureRegionDrawable(RESUME));
 		btms = new Button(new TextureRegionDrawable(BACKTOMAINSCREEN));
+		Button saveButton = new Button(new TextureRegionDrawable(AUDIO));
 		// ======================================POSITION=AND=SCALE=BUTTONS==============================================
 		mn.setPosition(gameResolutionX / 40.0f, 18 * gameResolutionY / 20.0f);
 		mn.setSize(buttonwidth, buttonheight);
+
 		rs.setPosition(gameResolutionX / 40.0f, 18 * gameResolutionY / 20.0f);
 		rs.setSize(buttonwidth, buttonheight);
+
 		ad.setPosition(rs.getX() + rs.getWidth() + 2 * (gameResolutionX / 40.0f - gameResolutionX / 50.0f), rs.getY());
 		ad.setSize(buttonwidth, buttonheight);
-		btms.setPosition(ad.getX() + ad.getWidth() + 2 * (gameResolutionX / 40.0f - gameResolutionX / 50.0f),
-				ad.getY());
+
+		saveButton.setPosition(ad.getX() + ad.getWidth() + 2 * (gameResolutionX / 40f - gameResolutionX / 50f), ad.getY());
+		saveButton.setSize(buttonwidth, buttonheight);
+
+		btms.setPosition(saveButton.getX() + saveButton.getWidth() + 2 * (gameResolutionX / 40.0f - gameResolutionX / 50.0f),
+				saveButton.getY());
 		btms.setSize(buttonwidth, buttonheight);
 		// ======================================ADD=LISTENERS=TO=BUTTONS================================================
 		mn.addListener(new ClickListener() {
@@ -227,29 +240,51 @@ public class GameScreen implements Screen {
 				super.touchUp(event, x, y, pointer, button);
 			}
 		});
+
 		rs.addListener(new ClickListener() {
 			public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
 				state1 = STATE.Continue;
 				super.touchUp(event, x, y, pointer, button);
 			}
 		});
+
 		ad.addListener(new ClickListener() {
 			public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
 				state1 = STATE.audio;
 				super.touchUp(event, x, y, pointer, button);
 			}
 		});
+
+		saveButton.addListener(new ClickListener() {
+			@Override
+			public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+
+				try {
+					save.saveGame(new GameInfo(money, 15f,
+							Arrays.stream(cooks)
+									.map(cook -> new ChefInfo(cook.getX(), cook.getY()))
+									.toArray(ChefInfo[]::new)));
+				} catch (Exception e) {
+					// TODO: error message
+				}
+
+				super.touchUp(event, x, y, pointer, button);
+			}
+		});
+
 		btms.addListener(new ClickListener() {
 			public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
 				state1 = STATE.main;
 				super.touchUp(event, x, y, pointer, button);
 			}
 		});
+
 		// ======================================ADD=BUTTONS=TO=STAGES===================================================
 		stage.addActor(mn);
 		stage2.addActor(rs);
 		stage2.addActor(btms);
 		stage2.addActor(ad);
+		stage2.addActor(saveButton);
 
 	}
 
@@ -344,6 +379,7 @@ public class GameScreen implements Screen {
 		checkGameOver();
 
 	}
+
 	public void updateLayer(){
 		tiledMapRenderer.renderObjects((map1.getLayers().get(1)));
 	}
@@ -473,52 +509,55 @@ public class GameScreen implements Screen {
 	 * @param state1 - the state to change to
 	 */
 	public void changeScreen(STATE state1) {
-		if (state1 == STATE.main) {
-			game.gameMusic.dispose();
-			game.resetGameScreen();
-			game.setScreen(game.getMainScreen());
+		switch (state1) {
+			case main:
+				game.gameMusic.dispose();
+				game.resetGameScreen();
+				game.setScreen(game.getMainScreen());
+				break;
 
-		}
-		if (state1 == STATE.Pause) {
-			thenTime = System.currentTimeMillis() - timeOnStartup;
-			Gdx.input.setInputProcessor(stage2);
-			game.batch.begin();
-			game.batch.draw(ESC, optionsBackground.getX(), optionsBackground.getY(), optionsBackground.getWidth(),
-					optionsBackground.getHeight());
-			game.batch.end();
-			stage2.act();
-			stage2.draw();
-		}
-		if (state1 == STATE.audio) {
-			musicVolumeUpdate();
-			gameVolumeUpdate();
-			checkState();
+			case Pause:
+				thenTime = System.currentTimeMillis() - timeOnStartup;
+				Gdx.input.setInputProcessor(stage2);
+				game.batch.begin();
+				game.batch.draw(ESC, optionsBackground.getX(), optionsBackground.getY(), optionsBackground.getWidth(),
+						optionsBackground.getHeight());
+				game.batch.end();
+				stage2.act();
+				stage2.draw();
+				break;
 
-			Gdx.input.setInputProcessor(stage2);
-			game.batch.begin();
-			game.batch.draw(ESC, optionsBackground.getX(), optionsBackground.getY(), optionsBackground.getWidth(),
-					optionsBackground.getHeight());
-			game.batch.end();
-			stage2.act();
-			stage2.draw();
-			game.batch.begin();
-			game.batch.draw(audioEdit, audioBackground.getX(), audioBackground.getY(), audioBackground.getWidth(),
-					audioBackground.getHeight());
-			game.batch.draw(vControl, volSlideBackgr.getX(), volSlideBackgr.getY(), volSlideBackgr.getWidth(),
-					volSlideBackgr.getHeight());
-			game.batch.draw(vButton, volSlide.getX() - volSlide.getWidth() / 2, volSlide.getY(), volSlide.width,
-					volSlide.height);
-			game.batch.draw(vControl, musSlideBackgr.getX(), musSlideBackgr.getY(), musSlideBackgr.getWidth(),
-					musSlideBackgr.getHeight());
-			game.batch.draw(vButton, musSlide.getX() - musSlide.getWidth() / 2, musSlide.getY(), musSlide.width,
-					musSlide.height);
-			game.batch.end();
-		}
-		if (state1 == STATE.Continue) {
-			nowTime = System.currentTimeMillis() - timeOnStartup;
-			startTime += nowTime - thenTime;
-			cc.updateCustomers();
-			thenTime = System.currentTimeMillis() - timeOnStartup;
+			case audio:
+				musicVolumeUpdate();
+				gameVolumeUpdate();
+				checkState();
+
+				Gdx.input.setInputProcessor(stage2);
+				game.batch.begin();
+				game.batch.draw(ESC, optionsBackground.getX(), optionsBackground.getY(), optionsBackground.getWidth(),
+						optionsBackground.getHeight());
+				game.batch.end();
+				stage2.act();
+				stage2.draw();
+				game.batch.begin();
+				game.batch.draw(audioEdit, audioBackground.getX(), audioBackground.getY(), audioBackground.getWidth(),
+						audioBackground.getHeight());
+				game.batch.draw(vControl, volSlideBackgr.getX(), volSlideBackgr.getY(), volSlideBackgr.getWidth(),
+						volSlideBackgr.getHeight());
+				game.batch.draw(vButton, volSlide.getX() - volSlide.getWidth() / 2, volSlide.getY(), volSlide.width,
+						volSlide.height);
+				game.batch.draw(vControl, musSlideBackgr.getX(), musSlideBackgr.getY(), musSlideBackgr.getWidth(),
+						musSlideBackgr.getHeight());
+				game.batch.draw(vButton, musSlide.getX() - musSlide.getWidth() / 2, musSlide.getY(), musSlide.width,
+						musSlide.height);
+				game.batch.end();
+				break;
+
+			case Continue:
+				nowTime = System.currentTimeMillis() - timeOnStartup;
+				startTime += nowTime - thenTime;
+				cc.updateCustomers();
+				thenTime = System.currentTimeMillis() - timeOnStartup;
 		}
 	}
 
