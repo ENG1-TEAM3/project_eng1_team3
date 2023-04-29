@@ -313,6 +313,7 @@ public class GameScreen implements Screen {
 		}
 		if (gameMode.getNumberOfCustmersInAWave() == 2){
 			delMedium();
+
 		}
 		if (gameMode.getNumberOfCustmersInAWave() == 3){
 			delHard();
@@ -721,13 +722,19 @@ public class GameScreen implements Screen {
 	public void delMedium(){
 		if((currentWaitingCustomer != null && currentWaitingCustomer.waitTime() > gameMode.getModeTime() ) ){
 			cc.delCustomer(currentWaitingCustomer);
-			if ( cc.amountActiveCustomers >= 5){
+			cc.amountActiveCustomers--;
+			if(GameScreen.currentWave == gameMode.getNumberOfWaves()-1){
+				checkGameOver();
+			}
 
-			}else{
+			if ( cc.amountActiveCustomers < 5) {
+				// serving station more than 5
 				cc.spawnMedium();
 			}
 
+
 			GameScreen.currentWave++;
+			System.out.println("CURRENT WAVE " + currentWave);
 			GameScreen.currentWaitingCustomer = null;
 
 		}

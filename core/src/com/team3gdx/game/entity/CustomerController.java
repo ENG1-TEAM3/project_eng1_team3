@@ -13,6 +13,7 @@ import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 import com.badlogic.gdx.math.Vector2;
+import com.team3gdx.game.screen.GameScreen;
 import com.team3gdx.game.util.GameMode;
 
 public class CustomerController {
@@ -20,14 +21,14 @@ public class CustomerController {
 	public int amountActiveCustomers;
 	ArrayList<ArrayList<Integer>> customerCells;
 	public Customer[] customers = new Customer[5];
-	public Customer[] mediumCustomers = new Customer[10];
+	public Customer[] mediumCustomers = new Customer[20];
 	public Customer[] leavingcustomers = new Customer[5];
 	TiledMap gameMap;
 	private GameMode gameMode;
 	int top;
 	int bottom;
 	int xCoordinate;
-	int countnonNull;
+	int countnonNull = 0;
 
 
 	public CustomerController(TiledMap map, GameMode gameMode) {
@@ -137,28 +138,17 @@ public class CustomerController {
 				System.out.println(" I activated ");
 
 			}
-//			for (int j = 0; j < customers.length ; j++){
-//				if ( customers[j] != null  ){
-//					countnonNull++;
-//				}
-//			}
 		}}
 
-//	public void spawnMedium() {
-//		//this.top is the one for serving station position
-//			for( int i = 0; i< gameMode.getNumberOfCustmersInAWave()+1; i++) {
-//			if (customers[i] == null) {
-//				customers[i] = new Customer(this.xCoordinate, this.bottom - i, this.top - i, 1);
-//				amountActiveCustomers += 1;
-//				System.out.println(" I activated ");
-//			}
-//		}
-//	}
 	public void spawnMedium() {
 		for (int i = 0; i < customers.length; i++) {
-			if (customers[i] != null) {
+			if ( customers[i] != null ) {
 				countnonNull++;
-				System.out.println(countnonNull);
+				System.out.println(countnonNull + "    non NUll");
+
+			}
+			if(countnonNull == 5){
+				countnonNull = 0;
 			}
 		}
 		if (countnonNull == 0) {
@@ -167,6 +157,7 @@ public class CustomerController {
 					customers[i] = new Customer(this.xCoordinate, this.bottom - i, this.top - i, 1);
 					amountActiveCustomers += 1;
 					System.out.println("count 0 ");
+					System.out.println(countnonNull + " normal gnciw ");
 				}
 			}
 		}else if(countnonNull == 1){
@@ -175,6 +166,7 @@ public class CustomerController {
 					customers[i] = new Customer(this.xCoordinate, this.bottom - i, this.top - i, 1);
 					amountActiveCustomers += 1;
 					System.out.println("count 1 ");
+					System.out.println(countnonNull + " normal gnciw 1");
 				}
 			}
 		}else if(countnonNull == 2){
@@ -183,6 +175,7 @@ public class CustomerController {
 					customers[i] = new Customer(this.xCoordinate, this.bottom - i, this.top - i, 2);
 					amountActiveCustomers += 1;
 					System.out.println("count 2 ");
+					System.out.println(countnonNull + " normal gnciw 2");
 				}
 			}
 		}else if(countnonNull == 3){
@@ -191,26 +184,71 @@ public class CustomerController {
 					customers[i] = new Customer(this.xCoordinate, this.bottom - i, this.top - i, 3);
 					amountActiveCustomers += 1;
 					System.out.println("count 3 ");
+					System.out.println(countnonNull + " normal gnciw 3");
+
 				}
 			}
-//		}else if(countnonNull == 4){
-//			for (int i = 0; i < gameMode.getNumberOfCustmersInAWave() + 4; i++) {
-//				if (customers[i] == null) {
-//					customers[i] = new Customer(this.xCoordinate, this.bottom - i, this.top - i, 1);
-//					amountActiveCustomers += 1;
-//					System.out.println("count 4 ");
-//				}
-//			}
-//		}else if(countnonNull == 5){
-//			for (int i = 0; i < gameMode.getNumberOfCustmersInAWave() + 5; i++) {
-//				if (customers[i] == null) {
-//					customers[i] = new Customer(this.xCoordinate, this.bottom - i, this.top - i, 2);
-//					amountActiveCustomers += 1;
-//					System.out.println("count 5 ");
-//				}
-//			}
-//		}
-	}}
+		}else if(countnonNull == 4){
+			for (int i = 0; i < gameMode.getNumberOfCustmersInAWave() + 3; i++) {
+				if (customers[i] == null) {
+					customers[i] = new Customer(this.xCoordinate, this.bottom - i, this.top - i, 1);
+					amountActiveCustomers += 1;
+					System.out.println("count 4 ");
+					System.out.println(countnonNull + " normal gnciw 4");
+
+				}
+			}
+		}else if(countnonNull == 5){
+			for (int i = 0; i < gameMode.getNumberOfCustmersInAWave() + 3; i++) {
+				if (customers[i] == null) {
+					customers[i] = new Customer(this.xCoordinate, this.bottom - i, this.top - i, 2);
+					amountActiveCustomers += 1;
+					System.out.println("count 5 ");
+					System.out.println(countnonNull + " normal gnciw 5");
+
+				}
+			}
+		}else if(countnonNull == 6){
+			for (int i = 0; i < gameMode.getNumberOfCustmersInAWave() + 3; i++) {
+				if (customers[i] == null) {
+					customers[i] = new Customer(this.xCoordinate, this.bottom - i, this.top - i, 2);
+					amountActiveCustomers += 1;
+					System.out.println("count 6 ");
+					System.out.println(countnonNull + " normal gnciw 6");
+
+				}
+			}
+		}else if(countnonNull == 7){
+			for (int i = 0; i < gameMode.getNumberOfCustmersInAWave() + 3; i++) {
+				if (customers[i] == null) {
+					customers[i] = new Customer(this.xCoordinate, this.bottom - i, this.top - i, 2);
+					amountActiveCustomers += 1;
+					System.out.println("count 7 ");
+					System.out.println(countnonNull + " normal gnciw 7");
+
+				}
+			}
+		}else if(countnonNull == 8){
+			for (int i = 0; i < gameMode.getNumberOfCustmersInAWave() + 3; i++) {
+				if (customers[i] == null) {
+					customers[i] = new Customer(this.xCoordinate, this.bottom - i, this.top - i, 2);
+					amountActiveCustomers += 1;
+					System.out.println("count 8 ");
+					System.out.println(countnonNull + " normal gnciw 8");
+
+				}
+			}
+		}else if(countnonNull == 9){
+			for (int i = 0; i < gameMode.getNumberOfCustmersInAWave() + 3; i++) {
+				if (customers[i] == null) {
+					customers[i] = new Customer(this.xCoordinate, this.bottom - i, this.top - i, 2);
+					amountActiveCustomers += 1;
+					System.out.println("count 9 ");
+					System.out.println(countnonNull + " normal gnciw 9");
+				}
+			}
+		}
+	}
 	public void spawnHard() {
 		for(int i =0 ; i < gameMode.getNumberOfCustmersInAWave(); i++) {
 			if (customers[i] == null) {
