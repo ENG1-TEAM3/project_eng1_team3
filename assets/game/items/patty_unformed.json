@@ -1,0 +1,6 @@
+{
+  "name": "Unformed Patty",
+  "texture_path": "<main>:item/patty_unformed.png",
+  "width": 32,
+  "height": 32
+}

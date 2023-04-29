@@ -1,0 +1,25 @@
+{
+  "station_id": "<main>:preparation",
+  "items": ["<main>:tomato"],
+  "steps": [{
+    "type": "just_pressed",
+    "value": "interact",
+    "success": [
+      {
+        "type": "lock_cook"
+      },
+      {
+        "type": "wait",
+        "time": 3,
+        "success": [
+          {
+            "type": "set",
+            "value": "<main>:tomato_sauce"
+          }
+        ]
+      },
+      {
+        "type": "unlock_cook"
+      }]
+  }]
+}

@@ -1,0 +1,7 @@
+{
+  "id": "grill",
+  "texture_path": "<main>:station/grill.png",
+  "width": 1,
+  "height": 1,
+  "holds": 1
+}

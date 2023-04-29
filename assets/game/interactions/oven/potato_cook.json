@@ -1,0 +1,26 @@
+{
+  "station_id": "<main>:oven",
+  "items": ["<main>:potato"],
+  "steps": [{
+    "type": "just_pressed",
+    "value": "interact",
+    "success": [
+      {
+        "type": "lock_cook"
+      },
+      {
+        "type": "wait",
+        "time": 5,
+        "success": [
+          {
+            "type": "set",
+            "value": "<main>:potato_cooked"
+          }
+        ],
+        "sound": "<main>:frying.mp3"
+      },
+      {
+        "type": "unlock_cook"
+      }]
+  }]
+}

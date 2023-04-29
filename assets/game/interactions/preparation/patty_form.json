@@ -1,0 +1,25 @@
+{
+  "station_id": "<main>:preparation",
+  "items": ["<main>:patty_unformed"],
+  "steps": [{
+    "type": "just_pressed",
+    "value": "interact",
+    "success": [
+      {
+        "type": "lock_cook"
+      },
+      {
+        "type": "wait",
+        "time": 5,
+        "success": [
+          {
+            "type": "set",
+            "value": "<main>:patty_formed"
+          }
+        ]
+      },
+      {
+        "type": "unlock_cook"
+      }]
+  }]
+}

@@ -1,0 +1,16 @@
+{
+  "map_id": "<main>:serve_quick",
+  "name": "Quick Serving",
+  "description": "A box filled with burgers, and many hungry Customers.\nEach have little patience and hold a grudge.\nEnsure you serve them before they leave!",
+  "interactions": [
+    "<main>:misc/burger_box.json"
+  ],
+  "requests": [
+    "<main>:misc/quick_burger"
+  ],
+  "reputation": 1,
+  "spawn_timer": 0,
+  "customer_speed": 3,
+  "num_of_requests": 15,
+  "duplicate_requests": true
+}

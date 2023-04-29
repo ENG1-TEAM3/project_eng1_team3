@@ -1,0 +1,15 @@
+{
+  "item_id": "<main>:burger",
+  "value": 1,
+  "time": 0.5,
+  "instructions": [
+    {
+      "texture_path": "<main>:pantry/bun_box.png",
+      "text": "Grab Burger"
+    },
+    {
+      "texture_path": "<main>:station/register.png",
+      "text": "Serve Burger"
+    }
+  ]
+}

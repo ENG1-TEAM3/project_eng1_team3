@@ -1,0 +1,25 @@
+{
+  "station_id": "<main>:preparation",
+  "items": ["<main>:potato_cooked_cut", "<main>:salad"],
+  "steps": [{
+    "type": "just_pressed",
+    "value": "interact",
+    "success": [
+      {
+        "type": "lock_cook"
+      },
+      {
+        "type": "wait",
+        "time": 5,
+        "success": [
+          {
+            "type": "set",
+            "value": "<main>:jacket_potato"
+          }
+        ]
+      },
+      {
+        "type": "unlock_cook"
+      }]
+  }]
+}

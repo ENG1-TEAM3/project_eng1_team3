@@ -1,0 +1,10 @@
+{
+  "station_id": "<main>:bin",
+  "steps": [{
+    "type": "just_pressed",
+    "value": "drop",
+    "success": [{
+      "type": "cook_remove"
+    }]
+  }]
+}

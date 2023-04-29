@@ -1,0 +1,38 @@
+{
+  "map_id": "<main>:everything",
+  "name": "Tutorial",
+  "description": "Scenario for the Tutorial.",
+  "interactions": [
+    "<main>:preparation/patty_form",
+    "<main>:preparation/burger_make",
+    "<main>:preparation/salad_make",
+    "<main>:preparation/dough_form",
+    "<main>:preparation/tomato_sauce_make",
+    "<main>:preparation/pizza_make",
+    "<main>:preparation/jacket_potato_make",
+    "<main>:pantry/tomato_pantry",
+    "<main>:pantry/onion_pantry",
+    "<main>:pantry/lettuce_pantry",
+    "<main>:pantry/bun_pantry",
+    "<main>:pantry/meat_pantry",
+    "<main>:pantry/potato_pantry",
+    "<main>:pantry/dough_pantry",
+    "<main>:pantry/cheese_pantry",
+    "<main>:cutting/lettuce_chop",
+    "<main>:cutting/tomato_chop",
+    "<main>:cutting/onion_chop",
+    "<main>:cutting/potato_cut",
+    "<main>:grill/bun_cook",
+    "<main>:oven/patty_cook",
+    "<main>:oven/potato_cook",
+    "<main>:oven/pizza_cook",
+    "<main>:bin"
+  ],
+  "requests": [
+    "<main>:salad",
+    "<main>:burger"
+  ],
+  "reputation": 3,
+  "customer_speed": 3,
+  "cook_cost": 60
+}

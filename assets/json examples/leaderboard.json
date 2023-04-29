@@ -1,0 +1,33 @@
+{
+  "Example": "leaderboard",
+  "scenario": [
+    {
+      "id": "<main>:generic",
+      "scores": [
+        {
+          "name": "John",
+          "time": 103.12
+        },
+        {
+          "name": "Jhon",
+          "time": 98.921
+        }
+      ]
+    }
+  ],
+  "endless": [
+    {
+      "id": "<main>:generic",
+      "scores": [
+        {
+          "name": "John",
+          "time": 254
+        },
+        {
+          "name": "Jhon",
+          "time": 154.485
+        }
+      ]
+    }
+  ]
+}

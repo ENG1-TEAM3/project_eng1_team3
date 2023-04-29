@@ -1,0 +1,12 @@
+{
+  "station_id": "<main>:pantry/potato_pantry",
+  "steps": [{
+    "type": "just_pressed",
+    "value": "take",
+    "success": [{
+      "type": "give",
+      "value": "<main>:potato",
+      "time": 1
+    }]
+  }]
+}

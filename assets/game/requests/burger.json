@@ -1,0 +1,31 @@
+{
+  "item_id": "<main>:burger",
+  "value": 499,
+  "time": 50,
+  "instructions": [
+    {
+      "texture_path": "<main>:item/patty_unformed.png",
+      "text": "Grab Patty"
+    },
+    {
+      "texture_path": "<main>:item/patty.png",
+      "text": "Form Patty at Preparation Station"
+    },
+    {
+      "texture_path": "<main>:station/ovtopcln.png",
+      "text": "Cook the Formed Patty"
+    },
+    {
+      "texture_path": "<main>:item/burger_bun.png",
+      "text": "Grab Burger bun"
+    },
+    {
+      "texture_path": "<main>:station/grill.png",
+      "text": "Grill the Bun"
+    },
+    {
+      "texture_path": "<main>:item/burger.png",
+      "text": "Combine at Preparation Station"
+    }
+  ]
+}

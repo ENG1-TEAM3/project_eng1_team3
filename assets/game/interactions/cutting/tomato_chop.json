@@ -1,0 +1,26 @@
+{
+  "station_id": "<main>:cutting",
+  "items": ["<main>:tomato"],
+  "steps": [{
+    "type": "just_pressed",
+    "value": "interact",
+    "success": [
+      {
+        "type": "lock_cook"
+      },
+      {
+        "type": "wait",
+        "time": 5,
+        "success": [
+          {
+            "type": "set",
+            "value": "<main>:tomato_chopped"
+          }
+        ],
+        "sound": "<main>:chopping.mp3"
+      },
+      {
+        "type": "unlock_cook"
+      }]
+  }]
+}

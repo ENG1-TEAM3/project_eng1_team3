@@ -1,0 +1,31 @@
+{
+  "map_id": "<main>:burger_salad",
+  "name": "Tri burger, Tri salad",
+  "description": "You have 3 Cooks to make 3 Burgers and 3 Salads.",
+  "interactions": [
+    "<main>:preparation/patty_form",
+    "<main>:preparation/burger_make",
+    "<main>:preparation/salad_make",
+    "<main>:pantry/tomato_pantry",
+    "<main>:pantry/onion_pantry",
+    "<main>:pantry/lettuce_pantry",
+    "<main>:pantry/bun_pantry",
+    "<main>:pantry/meat_pantry",
+    "<main>:cutting/lettuce_chop",
+    "<main>:cutting/tomato_chop",
+    "<main>:cutting/onion_chop",
+    "<main>:grill/bun_cook",
+    "<main>:oven/patty_cook",
+    "<main>:bin"
+  ],
+  "requests": [
+    "<main>:burger",
+    "<main>:burger",
+    "<main>:burger",
+    "<main>:salad",
+    "<main>:salad",
+    "<main>:salad"
+  ],
+  "spawn_timer": 20,
+  "customer_speed": 1.5
+}

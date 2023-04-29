@@ -1,0 +1,25 @@
+{
+  "station_id": "<main>:preparation",
+  "items": ["<main>:dough"],
+  "steps": [{
+    "type": "just_pressed",
+    "value": "interact",
+    "success": [
+      {
+        "type": "lock_cook"
+      },
+      {
+        "type": "wait",
+        "time": 5,
+        "success": [
+          {
+            "type": "set",
+            "value": "<main>:dough_formed"
+          }
+        ]
+      },
+      {
+        "type": "unlock_cook"
+      }]
+  }]
+}

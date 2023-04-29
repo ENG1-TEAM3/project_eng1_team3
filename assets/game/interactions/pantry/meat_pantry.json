@@ -1,0 +1,12 @@
+{
+  "station_id": "<main>:pantry/meat_pantry",
+  "steps": [{
+    "type": "just_pressed",
+    "value": "take",
+    "success": [{
+      "type": "give",
+      "value": "<main>:patty_unformed",
+      "time": 1
+    }]
+  }]
+}

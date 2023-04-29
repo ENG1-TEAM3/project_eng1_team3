@@ -1,0 +1,23 @@
+{
+  "item_id": "<main>:salad",
+  "value": 125,
+  "time": 50,
+  "instructions": [
+    {
+      "texture_path": "<main>:item/tomato_chopped.png",
+      "text": "Cut Tomato"
+    },
+    {
+      "texture_path": "<main>:item/lettuce_chopped.png",
+      "text": "Cut Lettuce"
+    },
+    {
+      "texture_path": "<main>:item/onion_chopped.png",
+      "text": "Cut Onion"
+    },
+    {
+      "texture_path": "<main>:item/salad.png",
+      "text": "Combine at Preparation Station"
+    }
+  ]
+}

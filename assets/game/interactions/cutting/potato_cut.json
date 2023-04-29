@@ -1,0 +1,54 @@
+{
+  "station_id": "<main>:cutting",
+  "items": ["<main>:potato_cooked"],
+  "steps": [{
+    "type": "just_pressed",
+    "value": "interact",
+    "success": [
+      {
+        "type": "lock_cook"
+      },
+      {
+        "type": "forget_input"
+      },
+      {
+        "type": "timed_input",
+        "value": "interact",
+        "time": 1,
+        "success": [
+          {
+            "type": "timed_input",
+            "value": "interact",
+            "time": 1,
+            "success": [
+              {
+                "type": "timed_input",
+                "value": "interact",
+                "time": 1,
+                "success": [
+                  {
+                    "type": "timed_input",
+                    "value": "interact",
+                    "time": 1,
+                    "success": [
+                      {
+                        "type": "set",
+                        "value": "<main>:potato_cooked_cut"
+                      }
+                    ],
+                    "sound": "<main>:chopping.mp3"
+                  }
+                ],
+                "sound": "<main>:chopping.mp3"
+              }
+            ],
+            "sound": "<main>:chopping.mp3"
+          }
+        ],
+        "sound": "<main>:chopping.mp3"
+      },
+      {
+        "type": "unlock_cook"
+      }]
+  }]
+}
