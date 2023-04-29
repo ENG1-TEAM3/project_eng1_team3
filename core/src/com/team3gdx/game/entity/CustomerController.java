@@ -118,10 +118,21 @@ public class CustomerController {
 		this.xCoordinate = xvalues[0]; // We can do this because the search scans left to right, 0th value will be left
 	}
 
-	public void spawnCustomer() {
-		for (int i = 0; i < this.customers.length; i++) {
+	public void spawnStarteasy(){
+		for (int i = 0; i < gameMode.getNumberOfCustmersInAWave(); i++) {
 			if (customers[i] == null) {
-				customers[i] = new Customer(this.xCoordinate, this.bottom, this.top - i, 2);
+				customers[i] = new Customer(this.xCoordinate, this.bottom-i, this.top - i, 2);
+				amountActiveCustomers += 1;
+				break;
+			}
+
+		}
+	}
+
+	public void spawnCustomer() {
+		for (int i = 0; i < gameMode.getNumberOfCustmersInAWave(); i++) {
+			if (customers[i] == null) {
+				customers[i] = new Customer(this.xCoordinate, this.bottom-i, this.top - i, 2);
 				amountActiveCustomers += 1;
 				break;
 			}
@@ -208,48 +219,9 @@ public class CustomerController {
 
 				}
 			}
-		}else if(countnonNull == 6){
-			for (int i = 0; i < gameMode.getNumberOfCustmersInAWave() + 3; i++) {
-				if (customers[i] == null) {
-					customers[i] = new Customer(this.xCoordinate, this.bottom - i, this.top - i, 2);
-					amountActiveCustomers += 1;
-					System.out.println("count 6 ");
-					System.out.println(countnonNull + " normal gnciw 6");
-
-				}
-			}
-		}else if(countnonNull == 7){
-			for (int i = 0; i < gameMode.getNumberOfCustmersInAWave() + 3; i++) {
-				if (customers[i] == null) {
-					customers[i] = new Customer(this.xCoordinate, this.bottom - i, this.top - i, 2);
-					amountActiveCustomers += 1;
-					System.out.println("count 7 ");
-					System.out.println(countnonNull + " normal gnciw 7");
-
-				}
-			}
-		}else if(countnonNull == 8){
-			for (int i = 0; i < gameMode.getNumberOfCustmersInAWave() + 3; i++) {
-				if (customers[i] == null) {
-					customers[i] = new Customer(this.xCoordinate, this.bottom - i, this.top - i, 2);
-					amountActiveCustomers += 1;
-					System.out.println("count 8 ");
-					System.out.println(countnonNull + " normal gnciw 8");
-
-				}
-			}
-		}else if(countnonNull == 9){
-			for (int i = 0; i < gameMode.getNumberOfCustmersInAWave() + 3; i++) {
-				if (customers[i] == null) {
-					customers[i] = new Customer(this.xCoordinate, this.bottom - i, this.top - i, 2);
-					amountActiveCustomers += 1;
-					System.out.println("count 9 ");
-					System.out.println(countnonNull + " normal gnciw 9");
-				}
-			}
 		}
 	}
-	public void spawnHard() {
+	public void spawnStartHard() {
 		for(int i =0 ; i < gameMode.getNumberOfCustmersInAWave(); i++) {
 			if (customers[i] == null) {
 				customers[i] = new Customer(this.xCoordinate, this.bottom-i, this.top-i, 2);
@@ -259,6 +231,79 @@ public class CustomerController {
 
 
 	}
+
+	public void spawnHard(){
+		for (int i = 0; i < customers.length; i++) {
+			if ( customers[i] != null ) {
+				countnonNull++;
+				System.out.println(countnonNull + "    non NUll");
+
+			}
+			if(countnonNull == 5){
+				countnonNull = 0;
+			}
+		}
+		if (countnonNull == 0) {
+			for (int i = 0; i < gameMode.getNumberOfCustmersInAWave(); i++) {
+				if (customers[i] == null) {
+					customers[i] = new Customer(this.xCoordinate, this.bottom - i, this.top - i, 1);
+					amountActiveCustomers += 1;
+					System.out.println("count 0 ");
+					System.out.println(countnonNull + " normal gnciw ");
+				}
+			}
+		}else if(countnonNull == 1){
+			for (int i = 0; i < gameMode.getNumberOfCustmersInAWave() + 2; i++) {
+				if (customers[i] == null) {
+					customers[i] = new Customer(this.xCoordinate, this.bottom - i, this.top - i, 1);
+					amountActiveCustomers += 1;
+					System.out.println("count 1 ");
+					System.out.println(countnonNull + " normal gnciw 1");
+				}
+			}
+		}else if(countnonNull == 2){
+			for (int i = 0; i < gameMode.getNumberOfCustmersInAWave() + 2; i++) {
+				if (customers[i] == null) {
+					customers[i] = new Customer(this.xCoordinate, this.bottom - i, this.top - i, 2);
+					amountActiveCustomers += 1;
+					System.out.println("count 2 ");
+					System.out.println(countnonNull + " normal gnciw 2");
+				}
+			}
+		}else if(countnonNull == 3){
+			for (int i = 0; i < gameMode.getNumberOfCustmersInAWave() + 2; i++) {
+				if (customers[i] == null) {
+					customers[i] = new Customer(this.xCoordinate, this.bottom - i, this.top - i, 3);
+					amountActiveCustomers += 1;
+					System.out.println("count 3 ");
+					System.out.println(countnonNull + " normal gnciw 3");
+
+				}
+			}
+		}else if(countnonNull == 4){
+			for (int i = 0; i < gameMode.getNumberOfCustmersInAWave() + 2; i++) {
+				if (customers[i] == null) {
+					customers[i] = new Customer(this.xCoordinate, this.bottom - i, this.top - i, 1);
+					amountActiveCustomers += 1;
+					System.out.println("count 4 ");
+					System.out.println(countnonNull + " normal gnciw 4");
+
+				}
+			}
+		}else if(countnonNull == 5){
+			for (int i = 0; i < gameMode.getNumberOfCustmersInAWave() + 2; i++) {
+				if (customers[i] == null) {
+					customers[i] = new Customer(this.xCoordinate, this.bottom - i, this.top - i, 2);
+					amountActiveCustomers += 1;
+					System.out.println("count 5 ");
+					System.out.println(countnonNull + " normal gnciw 5");
+
+				}
+			}
+		}
+	}
+
+
 
 
 	public void delCustomer(int num) {

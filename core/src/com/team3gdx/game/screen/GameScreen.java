@@ -110,7 +110,7 @@ public class GameScreen implements Screen {
 	public static Control control;
 	TiledMapRenderer tiledMapRenderer;
 	public TiledMap map1;
-	public static Cook[] cooks = { new Cook(new Vector2(64 * 5, 64 * 3), 1), new Cook(new Vector2(64 * 5, 64 * 5), 2) };
+	public static Cook[] cooks = { new Cook(new Vector2(64 * 5, 64 * 3), 1), new Cook(new Vector2(64 * 5, 64 * 5), 2),new Cook(new Vector2(64 * 5, 64 * 7), 3) };
 	public static int currentCookIndex = 0;
 	public static Cook cook = cooks[currentCookIndex];
 	public static CustomerController cc;
@@ -138,13 +138,13 @@ public class GameScreen implements Screen {
 		cc = new CustomerController(map1,gameMode);
 
 		if (gameMode.getNumberOfCustmersInAWave() == 1){
-			cc.spawnCustomer();
+			cc.spawnStarteasy();
 		}
 		if (gameMode.getNumberOfCustmersInAWave() == 2){
 			cc.spawnStartMedium();
 		}
 		if (gameMode.getNumberOfCustmersInAWave() == 3){
-			cc.spawnHard();
+			cc.spawnStartHard();
 		}
 
 
@@ -719,6 +719,27 @@ public class GameScreen implements Screen {
 		// TODO Auto-generated method stub
 	}
 
+	public void deleasy(){
+		if((currentWaitingCustomer != null && currentWaitingCustomer.waitTime() > gameMode.getModeTime() ) ){
+			cc.delCustomer(currentWaitingCustomer);
+			cc.amountActiveCustomers--;
+			if(GameScreen.currentWave == gameMode.getNumberOfWaves()-1){
+				checkGameOver();
+			}
+
+			if ( cc.amountActiveCustomers < 5) {
+				// serving station more than 5
+				cc.spawnCustomer();
+			}
+
+
+			GameScreen.currentWave++;
+			System.out.println("CURRENT WAVE " + currentWave);
+			GameScreen.currentWaitingCustomer = null;
+
+		}
+	}
+
 	public void delMedium(){
 		if((currentWaitingCustomer != null && currentWaitingCustomer.waitTime() > gameMode.getModeTime() ) ){
 			cc.delCustomer(currentWaitingCustomer);
@@ -742,8 +763,19 @@ public class GameScreen implements Screen {
 	public void delHard(){
 		if((currentWaitingCustomer != null && currentWaitingCustomer.waitTime() > gameMode.getModeTime() ) ){
 			cc.delCustomer(currentWaitingCustomer);
-			cc.spawnHard();
+			cc.amountActiveCustomers--;
+			if(GameScreen.currentWave == gameMode.getNumberOfWaves()-1){
+				checkGameOver();
+			}
+
+			if ( cc.amountActiveCustomers < 5) {
+				// serving station more than 5
+				cc.spawnHard();
+			}
+
+
 			GameScreen.currentWave++;
+			System.out.println("CURRENT WAVE hard " + currentWave);
 			GameScreen.currentWaitingCustomer = null;
 
 		}
