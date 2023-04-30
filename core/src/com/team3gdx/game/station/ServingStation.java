@@ -68,18 +68,11 @@ public class ServingStation extends Station {
 				System.out.println("hello ");
 				GameScreen.money += (Menu.RECIPES.get(waitingCustomer.order)).cost() * priceMultiplier;
 				customerController.delCustomer(waitingCustomer);
-				if (GameScreen.currentWave < gameMode.getNumberOfWaves()) {
-					if (gameMode.getNumberOfCustmersInAWave() == 1){
-						customerController.spawnCustomer();
-					}
-					if (gameMode.getNumberOfCustmersInAWave() == 2){
-						customerController.spawnMedium();
-					}
-					if (gameMode.getNumberOfCustmersInAWave() == 3){
-						customerController.spawnHard();
-					}
+
+				if (customerController.amountActiveCustomers == 0) {
+					customerController.spawnWave();
 				}
-				GameScreen.currentWave++;
+
 				waitingCustomer.locked = false;
 				GameScreen.currentWaitingCustomer = null;
 			}

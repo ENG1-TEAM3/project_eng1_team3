@@ -148,15 +148,7 @@ public class GameScreen implements Screen {
 
 		cook = cooks.get(currentCookIndex);
 
-		if (gameMode.getNumberOfCustmersInAWave() == 1){
-			cc.spawnStarteasy();
-		}
-		if (gameMode.getNumberOfCustmersInAWave() == 2){
-			cc.spawnStartMedium();
-		}
-		if (gameMode.getNumberOfCustmersInAWave() == 3){
-			cc.spawnStartHard();
-		}
+		cc.spawnWave();
 	}
 
 	public GameScreen(MainGameClass game, GameInfo save) {
@@ -386,22 +378,27 @@ public class GameScreen implements Screen {
 
 		checkCookSwitch();
 
-		if (gameMode.getNumberOfCustmersInAWave() == 1){
-			cc.spawnCustomer();
-		}
-		if (gameMode.getNumberOfCustmersInAWave() == 2){
-			delMedium();
-
-		}
-		if (gameMode.getNumberOfCustmersInAWave() == 3){
-			delHard();
-		}
-
-		delMedium();
+		checkWaitTime();
 
 		// =========================================CHECK=GAME=OVER======================================================
 		checkGameOver();
 
+	}
+
+	private void checkWaitTime() {
+		if (currentWaitingCustomer != null && currentWaitingCustomer.waitTime() > gameMode.getModeTime()) {
+			cc.delCustomer(currentWaitingCustomer);
+			currentWaitingCustomer = null;
+
+			if (currentWave >= gameMode.getNumberOfWaves()) {
+				return;
+			}
+
+			if (cc.amountActiveCustomers == 0) {
+				currentWave++;
+				cc.spawnWave();
+			}
+		}
 	}
 
 	public void updateLayer(){
@@ -818,68 +815,5 @@ public class GameScreen implements Screen {
 	@Override
 	public void dispose() {
 		// TODO Auto-generated method stub
-	}
-
-	public void deleasy(){
-		if((currentWaitingCustomer != null && currentWaitingCustomer.waitTime() > gameMode.getModeTime() ) ){
-			cc.delCustomer(currentWaitingCustomer);
-			cc.amountActiveCustomers--;
-			if(GameScreen.currentWave == gameMode.getNumberOfWaves()-1){
-				checkGameOver();
-			}
-
-			if ( cc.amountActiveCustomers < 5) {
-				// serving station more than 5
-				cc.spawnCustomer();
-			}
-
-
-			GameScreen.currentWave++;
-			System.out.println("CURRENT WAVE " + currentWave);
-			GameScreen.currentWaitingCustomer = null;
-
-		}
-	}
-
-	public void delMedium(){
-		if((currentWaitingCustomer != null && currentWaitingCustomer.waitTime() > gameMode.getModeTime() ) ){
-			cc.delCustomer(currentWaitingCustomer);
-			cc.amountActiveCustomers--;
-			if(GameScreen.currentWave == gameMode.getNumberOfWaves()-1){
-				checkGameOver();
-			}
-
-			if ( cc.amountActiveCustomers < 5) {
-				// serving station more than 5
-				cc.spawnMedium();
-			}
-
-
-			GameScreen.currentWave++;
-			System.out.println("CURRENT WAVE " + currentWave);
-			GameScreen.currentWaitingCustomer = null;
-
-		}
-	}
-
-	public void delHard(){
-		if((currentWaitingCustomer != null && currentWaitingCustomer.waitTime() > gameMode.getModeTime() ) ){
-			cc.delCustomer(currentWaitingCustomer);
-			cc.amountActiveCustomers--;
-			if(GameScreen.currentWave == gameMode.getNumberOfWaves()-1){
-				checkGameOver();
-			}
-
-			if ( cc.amountActiveCustomers < 5) {
-				// serving station more than 5
-				cc.spawnHard();
-			}
-
-
-			GameScreen.currentWave++;
-			System.out.println("CURRENT WAVE hard " + currentWave);
-			GameScreen.currentWaitingCustomer = null;
-
-		}
 	}
 }
