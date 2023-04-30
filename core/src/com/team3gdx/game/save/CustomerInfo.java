@@ -1,6 +1,8 @@
 package com.team3gdx.game.save;
 
 public class CustomerInfo {
+    public CustomerInfo() {}
+
     public CustomerInfo(int custNum, String order, int x, int y, int target) {
 
         this.custNum = custNum;

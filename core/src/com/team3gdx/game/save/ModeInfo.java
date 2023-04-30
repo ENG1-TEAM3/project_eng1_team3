@@ -26,13 +26,11 @@ public class ModeInfo implements GameMode {
     public boolean showTutorial;
 
     @Override
-    @JsonIgnore
     public int getNumberOfWaves() {
         return numberOfWaves;
     }
 
     @Override
-    @JsonIgnore
     public int getNumberOfChefs() {
         return numberOfChefs;
     }
@@ -44,13 +42,11 @@ public class ModeInfo implements GameMode {
     }
 
     @Override
-    @JsonIgnore
     public long getModeTime() {
         return modeTime;
     }
 
     @Override
-    @JsonIgnore
     public boolean showTutorial() {
         return showTutorial;
     }

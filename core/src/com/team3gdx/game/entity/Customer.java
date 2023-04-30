@@ -12,6 +12,7 @@ public class Customer {
 	Texture textb;
 	Texture textr;
 	Texture textl;
+	public int custno;
 
 	TextureRegion[][] custpartsf;
 	TextureRegion[][] custpartsb;
@@ -40,6 +41,7 @@ public class Customer {
 		textb = new Texture("entities/cust" + custno + "b.png");
 		textr = new Texture("entities/cust" + custno + "r.png");
 		textl = new Texture("entities/cust" + custno + "l.png");
+		this.custno = custno;
 
 		custpartsf = TextureRegion.split(textf, 32, 32);
 		custpartsb = TextureRegion.split(textb, 32, 32);

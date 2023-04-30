@@ -39,10 +39,7 @@ import com.team3gdx.game.entity.Customer;
 import com.team3gdx.game.entity.CustomerController;
 import com.team3gdx.game.entity.Entity;
 import com.team3gdx.game.food.Menu;
-import com.team3gdx.game.save.ChefInfo;
-import com.team3gdx.game.save.GameInfo;
-import com.team3gdx.game.save.ModeInfo;
-import com.team3gdx.game.save.SaveService;
+import com.team3gdx.game.save.*;
 import com.team3gdx.game.station.ServingStation;
 import com.team3gdx.game.station.StationManager;
 import com.team3gdx.game.util.CollisionTile;
@@ -50,11 +47,7 @@ import com.team3gdx.game.util.Control;
 import com.team3gdx.game.util.GameMode;
 import com.team3gdx.game.util.ScenarioMode;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import java.util.Arrays;
-import java.util.Random;
+import java.util.*;
 
 public class GameScreen implements Screen {
 
@@ -159,6 +152,11 @@ public class GameScreen implements Screen {
 		}
 
 		cook = cooks.get(currentCookIndex);
+
+		money = save.money;
+		currentWave = save.currentWave;
+
+		cc.spawnWave(save.customers);
 	}
 
 	private GameScreen(MainGameClass game, GameMode gameMode) {
@@ -275,10 +273,14 @@ public class GameScreen implements Screen {
 			public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
 
 				try {
-					save.saveGame(new GameInfo(money, 15f, new ModeInfo(gameMode),
+					save.saveGame(new GameInfo(money, 15f, currentWave, new ModeInfo(gameMode),
 							Arrays.stream(cooks.toArray(Cook.class))
 									.map(cook -> new ChefInfo(cook.getX(), cook.getY(), cook.cookno))
-									.toArray(ChefInfo[]::new)));
+									.toArray(ChefInfo[]::new),
+							Arrays.stream(cc.customers)
+									.filter(Objects::nonNull)
+									.map(customer -> new CustomerInfo(customer.custno, customer.order, customer.posx / 64, customer.posy / 64, customer.targetsquare))
+									.toArray(CustomerInfo[]::new)));
 				} catch (Exception e) {
 					System.out.println(e.getMessage());
 					// TODO: error message

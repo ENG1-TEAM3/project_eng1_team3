@@ -9,6 +9,7 @@ import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 import com.badlogic.gdx.math.Vector2;
+import com.team3gdx.game.save.CustomerInfo;
 import com.team3gdx.game.screen.GameScreen;
 import com.team3gdx.game.util.GameMode;
 
@@ -129,6 +130,21 @@ public class CustomerController {
 			if (customersInWave >= gameMode.getNumberOfCustmersInAWave()) {
 				return;
 			}
+		}
+	}
+
+	public void spawnWave(CustomerInfo[] customers) {
+		for (int i = 0; i < this.customers.length; i++) {
+			if (i >= customers.length) {
+				break;
+			}
+
+			CustomerInfo customer = customers[i];
+
+			this.customers[i] = new Customer(this.xCoordinate, customer.y, customer.target, customer.custNum);
+			this.customers[i].order = customer.order;
+
+			amountActiveCustomers++;
 		}
 	}
 
