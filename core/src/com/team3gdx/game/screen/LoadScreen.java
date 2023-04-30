@@ -4,9 +4,11 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.team3gdx.game.MainGameClass;
@@ -46,8 +48,16 @@ public class LoadScreen extends ScreenAdapter {
         TextButton.TextButtonStyle style = new TextButton.TextButtonStyle();
         style.font = new BitmapFont();
 
-        for (GameInfo game : saves) {
-            TextButton button = new TextButton(game.createdAt.toString(), style);
+        for (GameInfo save : saves) {
+            TextButton button = new TextButton(save.createdAt.toString(), style);
+
+            button.addListener(new ClickListener() {
+                @Override
+                public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                    game.setScreen(new GameScreen(game, save));
+                    super.touchUp(event, x, y, pointer, button);
+                }
+            });
 
             table.add(button).size(100, 100).padBottom(10);
             table.row();
