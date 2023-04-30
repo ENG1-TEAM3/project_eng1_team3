@@ -29,7 +29,7 @@ public class SaveService {
                 try {
                     result.add(mapper.readValue((String)games.get(id), GameInfo.class));
                 } catch (JsonProcessingException ignored) {
-
+                    System.out.println(ignored);
                 }
             }
         }
@@ -50,5 +50,7 @@ public class SaveService {
         }
 
         prefs.putString(id, json);
+
+        prefs.flush();
     }
 }

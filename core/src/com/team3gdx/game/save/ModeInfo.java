@@ -1,5 +1,6 @@
 package com.team3gdx.game.save;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.team3gdx.game.util.EndlessMode;
 import com.team3gdx.game.util.GameMode;
 
@@ -25,26 +26,31 @@ public class ModeInfo implements GameMode {
     public boolean showTutorial;
 
     @Override
+    @JsonIgnore
     public int getNumberOfWaves() {
         return numberOfWaves;
     }
 
     @Override
+    @JsonIgnore
     public int getNumberOfChefs() {
         return numberOfChefs;
     }
 
     @Override
+    @JsonIgnore
     public int getNumberOfCustmersInAWave() {
         return numberOfCustomersInAWave;
     }
 
     @Override
+    @JsonIgnore
     public long getModeTime() {
         return modeTime;
     }
 
     @Override
+    @JsonIgnore
     public boolean showTutorial() {
         return showTutorial;
     }
