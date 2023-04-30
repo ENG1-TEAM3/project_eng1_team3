@@ -2,6 +2,7 @@ package com.team3gdx.game.station;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 
 import com.badlogic.gdx.Game;
@@ -53,7 +54,11 @@ public class ServingStation extends Station {
 		if (waitingCustomer != null && waitingCustomer.locked) {
 
 			if (GameScreen.currentWaitingCustomer == null) {
-				waitingCustomer.order = possibleOrders[new Random().nextInt(possibleOrders.length)];
+
+				if (Objects.equals(waitingCustomer.order, "")) {
+					waitingCustomer.order = possibleOrders[new Random().nextInt(possibleOrders.length)];
+				}
+
 				System.out.println(" ---");
 				System.out.println(" W1 " + waitingCustomer.order);
 				System.out.println("11111 waitingcustomer1 started");
@@ -68,18 +73,11 @@ public class ServingStation extends Station {
 				System.out.println("hello ");
 				GameScreen.money += (Menu.RECIPES.get(waitingCustomer.order)).cost() * priceMultiplier;
 				customerController.delCustomer(waitingCustomer);
-				if (GameScreen.currentWave < gameMode.getNumberOfWaves()) {
-					if (gameMode.getNumberOfCustmersInAWave() == 1){
-						customerController.spawnCustomer();
-					}
-					if (gameMode.getNumberOfCustmersInAWave() == 2){
-						customerController.spawnMedium();
-					}
-					if (gameMode.getNumberOfCustmersInAWave() == 3){
-						customerController.spawnHard();
-					}
+
+				if (customerController.amountActiveCustomers == 0) {
+					customerController.spawnWave();
 				}
-				GameScreen.currentWave++;
+
 				waitingCustomer.locked = false;
 				GameScreen.currentWaitingCustomer = null;
 			}

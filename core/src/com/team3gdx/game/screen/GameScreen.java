@@ -39,6 +39,7 @@ import com.team3gdx.game.entity.Customer;
 import com.team3gdx.game.entity.CustomerController;
 import com.team3gdx.game.entity.Entity;
 import com.team3gdx.game.food.Menu;
+import com.team3gdx.game.save.*;
 import com.team3gdx.game.station.ServingStation;
 import com.team3gdx.game.station.StationManager;
 import com.team3gdx.game.util.CollisionTile;
@@ -46,17 +47,13 @@ import com.team3gdx.game.util.Control;
 import com.team3gdx.game.util.GameMode;
 import com.team3gdx.game.util.ScenarioMode;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import java.util.Random;
+import java.util.*;
 
 public class GameScreen implements Screen {
 
 	public int NUMBER_OF_WAVES = 5;
 
 	final MainGameClass game;
-	final MainScreen ms;
 	private final GameMode gameMode;
 
 	public static int currentWave = 0;
@@ -115,15 +112,19 @@ public class GameScreen implements Screen {
 	public static Control control;
 	public static TiledMapRenderer tiledMapRenderer;
 	public static TiledMap map1;
-	public static Cook[] cooks = { new Cook(new Vector2(64 * 5, 64 * 3), 1), new Cook(new Vector2(64 * 5, 64 * 5), 2),new Cook(new Vector2(64 * 5, 64 * 7), 3) };
+	public Array<Cook> cooks = new Array<>();
 	public static int currentCookIndex = 0;
-	public static Cook cook = cooks[currentCookIndex];
+	public static Cook cook;
 	public static CustomerController cc;
 	public static int reputationPoints = 3;
 	InputMultiplexer multi;
 	StationManager stationManager = new StationManager();
 
 	PowerUpService powerUps = new PowerUpService();
+
+	SaveService save = new SaveService();
+
+	Tutorial tutorial = new Tutorial();
 
 	/**
 	 * Constructor to initialise game screen;
@@ -132,30 +133,46 @@ public class GameScreen implements Screen {
 	 * @param ms   - Title screen class
 	 */
 	public GameScreen(MainGameClass game, MainScreen ms, GameMode gameMode) {
+		this(game, gameMode);
+
+		for (int i = 1; i <= Math.max(gameMode.getNumberOfChefs(), 3) ; i++) {
+			cooks.add(new Cook(new Vector2(64 * 5, 64 * (3 + i * 2)), i));
+		}
+
+		cook = cooks.get(currentCookIndex);
+
+		cc.spawnWave();
+	}
+
+	public GameScreen(MainGameClass game, GameInfo save) {
+		this(game, save.gameMode);
+
+		for (ChefInfo chef : save.chefs) {
+			cooks.add(new Cook(new Vector2(chef.x, chef.y), chef.cookNum));
+		}
+
+		cook = cooks.get(currentCookIndex);
+
+		money = save.money;
+		currentWave = save.currentWave;
+
+		cc.spawnWave(save.customers);
+	}
+
+	private GameScreen(MainGameClass game, GameMode gameMode) {
 		this.game = game;
-		this.ms = ms;
 		this.gameMode = gameMode;
+
 		this.NUMBER_OF_WAVES = gameMode.getNumberOfWaves();
-		Tutorial.complete = !gameMode.showTutorial();
-		this.calculateBoxMaths();
+		tutorial.complete = !gameMode.showTutorial();
+
+		calculateBoxMaths();
 		control = new Control();
 
 		map1 = new TmxMapLoader().load("map/art_map/customertest.tmx");
 		tiledMapRenderer = new OrthogonalTiledMapRenderer(map1);
 		constructCollisionData(map1);
 		cc = new CustomerController(map1,gameMode);
-
-		if (gameMode.getNumberOfCustmersInAWave() == 1){
-			cc.spawnStarteasy();
-		}
-		if (gameMode.getNumberOfCustmersInAWave() == 2){
-			cc.spawnStartMedium();
-		}
-		if (gameMode.getNumberOfCustmersInAWave() == 3){
-			cc.spawnStartHard();
-		}
-
-
 	}
 
 	public void changeStation(int x,int y){
@@ -165,10 +182,13 @@ public class GameScreen implements Screen {
 		String text =cell.toString();
 		System.out.println(text);
 	}
-		/**
+
+	/**
 	 * Things that should be done while the game screen is shown
 	 */
 	public void show() {
+		tutorial.start(cooks);
+
 		// =======================================START=FRAME=TIMER======================================================
 		startTime = System.currentTimeMillis();
 		timeOnStartup = startTime;
@@ -181,8 +201,8 @@ public class GameScreen implements Screen {
 		volSlide.setPosition(currentGameVolumeSliderX, audioBackgroundy + audioBackgroundHeight / 6
 				+ volSlideBackgr.getHeight() / 2 - volSlide.getHeight() / 2);
 		// ======================================INHERIT=TEXTURES=FROM=MAIN=SCREEN=======================================
-		vButton = ms.vButton;
-		vControl = ms.vControl;
+		vButton = new Texture(Gdx.files.internal("uielements/vButton.jpg"));
+		vControl = new Texture(Gdx.files.internal("uielements/vControl.png"));
 		// ======================================START=CAMERAS===========================================================
 		uiCamera = new OrthographicCamera();
 		worldCamera = new OrthographicCamera();
@@ -210,15 +230,22 @@ public class GameScreen implements Screen {
 		ad = new Button(new TextureRegionDrawable(AUDIO));
 		rs = new Button(new TextureRegionDrawable(RESUME));
 		btms = new Button(new TextureRegionDrawable(BACKTOMAINSCREEN));
+		Button saveButton = new Button(new TextureRegionDrawable(AUDIO));
 		// ======================================POSITION=AND=SCALE=BUTTONS==============================================
 		mn.setPosition(gameResolutionX / 40.0f, 18 * gameResolutionY / 20.0f);
 		mn.setSize(buttonwidth, buttonheight);
+
 		rs.setPosition(gameResolutionX / 40.0f, 18 * gameResolutionY / 20.0f);
 		rs.setSize(buttonwidth, buttonheight);
+
 		ad.setPosition(rs.getX() + rs.getWidth() + 2 * (gameResolutionX / 40.0f - gameResolutionX / 50.0f), rs.getY());
 		ad.setSize(buttonwidth, buttonheight);
-		btms.setPosition(ad.getX() + ad.getWidth() + 2 * (gameResolutionX / 40.0f - gameResolutionX / 50.0f),
-				ad.getY());
+
+		saveButton.setPosition(ad.getX() + ad.getWidth() + 2 * (gameResolutionX / 40f - gameResolutionX / 50f), ad.getY());
+		saveButton.setSize(buttonwidth, buttonheight);
+
+		btms.setPosition(saveButton.getX() + saveButton.getWidth() + 2 * (gameResolutionX / 40.0f - gameResolutionX / 50.0f),
+				saveButton.getY());
 		btms.setSize(buttonwidth, buttonheight);
 		// ======================================ADD=LISTENERS=TO=BUTTONS================================================
 		mn.addListener(new ClickListener() {
@@ -227,29 +254,55 @@ public class GameScreen implements Screen {
 				super.touchUp(event, x, y, pointer, button);
 			}
 		});
+
 		rs.addListener(new ClickListener() {
 			public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
 				state1 = STATE.Continue;
 				super.touchUp(event, x, y, pointer, button);
 			}
 		});
+
 		ad.addListener(new ClickListener() {
 			public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
 				state1 = STATE.audio;
 				super.touchUp(event, x, y, pointer, button);
 			}
 		});
+
+		saveButton.addListener(new ClickListener() {
+			public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+
+				try {
+					save.saveGame(new GameInfo(money, 15f, currentWave, new ModeInfo(gameMode),
+							Arrays.stream(cooks.toArray(Cook.class))
+									.map(cook -> new ChefInfo(cook.getX(), cook.getY(), cook.cookno))
+									.toArray(ChefInfo[]::new),
+							Arrays.stream(cc.customers)
+									.filter(Objects::nonNull)
+									.map(customer -> new CustomerInfo(customer.custno, customer.order, customer.posx / 64, customer.posy / 64, customer.targetsquare))
+									.toArray(CustomerInfo[]::new)));
+				} catch (Exception e) {
+					System.out.println(e.getMessage());
+					// TODO: error message
+				}
+
+				super.touchUp(event, x, y, pointer, button);
+			}
+		});
+
 		btms.addListener(new ClickListener() {
 			public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
 				state1 = STATE.main;
 				super.touchUp(event, x, y, pointer, button);
 			}
 		});
+
 		// ======================================ADD=BUTTONS=TO=STAGES===================================================
 		stage.addActor(mn);
 		stage2.addActor(rs);
 		stage2.addActor(btms);
 		stage2.addActor(ad);
+		stage2.addActor(saveButton);
 
 	}
 
@@ -296,7 +349,7 @@ public class GameScreen implements Screen {
 		game.batch.end();
 		// ==================================MOVE=COOK===================================================================
 		tempTime = System.currentTimeMillis();
-		if (!cook.locked && Tutorial.complete)
+		if (!cook.locked && tutorial.complete)
 			cook.update(control, powerUps.totalSpeed(tempTime - tempThenTime), CLTiles);
 		tempThenTime = tempTime;
 		checkInteraction(cook, game.shapeRenderer);
@@ -327,23 +380,29 @@ public class GameScreen implements Screen {
 
 		checkCookSwitch();
 
-		if (gameMode.getNumberOfCustmersInAWave() == 1){
-			cc.spawnCustomer();
-		}
-		if (gameMode.getNumberOfCustmersInAWave() == 2){
-			delMedium();
-
-		}
-		if (gameMode.getNumberOfCustmersInAWave() == 3){
-			delHard();
-		}
-
-		delMedium();
+		checkWaitTime();
 
 		// =========================================CHECK=GAME=OVER======================================================
 		checkGameOver();
 
 	}
+
+	private void checkWaitTime() {
+		if (currentWaitingCustomer != null && currentWaitingCustomer.waitTime() > gameMode.getModeTime()) {
+			cc.delCustomer(currentWaitingCustomer);
+			currentWaitingCustomer = null;
+
+			if (currentWave >= gameMode.getNumberOfWaves()) {
+				return;
+			}
+
+			if (cc.amountActiveCustomers == 0) {
+				currentWave++;
+				cc.spawnWave();
+			}
+		}
+	}
+
 	public void updateLayer(){
 		tiledMapRenderer.renderObjects((map1.getLayers().get(1)));
 	}
@@ -351,15 +410,15 @@ public class GameScreen implements Screen {
      * Change selected cook
      */
 	private void checkCookSwitch() {
-		if (control.tab && Tutorial.complete) {
+		if (control.tab && tutorial.complete) {
 			cook.locked = false;
-			currentCookIndex += currentCookIndex < cooks.length - 1 ? 1 : -currentCookIndex;
-			cook = cooks[currentCookIndex];
+			currentCookIndex += currentCookIndex < cooks.size - 1 ? 1 : -currentCookIndex;
+			cook = cooks.get(currentCookIndex);
 		}
-		if (control.shift && Tutorial.complete) {
+		if (control.shift && tutorial.complete) {
 			cook.locked = false;
-			currentCookIndex -= currentCookIndex > 0 ? 1 : -cooks.length + 1;
-			cook = cooks[currentCookIndex];
+			currentCookIndex -= currentCookIndex > 0 ? 1 : -cooks.size + 1;
+			cook = cooks.get(currentCookIndex);
 		}
 
 		control.interact = false;
@@ -380,24 +439,23 @@ public class GameScreen implements Screen {
 			Menu.RECIPES.get(currentWaitingCustomer.order).displayRecipe(game.batch, new Vector2(64, 256));
 		}
 
-			// why does this start as anyone goes to it
+		// why does this start as anyone goes to it
 
 		// 꼼수 아싸리 같ㅎ ㅣ해버리는것도 나쁘지 않은듯
 
 
-
-		for (int i = 0; i < cooks.length; i++) {
+		for (int i = 0; i < cooks.size; i++) {
 			if (i == currentCookIndex) {
 				selectedPlayerBox.setAutoShapeType(true);
 				selectedPlayerBox.begin(ShapeType.Line);
 
 				selectedPlayerBox.setColor(Color.GREEN);
-				selectedPlayerBox.rect(Gdx.graphics.getWidth() - 128 * cooks.length + i * 128,
+				selectedPlayerBox.rect(Gdx.graphics.getWidth() - 128 * cooks.size + i * 128,
 						Gdx.graphics.getHeight() - 128 - 8, 128, 128);
 				selectedPlayerBox.end();
 			}
 			game.batch.begin();
-			cooks[i].draw_top(game.batch, new Vector2(Gdx.graphics.getWidth() - 128 * cooks.length + i * 128,
+			cooks.get(i).draw_top(game.batch, new Vector2(Gdx.graphics.getWidth() - 128 * cooks.size + i * 128,
 					Gdx.graphics.getHeight() - 256));
 			game.batch.end();
 		}
@@ -431,14 +489,14 @@ public class GameScreen implements Screen {
      * @param delta - some change in time
      */
 	private void setCameraLerp(float delta) {
-		if (!Tutorial.complete) {
-			worldCamera.position.lerp(new Vector3(Tutorial.getStagePos(), 0), .065f);
+		if (!tutorial.complete) {
+			worldCamera.position.lerp(new Vector3(tutorial.getStagePos(), 0), .065f);
 			if (control.tab) {
-				Tutorial.nextStage();
+				tutorial.nextStage();
 			} else if (control.shift) {
-				Tutorial.previousStage();
+				tutorial.previousStage();
 			}
-			Tutorial.drawBox(game.batch, delta * 20);
+			tutorial.drawBox(game.batch, delta * 20);
 		} else {
 			if (Math.abs(worldCamera.position.x - cook.pos.x) < 2
 					&& Math.abs(worldCamera.position.y - cook.pos.y) < 2) {
@@ -473,52 +531,55 @@ public class GameScreen implements Screen {
 	 * @param state1 - the state to change to
 	 */
 	public void changeScreen(STATE state1) {
-		if (state1 == STATE.main) {
-			game.gameMusic.dispose();
-			game.resetGameScreen();
-			game.setScreen(game.getMainScreen());
+		switch (state1) {
+			case main:
+				game.gameMusic.dispose();
+				game.resetGameScreen();
+				game.setScreen(game.getMainScreen());
+				break;
 
-		}
-		if (state1 == STATE.Pause) {
-			thenTime = System.currentTimeMillis() - timeOnStartup;
-			Gdx.input.setInputProcessor(stage2);
-			game.batch.begin();
-			game.batch.draw(ESC, optionsBackground.getX(), optionsBackground.getY(), optionsBackground.getWidth(),
-					optionsBackground.getHeight());
-			game.batch.end();
-			stage2.act();
-			stage2.draw();
-		}
-		if (state1 == STATE.audio) {
-			musicVolumeUpdate();
-			gameVolumeUpdate();
-			checkState();
+			case Pause:
+				thenTime = System.currentTimeMillis() - timeOnStartup;
+				Gdx.input.setInputProcessor(stage2);
+				game.batch.begin();
+				game.batch.draw(ESC, optionsBackground.getX(), optionsBackground.getY(), optionsBackground.getWidth(),
+						optionsBackground.getHeight());
+				game.batch.end();
+				stage2.act();
+				stage2.draw();
+				break;
 
-			Gdx.input.setInputProcessor(stage2);
-			game.batch.begin();
-			game.batch.draw(ESC, optionsBackground.getX(), optionsBackground.getY(), optionsBackground.getWidth(),
-					optionsBackground.getHeight());
-			game.batch.end();
-			stage2.act();
-			stage2.draw();
-			game.batch.begin();
-			game.batch.draw(audioEdit, audioBackground.getX(), audioBackground.getY(), audioBackground.getWidth(),
-					audioBackground.getHeight());
-			game.batch.draw(vControl, volSlideBackgr.getX(), volSlideBackgr.getY(), volSlideBackgr.getWidth(),
-					volSlideBackgr.getHeight());
-			game.batch.draw(vButton, volSlide.getX() - volSlide.getWidth() / 2, volSlide.getY(), volSlide.width,
-					volSlide.height);
-			game.batch.draw(vControl, musSlideBackgr.getX(), musSlideBackgr.getY(), musSlideBackgr.getWidth(),
-					musSlideBackgr.getHeight());
-			game.batch.draw(vButton, musSlide.getX() - musSlide.getWidth() / 2, musSlide.getY(), musSlide.width,
-					musSlide.height);
-			game.batch.end();
-		}
-		if (state1 == STATE.Continue) {
-			nowTime = System.currentTimeMillis() - timeOnStartup;
-			startTime += nowTime - thenTime;
-			cc.updateCustomers();
-			thenTime = System.currentTimeMillis() - timeOnStartup;
+			case audio:
+				musicVolumeUpdate();
+				gameVolumeUpdate();
+				checkState();
+
+				Gdx.input.setInputProcessor(stage2);
+				game.batch.begin();
+				game.batch.draw(ESC, optionsBackground.getX(), optionsBackground.getY(), optionsBackground.getWidth(),
+						optionsBackground.getHeight());
+				game.batch.end();
+				stage2.act();
+				stage2.draw();
+				game.batch.begin();
+				game.batch.draw(audioEdit, audioBackground.getX(), audioBackground.getY(), audioBackground.getWidth(),
+						audioBackground.getHeight());
+				game.batch.draw(vControl, volSlideBackgr.getX(), volSlideBackgr.getY(), volSlideBackgr.getWidth(),
+						volSlideBackgr.getHeight());
+				game.batch.draw(vButton, volSlide.getX() - volSlide.getWidth() / 2, volSlide.getY(), volSlide.width,
+						volSlide.height);
+				game.batch.draw(vControl, musSlideBackgr.getX(), musSlideBackgr.getY(), musSlideBackgr.getWidth(),
+						musSlideBackgr.getHeight());
+				game.batch.draw(vButton, musSlide.getX() - musSlide.getWidth() / 2, musSlide.getY(), musSlide.width,
+						musSlide.height);
+				game.batch.end();
+				break;
+
+			case Continue:
+				nowTime = System.currentTimeMillis() - timeOnStartup;
+				startTime += nowTime - thenTime;
+				cc.updateCustomers();
+				thenTime = System.currentTimeMillis() - timeOnStartup;
 		}
 	}
 
@@ -582,8 +643,8 @@ public class GameScreen implements Screen {
 	 * Calculates coordinates for UI element scaling;
 	 */
 	private void calculateBoxMaths() {
-		this.gameResolutionX = ms.gameResolutionX;
-		this.gameResolutionY = ms.gameResolutionY;
+		this.gameResolutionX = Gdx.graphics.getWidth();
+		this.gameResolutionY = Gdx.graphics.getHeight();
 		this.buttonwidth = gameResolutionX / 10.0f;
 		this.buttonheight = gameResolutionY / 20.0f;
 
@@ -756,67 +817,5 @@ public class GameScreen implements Screen {
 	@Override
 	public void dispose() {
 		// TODO Auto-generated method stub
-	}
-
-	public void deleasy(){
-		if((currentWaitingCustomer != null && currentWaitingCustomer.waitTime() > gameMode.getModeTime() ) ){
-			cc.delCustomer(currentWaitingCustomer);
-			cc.amountActiveCustomers--;
-			if(GameScreen.currentWave == gameMode.getNumberOfWaves()-1){
-				checkGameOver();
-			}
-
-			if ( cc.amountActiveCustomers < 5) {
-				// serving station more than 5
-				cc.spawnCustomer();
-			}
-
-
-			GameScreen.currentWave++;
-			System.out.println("CURRENT WAVE " + currentWave);
-			GameScreen.currentWaitingCustomer = null;
-
-		}
-	}
-
-	public void delMedium(){
-		if((currentWaitingCustomer != null && currentWaitingCustomer.waitTime() > gameMode.getModeTime() ) ){
-			cc.delCustomer(currentWaitingCustomer);
-			cc.amountActiveCustomers--;
-			if(GameScreen.currentWave == gameMode.getNumberOfWaves()-1){
-				checkGameOver();
-			}
-
-			if ( cc.amountActiveCustomers < 5) {
-				// serving station more than 5
-				cc.spawnMedium();
-			}
-
-
-			GameScreen.currentWave++;
-			System.out.println("CURRENT WAVE " + currentWave);
-			GameScreen.currentWaitingCustomer = null;
-
-		}
-	}
-	public void delHard(){
-		if((currentWaitingCustomer != null && currentWaitingCustomer.waitTime() > gameMode.getModeTime() ) ){
-			cc.delCustomer(currentWaitingCustomer);
-			cc.amountActiveCustomers--;
-			if(GameScreen.currentWave == gameMode.getNumberOfWaves()-1){
-				checkGameOver();
-			}
-
-			if ( cc.amountActiveCustomers < 5) {
-				// serving station more than 5
-				cc.spawnHard();
-			}
-
-
-			GameScreen.currentWave++;
-			System.out.println("CURRENT WAVE hard " + currentWave);
-			GameScreen.currentWaitingCustomer = null;
-
-		}
 	}
 }

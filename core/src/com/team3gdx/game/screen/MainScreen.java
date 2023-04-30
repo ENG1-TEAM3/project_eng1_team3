@@ -5,10 +5,14 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.ScreenUtils;
@@ -57,7 +61,7 @@ public class MainScreen implements Screen {
 	Stage stage;
 
 	enum STATE {
-		main, audio, leaderboard, new_game;
+		main, audio, leaderboard, new_game, loadGame;
 	}
 
 	STATE state;
@@ -125,20 +129,40 @@ public class MainScreen implements Screen {
 		audioEdit = new Texture(Gdx.files.internal("uielements/background.png"));
 		exitGame = new Texture(Gdx.files.internal("uielements/exitgame.png"));
 
+		stage = new Stage(viewport, game.batch);
+		Gdx.input.setInputProcessor(stage);
+
+		Table table = new Table();
+		table.setFillParent(true);
+
+		stage.addActor(table);
+
+		TextButton.TextButtonStyle style = new TextButton.TextButtonStyle();
+		style.font = new BitmapFont();
+
 		sb = new Button(new TextureRegionDrawable(startButton));
+		Button loadButton = new TextButton("Load Game", style);
 		lb = new Button(new TextureRegionDrawable(leaderBoard));
 		ad = new Button(new TextureRegionDrawable(audio));
 		eg = new Button(new TextureRegionDrawable(exitGame));
 
-		sb.setPosition(gameResolutionX / 10.0f, 4 * gameResolutionY / 5.0f - buttonheight / 2);
-		lb.setPosition(gameResolutionX / 10.0f, 3 * gameResolutionY / 5.0f - buttonheight / 2);
-		ad.setPosition(gameResolutionX / 10.0f, 2 * gameResolutionY / 5.0f - buttonheight / 2);
-		eg.setPosition(gameResolutionX / 10.0f, gameResolutionY / 5.0f - buttonheight / 2);
+		table.add(sb).padBottom(10).size(buttonwidth, buttonheight);
 
-		lb.setSize(buttonwidth, buttonheight);
-		ad.setSize(buttonwidth, buttonheight);
-		eg.setSize(buttonwidth, buttonheight);
-		sb.setSize(buttonwidth, buttonheight);
+		table.row();
+
+		table.add(loadButton).padBottom(10).size(buttonwidth, buttonheight);
+
+		table.row();
+
+		table.add(lb).padBottom(10).size(buttonwidth, buttonheight);
+
+		table.row();
+
+		table.add(ad).padBottom(10).size(buttonwidth, buttonheight);
+
+		table.row();
+
+		table.add(eg).padBottom(10).size(buttonwidth, buttonheight);
 
 		ad.addListener(new ClickListener() {
 			public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
@@ -152,6 +176,15 @@ public class MainScreen implements Screen {
 				super.touchUp(event, x, y, pointer, button);
 			}
 		});
+
+		loadButton.addListener(new ClickListener() {
+			@Override
+			public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+				state = STATE.loadGame;
+				super.touchUp(event, x, y, pointer, button);
+			}
+		});
+
 		lb.addListener(new ClickListener() {
 			public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
 				state = STATE.leaderboard;
@@ -166,14 +199,6 @@ public class MainScreen implements Screen {
 				super.touchUp(event, x, y, pointer, button);
 			}
 		});
-
-		stage = new Stage(viewport, game.batch);
-		Gdx.input.setInputProcessor(stage);
-
-		stage.addActor(sb);
-		stage.addActor(lb);
-		stage.addActor(ad);
-		stage.addActor(eg);
 	}
 
 	/**
@@ -206,33 +231,41 @@ public class MainScreen implements Screen {
 	 * @param state - state to change screen to
 	 */
 	public void changeScreen(STATE state) {
-		if (state == STATE.new_game) {
-			game.mainScreenMusic.dispose();
-			game.setScreen(game.getDiffictuiltyScreen());
-		}
-		if (state == STATE.leaderboard) {
-			game.mainScreenMusic.dispose();
-			game.setScreen(game.getLeaderBoardSelect());
-		}
-		if (state == STATE.audio) {
-			musicVolumeUpdate();
-			gameVolumeUpdate();
+		switch (state) {
+			case new_game:
+				game.mainScreenMusic.dispose();
+				game.setScreen(game.getDiffictuiltyScreen());
+				break;
 
-			game.batch.begin();
-			game.batch.draw(audioEdit, (float) gameResolutionX / 2, (float) 2 * gameResolutionY / 5 - buttonheight / 2,
-					buttonwidth / 2, buttonheight);
+			case leaderboard:
+				game.mainScreenMusic.dispose();
+				game.setScreen(game.getLeaderBoardSelect());
+				break;
 
-			game.batch.draw(vControl, volSlideBackgr.getX(), volSlideBackgr.getY(), volSlideBackgr.width,
-					volSlideBackgr.height);
-			game.batch.draw(vButton, volSlide.getX() - volSlide.width / 2, volSlide.getY(), volSlide.width,
-					volSlide.height);
+			case audio:
+				musicVolumeUpdate();
+				gameVolumeUpdate();
 
-			game.batch.draw(vControl, musSlideBackgr.getX(), musSlideBackgr.getY(), musSlideBackgr.width,
-					musSlideBackgr.height);
-			game.batch.draw(vButton, musSlide.getX() - musSlide.width / 2, musSlide.getY(), musSlide.width,
-					musSlide.height);
+				game.batch.begin();
+				game.batch.draw(audioEdit, (float) gameResolutionX / 2, (float) 2 * gameResolutionY / 5 - buttonheight / 2,
+						buttonwidth / 2, buttonheight);
 
-			game.batch.end();
+				game.batch.draw(vControl, volSlideBackgr.getX(), volSlideBackgr.getY(), volSlideBackgr.width,
+						volSlideBackgr.height);
+				game.batch.draw(vButton, volSlide.getX() - volSlide.width / 2, volSlide.getY(), volSlide.width,
+						volSlide.height);
+
+				game.batch.draw(vControl, musSlideBackgr.getX(), musSlideBackgr.getY(), musSlideBackgr.width,
+						musSlideBackgr.height);
+				game.batch.draw(vButton, musSlide.getX() - musSlide.width / 2, musSlide.getY(), musSlide.width,
+						musSlide.height);
+
+				game.batch.end();
+				break;
+
+			case loadGame:
+				game.mainScreenMusic.dispose();
+				game.setScreen(new LoadScreen(game));
 		}
 	}
 

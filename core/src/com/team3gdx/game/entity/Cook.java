@@ -20,7 +20,7 @@ public class Cook extends Entity {
 	private static final int FRAME_COLS = 5, FRAME_ROWS = 4;
 
 	public Vector2 direction;
-	private int cookno;
+	public int cookno;
 
 	private Texture walkSheet;
 	private Animation<TextureRegion> walkAnimation;
