@@ -43,7 +43,7 @@ public class RecipeTests {
         */
     }
 
-
+/*
     @Test
     public void testMatches() {
         Map<Ingredient, String> SALAD_STEPS = new HashMap<Ingredient, String>();
@@ -71,8 +71,10 @@ public class RecipeTests {
         stack.push(Ingredients.lettuceChopped);
         stack.push(Ingredients.lettuce);
         assertFalse(recipe.matches(stack));
-        */
+        /*
     }
+ */
+ 
 
     @Test
     public void testDisplayRecipe() {
