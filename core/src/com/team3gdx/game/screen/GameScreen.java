@@ -406,7 +406,7 @@ public class GameScreen implements Screen {
 		currentWaitingCustomer = null;
 		reputationPoints--;
 
-		if (currentWave >= gameMode.getNumberOfWaves()) {
+		if (gameMode.getNumberOfWaves() > 0 && currentWave > gameMode.getNumberOfWaves()) {
 			return;
 		}
 
@@ -771,9 +771,9 @@ public class GameScreen implements Screen {
 			Object stationType = viewedTile.getTile().getProperties().get("Station");
 			if (stationType != null) {
 				stationManager.checkInteractedTile((String) viewedTile.getTile().getProperties().get("Station"),
-						new Vector2(checkCellX, checkCellY), cc, gameMode, powerUps.getPriceMultiplier());
+						new Vector2(checkCellX, checkCellY), cc, gameMode, powerUps.getPriceMultiplier(), powerUps.totalConstructionCost(60));
 			} else {
-				stationManager.checkInteractedTile("", new Vector2(checkCellX, checkCellY), cc, gameMode, powerUps.getPriceMultiplier());
+				stationManager.checkInteractedTile("", new Vector2(checkCellX, checkCellY), cc, gameMode, powerUps.getPriceMultiplier(), powerUps.totalConstructionCost(60));
 			}
 		}
 
@@ -792,7 +792,7 @@ public class GameScreen implements Screen {
 	}
 
 	public void checkGameOver() {
-		if (currentWave == NUMBER_OF_WAVES + 1) {
+		if (gameMode.getNumberOfWaves() > 0 && currentWave > gameMode.getNumberOfWaves()) {
 			game.getLeaderBoardScreen().addLeaderBoardData("PLAYER1",(int) Math.floor((startTime - timeOnStartup) / 1000f),gameMode);
 			game.resetGameScreen();
 			this.resetStatic();
