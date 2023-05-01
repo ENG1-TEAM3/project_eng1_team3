@@ -1,6 +1,5 @@
 package com.team3gdx.game.tests.food;
 
-import com.badlogic.gdx.math.Vector2;
 import com.team3gdx.game.MainGameClass;
 import com.team3gdx.game.food.Ingredient;
 import com.team3gdx.game.food.Ingredients;
@@ -9,9 +8,7 @@ import com.team3gdx.game.tests.GdxTestRunner;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
