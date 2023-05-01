@@ -406,7 +406,7 @@ public class GameScreen implements Screen {
 		currentWaitingCustomer = null;
 		reputationPoints--;
 
-		if (currentWave >= gameMode.getNumberOfWaves()) {
+		if (gameMode.getNumberOfWaves() > 0 && currentWave > gameMode.getNumberOfWaves()) {
 			return;
 		}
 
@@ -792,7 +792,7 @@ public class GameScreen implements Screen {
 	}
 
 	public void checkGameOver() {
-		if (currentWave == NUMBER_OF_WAVES + 1) {
+		if (gameMode.getNumberOfWaves() > 0 && currentWave > gameMode.getNumberOfWaves()) {
 			game.getLeaderBoardScreen().addLeaderBoardData("PLAYER1",(int) Math.floor((startTime - timeOnStartup) / 1000f),gameMode);
 			game.resetGameScreen();
 			this.resetStatic();
