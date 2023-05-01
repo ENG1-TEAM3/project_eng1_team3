@@ -21,7 +21,7 @@ public class Ingredient extends Entity {
 	 * Represents internal states of ingredient.
 	 */
 	public int slices = 0;
-	private int idealSlices;
+	public int idealSlices;
 	private float cookedTime = 0;
 	private float idealCookedTime;
 	private boolean usable = true;
