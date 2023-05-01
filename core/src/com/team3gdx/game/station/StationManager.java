@@ -3,6 +3,7 @@ package com.team3gdx.game.station;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -40,28 +41,13 @@ public class StationManager {
 	 */
 	public void handleStations(SpriteBatch batch, ShapeRenderer shapeRenderer, float cookingTime, float constructionCost) {
 		this.batch = batch;
+
 		for (Station station : stations.values()) {
-			if (station.active() == false){
-				if (GameScreen.cook.heldItems.empty()){
-					station.drawBuyBackText(batch, constructionCost);
-					if (GameScreen.control.interact) {
-						if (GameScreen.money >= constructionCost){
-							station.buyBack();
-							GameScreen.money -= constructionCost;
-
-							TiledMapTileLayer Layer =(TiledMapTileLayer)GameScreen.map1.getLayers().get(1);
-
-							Cell cell = Layer.getCell((int)station.pos.x, (int)station.pos.y);
-							TiledMapTile tile = GameScreen.map1.getTileSets().getTile(cell.getTile().getId()+10);
-
-							Cell newCell = new Cell();
-							newCell.setTile(tile);
-
-							Layer.setCell((int)station.pos.x, (int)station.pos.y, newCell);
-						}
-				}
+			if (!station.active()) {
+				return;
 			}
-			else if (!station.slots.empty() && !station.infinite) {
+
+			if (!station.slots.empty() && !station.infinite) {
 				for (int i = 0; i < station.slots.size(); i++) {
 					// Handle each ingredient in slot.
 					Ingredient currentIngredient = station.slots.get(i);
@@ -90,7 +76,6 @@ public class StationManager {
 			}
 		}
 	}
-}
 
 	/**
 	 * Check the currently looked at tile for a station.
@@ -98,7 +83,7 @@ public class StationManager {
 	 * @param type The station type.
 	 * @param pos  The position of the tile.
 	 */
-	public void checkInteractedTile(String type, Vector2 pos, CustomerController customerController, GameMode gameMode, float priceMultiplier) {
+	public void checkInteractedTile(String type, Vector2 pos, CustomerController customerController, GameMode gameMode, float priceMultiplier, float constructionCost) {
 		switch (type) {
 		case "Buns":
 			takeIngredientStation(pos, Ingredients.bun);
@@ -156,34 +141,21 @@ public class StationManager {
 			((CookingStation) stations.get(pos)).checkCookingStation(batch);
 			((CookingStation) stations.get(pos)).lockCook();
 			break;
-		case "Frying_inactivce":
+		case "Frying_inactive":
 			checkStationExists(pos, new FryingStation(pos,false));
-			((CookingStation) stations.get(pos)).checkCookingStation(batch);
-			((CookingStation) stations.get(pos)).lockCook();
+			buyBackStation(pos, batch, constructionCost);
 			break;
 		case "Prep_inactive":
-			if (!stations.containsKey(pos)) {
-				stations.put(pos, new PrepStation(pos,false));
-			}
-			placeIngredientStation(pos);
-			PrepStation station2 = ((PrepStation) stations.get(pos));
-			station2.lockCook();
-			
+			checkStationExists(pos, new PrepStation(pos, false));
+			buyBackStation(pos, batch, constructionCost);
 			break;
 		case "Chopping_inactive":
-			if (!stations.containsKey(pos)) {
-				stations.put(pos, new CuttingStation(pos, 1,false));
-			}
-
-			placeIngredientStation(pos);
-			CuttingStation cutStation2 = ((CuttingStation) stations.get(pos));
-			cutStation2.lockCook();
-
+			checkStationExists(pos, new CuttingStation(pos, 1, false));
+			buyBackStation(pos, batch, constructionCost);
 			break;
 		case "Baking_inactive":
-			checkStationExists(pos, new BakingStation(pos,false));
-			((CookingStation) stations.get(pos)).checkCookingStation(batch);
-			((CookingStation) stations.get(pos)).lockCook();
+			checkStationExists(pos, new BakingStation(pos, false));
+			buyBackStation(pos, batch, constructionCost);
 			break;
 
 		case "Service":
@@ -266,4 +238,28 @@ public class StationManager {
 
 	}
 
+	private void buyBackStation(Vector2 pos, SpriteBatch batch, float constructionCost) {
+		if (!GameScreen.cook.heldItems.empty()) {
+			return;
+		}
+
+		Station station = stations.get(pos);
+
+		station.drawBuyBackText(batch, constructionCost);
+
+		if (GameScreen.control.interact && GameScreen.money >= constructionCost) {
+			station.buyBack();
+			GameScreen.money -= constructionCost;
+
+			TiledMapTileLayer Layer = (TiledMapTileLayer) GameScreen.map1.getLayers().get(1);
+
+			Cell cell = Layer.getCell((int) station.pos.x, (int) station.pos.y);
+			TiledMapTile tile = GameScreen.map1.getTileSets().getTile(cell.getTile().getId() + 10);
+
+			Cell newCell = new Cell();
+			newCell.setTile(tile);
+
+			Layer.setCell((int) station.pos.x, (int) station.pos.y, newCell);
+		}
+	}
 }
