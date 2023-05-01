@@ -120,7 +120,7 @@ public class GameScreen implements Screen {
 	InputMultiplexer multi;
 	StationManager stationManager = new StationManager();
 
-	PowerUpService powerUps = new PowerUpService();
+	PowerUpService powerUps;
 
 	SaveService save = new SaveService();
 
@@ -173,6 +173,7 @@ public class GameScreen implements Screen {
 		tiledMapRenderer = new OrthogonalTiledMapRenderer(map1);
 		constructCollisionData(map1);
 		cc = new CustomerController(map1,gameMode);
+		powerUps = new PowerUpService(map1);
 	}
 
 	public void changeStation(int x,int y){
