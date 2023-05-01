@@ -8,6 +8,8 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.maps.MapProperties;
@@ -40,12 +42,10 @@ import com.team3gdx.game.entity.CustomerController;
 import com.team3gdx.game.entity.Entity;
 import com.team3gdx.game.food.Menu;
 import com.team3gdx.game.save.*;
-import com.team3gdx.game.station.ServingStation;
 import com.team3gdx.game.station.StationManager;
 import com.team3gdx.game.util.CollisionTile;
 import com.team3gdx.game.util.Control;
 import com.team3gdx.game.util.GameMode;
-import com.team3gdx.game.util.ScenarioMode;
 
 import java.util.*;
 
@@ -173,7 +173,7 @@ public class GameScreen implements Screen {
 		tiledMapRenderer = new OrthogonalTiledMapRenderer(map1);
 		constructCollisionData(map1);
 		cc = new CustomerController(map1,gameMode);
-		powerUps = new PowerUpService(map1);
+		powerUps = new PowerUpService(map1, control);
 	}
 
 	public void changeStation(int x,int y){
@@ -338,7 +338,11 @@ public class GameScreen implements Screen {
 		tiledMapRenderer.render(new int[] { 1 });
 		// =====================================DRAW=COOK=TOP=HALF=======================================================
 
-		powerUps.render(delta);
+		powerUps.spawnPowerUps(delta);
+
+		for (PowerUp powerUp : powerUps.getSpawnedPowerUps()) {
+			powerUp.draw(game.batch);
+		}
 
 		stationManager.handleStations(game.batch, game.shapeRenderer, powerUps.totalCookingSpeed(delta), powerUps.totalConstructionCost(60));
 
@@ -353,7 +357,7 @@ public class GameScreen implements Screen {
 		if (!cook.locked && tutorial.complete)
 			cook.update(control, powerUps.totalSpeed(tempTime - tempThenTime), CLTiles);
 		tempThenTime = tempTime;
-		checkInteraction(cook, game.shapeRenderer);
+		checkInteraction(cook, game.batch, game.shapeRenderer);
 		// =====================================SET=MATRIX=FOR=UI=ELEMENTS===============================================
 		Matrix4 uiMatrix = worldCamera.combined.cpy();
 		uiMatrix.setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -740,15 +744,19 @@ public class GameScreen implements Screen {
 	 * @param ck - Selected cook
 	 * @param sr - ShapeRenderer to draw the coloured box
 	 */
-	public void checkInteraction(Cook ck, ShapeRenderer sr) {
+	public void checkInteraction(Cook ck, SpriteBatch batch, ShapeRenderer sr) {
 		float centralCookX = ck.getX() + ck.getWidth() / 2;
 		float centralCookY = ck.getY();
+
 		int cellx = (int) Math.floor(centralCookX / 64);
 		int celly = (int) Math.floor(centralCookY / 64);
+
 		int checkCellX = cellx;
 		int checkCellY = celly;
+
 		checkCellX += ck.getDirection().x;
 		checkCellY += ck.getDirection().y + 1;
+
 		Cell viewedTile = ((TiledMapTileLayer) map1.getLayers().get(1)).getCell(checkCellX, checkCellY);
 
 		if (viewedTile != null) {
@@ -760,10 +768,19 @@ public class GameScreen implements Screen {
 				stationManager.checkInteractedTile("", new Vector2(checkCellX, checkCellY), cc, gameMode, powerUps.getPriceMultiplier());
 			}
 		}
+
 		sr.begin(ShapeRenderer.ShapeType.Line);
 		sr.setColor(new Color(1, 0, 1, 1));
 		sr.rect(checkCellX * 64, checkCellY * 64, 64, 64);
 		sr.end();
+
+		if (powerUps.interact(checkCellX, checkCellY)) {
+			batch.begin();
+			new BitmapFont().draw(batch, "Take [q]", checkCellX * 64, checkCellY * 64 - 16);
+			batch.end();
+		}
+
+		powerUps.interact(checkCellX, checkCellY);
 	}
 
 	public void checkGameOver() {
