@@ -141,19 +141,19 @@ public class StationManager {
 			break;
 		case "Frying_inactive":
 			checkStationExists(pos, new FryingStation(pos,false));
-			buyBackStation(pos, game.batch, constructionCost);
+			buyBackStation(game, pos, constructionCost);
 			break;
 		case "Prep_inactive":
 			checkStationExists(pos, new PrepStation(pos, false));
-			buyBackStation(pos, game.batch, constructionCost);
+			buyBackStation(game, pos, constructionCost);
 			break;
 		case "Chopping_inactive":
 			checkStationExists(pos, new CuttingStation(pos, 1, false));
-			buyBackStation(pos, game.batch, constructionCost);
+			buyBackStation(game, pos, constructionCost);
 			break;
 		case "Baking_inactive":
 			checkStationExists(pos, new BakingStation(pos, false));
-			buyBackStation(pos, game.batch, constructionCost);
+			buyBackStation(game, pos, constructionCost);
 			break;
 
 		case "Service":
@@ -236,14 +236,14 @@ public class StationManager {
 
 	}
 
-	private void buyBackStation(Vector2 pos, SpriteBatch batch, float constructionCost) {
+	private void buyBackStation(MainGameClass game, Vector2 pos, float constructionCost) {
 		if (!GameScreen.cook.heldItems.empty()) {
 			return;
 		}
 
 		Station station = stations.get(pos);
 
-		station.drawBuyBackText(batch, constructionCost);
+		station.drawBuyBackText(game, constructionCost);
 
 		if (GameScreen.control.interact && GameScreen.money >= constructionCost) {
 			station.buyBack();
