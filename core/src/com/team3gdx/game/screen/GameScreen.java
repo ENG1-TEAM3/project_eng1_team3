@@ -771,9 +771,9 @@ public class GameScreen implements Screen {
 			Object stationType = viewedTile.getTile().getProperties().get("Station");
 			if (stationType != null) {
 				stationManager.checkInteractedTile((String) viewedTile.getTile().getProperties().get("Station"),
-						new Vector2(checkCellX, checkCellY), cc, gameMode, powerUps.getPriceMultiplier());
+						new Vector2(checkCellX, checkCellY), cc, gameMode, powerUps.getPriceMultiplier(), powerUps.totalConstructionCost(60));
 			} else {
-				stationManager.checkInteractedTile("", new Vector2(checkCellX, checkCellY), cc, gameMode, powerUps.getPriceMultiplier());
+				stationManager.checkInteractedTile("", new Vector2(checkCellX, checkCellY), cc, gameMode, powerUps.getPriceMultiplier(), powerUps.totalConstructionCost(60));
 			}
 		}
 
