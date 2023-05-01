@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
+import com.team3gdx.game.MainGameClass;
 import com.team3gdx.game.food.Ingredient;
 import com.team3gdx.game.food.Ingredients;
 import com.team3gdx.game.screen.GameScreen;
@@ -27,7 +28,11 @@ public class IngredientTests {
         SpriteBatch batch = mock(SpriteBatch.class);
         ShapeRenderer shapeRenderer = mock(ShapeRenderer.class);
 
-        sut.cook(.65f, batch, shapeRenderer);
+        MainGameClass game = new MainGameClass();
+        game.batch = batch;
+        game.shapeRenderer = shapeRenderer;
+
+        sut.cook(.65f, game);
 
         verify(batch, atLeastOnce()).begin();
         verify(batch, atLeastOnce()).end();
@@ -42,7 +47,11 @@ public class IngredientTests {
         SpriteBatch batch = mock(SpriteBatch.class);
         ShapeRenderer shapeRenderer = mock(ShapeRenderer.class);
 
-        sut.cook(1, batch, shapeRenderer);
+        MainGameClass game = new MainGameClass();
+        game.batch = batch;
+        game.shapeRenderer = shapeRenderer;
+
+        sut.cook(1, game);
 
         sut.flip();
 
@@ -69,7 +78,11 @@ public class IngredientTests {
         SpriteBatch batch = mock(SpriteBatch.class);
         ShapeRenderer shapeRenderer = mock(ShapeRenderer.class);
 
-        sut.cook(0.3f, batch, shapeRenderer);
+        MainGameClass game = new MainGameClass();
+        game.batch = batch;
+        game.shapeRenderer = shapeRenderer;
+
+        sut.cook(0.3f, game);
 
         sut.flip();
 

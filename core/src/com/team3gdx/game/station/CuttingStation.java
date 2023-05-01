@@ -3,6 +3,7 @@ package com.team3gdx.game.station;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
+import com.team3gdx.game.MainGameClass;
 import com.team3gdx.game.food.Ingredient;
 import com.team3gdx.game.food.Ingredients;
 import com.team3gdx.game.screen.GameScreen;
@@ -24,9 +25,9 @@ public class CuttingStation extends Station {
 	 * @param batch
 	 * @param time
 	 */
-	public void interact(SpriteBatch batch, ShapeRenderer shapeRenderer, float dT) {
+	public void interact(MainGameClass game, float dT) {
 		currentCutTime += dT;
-		if (slots.peek().slice(batch, shapeRenderer, currentCutTime)) {
+		if (slots.peek().slice(game, currentCutTime)) {
 			currentCutTime = 0;
 		}
 	}
