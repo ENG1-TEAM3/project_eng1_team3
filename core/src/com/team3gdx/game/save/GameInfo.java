@@ -5,10 +5,10 @@ import java.util.Date;
 public class GameInfo {
     public GameInfo() {}
 
-    public GameInfo(int money, float timer, int currentWave, int reputation, ModeInfo gameMode, ChefInfo[] chefs, CustomerInfo[] customers) {
+    public GameInfo(int money, long timer, int currentWave, int reputation, ModeInfo gameMode, ChefInfo[] chefs, CustomerInfo[] customers) {
 
         this.money = money;
-        this.timer = timer;
+        this.timerOffset = timer;
         this.currentWave = currentWave;
         this.reputation = reputation;
         this.gameMode = gameMode;
@@ -21,7 +21,7 @@ public class GameInfo {
     public ChefInfo[] chefs;
     public CustomerInfo[] customers;
     public int money;
-    public float timer;
+    public long timerOffset;
     public int currentWave;
     public int reputation;
     public Date createdAt;

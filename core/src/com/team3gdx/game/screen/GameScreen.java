@@ -154,6 +154,7 @@ public class GameScreen implements Screen {
 		cook = cooks.get(currentCookIndex);
 
 		money = save.money;
+		startTime = -save.timerOffset;
 		currentWave = save.currentWave;
 		reputationPoints = save.reputation;
 
@@ -192,7 +193,7 @@ public class GameScreen implements Screen {
 		tutorial.start(cooks);
 
 		// =======================================START=FRAME=TIMER======================================================
-		startTime = System.currentTimeMillis();
+		startTime = startTime + System.currentTimeMillis();
 		timeOnStartup = startTime;
 		tempThenTime = startTime;
 		// =======================================SET=POSITIONS=OF=SLIDERS===============================================
@@ -275,7 +276,7 @@ public class GameScreen implements Screen {
 			public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
 
 				try {
-					save.saveGame(new GameInfo(money, 15f, currentWave, reputationPoints, new ModeInfo(gameMode),
+					save.saveGame(new GameInfo(money, startTime - timeOnStartup, currentWave, reputationPoints, new ModeInfo(gameMode),
 							Arrays.stream(cooks.toArray(Cook.class))
 									.map(cook -> new ChefInfo(cook.getX(), cook.getY(), cook.cookno))
 									.toArray(ChefInfo[]::new),
