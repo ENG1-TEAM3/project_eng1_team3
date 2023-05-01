@@ -58,21 +58,15 @@ public class ServingStation extends Station {
 				if (Objects.equals(waitingCustomer.order, "")) {
 					waitingCustomer.order = possibleOrders[new Random().nextInt(possibleOrders.length)];
 				}
-
-				System.out.println(" ---");
-				System.out.println(" W1 " + waitingCustomer.order);
-				System.out.println("11111 waitingcustomer1 started");
-				System.out.println(waitingCustomer.posy);
-				System.out.println(" ---");
 				GameScreen.currentWaitingCustomer = waitingCustomer;
 				waitingCustomer.arrived();
 
 			}
 			if (waitingCustomer == GameScreen.currentWaitingCustomer && !slots.empty() && slots.peek().equals(Menu.RECIPES.get(waitingCustomer.order))) {
 				slots.pop();
-				System.out.println("hello ");
 				GameScreen.money += (Menu.RECIPES.get(waitingCustomer.order)).cost() * priceMultiplier;
 				customerController.delCustomer(waitingCustomer);
+				GameScreen.currentWave ++;
 
 				if (customerController.amountActiveCustomers == 0) {
 					customerController.spawnWave();

@@ -57,7 +57,7 @@ public class GameScreen implements Screen {
 	private final GameMode gameMode;
 
 	public static int currentWave = 0;
-	public static int money = 320;
+	public static int money = 0;
 
 	Rectangle volSlideBackgr;
 	Rectangle volSlide;
