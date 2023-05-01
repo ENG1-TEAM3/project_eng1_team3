@@ -123,7 +123,7 @@ public class CustomerController {
 				continue;
 			}
 
-			customers[i] = new Customer(this.xCoordinate, this.bottom - i, this.top - i, random.nextInt(1, 4));
+			customers[i] = new Customer(this.xCoordinate, this.bottom - i, this.top - i, random.nextInt(3) + 1);
 			amountActiveCustomers++;
 			customersInWave++;
 
