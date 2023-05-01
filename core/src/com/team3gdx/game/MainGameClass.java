@@ -18,6 +18,7 @@ import com.team3gdx.game.util.ScenarioMode;
 public class MainGameClass extends Game {
 	public SpriteBatch batch;
 	public BitmapFont font;
+	public BitmapFont font2;
 	public Music mainScreenMusic;
 	public Music gameMusic;
 	public static float musicVolumeScale;
@@ -48,6 +49,8 @@ public class MainGameClass extends Game {
 		font = new BitmapFont(Gdx.files.internal("uielements/font.fnt"), Gdx.files.internal("uielements/font.png"),
 				false);
 		font.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+		font2 = new BitmapFont();
+		font2.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
 		// ====================================GAME=SCREEN=INITIALISATION================================================
 		mainScreen1 = new MainScreen(this);
 		gameScreen1 = new GameScreen(this, mainScreen1, new ScenarioMode(5, 3, 1,60000));
