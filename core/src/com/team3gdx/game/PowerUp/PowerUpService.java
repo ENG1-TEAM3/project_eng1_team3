@@ -1,16 +1,36 @@
 package com.team3gdx.game.PowerUp;
 
+import com.badlogic.gdx.maps.MapProperties;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
+import com.team3gdx.game.util.Control;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 public class PowerUpService {
+    private final TiledMap map;
+    private final Control control;
     private float timer;
     private final Array<PowerUp> activePowerUps = new Array<>();
+    private final Map<Vector2, PowerUp> spawnedPowerUps = new HashMap<>();
     private final Random random = new Random();
 
-    public PowerUpService() {
+    public Array<PowerUp> getActivePowerUps() {
+        return activePowerUps;
+    }
 
+    public Array<PowerUp> getSpawnedPowerUps () {
+        return new Array<>(spawnedPowerUps.values().toArray(new PowerUp[0]));
+    }
+
+    public PowerUpService(TiledMap map, Control control) {
+
+        this.map = map;
+        this.control = control;
     }
 
     private boolean checkTimer(float delta) {
@@ -27,7 +47,7 @@ public class PowerUpService {
         return true;
     }
 
-    public void render(float delta) {
+    public void spawnPowerUps(float delta) {
 
         for (PowerUp powerup : activePowerUps) {
             powerup.addTime(delta);
@@ -41,27 +61,68 @@ public class PowerUpService {
             return;
         }
 
-        switch (random.nextInt(50)) {
+        switch (random.nextInt(6)) {
             case 1:
-                activePowerUps.add(PowerUps.constructionCostReduce());
+                spawnPowerUp(PowerUps.constructionCostReduce());
                 break;
             case 2:
-                activePowerUps.add(PowerUps.cookingSpeedReduce());
+                spawnPowerUp(PowerUps.cookingSpeedReduce());
                 break;
             case 3:
-                activePowerUps.add(PowerUps.customerTimeIncrease());
+                spawnPowerUp(PowerUps.customerTimeIncrease());
                 break;
             case 4:
-                activePowerUps.add(PowerUps.increasePay());
+                spawnPowerUp(PowerUps.increasePay());
                 break;
             case 5:
-                activePowerUps.add(PowerUps.speedBoost());
+                spawnPowerUp(PowerUps.speedBoost());
                 break;
         }
     }
 
-    public Array<PowerUp> getActivePowerUps() {
-        return activePowerUps;
+    private void spawnPowerUp(PowerUp powerUp) {
+        TiledMapTileLayer layer = (TiledMapTileLayer) map.getLayers().get(1);
+
+        int x, y;
+        Vector2 pos = new Vector2();
+        MapProperties mapProperties;
+
+        do {
+            x = random.nextInt(13) + 3;
+            y = random.nextInt(16);
+
+            pos.x = x;
+            pos.y = y;
+
+            TiledMapTileLayer.Cell cell = layer.getCell(x, y);
+
+            if (cell == null) {
+                break;
+            }
+
+            mapProperties = cell.getTile().getProperties();
+
+        } while (mapProperties != null && (mapProperties.get("Station") != null || spawnedPowerUps.containsKey(pos)));
+
+        powerUp.pos = new Vector2(pos.x * 64, pos.y * 64);
+        spawnedPowerUps.put(pos, powerUp);
+    }
+
+    public boolean interact(int x, int y) {
+        Vector2 pos = new Vector2(x, y);
+
+        if (!spawnedPowerUps.containsKey(pos)) {
+            return false;
+        }
+
+        PowerUp powerUp = spawnedPowerUps.get(pos);
+
+        if (control.interact) {
+            activePowerUps.add(powerUp);
+            spawnedPowerUps.remove(pos);
+        }
+
+        return true;
     }
 
     public float totalConstructionCost(float initial) {
