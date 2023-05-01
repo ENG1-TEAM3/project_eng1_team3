@@ -155,6 +155,7 @@ public class GameScreen implements Screen {
 
 		money = save.money;
 		currentWave = save.currentWave;
+		reputationPoints = save.reputation;
 
 		cc.spawnWave(save.customers);
 	}
@@ -274,7 +275,7 @@ public class GameScreen implements Screen {
 			public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
 
 				try {
-					save.saveGame(new GameInfo(money, 15f, currentWave, new ModeInfo(gameMode),
+					save.saveGame(new GameInfo(money, 15f, currentWave, reputationPoints, new ModeInfo(gameMode),
 							Arrays.stream(cooks.toArray(Cook.class))
 									.map(cook -> new ChefInfo(cook.getX(), cook.getY(), cook.cookno))
 									.toArray(ChefInfo[]::new),
@@ -393,18 +394,25 @@ public class GameScreen implements Screen {
 	}
 
 	private void checkWaitTime() {
-		if (currentWaitingCustomer != null && currentWaitingCustomer.waitTime() > gameMode.getModeTime()) {
-			cc.delCustomer(currentWaitingCustomer);
-			currentWaitingCustomer = null;
+		if (currentWaitingCustomer == null) {
+			return;
+		}
 
-			if (currentWave >= gameMode.getNumberOfWaves()) {
-				return;
-			}
+		if (currentWaitingCustomer.waitTime() <= gameMode.getModeTime()) {
+			return;
+		}
 
-			if (cc.amountActiveCustomers == 0) {
-				currentWave++;
-				cc.spawnWave();
-			}
+		cc.delCustomer(currentWaitingCustomer);
+		currentWaitingCustomer = null;
+		reputationPoints--;
+
+		if (currentWave >= gameMode.getNumberOfWaves()) {
+			return;
+		}
+
+		if (cc.amountActiveCustomers == 0) {
+			currentWave++;
+			cc.spawnWave();
 		}
 	}
 
