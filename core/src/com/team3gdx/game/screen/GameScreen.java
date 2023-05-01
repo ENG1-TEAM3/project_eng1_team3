@@ -345,7 +345,7 @@ public class GameScreen implements Screen {
 			powerUp.draw(game.batch);
 		}
 
-		stationManager.handleStations(game.batch, game.shapeRenderer, powerUps.totalCookingSpeed(delta), powerUps.totalConstructionCost(60));
+		stationManager.handleStations(game, powerUps.totalCookingSpeed(delta), powerUps.totalConstructionCost(60));
 
 		drawHeldItems();
 		game.batch.begin();
@@ -445,11 +445,13 @@ public class GameScreen implements Screen {
 
     /**
      * Draw UI elements
+	 *
+	 * CHANGE ALL CALCULATIONS OUT OF HERE
+	 * MAKE THEM INTO CONSTANTS
      */
 	private void drawUI() {
-
-		if ((currentWaitingCustomer != null && currentWaitingCustomer.waitTime() < MAX_WAIT_TIME) ) {
-			Menu.RECIPES.get(currentWaitingCustomer.order).displayRecipe(game.batch, new Vector2(64, 256));
+		if (currentWaitingCustomer != null && currentWaitingCustomer.waitTime() < MAX_WAIT_TIME) {
+			Menu.RECIPES.get(currentWaitingCustomer.order).displayRecipe(game, new Vector2(64, 256));
 		}
 
 		// why does this start as anyone goes to it
@@ -461,7 +463,6 @@ public class GameScreen implements Screen {
 			if (i == currentCookIndex) {
 				selectedPlayerBox.setAutoShapeType(true);
 				selectedPlayerBox.begin(ShapeType.Line);
-
 				selectedPlayerBox.setColor(Color.GREEN);
 				selectedPlayerBox.rect(Gdx.graphics.getWidth() - 128 * cooks.size + i * 128,
 						Gdx.graphics.getHeight() - 128 - 8, 128, 128);
@@ -472,7 +473,6 @@ public class GameScreen implements Screen {
 					Gdx.graphics.getHeight() - 256));
 			game.batch.end();
 		}
-
 		game.batch.begin();
 		game.font.draw(game.batch,Integer.toString(reputationPoints), gameResolutionX / 2.3f + gameResolutionX / 3f ,19 * gameResolutionY / 20f);
 		game.font.draw(game.batch, "Reputation:", gameResolutionX / 1.95f + gameResolutionX / 7f , 19 * gameResolutionY / 20f);
@@ -770,10 +770,10 @@ public class GameScreen implements Screen {
 		if (viewedTile != null) {
 			Object stationType = viewedTile.getTile().getProperties().get("Station");
 			if (stationType != null) {
-				stationManager.checkInteractedTile((String) viewedTile.getTile().getProperties().get("Station"),
+				stationManager.checkInteractedTile(game, (String) viewedTile.getTile().getProperties().get("Station"),
 						new Vector2(checkCellX, checkCellY), cc, gameMode, powerUps.getPriceMultiplier(), powerUps.totalConstructionCost(60));
 			} else {
-				stationManager.checkInteractedTile("", new Vector2(checkCellX, checkCellY), cc, gameMode, powerUps.getPriceMultiplier(), powerUps.totalConstructionCost(60));
+				stationManager.checkInteractedTile(game, "", new Vector2(checkCellX, checkCellY), cc, gameMode, powerUps.getPriceMultiplier(), powerUps.totalConstructionCost(60));
 			}
 		}
 
