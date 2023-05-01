@@ -52,15 +52,13 @@ public class Recipe extends Ingredient {
 	 *                               with it.
 	 * @param finalSteps             Postface to the recipe.
 	 * @param name                   Name of the recipe to find the correct texture.
-	 * @param shouldBeOrdered        Whether the recipe has to be made in order
-	 *                               (specific order of ingredients).
 	 * @param pos                    The (x, y) coordinates of the ingredient.
 	 * @param width                  The recipe's texture width.
 	 * @param height                 The recipe's texture height.
 	 * @param cost                   How much the menu item will cost.
 	 */
 	public Recipe(String initialSteps, Ingredient initialIngredient, Map<Ingredient, String> ingredientInstructions,
-			String finalSteps, String name, boolean shouldBeOrdered, Vector2 pos, float width, float height,
+			String finalSteps, String name, Vector2 pos, float width, float height,
 			int cost) {
 		super(pos, width, height, name, 0, 0);
 		this.initialSteps = initialSteps;
@@ -68,7 +66,6 @@ public class Recipe extends Ingredient {
 		this.ingredientInstructions = ingredientInstructions;
 		this.finalSteps = finalSteps;
 		this.name = name;
-		this.shouldBeOrdered = shouldBeOrdered;
 		this.cost = cost;
 	}
 
@@ -123,15 +120,6 @@ public class Recipe extends Ingredient {
 		ArrayList<Ingredient> toCheck = new ArrayList<Ingredient>(ingredientInstructions.keySet());
 		if (givenIngredients.size() != toCheck.size())
 			return false;
-		if (shouldBeOrdered) {
-			for (int i = 0; i < toCheck.size(); i++) {
-				if (!toCheck.get(i).equals(givenIngredients.get(i))) {
-					return false;
-				}
-			}
-			return true;
-		}
-
 		for (Ingredient ingredient : givenIngredients) {
 			if (contains(ingredient, toCheck) && ingredient.checkUsable(ingredient) == true) {
 				toCheck.remove(ingredient);

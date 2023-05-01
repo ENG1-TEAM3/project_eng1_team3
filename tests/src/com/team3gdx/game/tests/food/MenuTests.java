@@ -46,7 +46,7 @@ public class MenuTests {
 
         // Test Values
         Recipe toCheckV = new Recipe("Form patty", Ingredients.unformedPatty, menu.BURGER_STEPS, "serve together",
-                "burger", false, null, 32, 32, 0);
+                "burger", null, 32, 32, 0);
         ArrayList<Recipe> listOfValues = new ArrayList<Recipe>(recipe.values());
         assertEquals(toCheckV, listOfValues.get(0));
     }

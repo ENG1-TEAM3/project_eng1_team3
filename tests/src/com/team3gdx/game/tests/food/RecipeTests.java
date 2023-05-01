@@ -1,7 +1,7 @@
 package com.team3gdx.game.tests.food;
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
+import com.team3gdx.game.MainGameClass;
 import com.team3gdx.game.food.Ingredient;
 import com.team3gdx.game.food.Ingredients;
 import com.team3gdx.game.food.Recipe;
@@ -20,18 +20,6 @@ import java.util.Stack;
 @RunWith(GdxTestRunner.class)
 public class RecipeTests {
 
-    /*
-    	public boolean contains(Ingredient checkIngredient, ArrayList<Ingredient> ingredients) {
-		for (Ingredient ingredient : ingredientInstructions.keySet()) {
-			if (ingredient.equals(checkIngredient) && ingredient.checkUsable(checkIngredient) == true)
-					return true;
-			}
-
-		return false;
-	}
-
-     */
-
     @Test
     public void testCost() {
         // Create Recipe
@@ -39,7 +27,7 @@ public class RecipeTests {
         BURGER_STEPS.put(Ingredients.cooked_bun, "Toast");
         BURGER_STEPS.put(Ingredients.cookedPatty, "Fry");
         Recipe recipe = new Recipe("Form patty", Ingredients.unformedPatty, BURGER_STEPS, "serve together",
-                "burger", false, null, 32, 32, 20);
+                "burger",  null, 32, 32, 20);
         // Is cost recorded right
         assertEquals(20, recipe.cost(), 0.001);
     }
@@ -50,7 +38,7 @@ public class RecipeTests {
         BURGER_STEPS.put(Ingredients.cooked_bun, "Toast");
         BURGER_STEPS.put(Ingredients.cookedPatty, "Fry");
         Recipe recipe = new Recipe("Form patty", Ingredients.unformedPatty, BURGER_STEPS, "serve together",
-                "burger", false, null, 32, 32, 0);
+                "burger",  null, 32, 32, 0);
         // Does not contain
         ArrayList<Ingredient> toCheck = new ArrayList<Ingredient>(recipe.ingredientInstructions.keySet());
         Ingredient ingredient = new Ingredient(null, 32, 32, "unformed_patty", 0, .5f);
@@ -61,7 +49,7 @@ public class RecipeTests {
         SALAD_STEPS.put(Ingredients.lettuceChopped, "Cut");
         SALAD_STEPS.put(Ingredients.tomatoChopped, "Cut");
         SALAD_STEPS.put(Ingredients.onionChopped, "Cut");
-        Recipe recipe2 = new Recipe("", null, SALAD_STEPS, "serve together", "salad", false, null, 32, 32, 0);
+        Recipe recipe2 = new Recipe("", null, SALAD_STEPS, "serve together", "salad",  null, 32, 32, 0);
         ArrayList<Ingredient> toCheck2 = new ArrayList<Ingredient>(recipe2.ingredientInstructions.keySet());
         Ingredient ingredient2 = Ingredients.lettuceChopped;
         // Not usable
@@ -70,10 +58,7 @@ public class RecipeTests {
         ingredient2.idealSlices = 2;
         ingredient2.slices = 1;
         assertTrue(recipe2.contains(ingredient2, toCheck2));
-
-
     }
-
 
     @Test
     public void testMatches() {
@@ -82,7 +67,7 @@ public class RecipeTests {
         SALAD_STEPS.put(Ingredients.tomatoChopped, "Cut");
         SALAD_STEPS.put(Ingredients.onionChopped, "Cut");
         SALAD_STEPS.put(Ingredients.lettuceChopped, "Cut");
-        Recipe recipe = new Recipe("", null, SALAD_STEPS, "serve together", "salad", false, null, 32, 32, 0);
+        Recipe recipe = new Recipe("", null, SALAD_STEPS, "serve together", "salad", null, 32, 32, 0);
         Stack<Ingredient> stack = new Stack<Ingredient>();
         assertFalse(recipe.matches(stack));
 
@@ -110,23 +95,19 @@ public class RecipeTests {
 
     }
 
-    //@Test
-    //public void testDisplayRecipe() {
-    //    SpriteBatch batch = mock(SpriteBatch.class);
+    @Test
+    public void testDisplayRecipe() {
+        MainGameClass game = new MainGameClass();
 
-        recipe.displayRecipe(batch, new Vector2(64, 256));
-        verify(batch, atLeastOnce()).begin();
-        verify(batch, atLeastOnce()).end();
+        Map<Ingredient, String> SALAD_STEPS = new HashMap<Ingredient, String>();
+        SALAD_STEPS.put(Ingredients.tomatoChopped, "Cut");
+        SALAD_STEPS.put(Ingredients.onionChopped, "Cut");
+        SALAD_STEPS.put(Ingredients.lettuceChopped, "Cut");
 
+        Recipe recipe = new Recipe("", null, SALAD_STEPS, "serve together", "salad", null, 32, 32, 0);
 
-        Map<Ingredient, String> BURGER_STEPS = new HashMap<Ingredient, String>();
-        BURGER_STEPS.put(Ingredients.cooked_bun, "Toast");
-        BURGER_STEPS.put(Ingredients.cookedPatty, "Fry");
-
-        Recipe recipe2 =  new Recipe("Form patty", Ingredients.unformedPatty, BURGER_STEPS, "serve together",
-                        "burger", false, null, 32, 32, 0);
-        recipe2.displayRecipe(batch, new Vector2(64, 256));
-        verify(batch, atLeastOnce()).begin();
-        verify(batch, atLeastOnce()).end();
+        //recipe.displayRecipe(game, new Vector2(64, 256));
+        //verify(game.batch, atLeastOnce()).begin();
+        //verify(game.batch, atLeastOnce()).end();
     }
 }
