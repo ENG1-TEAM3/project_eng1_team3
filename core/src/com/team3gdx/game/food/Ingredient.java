@@ -2,16 +2,15 @@ package com.team3gdx.game.food;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 import com.team3gdx.game.MainGameClass;
 import com.team3gdx.game.entity.Entity;
+import com.team3gdx.game.save.IngredientInfo;
 import com.team3gdx.game.screen.GameScreen;
 import com.team3gdx.game.screen.GameScreen.STATE;
-import jdk.tools.jmod.Main;
 
 /**
  * Represents an ingredient.
@@ -29,6 +28,26 @@ public class Ingredient extends Entity {
 	private boolean usable = true;
 	public Status status = Status.RAW;
 
+	public int getSlices() {
+		return slices;
+	}
+
+	public int getIdealSlices() {
+		return idealSlices;
+	}
+
+	public float getCookedTime() {
+		return cookedTime;
+	}
+
+	public float getIdealCookedTime() {
+		return idealCookedTime;
+	}
+
+	public boolean isUsable() {
+		return usable;
+	}
+
 	/**
 	 * Represents ongoing states of the ingredient.
 	 */
@@ -44,7 +63,7 @@ public class Ingredient extends Entity {
 
 	/**
 	 * Sets the appropriate properties.
-	 * 
+	 *
 	 * @param pos             The (x, y) coordinates of the ingredient.
 	 * @param width           The ingredient's texture width.
 	 * @param height          The ingredient's texture height.
@@ -63,9 +82,28 @@ public class Ingredient extends Entity {
 
 	}
 
+	public Ingredient(IngredientInfo ingredient) {
+		this.pos = new Vector2(ingredient.x, ingredient.y);
+		this.width = ingredient.width;
+		this.height = ingredient.height;
+		this.name = ingredient.name;
+		this.texture = new Texture("items/"+name+".png");
+		this.idealSlices = ingredient.idealSlices;
+		this.idealCookedTime = ingredient.idealCookedTime;
+
+		this.slices = ingredient.slices;
+		this.cookedTime = ingredient.cookedTime;
+		this.usable = ingredient.usable;
+		this.status = ingredient.status;
+		this.cooking = ingredient.cooking;
+		this.slicing = ingredient.slicing;
+		this.flipped = ingredient.flipped;
+		this.rolling = ingredient.rolling;
+	}
+
 	/**
 	 * Creates a new instance with identical properties.
-	 * 
+	 *
 	 * @param ingredient The ingredient to clone.
 	 */
 	public Ingredient(Ingredient ingredient) {
@@ -84,7 +122,7 @@ public class Ingredient extends Entity {
 
 	/**
 	 * Changes the {@link this#flipped} to true if possible.
-	 * 
+	 *
 	 * @return A boolean representing if the ingredient was successfully flipped.
 	 */
 	public boolean flip() {
@@ -95,7 +133,7 @@ public class Ingredient extends Entity {
 
 	/**
 	 * Begin process of slicing ingredient and show status.
-	 * 
+	 *
 	 * @param batch {@link SpriteBatch} to render texture and status.
 	 * @param dT    The amount of time to increment by when slicing.
 	 * @return A boolean representing if a complete slice has occurred.
@@ -125,7 +163,7 @@ public class Ingredient extends Entity {
 
 	/**
 	 * Begin process of cooking ingredient and show status.
-	 * 
+	 *
 	 * @param dT    The amount of time to increment {@link this#cookedTime} by.
 	 * @param batch {@link SpriteBatch} to render texture and status.
 	 * @return A double representing the current {@link this#cookedTime}.
@@ -157,7 +195,7 @@ public class Ingredient extends Entity {
 
 	/**
 	 * Draw a status bar.
-	 * 
+	 *
 	 * @param percentage The current progress of the status bar.
 	 * @param optimum    The optimal status to reach (shown by a black bar).
 	 */
@@ -182,7 +220,7 @@ public class Ingredient extends Entity {
 				2 * height / 5);
 		shapeRenderer.end();
 	}
-	
+
 	public boolean checkUsable(Ingredient I){
 		if (I.idealSlices < I.slices){
 			return false;
@@ -203,8 +241,4 @@ public class Ingredient extends Entity {
 		return false;
 	}
 
-}
-
-enum Status {
-	RAW, COOKED, BURNED
 }

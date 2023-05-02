@@ -303,7 +303,10 @@ public class GameScreen implements Screen {
 				try {
 					save.saveGame(new GameInfo(money, startTime - timeOnStartup, currentWave, reputationPoints, new ModeInfo(gameMode),
 							Arrays.stream(cooks.toArray(Cook.class))
-									.map(cook -> new ChefInfo(cook.getX(), cook.getY(), cook.cookno))
+									.map(cook -> new ChefInfo(cook.getX(), cook.getY(), cook.cookno,
+											cook.heldItems.stream()
+													.map(IngredientInfo::new)
+													.toArray(IngredientInfo[]::new)))
 									.toArray(ChefInfo[]::new),
 
 							Arrays.stream(cc.customers)
@@ -313,7 +316,10 @@ public class GameScreen implements Screen {
 
 							stationManager.stations.values().stream()
 									.filter(station -> station instanceof CookingStation || station instanceof PrepStation)
-									.map(station -> new StationInfo(station.pos.x, station.pos.y, station.active(), getStationType(station)))
+									.map(station -> new StationInfo(station.pos.x, station.pos.y, station.active(), getStationType(station),
+											station.slots.stream()
+													.map(IngredientInfo::new)
+													.toArray(IngredientInfo[]::new)))
 									.toArray(StationInfo[]::new)));
 
 				} catch (Exception e) {
