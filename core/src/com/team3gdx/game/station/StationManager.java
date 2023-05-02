@@ -31,7 +31,13 @@ public class StationManager {
 	/**
 	 * A Map representing every station and its (x, y) coordinates.
 	 */
-	public static Map<Vector2, Station> stations = new HashMap<Vector2, Station>();
+	public Map<Vector2, Station> stations = new HashMap<Vector2, Station>();
+
+	public void addStation(MainGameClass game, Station station) {
+		checkStationExists(station.pos, station);
+
+		buyBackStation(game, station.pos, 0, true);
+	}
 
 
 	/**
@@ -141,19 +147,19 @@ public class StationManager {
 			break;
 		case "Frying_inactive":
 			checkStationExists(pos, new FryingStation(pos,false));
-			buyBackStation(game, pos, constructionCost);
+			buyBackStation(game, pos, constructionCost, false);
 			break;
 		case "Prep_inactive":
 			checkStationExists(pos, new PrepStation(pos, false));
-			buyBackStation(game, pos, constructionCost);
+			buyBackStation(game, pos, constructionCost, false);
 			break;
 		case "Chopping_inactive":
 			checkStationExists(pos, new CuttingStation(pos, 1, false));
-			buyBackStation(game, pos, constructionCost);
+			buyBackStation(game, pos, constructionCost, false);
 			break;
 		case "Baking_inactive":
 			checkStationExists(pos, new BakingStation(pos, false));
-			buyBackStation(game, pos, constructionCost);
+			buyBackStation(game, pos, constructionCost, false);
 			break;
 
 		case "Service":
@@ -236,7 +242,7 @@ public class StationManager {
 
 	}
 
-	private void buyBackStation(MainGameClass game, Vector2 pos, float constructionCost) {
+	private void buyBackStation(MainGameClass game, Vector2 pos, float constructionCost, boolean force) {
 		if (!GameScreen.cook.heldItems.empty()) {
 			return;
 		}
@@ -245,7 +251,7 @@ public class StationManager {
 
 		station.drawBuyBackText(game, constructionCost);
 
-		if (GameScreen.control.interact && GameScreen.money >= constructionCost) {
+		if ((GameScreen.control.interact && GameScreen.money >= constructionCost) || force) {
 			station.buyBack();
 			GameScreen.money -= constructionCost;
 

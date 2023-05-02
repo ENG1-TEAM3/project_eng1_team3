@@ -40,9 +40,10 @@ import com.team3gdx.game.entity.Cook;
 import com.team3gdx.game.entity.Customer;
 import com.team3gdx.game.entity.CustomerController;
 import com.team3gdx.game.entity.Entity;
+import com.team3gdx.game.food.Ingredient;
 import com.team3gdx.game.food.Menu;
 import com.team3gdx.game.save.*;
-import com.team3gdx.game.station.StationManager;
+import com.team3gdx.game.station.*;
 import com.team3gdx.game.util.CollisionTile;
 import com.team3gdx.game.util.Control;
 import com.team3gdx.game.util.GameMode;
@@ -148,14 +149,58 @@ public class GameScreen implements Screen {
 		this(game, save.gameMode);
 
 		for (ChefInfo chef : save.chefs) {
-			cooks.add(new Cook(new Vector2(chef.x, chef.y), chef.cookNum));
+			Cook cook = new Cook(new Vector2(chef.x, chef.y), chef.cookNum);
+
+			for (IngredientInfo ingredient : chef.ingredients) {
+				cook.heldItems.push(new Ingredient(ingredient));
+			}
+
+			cooks.add(cook);
 		}
 
 		cook = cooks.get(currentCookIndex);
 
 		money = save.money;
+		startTime = -save.timerOffset;
 		currentWave = save.currentWave;
 		reputationPoints = save.reputation;
+
+		for (StationInfo stationInfo : save.stations) {
+			Vector2 pos = new Vector2(stationInfo.x, stationInfo.y);
+
+			Station station;
+
+			switch (stationInfo.type) {
+				case prep:
+					station = new PrepStation(pos, stationInfo.active);
+					break;
+				case cutting:
+					station = new CuttingStation(pos, 1, stationInfo.active);
+					break;
+				case baking:
+					station = new BakingStation(pos, stationInfo.active);
+					break;
+				case frying:
+					station = new FryingStation(pos, stationInfo.active);
+					break;
+				default:
+					station = new Station(pos, 4, false, null, null, true);
+			}
+
+			for (IngredientInfo ingredient : stationInfo.ingredients) {
+				station.slots.push(new Ingredient(ingredient));
+			}
+
+			stationManager.addStation(game, station);
+		}
+
+		for (PowerUpInfo powerUp : save.activePowerUps) {
+			powerUps.addActivePowerUp(new PowerUp(powerUp));
+		}
+
+		for (PowerUpInfo powerUp : save.spawnedPowerUps) {
+			powerUps.addSpawnedPowerUp(new PowerUp(powerUp));
+		}
 
 		cc.spawnWave(save.customers);
 	}
@@ -192,7 +237,7 @@ public class GameScreen implements Screen {
 		tutorial.start(cooks);
 
 		// =======================================START=FRAME=TIMER======================================================
-		startTime = System.currentTimeMillis();
+		startTime = startTime + System.currentTimeMillis();
 		timeOnStartup = startTime;
 		tempThenTime = startTime;
 		// =======================================SET=POSITIONS=OF=SLIDERS===============================================
@@ -275,14 +320,35 @@ public class GameScreen implements Screen {
 			public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
 
 				try {
-					save.saveGame(new GameInfo(money, 15f, currentWave, reputationPoints, new ModeInfo(gameMode),
+					save.saveGame(new GameInfo(money, startTime - timeOnStartup, currentWave, reputationPoints, new ModeInfo(gameMode),
 							Arrays.stream(cooks.toArray(Cook.class))
-									.map(cook -> new ChefInfo(cook.getX(), cook.getY(), cook.cookno))
+									.map(cook -> new ChefInfo(cook.getX(), cook.getY(), cook.cookno,
+											cook.heldItems.stream()
+													.map(IngredientInfo::new)
+													.toArray(IngredientInfo[]::new)))
 									.toArray(ChefInfo[]::new),
+
 							Arrays.stream(cc.customers)
 									.filter(Objects::nonNull)
 									.map(customer -> new CustomerInfo(customer.custno, customer.order, customer.posx / 64, customer.posy / 64, customer.targetsquare))
-									.toArray(CustomerInfo[]::new)));
+									.toArray(CustomerInfo[]::new),
+
+							stationManager.stations.values().stream()
+									.filter(station -> station instanceof CookingStation || station instanceof PrepStation)
+									.map(station -> new StationInfo(station.pos.x, station.pos.y, station.active(), getStationType(station),
+											station.slots.stream()
+													.map(IngredientInfo::new)
+													.toArray(IngredientInfo[]::new)))
+									.toArray(StationInfo[]::new),
+
+							Arrays.stream(powerUps.getActivePowerUps().toArray(PowerUp.class))
+									.map(PowerUpInfo::new)
+									.toArray(PowerUpInfo[]::new),
+
+							Arrays.stream(powerUps.getSpawnedPowerUps().toArray(PowerUp.class))
+									.map(PowerUpInfo::new)
+									.toArray(PowerUpInfo[]::new)));
+
 				} catch (Exception e) {
 					System.out.println(e.getMessage());
 					// TODO: error message
@@ -299,6 +365,7 @@ public class GameScreen implements Screen {
 			}
 		});
 
+
 		// ======================================ADD=BUTTONS=TO=STAGES===================================================
 		stage.addActor(mn);
 		stage2.addActor(rs);
@@ -306,6 +373,26 @@ public class GameScreen implements Screen {
 		stage2.addActor(ad);
 		stage2.addActor(saveButton);
 
+	}
+
+	private StationType getStationType(Station station) {
+		if (station instanceof PrepStation) {
+			return StationType.prep;
+		}
+
+		if (station instanceof BakingStation) {
+			return StationType.baking;
+		}
+
+		if (station instanceof CuttingStation) {
+			return StationType.cutting;
+		}
+
+		if (station instanceof FryingStation) {
+			return StationType.frying;
+		}
+
+		return StationType.none;
 	}
 
 	ShapeRenderer selectedPlayerBox = new ShapeRenderer();
@@ -769,6 +856,7 @@ public class GameScreen implements Screen {
 
 		if (viewedTile != null) {
 			Object stationType = viewedTile.getTile().getProperties().get("Station");
+
 			if (stationType != null) {
 				stationManager.checkInteractedTile(game, (String) viewedTile.getTile().getProperties().get("Station"),
 						new Vector2(checkCellX, checkCellY), cc, gameMode, powerUps.getPriceMultiplier(), powerUps.totalConstructionCost(60));
