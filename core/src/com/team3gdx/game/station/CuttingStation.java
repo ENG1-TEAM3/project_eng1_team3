@@ -10,7 +10,7 @@ import com.team3gdx.game.screen.GameScreen;
 
 public class CuttingStation extends Station {
 
-	private final static Ingredient[] ALLOWED_INGREDIENTS = { Ingredients.lettuce, Ingredients.tomato,
+	public final static Ingredient[] ALLOWED_INGREDIENTS = { Ingredients.lettuce, Ingredients.tomato,
 			Ingredients.onion, Ingredients.cheese, Ingredients.cookedPotato };
 
 	public float currentCutTime;

@@ -16,17 +16,15 @@ import java.util.Stack;
 public class BakingStationTests {
     @Test
     public void testAllowedIngredients() {
-        BakingStation BStation = new BakingStation(new Vector2(0, 0));
-        Ingredient bun = new Ingredient(new Vector2(0, 0), 32, 32, "burger_bun", 0, .5f);
-        Ingredient cooked_bun = new Ingredient(new Vector2(0, 0), 32, 32, "burger_bun", 0, .5f);
-        Ingredient[] ALLOWED_INGREDIENTS = {Ingredients.bun, Ingredients.cooked_bun};
+        BakingStation BStation = new BakingStation(new Vector2(0, 0), true);
+        Ingredient[] ALLOWED_INGREDIENTS = {Ingredients.bun, Ingredients.cooked_bun, Ingredients.potato ,Ingredients.cookedPotato, Ingredients.formedDough, Ingredients.cookedDough };
         assertEquals(ALLOWED_INGREDIENTS, BakingStation.ALLOWED_INGREDIENTS);
     }
 
     @Test
     public void testPlaceBun() {
         Ingredient bun = new Ingredient(new Vector2(0, 0), 32, 32, "burger_bun", 0, 1);
-        BakingStation BStation = new BakingStation(new Vector2(0, 0));
+        BakingStation BStation = new BakingStation(new Vector2(0, 0), true);
         Stack<Ingredient> BSList = new Stack<Ingredient>();
         BSList.push(bun);
         BStation.place(bun);
@@ -36,7 +34,7 @@ public class BakingStationTests {
     @Test
     public void testFullStationPlacement() {
         Ingredient bun = new Ingredient(new Vector2(0, 0), 32, 32, "burger_bun", 0, 1);
-        BakingStation BStation = new BakingStation(new Vector2(0, 0));
+        BakingStation BStation = new BakingStation(new Vector2(0, 0), true);
         Stack<Ingredient> BSList = new Stack<Ingredient>();
         BStation.place(bun);
         BStation.place(bun);
