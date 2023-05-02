@@ -42,7 +42,7 @@ import com.team3gdx.game.entity.CustomerController;
 import com.team3gdx.game.entity.Entity;
 import com.team3gdx.game.food.Menu;
 import com.team3gdx.game.save.*;
-import com.team3gdx.game.station.StationManager;
+import com.team3gdx.game.station.*;
 import com.team3gdx.game.util.CollisionTile;
 import com.team3gdx.game.util.Control;
 import com.team3gdx.game.util.GameMode;
@@ -280,10 +280,17 @@ public class GameScreen implements Screen {
 							Arrays.stream(cooks.toArray(Cook.class))
 									.map(cook -> new ChefInfo(cook.getX(), cook.getY(), cook.cookno))
 									.toArray(ChefInfo[]::new),
+
 							Arrays.stream(cc.customers)
 									.filter(Objects::nonNull)
 									.map(customer -> new CustomerInfo(customer.custno, customer.order, customer.posx / 64, customer.posy / 64, customer.targetsquare))
-									.toArray(CustomerInfo[]::new)));
+									.toArray(CustomerInfo[]::new),
+
+							stationManager.stations.values().stream()
+									.filter(station -> station instanceof CookingStation || station instanceof PrepStation)
+									.map(station -> new StationInfo(station.pos.x, station.pos.y, station.active(), getStationType(station)))
+									.toArray(StationInfo[]::new)));
+
 				} catch (Exception e) {
 					System.out.println(e.getMessage());
 					// TODO: error message
@@ -300,6 +307,7 @@ public class GameScreen implements Screen {
 			}
 		});
 
+
 		// ======================================ADD=BUTTONS=TO=STAGES===================================================
 		stage.addActor(mn);
 		stage2.addActor(rs);
@@ -307,6 +315,26 @@ public class GameScreen implements Screen {
 		stage2.addActor(ad);
 		stage2.addActor(saveButton);
 
+	}
+
+	private StationType getStationType(Station station) {
+		if (station instanceof PrepStation) {
+			return StationType.prep;
+		}
+
+		if (station instanceof BakingStation) {
+			return StationType.baking;
+		}
+
+		if (station instanceof CuttingStation) {
+			return StationType.cutting;
+		}
+
+		if (station instanceof FryingStation) {
+			return StationType.frying;
+		}
+
+		return StationType.none;
 	}
 
 	ShapeRenderer selectedPlayerBox = new ShapeRenderer();

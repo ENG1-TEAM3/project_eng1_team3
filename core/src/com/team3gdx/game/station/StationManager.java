@@ -31,7 +31,7 @@ public class StationManager {
 	/**
 	 * A Map representing every station and its (x, y) coordinates.
 	 */
-	public static Map<Vector2, Station> stations = new HashMap<Vector2, Station>();
+	public Map<Vector2, Station> stations = new HashMap<Vector2, Station>();
 
 
 	/**
