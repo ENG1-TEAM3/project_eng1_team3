@@ -84,10 +84,6 @@ public class GameScreen implements Screen {
 	Stage stage;
 	Stage stage2;
 	OrthographicCamera uiCamera;
-	public static OrthographicCamera worldCamera;
-
-	public static Customer currentWaitingCustomer2 = null;
-	public static Customer currentWaitingCustomer = null;
 
 	public enum STATE {
 		Pause, Continue, main, audio
@@ -110,19 +106,23 @@ public class GameScreen implements Screen {
 	long startTime;
 	long timeOnStartup;
 	long tempTime, tempThenTime;
+
+	public Array<Cook> cooks = new Array<>();
+
+	// I hate this but would need to rewrite the whole thing to change them
+	public static OrthographicCamera worldCamera;
+	public static Customer currentWaitingCustomer = null;
 	public static Control control;
 	public static TiledMapRenderer tiledMapRenderer;
 	public static TiledMap map1;
-	public Array<Cook> cooks = new Array<>();
 	public static int currentCookIndex = 0;
 	public static Cook cook;
-	public static CustomerController cc;
 	public static int reputationPoints = 3;
+
 	InputMultiplexer multi;
 	StationManager stationManager = new StationManager();
-
+	CustomerController cc;
 	PowerUpService powerUps;
-
 	SaveService save = new SaveService();
 
 	Tutorial tutorial = new Tutorial();
@@ -206,6 +206,16 @@ public class GameScreen implements Screen {
 	}
 
 	private GameScreen(MainGameClass game, GameMode gameMode) {
+		// reset static stuff
+		//worldCamera = null;
+		currentWaitingCustomer = null;
+		control = null;
+		tiledMapRenderer = null;
+		map1 = null;
+		currentCookIndex = 0;
+		cook = null;
+		reputationPoints = 3;
+
 		this.game = game;
 		this.gameMode = gameMode;
 
@@ -218,7 +228,7 @@ public class GameScreen implements Screen {
 		map1 = new TmxMapLoader().load("map/art_map/customertest.tmx");
 		tiledMapRenderer = new OrthogonalTiledMapRenderer(map1);
 		constructCollisionData(map1);
-		cc = new CustomerController(map1,gameMode);
+		cc = new CustomerController(map1, gameMode);
 		powerUps = new PowerUpService(map1, control);
 	}
 
