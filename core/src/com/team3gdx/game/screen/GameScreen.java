@@ -158,6 +158,31 @@ public class GameScreen implements Screen {
 		currentWave = save.currentWave;
 		reputationPoints = save.reputation;
 
+		for (StationInfo stationInfo : save.stations) {
+			Vector2 pos = new Vector2(stationInfo.x, stationInfo.y);
+
+			Station station;
+
+			switch (stationInfo.type) {
+				case prep:
+					station = new PrepStation(pos, stationInfo.active);
+					break;
+				case cutting:
+					station = new CuttingStation(pos, 1, stationInfo.active);
+					break;
+				case baking:
+					station = new BakingStation(pos, stationInfo.active);
+					break;
+				case frying:
+					station = new FryingStation(pos, stationInfo.active);
+					break;
+				default:
+					station = new Station(pos, 4, false, null, null, true);
+			}
+
+			stationManager.addStation(game, station);
+		}
+
 		cc.spawnWave(save.customers);
 	}
 
@@ -798,6 +823,7 @@ public class GameScreen implements Screen {
 
 		if (viewedTile != null) {
 			Object stationType = viewedTile.getTile().getProperties().get("Station");
+
 			if (stationType != null) {
 				stationManager.checkInteractedTile(game, (String) viewedTile.getTile().getProperties().get("Station"),
 						new Vector2(checkCellX, checkCellY), cc, gameMode, powerUps.getPriceMultiplier(), powerUps.totalConstructionCost(60));
