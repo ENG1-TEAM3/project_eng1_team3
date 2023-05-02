@@ -37,7 +37,7 @@ public class CustomerTests {
     }
 
     @Test
-    public void TestStepTarget() {
+    public void testStepTarget() {
         // less than
         Customer customer = new Customer(10, 10, 10, 1);
         customer.setTargetsquare(20);
