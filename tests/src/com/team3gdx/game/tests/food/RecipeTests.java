@@ -1,5 +1,8 @@
 package com.team3gdx.game.tests.food;
 
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Vector2;
 import com.team3gdx.game.MainGameClass;
 import com.team3gdx.game.food.Ingredient;
 import com.team3gdx.game.food.Ingredients;
@@ -8,6 +11,7 @@ import com.team3gdx.game.tests.GdxTestRunner;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -90,21 +94,5 @@ public class RecipeTests {
         stack.push(Ingredients.lettuce);
         assertFalse(recipe.matches(stack));
 
-    }
-
-    @Test
-    public void testDisplayRecipe() {
-        MainGameClass game = new MainGameClass();
-
-        Map<Ingredient, String> SALAD_STEPS = new HashMap<Ingredient, String>();
-        SALAD_STEPS.put(Ingredients.tomatoChopped, "Cut");
-        SALAD_STEPS.put(Ingredients.onionChopped, "Cut");
-        SALAD_STEPS.put(Ingredients.lettuceChopped, "Cut");
-
-        Recipe recipe = new Recipe("", null, SALAD_STEPS, "serve together", "salad", null, 32, 32, 0);
-
-        //recipe.displayRecipe(game, new Vector2(64, 256));
-        //verify(game.batch, atLeastOnce()).begin();
-        //verify(game.batch, atLeastOnce()).end();
     }
 }
