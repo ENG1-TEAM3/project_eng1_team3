@@ -26,6 +26,9 @@ public class PowerUpService {
     public Array<PowerUp> getSpawnedPowerUps () {
         return new Array<>(spawnedPowerUps.values().toArray(new PowerUp[0]));
     }
+    public Array<Vector2> getSpawnedPowerUpsPos () {
+        return new Array<>(spawnedPowerUps.keySet().toArray(new Vector2[0]));
+    }
 
     public PowerUpService(TiledMap map, Control control) {
 
@@ -33,7 +36,7 @@ public class PowerUpService {
         this.control = control;
     }
 
-    private boolean checkTimer(float delta) {
+    public boolean checkTimer(float delta) {
         timer += delta;
 
         float interval = 30;
@@ -80,7 +83,7 @@ public class PowerUpService {
         }
     }
 
-    private void spawnPowerUp(PowerUp powerUp) {
+    public void spawnPowerUp(PowerUp powerUp) {
         TiledMapTileLayer layer = (TiledMapTileLayer) map.getLayers().get(1);
 
         int x, y;
