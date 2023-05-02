@@ -40,6 +40,7 @@ import com.team3gdx.game.entity.Cook;
 import com.team3gdx.game.entity.Customer;
 import com.team3gdx.game.entity.CustomerController;
 import com.team3gdx.game.entity.Entity;
+import com.team3gdx.game.food.Ingredient;
 import com.team3gdx.game.food.Menu;
 import com.team3gdx.game.save.*;
 import com.team3gdx.game.station.*;
@@ -148,7 +149,13 @@ public class GameScreen implements Screen {
 		this(game, save.gameMode);
 
 		for (ChefInfo chef : save.chefs) {
-			cooks.add(new Cook(new Vector2(chef.x, chef.y), chef.cookNum));
+			Cook cook = new Cook(new Vector2(chef.x, chef.y), chef.cookNum);
+
+			for (IngredientInfo ingredient : chef.ingredients) {
+				cook.heldItems.push(new Ingredient(ingredient));
+			}
+
+			cooks.add(cook);
 		}
 
 		cook = cooks.get(currentCookIndex);
@@ -178,6 +185,10 @@ public class GameScreen implements Screen {
 					break;
 				default:
 					station = new Station(pos, 4, false, null, null, true);
+			}
+
+			for (IngredientInfo ingredient : stationInfo.ingredients) {
+				station.slots.push(new Ingredient(ingredient));
 			}
 
 			stationManager.addStation(game, station);
