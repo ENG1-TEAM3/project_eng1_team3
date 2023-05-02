@@ -19,6 +19,14 @@ public class PowerUpService {
     private final Map<Vector2, PowerUp> spawnedPowerUps = new HashMap<>();
     private final Random random = new Random();
 
+    public void addActivePowerUp(PowerUp powerUp) {
+        activePowerUps.add(powerUp);
+    }
+
+    public void addSpawnedPowerUp(PowerUp powerUp) {
+        spawnedPowerUps.put(powerUp.pos, powerUp);
+    }
+
     public Array<PowerUp> getActivePowerUps() {
         return activePowerUps;
     }

@@ -3,6 +3,7 @@ package com.team3gdx.game.PowerUp;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 import com.team3gdx.game.entity.Entity;
+import com.team3gdx.game.save.PowerUpInfo;
 
 /**
  * Represents an ingredient.
@@ -11,7 +12,7 @@ import com.team3gdx.game.entity.Entity;
 public class PowerUp extends Entity {
 	public final float duration;
 	public String name;
-	private float timeElapsed;
+	public float timeElapsed;
 
 	/**
 	 * Sets the appropriate properties.
@@ -43,6 +44,15 @@ public class PowerUp extends Entity {
 		this.height = powerUp.height;
 		this.name = powerUp.name;
 		this.texture = powerUp.texture;
+	}
+
+	public PowerUp(PowerUpInfo powerUp) {
+		this.duration = powerUp.duration;
+		this.pos = new Vector2(powerUp.x, powerUp.y);
+		this.width = powerUp.width;
+		this.height = powerUp.height;
+		this.name = powerUp.name;
+		this.texture = new Texture("PowerUps/"+name+".png");
 	}
 
 	public void addTime(float delta) {

@@ -194,6 +194,14 @@ public class GameScreen implements Screen {
 			stationManager.addStation(game, station);
 		}
 
+		for (PowerUpInfo powerUp : save.activePowerUps) {
+			powerUps.addActivePowerUp(new PowerUp(powerUp));
+		}
+
+		for (PowerUpInfo powerUp : save.spawnedPowerUps) {
+			powerUps.addSpawnedPowerUp(new PowerUp(powerUp));
+		}
+
 		cc.spawnWave(save.customers);
 	}
 
@@ -331,7 +339,15 @@ public class GameScreen implements Screen {
 											station.slots.stream()
 													.map(IngredientInfo::new)
 													.toArray(IngredientInfo[]::new)))
-									.toArray(StationInfo[]::new)));
+									.toArray(StationInfo[]::new),
+
+							Arrays.stream(powerUps.getActivePowerUps().toArray(PowerUp.class))
+									.map(PowerUpInfo::new)
+									.toArray(PowerUpInfo[]::new),
+
+							Arrays.stream(powerUps.getSpawnedPowerUps().toArray(PowerUp.class))
+									.map(PowerUpInfo::new)
+									.toArray(PowerUpInfo[]::new)));
 
 				} catch (Exception e) {
 					System.out.println(e.getMessage());
